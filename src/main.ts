@@ -2,6 +2,7 @@ import { Editor, MarkdownViewModeType, Notice, Plugin, WorkspaceLeaf } from 'obs
 import { PluginSettings } from 'src/types/PluginSettings';
 import { MySettingsTab } from './tabs/settings-tab/settings-tab';
 import { openInkFile } from './utils/open-file';
+import { openCardBrowserInNewTab } from './views/CardBrowserView/CardBrowserView';
 
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -14,26 +15,14 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 export default class InkPlugin extends Plugin {
 	settings: PluginSettings;
 
-	// Function came from Notion like tables code
-	private getViewMode = (el: HTMLElement): MarkdownViewModeType | null => {
-		const parent = el.parentElement;
-		if (parent) {
-			return parent.className.includes("cm-preview-code-block")
-				? "source"
-				: "preview";
-		}
-		return null;
-	};
-
 
 	async onload() {
 		await this.loadSettings();
 
 		// this.app.emulateMobile(false);
 
-		// registerWritingView(this);
-		
-		registerActionA(this);
+		// registerProjectCardView(this);
+		registerOpenCardBrowserAction(this);
 		
 		// For testing only
 		// implementHandwrittenNoteAction(this)
@@ -72,19 +61,26 @@ export default class InkPlugin extends Plugin {
 
 
 
-function registerActionA(plugin: InkPlugin) {
-	// plugin.addCommand({
-	// 	id: 'ddc_create-writing-file',
-	// 	name: 'Create new handwritten note',
-	// 	callback: async () => {
-	// 		const fileRef = await createNewWritingFile(plugin);
-	// 		openInkFile(plugin, fileRef);
-	// 	}
-	// });
-	// plugin.addRibbonIcon("pencil", "New handwritten note", async () => {
-	// 	const fileRef = await createNewWritingFile(plugin);
-	// 	openInkFile(plugin, fileRef);
-	// });
+// export function registerProjectCardView (plugin: InkPlugin) {
+//     plugin.registerView(
+//         CARD_BROWSER_VIEW_TYPE,
+//         (leaf) => new DrawingView(leaf, plugin)
+//     );
+//     plugin.registerExtensions([DRAW_FILE_EXT], DRAWING_VIEW_TYPE);
+// }
+
+
+function registerOpenCardBrowserAction(plugin: InkPlugin) {
+	plugin.addCommand({
+		id: 'ddc_browse-projects',
+		name: 'Browse projects',
+		callback: async () => {
+			openCardBrowserInNewTab(plugin);
+		}
+	});
+	plugin.addRibbonIcon('dice', 'Browse projects', async () => {
+		openCardBrowserInNewTab(plugin);
+	});
 }
 
 
