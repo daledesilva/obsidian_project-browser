@@ -15,7 +15,7 @@ const renamePlugin = () => ({
 			try {
 				fs.renameSync('./dist/main.css', './dist/styles.css');
 			} catch (e) {
-				console.error('Failed to main.css to styles.css file:', e);
+				console.log('WARNING: Failed to main.css to styles.css file. If you have no external CSS or SCSS files, then this can be ignored.');
 			}
 		});
 	},
