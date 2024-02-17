@@ -12,7 +12,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 
 
 
-export default class InkPlugin extends Plugin {
+export default class ProjectCardsPlugin extends Plugin {
 	settings: PluginSettings;
 
 

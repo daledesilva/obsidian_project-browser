@@ -2,6 +2,7 @@ import ProjectCardsPlugin from "src/main";
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
+import CardBrowser from "src/components/card-browser/card-browser";
 
 //////////
 //////////
@@ -13,6 +14,7 @@ export async function openCardBrowserInNewTab(plugin: ProjectCardsPlugin) {
     let leaf = workspace.getLeaf();
     const projectCardsView = new ProjectCardsView(leaf, plugin)
     leaf.open(projectCardsView);
+    // await leaf.setViewState({ type: CARD_BROWSER_VIEW_TYPE, active: true });
 }
 
 export class ProjectCardsView extends ItemView {
@@ -39,7 +41,7 @@ export class ProjectCardsView extends ItemView {
         
         this.root = createRoot(viewContent);
 		this.root.render(
-            <p>This is my project card view</p>
+            <CardBrowser plugin={this.plugin}/>
         );
     }
 
