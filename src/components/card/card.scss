@@ -1,0 +1,30 @@
+.project-cards_card {
+    width: 20em;
+    max-width: 40em;
+    padding: 1em;
+    border-radius: 8px;
+    outline: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.02);
+
+    h3 {
+        padding: 0;
+        margin: 0;
+
+        // Truncate long text
+        // display: -webkit-box;
+        // -webkit-line-clamp: 3;
+        // -webkit-box-orient: vertical;
+        // overflow: hidden;
+    }
+    p {
+        opacity: 0.5;
+        padding: 0;
+        margin: 0.5em 0 0 0;
+
+        // Truncate long text
+        display: -webkit-box;
+        -webkit-line-clamp: 6;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
