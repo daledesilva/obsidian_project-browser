@@ -1,5 +1,5 @@
-import './card.scss';
-import { TAbstractFile, TFile } from "obsidian";
+import './md-file-card.scss';
+import { TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
 import { fetchExcerpt } from "src/logic/read-files";
 
@@ -7,11 +7,12 @@ import { fetchExcerpt } from "src/logic/read-files";
 /////////
 
 
-interface CardProps {
-    item: TAbstractFile
+interface MdFileCardProps {
+    item: TFile,
+    onSelect: (file: TFile) => void,
 }
 
-export const Card = (props: CardProps) => {
+export const MdFileCard = (props: MdFileCardProps) => {
     const v = props.item.vault;
 
     const name = props.item.name;
@@ -25,7 +26,10 @@ export const Card = (props: CardProps) => {
 
     return <>
         <article
-            className='project-cards_card'
+            className = 'project-cards_card'
+            onClick = { () => {
+                props.onSelect(props.item)
+            }}
         >
             <h3>
                 {name}

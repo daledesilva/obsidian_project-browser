@@ -4,6 +4,7 @@ import ProjectCardsPlugin from "src/main";
 import { getSortedNotesInFolder } from "src/logic/get-files";
 import { SectionHeader } from "../section-header/section-header";
 import { CardSet } from "../card-set/card-set";
+import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
 
 //////////
 //////////
@@ -32,10 +33,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
             {items && <>
                 <SectionHeader title="Active"/>
-                <CardSet items={items}/>
+                <CardSet
+                    items = {items}
+                    onFileSelect = {openFile}
+                    onFolderSelect = {openFolder}
+                />
             </>}
 
-            {items && <>
+            {/* {items && <>
                 <SectionHeader title="WIP"/>
                 <CardSet items={items}/>
             </>}
@@ -43,10 +48,24 @@ export const CardBrowser = (props: CardBrowserProps) => {
             {items && <>
                 <SectionHeader title="Seed"/>
                 <CardSet items={items}/>
-            </>}
+            </>} */}
 
         </div>
     </>;
+
+    ////////
+
+    function openFolder(folder: TFolder) {
+        setCurFolder(folder);
+    }
+    
+    function openFile(file: TFile) {
+        let { workspace } = props.plugin.app;
+        let leaf: null | WorkspaceLeaf;
+        leaf = workspace.getMostRecentLeaf();
+        if(!leaf) leaf = workspace.getLeaf();
+        leaf.openFile(file);
+    }
 
 };
 

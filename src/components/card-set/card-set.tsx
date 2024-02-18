@@ -1,23 +1,35 @@
 import './card-set.scss';
-import { TAbstractFile } from "obsidian";
+import { TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
-import { Card } from "../card/card";
+import { MdFileCard } from "../cards/md-file-card/md-file-card";
+import { FolderCard } from "../cards/folder-card/folder-card";
 
 /////////
 /////////
 
 
 interface CardSetProps {
-    items: TAbstractFile[]
+    items: TAbstractFile[],
+    onFileSelect: (file: TFile) => void,
+    onFolderSelect: (folder: TFolder) => void,
 }
 
 export const CardSet = (props: CardSetProps) => {
 
     const cards = props.items.map( item => {
-        return <Card
-            item = {item}
-            key = {item.path}
-        />
+        if(item instanceof TFile) {
+            return <MdFileCard
+                item = {item}
+                key = {item.path}
+                onSelect = {props.onFileSelect}
+            />
+        } else if(item instanceof TFolder) {
+            return <FolderCard
+                item = {item}
+                key = {item.path}
+                onSelect = {props.onFolderSelect}
+            />
+        }
     });
 
     return <>
