@@ -3,6 +3,8 @@ import { ItemView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser from "src/components/card-browser/card-browser";
+import { createContext } from 'react';
+import { PluginContext } from "src/utils/plugin-context";
 
 //////////
 //////////
@@ -41,7 +43,9 @@ export class ProjectCardsView extends ItemView {
         
         this.root = createRoot(viewContent);
 		this.root.render(
-            <CardBrowser plugin={this.plugin}/>
+            <PluginContext.Provider value={this.plugin}>
+                <CardBrowser plugin={this.plugin}/>
+            </PluginContext.Provider>
         );
     }
 

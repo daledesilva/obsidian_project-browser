@@ -1,7 +1,7 @@
 import './card-browser.scss';
 import * as React from "react";
 import ProjectCardsPlugin from "src/main";
-import { getSortedNotesInFolder } from "src/logic/get-files";
+import { getSortedItemsInFolder } from "src/logic/get-files";
 import { SectionHeader } from "../section-header/section-header";
 import { CardSet } from "../card-set/card-set";
 import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
@@ -24,31 +24,20 @@ export const CardBrowser = (props: CardBrowserProps) => {
     },[])
 
     // TODO: This should return an array of states with items
-    const items = getSortedNotesInFolder(curFolder);
+    const sectionsOfItems = getSortedItemsInFolder(props.plugin, curFolder);
     
     return <>
         <div
             className = 'project-cards_browser'
         >
-
-            {items && <>
-                <SectionHeader title="Active"/>
+            {sectionsOfItems.map( (section) => <>
+                <SectionHeader title={section.title}/>
                 <CardSet
-                    items = {items}
+                    items = {section.items}
                     onFileSelect = {openFile}
                     onFolderSelect = {openFolder}
                 />
-            </>}
-
-            {/* {items && <>
-                <SectionHeader title="WIP"/>
-                <CardSet items={items}/>
-            </>}
-
-            {items && <>
-                <SectionHeader title="Seed"/>
-                <CardSet items={items}/>
-            </>} */}
+            </>)}
 
         </div>
     </>;

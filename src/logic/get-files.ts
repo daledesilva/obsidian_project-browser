@@ -1,15 +1,59 @@
-import { TAbstractFile, TFolder } from "obsidian";
+import { TAbstractFile, TFile, TFolder } from "obsidian";
+import { getFrontMatter } from "./read-files";
+import ProjectCardsPlugin from "src/main";
 
+/////////
+/////////
 
+interface ItemsByTagsMap {
+    [key: string]: Array<TFile | TFolder>
+}
+interface Section {
+    title: string,
+    items: Array<TFile | TFolder>
+}
 
-
-export const getSortedNotesInFolder = (folder: TFolder): null | TAbstractFile[] => {
-    const states = getOrderedStates();
-    const notesInFolder = getItemsInFolder(folder);
+export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFolder): Section[] => {
+    const itemsInFolder = getItemsInFolder(folder);
     // build object of states and cards
     // populate each state with cards
+    
+    
+    const itemsByTags: ItemsByTagsMap = {};
+    itemsInFolder?.forEach( (item) => {
+        if(item instanceof TFolder) {
+            if(!itemsByTags['Folder']) itemsByTags['Folder'] = [];
+            itemsByTags['Folder'].push(item);
 
-    return notesInFolder;
+        } else if(item instanceof TFile) {
+            const frontmatter = getFrontMatter(plugin, item);
+            if(frontmatter['tags']) {
+                frontmatter['tags'].forEach( (tag) => {
+                    if(!itemsByTags[tag]) itemsByTags[tag] = [];
+                    itemsByTags[tag].push(item);
+                })
+            } else {
+                if(!itemsByTags['Untagged']) itemsByTags['Untagged'] = [];
+                itemsByTags['Untagged'].push(item);
+            }
+        }
+        
+    })
+
+    const itemsBySectionArr: Section[] = [];
+    for (const [key, value] of Object.entries(itemsByTags)) {
+        itemsBySectionArr.push({
+            title: key,
+            items: value
+        })
+    }
+    
+
+    // const states = getOrderedStates();
+
+    console.log('itemsBySectionArr', itemsBySectionArr)
+
+    return itemsBySectionArr;
 }
 
 const getOrderedStates = (): null | String[] => {

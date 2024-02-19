@@ -1,4 +1,5 @@
-import { TAbstractFile, TFile, TFolder } from "obsidian";
+import { FrontMatterCache, TAbstractFile, TFile, TFolder } from "obsidian";
+import ProjectCardsPlugin from "src/main";
 
 /////////
 /////////
@@ -39,4 +40,31 @@ function removeCodeBlocks(text: string): string {
 function simplifyWhiteSpace(text: string): string {
     const lineBreakRegex = /(\\n|\\n\s+|\s+\\n)+/;
     return text.replace(lineBreakRegex, '. ');
+}
+
+export const getFrontMatter = (plugin: null | ProjectCardsPlugin, file: TFile): {} | FrontMatterCache => {
+    if(!plugin) {
+        console.log('getFrontMatter returned no frontmatter because plugin was undefined or null.')
+        return {};
+    }
+    let frontmatter: {} | FrontMatterCache = {};
+    
+    let metadataCache;
+    if(plugin.app.metadataCache) metadataCache = plugin.app.metadataCache;
+    
+    let fileCache;
+    if(metadataCache) fileCache = metadataCache.getFileCache(file);
+
+    console.log('fileCache', fileCache);
+    
+    if(fileCache) {
+        let tempFrontmatter = fileCache.frontmatter;
+        if(tempFrontmatter) {
+            frontmatter = tempFrontmatter;
+        } else {
+            frontmatter = {};
+        }
+    }
+
+    return frontmatter;
 }
