@@ -40,7 +40,7 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
         
     })
 
-    const itemsBySectionArr: Section[] = [];
+    let itemsBySectionArr: Section[] = [];
     for (const [key, value] of Object.entries(itemsByTags)) {
         itemsBySectionArr.push({
             title: key,
@@ -49,14 +49,14 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
     }
     
 
-    // const states = getOrderedStates();
+    // itemsBySectionArr = orderSections(itemsBySectionArr);
 
     console.log('itemsBySectionArr', itemsBySectionArr)
 
     return itemsBySectionArr;
 }
 
-const getOrderedStates = (): null | String[] => {
+const orderSections = (sections: Section[]): Section[] => {
     
     return null;
 }

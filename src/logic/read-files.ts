@@ -13,6 +13,7 @@ export const fetchExcerpt = async (item: TAbstractFile) => {
 
     if(item instanceof TFile) {
         excerpt = await v.cachedRead(item);
+        excerpt = removeFrontmatter(excerpt);
         excerpt = removeCodeBlocks(excerpt);
         excerpt = simplifyWhiteSpace(excerpt);
 
@@ -28,6 +29,12 @@ export const fetchExcerpt = async (item: TAbstractFile) => {
     return excerpt;
 }
 
+
+// REVIEW: Review this chat GPT function
+function removeFrontmatter(text: string): string {
+    const sectionRegex = /---([^`]+?)---(\s*)/g;
+    return text.replace(sectionRegex, "");
+}
 
 // REVIEW: Review this chat GPT function
 function removeCodeBlocks(text: string): string {
@@ -56,7 +63,7 @@ export const getFrontMatter = (plugin: null | ProjectCardsPlugin, file: TFile): 
     if(metadataCache) fileCache = metadataCache.getFileCache(file);
 
     console.log('fileCache', fileCache);
-    
+
     if(fileCache) {
         let tempFrontmatter = fileCache.frontmatter;
         if(tempFrontmatter) {
