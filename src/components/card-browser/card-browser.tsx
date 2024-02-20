@@ -5,6 +5,7 @@ import { getSortedItemsInFolder } from "src/logic/get-files";
 import { SectionHeader } from "../section-header/section-header";
 import { CardSet } from "../card-set/card-set";
 import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
+import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 
 //////////
 //////////
@@ -30,15 +31,20 @@ export const CardBrowser = (props: CardBrowserProps) => {
         <div
             className = 'project-cards_browser'
         >
-            {sectionsOfItems.map( (section) => <>
-                <SectionHeader title={section.title}/>
-                <CardSet
-                    items = {section.items}
-                    onFileSelect = {openFile}
-                    onFolderSelect = {openFolder}
-                />
-            </>)}
-
+            <BackButtonAndPath
+                folder = {curFolder}
+                onBackClick = {openParentFolder}
+            />
+            <div>
+                {sectionsOfItems.map( (section) => <>
+                    <SectionHeader title={section.title}/>
+                    <CardSet
+                        items = {section.items}
+                        onFileSelect = {openFile}
+                        onFolderSelect = {openFolder}
+                    />
+                </>)}
+            </div>
         </div>
     </>;
 
@@ -54,6 +60,11 @@ export const CardBrowser = (props: CardBrowserProps) => {
         leaf = workspace.getMostRecentLeaf();
         if(!leaf) leaf = workspace.getLeaf();
         leaf.openFile(file);
+    }
+
+    function openParentFolder() {
+        if(!curFolder.parent) return;
+        setCurFolder(curFolder.parent);
     }
 
 };
