@@ -36,6 +36,8 @@ export default class ProjectCardsPlugin extends Plugin {
 		// // this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
 		// // 	console.log('click', evt);
 		// // });
+
+		registerCardBrowserNewTab(this)
 	}
 	
 
@@ -61,7 +63,7 @@ export default class ProjectCardsPlugin extends Plugin {
 
 
 
-// export function registerProjectCardView (plugin: InkPlugin) {
+// export function registerProjectCardView (plugin: ProjectCardsPlugin) {
 //     plugin.registerView(
 //         CARD_BROWSER_VIEW_TYPE,
 //         (leaf) => new DrawingView(leaf, plugin)
@@ -70,7 +72,7 @@ export default class ProjectCardsPlugin extends Plugin {
 // }
 
 
-function registerOpenCardBrowserAction(plugin: InkPlugin) {
+function registerOpenCardBrowserAction(plugin: ProjectCardsPlugin) {
 	plugin.addCommand({
 		id: 'ddc_browse-projects',
 		name: 'Browse projects',
@@ -84,6 +86,17 @@ function registerOpenCardBrowserAction(plugin: InkPlugin) {
 }
 
 
-function registerSettingsTab(plugin: InkPlugin) {
-	this.addSettingTab(new MySettingsTab(this.app, this));
+function registerCardBrowserNewTab(plugin: ProjectCardsPlugin) {
+	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', () => {
+		// const activeLeaf = plugin.app.workspace.getMostRecentLeaf();
+		const activeFile = plugin.app.workspace.getActiveFile();
+		const viewType = plugin.app.workspace.getLeaf().view.getViewType();
+		console.log('viewType', viewType);
+		if(!activeFile) openCardBrowserInNewTab(plugin);
+	}));
+}
+
+
+function registerSettingsTab(plugin: ProjectCardsPlugin) {
+	// plugin.addSettingTab(new MySettingsTab(plugin.app, this));
 }

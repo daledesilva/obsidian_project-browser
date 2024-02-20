@@ -62,8 +62,6 @@ export const getFrontMatter = (plugin: null | ProjectCardsPlugin, file: TFile): 
     let fileCache;
     if(metadataCache) fileCache = metadataCache.getFileCache(file);
 
-    console.log('fileCache', fileCache);
-
     if(fileCache) {
         let tempFrontmatter = fileCache.frontmatter;
         if(tempFrontmatter) {
