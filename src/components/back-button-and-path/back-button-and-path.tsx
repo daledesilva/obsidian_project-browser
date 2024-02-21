@@ -21,24 +21,35 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
         folderTrail = props.folder.path.split('/');
     }
 
-    let displayPath = rootName;
-    const isInSubfolder = folderTrail.length > 0;
-    if(isInSubfolder) {
-        displayPath += ' / ' + folderTrail.join(' / ');
-    }
+    folderTrail.unshift(rootName);
+    // let displayPath = rootName;
+    // console.log('folderTrail', folderTrail)
+    // const isInSubfolder = folderTrail.length > 0;
+    // if(isInSubfolder) {
+    //     displayPath += ' / ' + folderTrail.join(' / ');
+    // }
 
     return <>
         <div
             className = 'project-cards_back-button-and-path'
         >
-            {isInSubfolder && (
+            {folderTrail.length > 1 && (
                 <button onClick={() => props.onBackClick()}>
                     {'< Back'}
                 </button>
             )}
-            <div>
-                {displayPath}
-            </div>
+            {folderTrail.map( (folderName, index) => <>
+                {index < folderTrail.length-1 && (
+                    <div>
+                        {folderName + ' /'}
+                    </div>
+                )}
+                {index === folderTrail.length-1 && (
+                    <h1>
+                        {folderName}
+                    </h1>
+                )}
+            </>)}            
         </div>
     </>
 }
