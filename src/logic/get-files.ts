@@ -5,7 +5,7 @@ import ProjectCardsPlugin from "src/main";
 /////////
 /////////
 
-interface ItemsByTagsMap {
+interface ItemsBySectionMap {
     [key: string]: Array<TFile | TFolder>
 }
 interface Section {
@@ -19,29 +19,33 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
     // populate each state with cards
     
     
-    const itemsByTags: ItemsByTagsMap = {};
+    const itemsBySection: ItemsBySectionMap = {};
     itemsInFolder?.forEach( (item) => {
         if(item instanceof TFolder) {
-            if(!itemsByTags['Folder']) itemsByTags['Folder'] = [];
-            itemsByTags['Folder'].push(item);
+            if(!itemsBySection['Folder']) itemsBySection['Folder'] = [];
+            itemsBySection['Folder'].push(item);
 
         } else if(item instanceof TFile) {
             const frontmatter = getFrontMatter(plugin, item);
-            if(frontmatter['tags']) {
-                frontmatter['tags'].forEach( (tag) => {
-                    if(!itemsByTags[tag]) itemsByTags[tag] = [];
-                    itemsByTags[tag].push(item);
-                })
+            // if(frontmatter['tags']) {
+            //     frontmatter['tags'].forEach( (tag) => {
+            //         if(!itemsByTags[tag]) itemsByTags[tag] = [];
+            //         itemsByTags[tag].push(item);
+            //     })
+            if(frontmatter['status']) {
+                const status = frontmatter['status'];
+                if(!itemsBySection[status]) itemsBySection[status] = [];
+                itemsBySection[status].push(item);
             } else {
-                if(!itemsByTags['Untagged']) itemsByTags['Untagged'] = [];
-                itemsByTags['Untagged'].push(item);
+                if(!itemsBySection[' ']) itemsBySection[' '] = [];
+                itemsBySection[' '].push(item);
             }
         }
         
     })
 
     let itemsBySectionArr: Section[] = [];
-    for (const [key, value] of Object.entries(itemsByTags)) {
+    for (const [key, value] of Object.entries(itemsBySection)) {
         itemsBySectionArr.push({
             title: key,
             items: value
