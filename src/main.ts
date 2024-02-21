@@ -2,7 +2,7 @@ import { Editor, MarkdownViewModeType, Notice, Plugin, WorkspaceLeaf } from 'obs
 import { PluginSettings } from 'src/types/PluginSettings';
 import { MySettingsTab } from './tabs/settings-tab/settings-tab';
 import { openInkFile } from './utils/open-file';
-import { openCardBrowserInNewTab } from './views/CardBrowserView/CardBrowserView';
+import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView, registerCardBrowserView } from './views/CardBrowserView/CardBrowserView';
 
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -21,14 +21,7 @@ export default class ProjectCardsPlugin extends Plugin {
 
 		// this.app.emulateMobile(false);
 
-		// registerProjectCardView(this);
-		registerOpenCardBrowserAction(this);
-		
-		// For testing only
-		// implementHandwrittenNoteAction(this)
-		// implementHandDrawnNoteAction(this)
-		
-		// TODO: Convert this to registerSettingsTab
+		registerCardBrowserView(this)
 		registerSettingsTab(this);
 		
 		// // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
@@ -37,12 +30,12 @@ export default class ProjectCardsPlugin extends Plugin {
 		// // 	console.log('click', evt);
 		// // });
 
-		registerCardBrowserNewTab(this)
+		
 	}
 	
 
 	onunload() {
-		// TODO: Make sure to stop anything here
+		// Make sure to stop anything here
 
 	}
 
@@ -63,38 +56,6 @@ export default class ProjectCardsPlugin extends Plugin {
 
 
 
-// export function registerProjectCardView (plugin: ProjectCardsPlugin) {
-//     plugin.registerView(
-//         CARD_BROWSER_VIEW_TYPE,
-//         (leaf) => new DrawingView(leaf, plugin)
-//     );
-//     plugin.registerExtensions([DRAW_FILE_EXT], DRAWING_VIEW_TYPE);
-// }
-
-
-function registerOpenCardBrowserAction(plugin: ProjectCardsPlugin) {
-	plugin.addCommand({
-		id: 'ddc_browse-projects',
-		name: 'Browse projects',
-		callback: async () => {
-			openCardBrowserInNewTab(plugin);
-		}
-	});
-	plugin.addRibbonIcon('dice', 'Browse projects', async () => {
-		openCardBrowserInNewTab(plugin);
-	});
-}
-
-
-function registerCardBrowserNewTab(plugin: ProjectCardsPlugin) {
-	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', () => {
-		// const activeLeaf = plugin.app.workspace.getMostRecentLeaf();
-		const activeFile = plugin.app.workspace.getActiveFile();
-		const viewType = plugin.app.workspace.getLeaf().view.getViewType();
-		console.log('viewType', viewType);
-		if(!activeFile) openCardBrowserInNewTab(plugin);
-	}));
-}
 
 
 function registerSettingsTab(plugin: ProjectCardsPlugin) {

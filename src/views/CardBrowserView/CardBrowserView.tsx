@@ -1,5 +1,5 @@
 import ProjectCardsPlugin from "src/main";
-import { ItemView, WorkspaceLeaf } from "obsidian";
+import { FileView, ItemView, MarkdownView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser from "src/components/card-browser/card-browser";
@@ -11,12 +11,31 @@ import { PluginContext } from "src/utils/plugin-context";
 
 export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 
-export async function openCardBrowserInNewTab(plugin: ProjectCardsPlugin) {
+
+
+export function registerCardBrowserView (plugin: ProjectCardsPlugin) {
+    plugin.registerView(
+        CARD_BROWSER_VIEW_TYPE,
+        (leaf) => new ProjectCardsView(leaf, plugin)
+    );
+    loadOnNewTab(plugin);
+}
+
+function loadOnNewTab(plugin: ProjectCardsPlugin) {
+	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', () => {
+		const viewType = plugin.app.workspace.getLeaf().view.getViewType();
+		if(viewType === 'empty') {
+            replaceActiveLeafWithCardBrowser(plugin);
+        }
+	}));
+}
+
+function replaceActiveLeafWithCardBrowser(plugin: ProjectCardsPlugin) {
     let { workspace } = plugin.app;
-    let leaf = workspace.getLeaf();
-    const projectCardsView = new ProjectCardsView(leaf, plugin)
-    leaf.open(projectCardsView);
-    // await leaf.setViewState({ type: CARD_BROWSER_VIEW_TYPE, active: true });
+    let leaf = workspace.getActiveViewOfType(ItemView)?.leaf;
+    if(!leaf) return;
+
+    const projectCardsView = new ProjectCardsView(leaf, plugin);
 }
 
 export class ProjectCardsView extends ItemView {
@@ -26,6 +45,10 @@ export class ProjectCardsView extends ItemView {
     constructor(leaf: WorkspaceLeaf, plugin: ProjectCardsPlugin) {
         super(leaf);
         this.plugin = plugin;
+        this.navigation = true;
+        // icon = // Put a card icon here
+        
+        leaf.open(this);
     }
 
     getViewType() {
@@ -33,15 +56,15 @@ export class ProjectCardsView extends ItemView {
     }
 
     getDisplayText() {
-        return "Browse projects";
+        return "Browse";
     }
 
     async onOpen() {
-        const viewContent = this.containerEl;
-        viewContent.empty();
-        // viewContent.setAttr('style', 'padding: 0;');
+        const contentEl = this.contentEl;
+        contentEl.empty();
+        contentEl.setAttr('style', 'padding: 0;');
         
-        this.root = createRoot(viewContent);
+        this.root = createRoot(contentEl);
 		this.root.render(
             <PluginContext.Provider value={this.plugin}>
                 <CardBrowser plugin={this.plugin}/>
