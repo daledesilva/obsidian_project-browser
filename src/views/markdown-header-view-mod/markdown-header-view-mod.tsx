@@ -7,11 +7,12 @@ import CardBrowser from "src/components/card-browser/card-browser";
 import { createContext } from 'react';
 import { PluginContext } from "src/utils/plugin-context";
 import { getFileState } from 'src/logic/read-files';
+import { StateMenu } from 'src/components/state-menu/state-menu';
 
 //////////
 //////////
 
-const MarkdownHeaderClassName = 'project-cards_status-menu';
+const MarkdownHeaderClassName = 'project-cards_state-menu';
 
 //////////
 
@@ -21,12 +22,18 @@ export function registerMarkdownHeaderViewMod (plugin: ProjectCardsPlugin) {
 
 function loadOnNewMarkdownView(plugin: ProjectCardsPlugin) {
 	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', () => {
+        console.log('something');
 		const viewType = plugin.app.workspace.getLeaf().view.getViewType();
 		if(viewType === 'markdown') {
             addMarkdownViewHeader(plugin);
         }
 	}));
+	plugin.registerEvent(plugin.app.workspace.on('file-open', () => {
+		console.log('file open');
+	}));
 }
+
+let root: null | Root;
 
 function addMarkdownViewHeader(plugin: ProjectCardsPlugin) {
     let { workspace } = plugin.app;
@@ -42,17 +49,18 @@ function addMarkdownViewHeader(plugin: ProjectCardsPlugin) {
     if(!activeFile) return;
     const curFileState = getFileState(plugin, activeFile);
 
-    let statusMenuEl: null | Element;
-    statusMenuEl = titleContainerEl.find(`.${MarkdownHeaderClassName}`);
-    if(!statusMenuEl) {
-        statusMenuEl = titleContainerEl.createDiv(MarkdownHeaderClassName);
+    let stateMenuEl: null | Element;
+    stateMenuEl = titleContainerEl.find(`.${MarkdownHeaderClassName}`);
+    if(!stateMenuEl) {
+        stateMenuEl = titleContainerEl.createDiv(MarkdownHeaderClassName);
     }
-    statusMenuEl.textContent = curFileState;
-    
-    // this.root = createRoot(statusMenuEl);
-    // this.root.render(
-    //     <PluginContext.Provider value={this.plugin}>
-    //         <CardBrowser plugin={this.plugin}/>
+    stateMenuEl.textContent = curFileState;
+    // if(!root) {
+    //     root = createRoot(stateMenuEl);
+    // }
+    // root.render(
+    //     <PluginContext.Provider value={plugin}>
+    //         <StateMenu file={activeFile}/>
     //     </PluginContext.Provider>
     // );
 

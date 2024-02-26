@@ -67,7 +67,7 @@ export class ProjectCardsView extends ItemView {
         this.root = createRoot(contentEl);
 		this.root.render(
             <PluginContext.Provider value={this.plugin}>
-                <CardBrowser plugin={this.plugin}/>
+                <CardBrowser/>
             </PluginContext.Provider>
         );
     }
