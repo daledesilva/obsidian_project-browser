@@ -1,4 +1,4 @@
-import { FrontMatterCache, TAbstractFile, TFile, TFolder } from "obsidian";
+import { TAbstractFile, TFile, TFolder } from "obsidian";
 import ProjectCardsPlugin from "src/main";
 
 /////////
@@ -49,12 +49,12 @@ function simplifyWhiteSpace(text: string): string {
     return text.replace(lineBreakRegex, '. ');
 }
 
-export const getFrontMatter = (plugin: null | ProjectCardsPlugin, file: TFile): {} | FrontMatterCache => {
+export const getFrontmatter = (plugin: null | ProjectCardsPlugin, file: TFile): {} | FrontmatterCache => {
     if(!plugin) {
-        console.log('getFrontMatter returned no frontmatter because plugin was undefined or null.')
+        console.log('getFrontmatter returned no frontmatter because plugin was undefined or null.')
         return {};
     }
-    let frontmatter: {} | FrontMatterCache = {};
+    let frontmatter: {} | FrontmatterCache = {};
     
     let metadataCache;
     if(plugin.app.metadataCache) metadataCache = plugin.app.metadataCache;
@@ -74,10 +74,26 @@ export const getFrontMatter = (plugin: null | ProjectCardsPlugin, file: TFile): 
     return frontmatter;
 }
 
+export const setFrontmatter = (plugin: ProjectCardsPlugin, file: TFile, newFrontmatter: FrontmatterCache) => {
+    plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+        frontmatter = newFrontmatter;
+    });
+}
+
 export const getFileState = (plugin: ProjectCardsPlugin, file: TFile): null | string => {
-    const frontmatter = getFrontMatter(plugin,file);
+    const frontmatter = getFrontmatter(plugin,file);
     if(!frontmatter) return null;
 
     const state = frontmatter['state'];
-    return state
+    return state;
+}
+
+export const setFileState = (plugin: ProjectCardsPlugin, file: TFile, state: null | string) => {
+    plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+        if(state) {
+            frontmatter['state'] = state;
+        } else {
+            delete frontmatter['state'];
+        }
+    });
 }

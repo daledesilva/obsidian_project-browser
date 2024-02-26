@@ -1,12 +1,6 @@
-.project-cards_status-menu {
-    margin-left: 1em;
-    color: rgba(255, 255, 255, 0.2);
-    outline: 1px solid rgba(255, 255, 255, 0.15);
-    font-size: 0.8em;
-    border-radius: 5px;
-    padding: 0.2em 0.4em;
-    &:hover {
-        color: rgba(255, 255, 255, 0.8);
-        outline: 1px solid rgba(255, 255, 255, 0.6);
-    }
+.project-cards_state-menu-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.5em;
 }

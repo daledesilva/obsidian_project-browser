@@ -1,5 +1,5 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
-import { getFrontMatter } from "./read-files";
+import { getFrontmatter } from "./read-files";
 import ProjectCardsPlugin from "src/main";
 
 /////////
@@ -26,7 +26,7 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
             itemsBySection['Folder'].push(item);
 
         } else if(item instanceof TFile) {
-            const frontmatter = getFrontMatter(plugin, item);
+            const frontmatter = getFrontmatter(plugin, item);
             // if(frontmatter['tags']) {
             //     frontmatter['tags'].forEach( (tag) => {
             //         if(!itemsByTags[tag]) itemsByTags[tag] = [];
