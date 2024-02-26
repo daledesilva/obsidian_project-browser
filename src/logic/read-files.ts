@@ -73,3 +73,12 @@ export const getFrontMatter = (plugin: null | ProjectCardsPlugin, file: TFile): 
 
     return frontmatter;
 }
+
+export const getFileState = (plugin: ProjectCardsPlugin, file: TFile): null | string => {
+    const frontmatter = getFrontMatter(plugin,file);
+    if(!frontmatter) return null;
+
+    const state = frontmatter['state'];
+    console.log('state', state);
+    return state
+}

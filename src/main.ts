@@ -2,7 +2,9 @@ import { Editor, MarkdownViewModeType, Notice, Plugin, WorkspaceLeaf } from 'obs
 import { PluginSettings } from 'src/types/PluginSettings';
 import { MySettingsTab } from './tabs/settings-tab/settings-tab';
 import { openInkFile } from './utils/open-file';
-import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView, registerCardBrowserView } from './views/CardBrowserView/CardBrowserView';
+import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView, registerCardBrowserView } from './views/card-browser-view/card-browser-view';
+import { registerMarkdownBlockWidget } from './extensions/markdown-header-widget/markdown-header-widget';
+import { registerMarkdownHeaderViewMod } from './views/markdown-header-view-mod/markdown-header-view-mod';
 
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -22,7 +24,20 @@ export default class ProjectCardsPlugin extends Plugin {
 		// this.app.emulateMobile(false);
 
 		registerCardBrowserView(this)
+		// registerMarkdownBlockWidget(this);
+		registerMarkdownHeaderViewMod(this)
 		registerSettingsTab(this);
+
+		// this.registerEditorExtension([
+		// 	transientMarkExtension(),
+		// 	persistentMarkExtension(),
+		// 	// inlineWidgetStateFieldExtension(),
+		// 	inlineWidgetPluginExtension(),
+		// 	replacingWidgetExtension(),
+		// 	// lineExtension(),
+		// 	blockWidgetExtension(),
+		// 	blockWidgetReactExtension(),
+		// ]);
 		
 		// // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// // Using this function will automatically remove the event listener when this plugin is disabled.

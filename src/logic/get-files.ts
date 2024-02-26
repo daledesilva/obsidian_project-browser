@@ -32,8 +32,8 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
             //         if(!itemsByTags[tag]) itemsByTags[tag] = [];
             //         itemsByTags[tag].push(item);
             //     })
-            if(frontmatter['status']) {
-                const status = frontmatter['status'];
+            if(frontmatter['state']) {
+                const status = frontmatter['state'];
                 if(!itemsBySection[status]) itemsBySection[status] = [];
                 itemsBySection[status].push(item);
             } else {
