@@ -79,6 +79,5 @@ export const getFileState = (plugin: ProjectCardsPlugin, file: TFile): null | st
     if(!frontmatter) return null;
 
     const state = frontmatter['state'];
-    console.log('state', state);
     return state
 }

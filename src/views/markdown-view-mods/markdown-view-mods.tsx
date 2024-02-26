@@ -1,4 +1,4 @@
-import './markdown-header-view-mod.scss';
+import './markdown-view-mods.scss';
 import ProjectCardsPlugin from "src/main";
 import { FileView, ItemView, MarkdownView, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
@@ -11,22 +11,63 @@ import { getFileState } from 'src/logic/read-files';
 //////////
 //////////
 
-const MarkdownHeaderClassName = 'project-cards_status-menu';
+const stateMenuContainerClassName = 'project-cards_state-menu-container';
 
 //////////
 
-export function registerMarkdownHeaderViewMod (plugin: ProjectCardsPlugin) {
-    loadOnNewMarkdownView(plugin);
-}
-
-function loadOnNewMarkdownView(plugin: ProjectCardsPlugin) {
-	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', () => {
+export function registerMarkdownViewMods(plugin: ProjectCardsPlugin) {
+    plugin.registerEvent(plugin.app.workspace.on('file-open', () => {
 		const viewType = plugin.app.workspace.getLeaf().view.getViewType();
 		if(viewType === 'markdown') {
-            addMarkdownViewHeader(plugin);
+            // addMarkdownViewHeader(plugin);
+            addStateHeader(plugin);
         }
 	}));
 }
+
+function addStateHeader(plugin: ProjectCardsPlugin) {
+    let { workspace } = plugin.app;
+    let leaf = workspace.getActiveViewOfType(ItemView)?.leaf;
+    if(!leaf) return;
+
+    const activeFile = workspace.getActiveFile();
+    if(!activeFile) return;
+
+    const containerEl = leaf.view.containerEl;
+    let stateMenuContainerEl = containerEl.find(`.${stateMenuContainerClassName}`)
+    if(!stateMenuContainerEl) {
+        const headerEl = containerEl.children[0];
+        stateMenuContainerEl = headerEl.createDiv(stateMenuContainerClassName);
+        headerEl.after(stateMenuContainerEl);
+        let stateMenuRoot = createRoot(stateMenuContainerEl);
+        stateMenuRoot.render(<div>State Header</div>
+            // <PluginContext.Provider value={plugin}>
+                
+            // </PluginContext.Provider>
+        )
+    }
+    
+
+    
+
+    // let statusMenuEl: null | Element;
+    // statusMenuEl = titleContainerEl.find(`.${MarkdownHeaderClassName}`);
+    // if(!statusMenuEl) {
+    //     statusMenuEl = titleContainerEl.createDiv(MarkdownHeaderClassName);
+    // }
+    // statusMenuEl.textContent = curFileState;
+    
+    
+        
+    
+
+
+    
+    if(!activeFile) return;
+    const curFileState = getFileState(plugin, activeFile);
+
+}
+
 
 function addMarkdownViewHeader(plugin: ProjectCardsPlugin) {
     let { workspace } = plugin.app;

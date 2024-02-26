@@ -1,19 +1,14 @@
 import { Editor, MarkdownViewModeType, Notice, Plugin, WorkspaceLeaf } from 'obsidian';
-import { PluginSettings } from 'src/types/PluginSettings';
+import { PluginSettings } from 'src/types/plugin-settings';
 import { MySettingsTab } from './tabs/settings-tab/settings-tab';
 import { openInkFile } from './utils/open-file';
 import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView, registerCardBrowserView } from './views/card-browser-view/card-browser-view';
-import { registerMarkdownBlockWidget } from './extensions/markdown-header-widget/markdown-header-widget';
-import { registerMarkdownHeaderViewMod } from './views/markdown-header-view-mod/markdown-header-view-mod';
+import { registerStateHeaderWidget } from './extensions/state-header-widget/state-header-widget';
+import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-view-mods';
+import { defaultPluginSettings } from './defaults/default-plugin-settings';
 
-
-export const DEFAULT_SETTINGS: PluginSettings = {
-	
-}
-
-
-
-
+/////////
+/////////
 export default class ProjectCardsPlugin extends Plugin {
 	settings: PluginSettings;
 
@@ -25,25 +20,17 @@ export default class ProjectCardsPlugin extends Plugin {
 
 		registerCardBrowserView(this)
 		// registerMarkdownBlockWidget(this);
-		registerMarkdownHeaderViewMod(this)
+		registerMarkdownViewMods(this)
 		registerSettingsTab(this);
 
-		// this.registerEditorExtension([
-		// 	transientMarkExtension(),
-		// 	persistentMarkExtension(),
-		// 	// inlineWidgetStateFieldExtension(),
-		// 	inlineWidgetPluginExtension(),
-		// 	replacingWidgetExtension(),
-		// 	// lineExtension(),
-		// 	blockWidgetExtension(),
-		// 	blockWidgetReactExtension(),
-		// ]);
+		// registerStateHeaderWidget(this);
 		
 		// // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// // Using this function will automatically remove the event listener when this plugin is disabled.
 		// // this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
 		// // 	console.log('click', evt);
 		// // });
+
 
 		
 	}
@@ -55,7 +42,7 @@ export default class ProjectCardsPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, defaultPluginSettings, await this.loadData());
 	}
 
 	// async saveSettings() {
