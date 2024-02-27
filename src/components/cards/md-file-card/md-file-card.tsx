@@ -1,7 +1,7 @@
 import './md-file-card.scss';
 import { FrontMatterCache, TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
-import { fetchExcerpt, getFrontMatter } from "src/logic/read-files";
+import { fetchExcerpt } from "src/logic/read-files";
 import ProjectCardsPlugin from 'src/main';
 import { PluginContext } from 'src/utils/plugin-context';
 
@@ -22,7 +22,8 @@ export const MdFileCard = (props: MdFileCardProps) => {
     const [excerpt, setExcerpt] = React.useState('');
 
     React.useEffect( () => {
-        getExcerpt(props.item);
+        if(!plugin) return;
+        getExcerpt(plugin, props.item);
     }, [])
     
     return <>
@@ -46,8 +47,8 @@ export const MdFileCard = (props: MdFileCardProps) => {
     ///////
     ///////
 
-    async function getExcerpt(item: TAbstractFile) {
-        const excerpt = await fetchExcerpt(item);
+    async function getExcerpt(plugin: ProjectCardsPlugin, item: TAbstractFile) {
+        const excerpt = await fetchExcerpt(plugin, item);
         setExcerpt(excerpt);
     }
 

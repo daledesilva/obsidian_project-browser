@@ -1,32 +1,71 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import ProjectCardsPlugin from "src/main";
+import { contentsIndicatesProject, getItemsInFolder } from "./get-files";
 
 /////////
 /////////
 
-export const fetchExcerpt = async (item: TAbstractFile) => {
+export const fetchExcerpt = async (plugin: ProjectCardsPlugin, item: TAbstractFile): Promise<null|string> => {
     const v = item.vault;
+    let excerpt: null | string = null;
+
+    // TODO: Use shortSummary property if present
+    // Otherwise do all below (createExcerpt)
+
+    if(item instanceof TFile)           excerpt = await fetchFileExcerpt(item);
+    else if(item instanceof TFolder)    excerpt = await fetchProjectExcerpt(plugin, item)
+
+    return excerpt;
+}
+
+const fetchFileExcerpt = async (file: TFile): Promise<null|string> => {
+    const v = file.vault;
     let excerpt: string = '';
 
     // TODO: Use shortSummary property if present
     // Otherwise do all below (createExcerpt)
 
-    if(item instanceof TFile) {
-        excerpt = await v.cachedRead(item);
-        excerpt = removeFrontmatter(excerpt);
-        excerpt = removeCodeBlocks(excerpt);
-        excerpt = simplifyWhiteSpace(excerpt);
-
-    } else if(item instanceof TFolder) {
-        for(let i=0; i<item.children.length; i++) {
-            const childItem = item.children[i];
-            if(i>0) excerpt += ', ';   // TODO: Should be a break
-            excerpt += childItem.name;
-        };
-        
-    }
+    excerpt = await v.cachedRead(file);
+    excerpt = removeFrontmatter(excerpt);
+    excerpt = removeCodeBlocks(excerpt);
+    excerpt = simplifyWhiteSpace(excerpt);
 
     return excerpt;
+}
+
+const fetchProjectExcerpt = async (plugin: ProjectCardsPlugin, folder: TFolder): Promise<null|string> => {
+    const itemsInFolder = getItemsInFolder(folder);
+    if(!itemsInFolder)  return null;
+    
+    for(let i=0; i<itemsInFolder.length; i++) {
+        const item = itemsInFolder[i];
+        if(item instanceof TFile) {
+            const frontmatter = getFrontmatter(plugin, item);
+            if(frontmatter['state']) {
+                return await fetchFileExcerpt(item);
+            }
+        }
+    }
+
+    return null;
+}
+
+export const isProjectFolder = async (plugin: ProjectCardsPlugin, folder: TFolder): Promise<boolean> => {
+    const itemsInFolder = getItemsInFolder(folder);
+    if(!itemsInFolder)  return false;
+
+    // TODO:
+    // if(markedAsProjectFolder(plugin, folder)) {
+        // return true
+    // } else if(markedAsCategoryFolder(plugin, folder)) {
+        // return false
+    // } else
+    if(contentsIndicatesProject(plugin, folder)) {
+        return true
+    }
+
+    return false;
+
 }
 
 

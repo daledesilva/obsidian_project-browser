@@ -1,25 +1,29 @@
 import './folder-card.scss';
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
-import { fetchExcerpt } from "src/logic/read-files";
+import { fetchExcerpt, isProjectFolder } from "src/logic/read-files";
+import ProjectCardsPlugin from 'src/main';
+import { PluginContext } from 'src/utils/plugin-context';
 
 /////////
 /////////
 
 
 interface FolderCardProps {
-    item: TFolder,
+    folder: TFolder,
     onSelect: (folder: TFolder) => void,
 }
 
 export const FolderCard = (props: FolderCardProps) => {
-    const v = props.item.vault;
+    const v = props.folder.vault;
+    const plugin = React.useContext(PluginContext);
 
-    const name = props.item.name;
-    const [excerpt, setExcerpt] = React.useState('');
+    const name = props.folder.name;
+    const [excerpt, setExcerpt] = React.useState<null|string>('');
 
     React.useEffect( () => {
-        getExcerpt(props.item);
+        if(!plugin) return;
+        getExcerpt(plugin, props.folder);
     }, [])
     
     
@@ -28,7 +32,7 @@ export const FolderCard = (props: FolderCardProps) => {
         <article
             className = 'project-cards_folder-card'
             onClick = { () => {
-                props.onSelect(props.item)
+                props.onSelect(props.folder)
             }}
         >
             <h3>
@@ -45,9 +49,13 @@ export const FolderCard = (props: FolderCardProps) => {
     ///////
     ///////
 
-    async function getExcerpt(item: TAbstractFile) {
-        const excerpt = await fetchExcerpt(item);
-        setExcerpt(excerpt);
+    async function getExcerpt(plugin:ProjectCardsPlugin,  folder:TFolder) {
+        if(await isProjectFolder(plugin, folder)) {
+            const excerpt = await fetchExcerpt(plugin, folder);
+            setExcerpt(excerpt);
+        } else {
+            // It's a category folder, so no excerpt yet
+        }
     }
 
 }

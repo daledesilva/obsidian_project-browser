@@ -21,7 +21,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
     // on mount
     React.useEffect( () => {
-        console.log("mounting");
+        //
     },[])
 
     // TODO: This should return an array of states with items
@@ -37,7 +37,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
             />
             <div>
                 {sectionsOfItems.map( (section) => <>
-                    <SectionHeader title={section.title}/>
+                    {section.title !== "Folders" && (
+                        <SectionHeader title={section.title}/>
+                    )}
                     <CardSet
                         items = {section.items}
                         onFileSelect = {openFile}

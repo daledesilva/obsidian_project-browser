@@ -25,7 +25,7 @@ export const CardSet = (props: CardSetProps) => {
             />
         } else if(item instanceof TFolder) {
             return <FolderCard
-                item = {item}
+                folder = {item}
                 key = {item.path}
                 onSelect = {props.onFolderSelect}
             />
