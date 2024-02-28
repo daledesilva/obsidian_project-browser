@@ -33,6 +33,7 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
             if(contentsIndicatesProject(plugin, item)) {
                 // Visually treat as a file/project
                 const state = getProjectState(plugin, item);
+                console.log('state', state);
                 if(state) {
                     if(!itemsBySection[state]) itemsBySection[state] = [];
                     itemsBySection[state].push(item);
@@ -139,17 +140,17 @@ export function contentsIndicatesProject(plugin: ProjectCardsPlugin, folder: TFo
 // use contentsIndicatesProjectFolder to ensure it's a project first
 function getProjectState(plugin: ProjectCardsPlugin, folder: TFolder): null | string {
     const itemsInFolder = getItemsInFolder(folder);
+    if(!itemsInFolder) return null;
     
-    itemsInFolder?.forEach( (item) => {
-
+    for(let i=0; i<itemsInFolder.length; i++) {
+        const item = itemsInFolder[i];
         if(item instanceof TFile) {
             const frontmatter = getFrontmatter(plugin, item);
             if(frontmatter['state']) {
                 return frontmatter['state'];
             }
         }
-
-    })
+    }
 
     return null;
 }
