@@ -129,10 +129,13 @@ export const getFileState = (plugin: ProjectCardsPlugin, file: TFile): null | st
 
 export const setFileState = (plugin: ProjectCardsPlugin, file: TFile, state: null | string) => {
     plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+        console.log('frontmatter before', frontmatter);
         if(state) {
             frontmatter['state'] = state;
         } else {
-            delete frontmatter['state'];
+            frontmatter['state'] = undefined;
+            // delete frontmatter['state']; // This doesn't work
         }
+        console.log('frontmatter after', frontmatter);
     });
 }
