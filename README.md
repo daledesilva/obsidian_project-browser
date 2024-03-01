@@ -1,4 +1,4 @@
-<img src="docs/hacks/readme-styling.svg" width="0" height="0" alt="">
+<img src="docs/hacks/readme-styling.svg" width="400" height="200" alt="css-in-readme">
 
 # Obsidian Project Cards
 A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a browseable layout of the files and folders in your vault.
