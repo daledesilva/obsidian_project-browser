@@ -9,7 +9,7 @@ I record regular development diaries. Subscribe and follow along to see features
 
 <p align="center">
     <a href="https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=7-XnA3NEq6OBNzhW" target="_blank">
-        <img src="docs/media/devdiary-screenshot.jpg" width="60%" class="youtube-screenshot" alt="Screenshot of devdiary video"><br/>
+        <img src="docs/media/devdiary-screenshot.jpg" width="60%" alt="Screenshot of devdiary video"><br/>
         Click to vew development diaries
     </a>
 </p>
