@@ -1,7 +1,7 @@
 import './md-file-card.scss';
 import { FrontMatterCache, TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
-import { fetchExcerpt } from "src/logic/read-files";
+import { fetchExcerpt, getFileTitle } from "src/logic/read-files";
 import ProjectCardsPlugin from 'src/main';
 import { PluginContext } from 'src/utils/plugin-context';
 
@@ -18,7 +18,7 @@ export const MdFileCard = (props: MdFileCardProps) => {
     const v = props.item.vault;
     const plugin = React.useContext(PluginContext);
 
-    const name = props.item.name.split('.')[0];
+    const name = getFileTitle(props.item);
     const [excerpt, setExcerpt] = React.useState('');
 
     React.useEffect( () => {

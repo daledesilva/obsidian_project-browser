@@ -81,7 +81,6 @@ function removeCodeBlocks(text: string): string {
     return text.replace(sectionRegex, "");
 }
 
-
 // REVIEW: This isn't properly working with new lines across code blocks and maybe more
 function simplifyWhiteSpace(text: string): string {
     const lineBreakRegex = /(\\n|\\n\s+|\s+\\n)+/;
@@ -138,4 +137,10 @@ export const setFileState = (plugin: ProjectCardsPlugin, file: TFile, state: nul
         }
         console.log('frontmatter after', frontmatter);
     });
+}
+
+export const getFileTitle = (file: TFile): string => {
+    const str = file.name.split('.')
+    str.pop();
+    return str.join('.');
 }
