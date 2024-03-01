@@ -1,5 +1,3 @@
-<img src="docs/hacks/readme-styling.svg" width="400" height="200" alt="css-in-readme">
-
 # Obsidian Project Cards
 A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a browseable layout of the files and folders in your vault.
 
@@ -9,10 +7,12 @@ A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window w
 ## Development Diaries
 I record regular development diaries. Subscribe and follow along to see features in development.
 
-<a href="https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=7-XnA3NEq6OBNzhW" target="_blank">
-    <img src="docs/media/devdiary-screenshot.jpg" width="70%" class="youtube-screenshot" alt="Screenshot of devdiary video"><br/>
-    Click to vew development diaries
-</a>
+<p align="center">
+    <a href="https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=7-XnA3NEq6OBNzhW" target="_blank">
+        <img src="docs/media/devdiary-screenshot.jpg" width="60%" class="youtube-screenshot" alt="Screenshot of devdiary video"><br/>
+        Click to vew development diaries
+    </a>
+</p>
 
 ## Rough roadmap
 Below are the high level features in my current development plan along with when they'll likely get implemented.
