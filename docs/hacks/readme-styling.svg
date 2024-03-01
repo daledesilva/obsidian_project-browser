@@ -5,10 +5,12 @@
                 img {
                     border-radius: 10px;
                     min-width: min(100%, 600px);
+                    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
                 }
                 .youtube-screenshot {
                     border-radius: 10px;
                     min-width: min(100%, 600px);
+                    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
                 }
             </style>
             <h1>HELLO WORLD!</h1>
