@@ -1,30 +1,14 @@
-<style>
-    .centered {
-        position: relative;
-        left: 50%;
-        translate: -50% 0;
-    }
-    .third-width {
-        width: 30%;
-        min-width: min(100%, 300px);
-    }
-    .half-width {
-        width: 50%;
-        min-width: min(100%, 500px);
-    }
-</style>
-
 # Obsidian Project Cards
 A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a browseable layout of the files and folders in your vault.
 
-<img src="docs/media/preview.png" class="half-width centered" alt="Dale de Silva on Twitter">
+<img src="docs/media/preview.png" alt="Screenshot of Project Cards plugin">
 
 
 ## Development Diaries
 I record regular development diaries that you can subscribe to see features in development.
 
 <a href="https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=7-XnA3NEq6OBNzhW" target="_blank_">
-    <img src="docs/media/devdiary-screenshot.jpg" class="third-width" alt="Screenshot of devdiary video"><br/>
+    <img src="docs/media/devdiary-screenshot.jpg" alt="Screenshot of devdiary video"><br/>
     Click to vew development diaries
 </a>
 
