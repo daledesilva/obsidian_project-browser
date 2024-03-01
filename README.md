@@ -1,14 +1,14 @@
 # Obsidian Project Cards
 A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a browseable layout of the files and folders in your vault.
 
-<img src="docs/media/preview.png" alt="Screenshot of Project Cards plugin">
+<img src="docs/media/preview.png" width="100%" alt="Screenshot of Project Cards plugin">
 
 
 ## Development Diaries
 I record regular development diaries that you can subscribe to see features in development.
 
 <a href="https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=7-XnA3NEq6OBNzhW" target="_blank_">
-    <img src="docs/media/devdiary-screenshot.jpg" alt="Screenshot of devdiary video"><br/>
+    <img src="docs/media/devdiary-screenshot.jpg" width="50%" alt="Screenshot of devdiary video"><br/>
     Click to vew development diaries
 </a>
 
