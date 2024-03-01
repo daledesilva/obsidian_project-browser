@@ -5,10 +5,10 @@ A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window w
 
 
 ## Development Diaries
-I record regular development diaries that you can subscribe to see features in development.
+I record regular development diaries. Subscribe and follow along to see features in development.
 
 <a href="https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=7-XnA3NEq6OBNzhW" target="_blank">
-    <img src="docs/media/devdiary-screenshot.jpg" width="80%" alt="Screenshot of devdiary video"><br/>
+    <img src="docs/media/devdiary-screenshot.jpg" width="70%" class="youtube-screenshot" alt="Screenshot of devdiary video"><br/>
     Click to vew development diaries
 </a>
 
