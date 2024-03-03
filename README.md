@@ -4,7 +4,7 @@ A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window w
 <img src="docs/media/preview.png" alt="Screenshot of Project Cards plugin">
 
 
-## Development Diaries
+## 📓 Development Diaries
 I record regular development diaries. [Subscribe and follow along](https://www.youtube.com/@designdebtclub) to see features in development.
 
 <p align="center">
@@ -29,7 +29,7 @@ I record regular development diaries. [Subscribe and follow along](https://www.y
   </a>
 </p>
 
-## Rough roadmap
+## 🗺️ Rough roadmap
 Below are the high level features in my current development plan along with when they'll likely get implemented.
 
 ### February 2024 (Core functionality)
