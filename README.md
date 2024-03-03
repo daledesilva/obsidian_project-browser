@@ -68,7 +68,7 @@ Below are the high level features in my current development plan along with when
 - [ ] Multi-select / Batch edits.
 
 ## ❤️ Support
-If you find this plugin saves you time or helps you in some way, please consider supporting my development of plugins and other free community material like this. A simply way is to follow and message me on twitter at [@daledesilva](https://twitter.com/daledesilva) or Mastodon at [indieweb.social/@daledesilva](https://indieweb.social/@daledesilva), and you can also support with a donation below.
+If you find this plugin saves you time or helps you in some way, please consider supporting my development of plugins and other free community material like this.
 
 <p>
   <a href="https://twitter.com/daledesilva" target="_blank_">
