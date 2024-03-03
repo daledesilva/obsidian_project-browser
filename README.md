@@ -3,6 +3,25 @@ A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window w
 
 <img src="docs/media/preview.png" alt="Screenshot of Project Browser plugin">
 
+## Installation
+This plugin is not yet listed on Obsidian's Community Plugins page but you can install it through the BRAT plugin.
+<details>
+<summary>Click for installation instructions</summary>
+
+1. Open your Obsidian vault and go to **Settings**.
+
+2. Click on **Community Plugins** in the side bar.
+
+3. Turn on community plugins and click **Browse**.
+
+4. Search and install **BRAT**.
+
+5. Scroll down and **activate** BRAT.
+
+6. in the BRAT menu in the side pane, select **Add Beta Plugin**.
+
+7. Follow the instructions presented.
+</details>
 
 ## 📓 Development Diaries
 I record regular development diaries. [Subscribe and follow along](https://www.youtube.com/@designdebtclub) to see features in development.
