@@ -5,13 +5,28 @@ A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window w
 
 
 ## Development Diaries
-I record regular development diaries. Subscribe and follow along to see features in development.
+I record regular development diaries. [Subscribe and follow along](https://www.youtube.com/@designdebtclub) to see features in development.
 
 <p align="center">
     <a href="https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=7-XnA3NEq6OBNzhW" target="_blank">
         <img src="docs/media/devdiary-screenshot.jpg" width="60%" alt="Screenshot of devdiary video"><br/>
         Click to vew development diaries
     </a>
+</p>
+
+<p align="center">
+  <a href="https://twitter.com/daledesilva" target="_blank_">
+    <img src="docs/media/twitter-btn.svg" height="40px" alt="Dale de Silva on Twitter">
+  </a>
+  <a href="https://indieweb.social/@daledesilva" target="_blank">
+    <img src="docs/media/mastodon-btn.svg" height="40px" alt="Dale de Silva on Mastodon">
+  </a>
+  <a href="https://www.threads.net/@daledesilva" target="_blank">
+    <img src="docs/media/threads-btn.svg" height="40px" alt="Dale de Silva on Threads">
+  </a>
+  <a href="https://bsky.app/profile/daledesilva.bsky.social" target="_blank">
+    <img src="docs/media/bluesky-btn.svg" height="40px" alt="Dale de Silva on Bluesky">
+  </a>
 </p>
 
 ## Rough roadmap
@@ -61,6 +76,12 @@ If you find this plugin saves you time or helps you in some way, please consider
   </a>
   <a href="https://indieweb.social/@daledesilva" target="_blank">
     <img src="docs/media/mastodon-btn.svg" height="40px" alt="Dale de Silva on Mastodon">
+  </a>
+  <a href="https://www.threads.net/@daledesilva" target="_blank">
+    <img src="docs/media/threads-btn.svg" height="40px" alt="Dale de Silva on Threads">
+  </a>
+  <a href="https://bsky.app/profile/daledesilva.bsky.social" target="_blank">
+    <img src="docs/media/bluesky-btn.svg" height="40px" alt="Dale de Silva on Bluesky">
   </a>
   <a href="https://ko-fi.com/N4N3JLUCW" target="_blank">
     <img src="docs/media/support-btn.svg" height="40px" alt="Support me on Ko-fi">
