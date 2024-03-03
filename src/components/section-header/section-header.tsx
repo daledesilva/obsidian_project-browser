@@ -12,7 +12,7 @@ export const SectionHeader = (props: SectionHeaderProps) => {
 
     return <>
         <div
-            className = 'project-cards_section-header'
+            className = 'project-browser_section-header'
         >
             <h2>
                 {props.title}

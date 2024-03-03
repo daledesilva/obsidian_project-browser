@@ -14,7 +14,7 @@ interface StateMenuProps {
 
 export const StateMenu = (props: StateMenuProps) => {
     const plugin = React.useContext(PluginContext);
-    if(!plugin) return;
+    if(!plugin) return <></>;
 
     const [file, setFile] = React.useState( props.file );
     const [state, setState] = React.useState( getFileState(plugin, file) );
@@ -32,7 +32,7 @@ export const StateMenu = (props: StateMenuProps) => {
     return <>
         {!menuIsActive && (
             <button
-                className='project-cards_state-btn'
+                className='project-browser_state-btn'
                 onClick = {() => {
                     setMenuIsActive(true);
                 }}    
@@ -41,11 +41,11 @@ export const StateMenu = (props: StateMenuProps) => {
             </button>
         )}
         {menuIsActive && (<>
-            <div className='project-cards_visible-state-btns'>
+            <div className='project-browser_visible-state-btns'>
                 {visibleStates.map( (thisState) => (
                     <button
                         className = {classnames([
-                            'project-cards_state-btn',
+                            'project-browser_state-btn',
                             thisState === state && 'is-set',
                         ])}
                         onClick = {() => setStateAndCloseMenu(thisState)}    
@@ -54,11 +54,11 @@ export const StateMenu = (props: StateMenuProps) => {
                     </button>
                 ))}
             </div>
-            <div className='project-cards_hidden-state-btns'>
+            <div className='project-browser_hidden-state-btns'>
                 {hiddenStates.map( (thisState) => (
                     <button
                         className = {classnames([
-                            'project-cards_state-btn',
+                            'project-browser_state-btn',
                             thisState === state && 'is-set',
                         ])}
                         onClick = {() => setStateAndCloseMenu(thisState)}    

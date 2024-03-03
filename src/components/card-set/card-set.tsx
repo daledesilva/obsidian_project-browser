@@ -34,7 +34,7 @@ export const CardSet = (props: CardSetProps) => {
 
     return <>
         <div
-            className = 'project-cards_card-set'
+            className = 'project-browser_card-set'
         >
             {cards}
         </div>

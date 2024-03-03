@@ -27,7 +27,7 @@ export const MdFileCard = (props: MdFileCardProps) => {
     
     return <>
         <article
-            className = 'project-cards_file-card'
+            className = 'project-browser_file-card'
             onClick = { () => {
                 props.onSelect(props.file)
             }}

@@ -1,1 +1,1 @@
-export const PLUGIN_KEY = 'ddc_project-cards';
+export const PLUGIN_KEY = 'ddc_project-browser';

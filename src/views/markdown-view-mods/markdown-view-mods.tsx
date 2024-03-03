@@ -9,7 +9,7 @@ import { StateMenu } from 'src/components/state-menu/state-menu';
 //////////
 //////////
 
-const stateMenuContainerClassName = 'project-cards_state-menu-container';
+const stateMenuContainerClassName = 'project-browser_state-menu-container';
 
 //////////
 

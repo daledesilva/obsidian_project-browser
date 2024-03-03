@@ -31,7 +31,7 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
 
     return <>
         <div
-            className = 'project-cards_back-button-and-path'
+            className = 'project-browser_back-button-and-path'
         >
             {folderTrail.length > 1 && (
                 <button onClick={() => props.onBackClick()}>

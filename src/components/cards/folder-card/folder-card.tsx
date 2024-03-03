@@ -28,7 +28,7 @@ export const FolderCard = (props: FolderCardProps) => {
     
     return <>
         <article
-            className = 'project-cards_folder-card'
+            className = 'project-browser_folder-card'
             onClick = { () => {
                 props.onSelect(props.folder)
             }}

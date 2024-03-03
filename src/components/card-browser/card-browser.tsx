@@ -29,7 +29,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     
     return <>
         <div
-            className = 'project-cards_browser'
+            className = 'project-browser_browser'
         >
             <BackButtonAndPath
                 folder = {curFolder}

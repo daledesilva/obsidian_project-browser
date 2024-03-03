@@ -1,7 +1,7 @@
-# Obsidian Project Cards
+# Obsidian Project Browser
 A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a browseable layout of the files and folders in your vault.
 
-<img src="docs/media/preview.png" alt="Screenshot of Project Cards plugin">
+<img src="docs/media/preview.png" alt="Screenshot of Project Browser plugin">
 
 
 ## 📓 Development Diaries
