@@ -1,36 +1,35 @@
 import './md-file-card.scss';
-import { FrontMatterCache, TAbstractFile, TFile, TFolder } from "obsidian";
+import { TFile } from "obsidian";
 import * as React from "react";
-import { fetchExcerpt, getFileTitle } from "src/logic/read-files";
-import ProjectCardsPlugin from 'src/main';
+import { getFileExcerpt } from "src/logic/file-processes";
+import { trimFilenameExt } from 'src/logic/string-processes';
 import { PluginContext } from 'src/utils/plugin-context';
 
 /////////
 /////////
 
-
 interface MdFileCardProps {
-    item: TFile,
+    file: TFile,
     onSelect: (file: TFile) => void,
 }
 
 export const MdFileCard = (props: MdFileCardProps) => {
-    const v = props.item.vault;
+    const v = props.file.vault;
     const plugin = React.useContext(PluginContext);
 
-    const name = getFileTitle(props.item);
+    const name = trimFilenameExt(props.file.name);
     const [excerpt, setExcerpt] = React.useState('');
 
     React.useEffect( () => {
         if(!plugin) return;
-        getExcerpt(plugin, props.item);
+        getExcerpt(props.file);
     }, [])
     
     return <>
         <article
             className = 'project-cards_file-card'
             onClick = { () => {
-                props.onSelect(props.item)
+                props.onSelect(props.file)
             }}
         >
             <h3>
@@ -42,13 +41,12 @@ export const MdFileCard = (props: MdFileCardProps) => {
         </article>
     </>
 
-
-
     ///////
     ///////
 
-    async function getExcerpt(plugin: ProjectCardsPlugin, item: TAbstractFile) {
-        const excerpt = await fetchExcerpt(plugin, item);
+    async function getExcerpt(file: TFile) {
+        const excerpt = await getFileExcerpt(file);
+        if(!excerpt) return;
         setExcerpt(excerpt);
     }
 

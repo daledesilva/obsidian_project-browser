@@ -19,7 +19,7 @@ export const CardSet = (props: CardSetProps) => {
     const cards = props.items.map( item => {
         if(item instanceof TFile) {
             return <MdFileCard
-                item = {item}
+                file = {item}
                 key = {item.path}
                 onSelect = {props.onFileSelect}
             />

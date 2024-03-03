@@ -1,12 +1,1 @@
-export const PLUGIN_VERSION = '0.0.1';
-export const TLDRAW_VERSION = '2.0.0-alpha.17';
-export const PLUGIN_KEY = 'ddc_ink';
-export const FOLDER_NAME = 'Ink';
-export const WRITE_FILE_EXT = 'writing';
-export const DRAW_FILE_EXT = 'drawing';
-export const WRITE_EMBED_KEY = 'handwritten-ink';
-export const DRAW_EMBED_KEY = 'handdrawn-ink';
-export const MENUBAR_HEIGHT_PX = 100;
-export const WRITE_SHORT_DELAY_MS = 500;
-export const WRITE_LONG_DELAY_MS = 2000;
-export const WRITE_STROKE_LIMIT = 200;
+export const PLUGIN_KEY = 'ddc_project-cards';

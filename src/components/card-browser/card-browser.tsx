@@ -1,11 +1,11 @@
 import './card-browser.scss';
 import * as React from "react";
 import ProjectCardsPlugin from "src/main";
-import { getSortedItemsInFolder } from "src/logic/get-files";
 import { SectionHeader } from "../section-header/section-header";
 import { CardSet } from "../card-set/card-set";
 import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
+import { getSortedItemsInFolder } from 'src/logic/folder-processes';
 
 //////////
 //////////
@@ -36,16 +36,20 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 onBackClick = {openParentFolder}
             />
             <div>
-                {sectionsOfItems.map( (section) => <>
-                    {section.title !== "Folders" && (
-                        <SectionHeader title={section.title}/>
-                    )}
-                    <CardSet
-                        items = {section.items}
-                        onFileSelect = {openFile}
-                        onFolderSelect = {openFolder}
-                    />
-                </>)}
+                {sectionsOfItems.map( (section) => (
+                    <div key={section.title}>
+                        {section.title !== "Folders" && (
+                            <SectionHeader
+                                title = {section.title}
+                            />
+                        )}
+                        <CardSet
+                            items = {section.items}
+                            onFileSelect = {openFile}
+                            onFolderSelect = {openFolder}
+                        />
+                    </div>
+                ))}
             </div>
         </div>
     </>;

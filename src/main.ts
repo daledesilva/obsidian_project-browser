@@ -1,11 +1,7 @@
-import { Editor, MarkdownViewModeType, Notice, Plugin, WorkspaceLeaf } from 'obsidian';
-import { PluginSettings } from 'src/types/plugin-settings';
-import { MySettingsTab } from './tabs/settings-tab/settings-tab';
-import { openInkFile } from './utils/open-file';
-import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView, registerCardBrowserView } from './views/card-browser-view/card-browser-view';
-import { registerStateHeaderWidget } from './extensions/state-header-widget/state-header-widget';
+import { Plugin } from 'obsidian';
+import { PluginSettings, defaultPluginSettings } from 'src/types/plugin-settings';
+import { registerCardBrowserView } from './views/card-browser-view/card-browser-view';
 import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-view-mods';
-import { defaultPluginSettings } from './defaults/default-plugin-settings';
 
 /////////
 /////////
@@ -19,20 +15,14 @@ export default class ProjectCardsPlugin extends Plugin {
 		// this.app.emulateMobile(false);
 
 		registerCardBrowserView(this)
-		// registerMarkdownBlockWidget(this);
 		registerMarkdownViewMods(this)
 		registerSettingsTab(this);
-
-		// registerStateHeaderWidget(this);
 		
-		// // If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// // Using this function will automatically remove the event listener when this plugin is disabled.
-		// // this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-		// // 	console.log('click', evt);
-		// // });
-
-
-		
+		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
+		// Using this function will automatically remove the event listener when this plugin is disabled.
+		// this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
+		// 	console.log('click', evt);
+		// });
 	}
 	
 

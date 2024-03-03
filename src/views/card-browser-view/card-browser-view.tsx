@@ -11,8 +11,6 @@ import { PluginContext } from "src/utils/plugin-context";
 
 export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 
-
-
 export function registerCardBrowserView (plugin: ProjectCardsPlugin) {
     plugin.registerView(
         CARD_BROWSER_VIEW_TYPE,
@@ -63,8 +61,10 @@ export class ProjectCardsView extends ItemView {
         const contentEl = this.contentEl;
         contentEl.empty();
         contentEl.setAttr('style', 'padding: 0;');
-        
-        this.root = createRoot(contentEl);
+
+        if(!this.root) {
+            this.root = createRoot(contentEl);
+        }
 		this.root.render(
             <PluginContext.Provider value={this.plugin}>
                 <CardBrowser plugin={this.plugin}/>

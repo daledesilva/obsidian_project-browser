@@ -1,9 +1,9 @@
 import './state-menu.scss';
 import { TFile } from 'obsidian';
 import * as React from "react";
-import { getFileState, setFileState } from 'src/logic/read-files';
 import { PluginContext } from 'src/utils/plugin-context';
 import classnames from 'classnames';
+import { getFileState } from 'src/logic/frontmatter-processes';
 
 //////////
 //////////
@@ -30,45 +30,45 @@ export const StateMenu = (props: StateMenuProps) => {
 
 
     return <>
-            {!menuIsActive && (
-                <button
-                    className='project-cards_state-btn'
-                    onClick = {() => {
-                        setMenuIsActive(true);
-                    }}    
-                >
-                    {displayState}
-                </button>
-            )}
-            {menuIsActive && (<>
-                <div className='project-cards_visible-state-btns'>
-                    {visibleStates.map( (thisState) => (
-                        <button
-                            className = {classnames([
-                                'project-cards_state-btn',
-                                thisState === state && 'is-set',
-                            ])}
-                            onClick = {() => setStateAndCloseMenu(thisState)}    
-                        >
-                            {thisState}
-                        </button>
-                    ))}
-                </div>
-                <div className='project-cards_hidden-state-btns'>
-                    {hiddenStates.map( (thisState) => (
-                        <button
-                            className = {classnames([
-                                'project-cards_state-btn',
-                                thisState === state && 'is-set',
-                            ])}
-                            onClick = {() => setStateAndCloseMenu(thisState)}    
-                        >
-                            {thisState}
-                        </button>
-                    ))}
-                </div>
-                
-            </>)}
+        {!menuIsActive && (
+            <button
+                className='project-cards_state-btn'
+                onClick = {() => {
+                    setMenuIsActive(true);
+                }}    
+            >
+                {displayState}
+            </button>
+        )}
+        {menuIsActive && (<>
+            <div className='project-cards_visible-state-btns'>
+                {visibleStates.map( (thisState) => (
+                    <button
+                        className = {classnames([
+                            'project-cards_state-btn',
+                            thisState === state && 'is-set',
+                        ])}
+                        onClick = {() => setStateAndCloseMenu(thisState)}    
+                    >
+                        {thisState}
+                    </button>
+                ))}
+            </div>
+            <div className='project-cards_hidden-state-btns'>
+                {hiddenStates.map( (thisState) => (
+                    <button
+                        className = {classnames([
+                            'project-cards_state-btn',
+                            thisState === state && 'is-set',
+                        ])}
+                        onClick = {() => setStateAndCloseMenu(thisState)}    
+                    >
+                        {thisState}
+                    </button>
+                ))}
+            </div>
+            
+        </>)}
     </>
 
     //////////

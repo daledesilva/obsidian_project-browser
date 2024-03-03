@@ -1,23 +1,94 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
-import { getFrontmatter } from "./read-files";
 import ProjectCardsPlugin from "src/main";
+import { Section, orderSections } from "./section-processes";
+import { getFileFrontmatter } from "./frontmatter-processes";
+import { getFileExcerpt } from "./file-processes";
 
-/////////
-/////////
+///////////
+///////////
 
-interface ItemsBySectionMap {
-    [key: string]: Array<TFile | TFolder>
+
+export const isProjectFolder = async (plugin: ProjectCardsPlugin, folder: TFolder): Promise<boolean> => {
+    const itemsInFolder = getItemsInFolder(folder);
+    if(!itemsInFolder)  return false;
+
+    // TODO:
+    // if(markedAsProjectFolder(plugin, folder)) {
+        // return true
+    // } else if(markedAsCategoryFolder(plugin, folder)) {
+        // return false
+    // } else
+    if(contentsIndicatesProject(plugin, folder)) {
+        return true
+    }
+
+    return false;
 }
-interface Section {
-    title: string,
-    items: Array<TFile | TFolder>
+
+function contentsIndicatesProject(plugin: ProjectCardsPlugin, folder: TFolder): boolean {
+    const itemsInFolder = getItemsInFolder(folder);
+    const fileStatesFound: string[] = [];
+    
+    itemsInFolder?.forEach( (item) => {
+
+        if(item instanceof TFile) {
+            const frontmatter = getFileFrontmatter(plugin, item);
+            if(frontmatter['state']) {
+                fileStatesFound.push(frontmatter['state']);
+            }
+        }
+
+    })
+
+    const directFilesExist = fileStatesFound.length > 0;
+    const multipleDirectFilesHaveState = fileStatesFound.length > 1;
+
+    return directFilesExist && !multipleDirectFilesHaveState;
+}
+
+// Returns first state found in folder
+// use isProjectFolder to ensure it's a project first
+function getProjectState(plugin: ProjectCardsPlugin, folder: TFolder): null | string {
+    const itemsInFolder = getItemsInFolder(folder);
+    if(!itemsInFolder) return null;
+    
+    for(let i=0; i<itemsInFolder.length; i++) {
+        const item = itemsInFolder[i];
+        if(item instanceof TFile) {
+            const frontmatter = getFileFrontmatter(plugin, item);
+            if(frontmatter['state']) {
+                return frontmatter['state'];
+            }
+        }
+    }
+
+    return null;
+}
+
+export const getProjectExcerpt = async (plugin: ProjectCardsPlugin, folder: TFolder): Promise<null|string> => {
+    const itemsInFolder = getItemsInFolder(folder);
+    if(!itemsInFolder)  return null;
+    
+    for(let i=0; i<itemsInFolder.length; i++) {
+        const item = itemsInFolder[i];
+        if(item instanceof TFile) {
+            const frontmatter = getFileFrontmatter(plugin, item);
+            if(frontmatter['state']) {
+                return await getFileExcerpt(item);
+            }
+        }
+    }
+
+    return null;
 }
 
 export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFolder): Section[] => {
     const itemsInFolder = getItemsInFolder(folder);
-    // build object of states and cards
-    // populate each state with cards
     
+    interface ItemsBySectionMap {
+        [key: string]: Array<TFile | TFolder>
+    }
+
     const itemsBySection: ItemsBySectionMap = {};
     itemsInFolder?.forEach( (item) => {
         if(item instanceof TFolder) {
@@ -33,7 +104,6 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
             if(contentsIndicatesProject(plugin, item)) {
                 // Visually treat as a file/project
                 const state = getProjectState(plugin, item);
-                console.log('state', state);
                 if(state) {
                     if(!itemsBySection[state]) itemsBySection[state] = [];
                     itemsBySection[state].push(item);
@@ -49,7 +119,7 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
             }
 
         } else if(item instanceof TFile) {
-            const frontmatter = getFrontmatter(plugin, item);
+            const frontmatter = getFileFrontmatter(plugin, item);
             // if(frontmatter['tags']) {
             //     frontmatter['tags'].forEach( (tag) => {
             //         if(!itemsByTags[tag]) itemsByTags[tag] = [];
@@ -80,29 +150,6 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
     return itemsBySectionArr;
 }
 
-
-const orderSections = (sections: Section[]): Section[] => {
-    const intendedOrder = ['Folders','Final', 'Drafting', 'Idea', ' ', 'Archived', 'Cancelled']
-    
-    // Create a map to store the original index of each section title
-    const sectionMap = sections.reduce((accumulator, section, index) => {
-        accumulator[section.title] = index;
-        return accumulator;
-    }, {} as Record<string, number>);
-    
-    // Sort the sections based on their intended order
-    let sortedSections = intendedOrder.map((title) => sections[sectionMap[title]]) || [];
-
-    for(let i=sortedSections.length-1; i>=0; i--) {
-        if(sortedSections[i] === undefined){
-            sortedSections.splice(i,1);
-            console.log(sortedSections)
-        }
-    }
-    
-    return sortedSections;
-}
-
 export const getItemsInFolder = (folder: TFolder): null | TAbstractFile[] => {
     const v = folder.vault;
     const curFiles = folder.children;
@@ -113,44 +160,4 @@ export const getItemsInFolder = (folder: TFolder): null | TAbstractFile[] => {
     // It would automatically show any filetype that it can see in the vault.
     
     return curFiles;
-}
-
-export function contentsIndicatesProject(plugin: ProjectCardsPlugin, folder: TFolder): boolean {
-    const itemsInFolder = getItemsInFolder(folder);
-    const fileStatesFound: string[] = [];
-    
-    itemsInFolder?.forEach( (item) => {
-
-        if(item instanceof TFile) {
-            const frontmatter = getFrontmatter(plugin, item);
-            if(frontmatter['state']) {
-                fileStatesFound.push(frontmatter['state']);
-            }
-        }
-
-    })
-
-    const directFilesExist = fileStatesFound.length > 0;
-    const multipleDirectFilesHaveState = fileStatesFound.length > 1;
-
-    return directFilesExist && !multipleDirectFilesHaveState;
-}
-
-// Returns first state found in folder
-// use contentsIndicatesProjectFolder to ensure it's a project first
-function getProjectState(plugin: ProjectCardsPlugin, folder: TFolder): null | string {
-    const itemsInFolder = getItemsInFolder(folder);
-    if(!itemsInFolder) return null;
-    
-    for(let i=0; i<itemsInFolder.length; i++) {
-        const item = itemsInFolder[i];
-        if(item instanceof TFile) {
-            const frontmatter = getFrontmatter(plugin, item);
-            if(frontmatter['state']) {
-                return frontmatter['state'];
-            }
-        }
-    }
-
-    return null;
 }

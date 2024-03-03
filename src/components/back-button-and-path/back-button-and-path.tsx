@@ -38,18 +38,20 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
                     {'< Back'}
                 </button>
             )}
-            {folderTrail.map( (folderName, index) => <>
-                {index < folderTrail.length-1 && (
-                    <div>
-                        {folderName + ' /'}
-                    </div>
-                )}
-                {index === folderTrail.length-1 && (
-                    <h1>
-                        {folderName}
-                    </h1>
-                )}
-            </>)}            
+            {folderTrail.map( (folderName, index) => (
+                <div key={index}>
+                    {index < folderTrail.length-1 && (
+                        <div key={index}>
+                            {folderName + ' /'}
+                        </div>
+                    )}
+                    {index === folderTrail.length-1 && (
+                        <h1 key={index}>
+                            {folderName}
+                        </h1>
+                    )}
+                </div>
+            ))}            
         </div>
     </>
 }

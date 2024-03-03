@@ -1,6 +1,3 @@
-
-
-
 export const singleOrPlural = (count: number, singleVersion: string, pluralVersion?: string) => {
 	if(count == 1 || count == -1) {
 		return singleVersion;
@@ -14,8 +11,6 @@ export const singleOrPlural = (count: number, singleVersion: string, pluralVersi
 		}
 	}
 }
-
-
 
 export function filenameSanitize(str: string) {
 
@@ -32,4 +27,10 @@ export function filenameSanitize(str: string) {
 	newStr = newArr.join();
 
 	return newStr;
+}
+
+export const trimFilenameExt = (filename: string): string => {
+    const str = filename.split('.')
+    str.pop();
+    return str.join('.');
 }
