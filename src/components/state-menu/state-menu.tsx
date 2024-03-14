@@ -3,7 +3,7 @@ import { TFile } from 'obsidian';
 import * as React from "react";
 import { PluginContext } from 'src/utils/plugin-context';
 import classnames from 'classnames';
-import { getFileState } from 'src/logic/frontmatter-processes';
+import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 
 //////////
 //////////

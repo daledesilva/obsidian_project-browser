@@ -3,9 +3,8 @@
     max-width: 40em;
     padding: 1em;
     border-radius: 8px;
-    outline: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.02);
-    box-shadow: 5px 5px 0 rgba(255,255,255,0.15);
+    outline: 1px solid var(--color-base-30, rgba(255,255,255,0.5));
+    box-shadow: 5px 5px 0 var(--color-base-30, rgba(255,255,255,0.5));
 
     cursor: pointer;
 
@@ -32,6 +31,6 @@
     }
 
     &:hover {
-        background: rgba(255,255,255,0.2);
+        background: var(--color-base-10);
     }
 }
