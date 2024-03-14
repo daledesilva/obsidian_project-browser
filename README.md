@@ -42,7 +42,7 @@ Below are the high level features in my current development plan along with when
 - Easy state menu. ✅
 
 ### March 2024 (Basic functionality)
-- Adapt to themes & light/dark modes. ✅
+- Adapt to light/dark modes. ✅
 - Add new file/folder buttons.
 - Remember last state & consistent navigation.
 - Custom view modes per section.
