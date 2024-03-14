@@ -1,27 +1,11 @@
 # Obsidian Project Browser
 A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a browseable layout of the files and folders in your vault.
 
+>**Please note that this plugin is in an *ALPHA* state.**<br/>
+This means that it has been released before all of it's features have been developed or properly tested.<br/>
+You can learn about what's done and what's on the roadmap below.
+
 <img src="docs/media/preview.png" alt="Screenshot of Project Browser plugin">
-
-## Installation
-This plugin is not yet listed on Obsidian's Community Plugins page but you can install it through the BRAT plugin.
-<details>
-<summary>Click for installation instructions</summary>
-
-1. Open your Obsidian vault and go to **Settings**.
-
-2. Click on **Community Plugins** in the side bar.
-
-3. Turn on community plugins and click **Browse**.
-
-4. Search and install **BRAT**.
-
-5. Scroll down and **activate** BRAT.
-
-6. in the BRAT menu in the side pane, select **Add Beta Plugin**.
-
-7. Follow the instructions presented.
-</details>
 
 ## 📓 Development Diaries
 I record regular development diaries. [Subscribe and follow along](https://www.youtube.com/@designdebtclub) to see features in development.
@@ -52,18 +36,18 @@ I record regular development diaries. [Subscribe and follow along](https://www.y
 Below are the high level features in my current development plan along with when they'll likely get implemented.
 
 ### February 2024 (Core functionality)
-- [x] Show files & folders as cards.
-- [x] Navigation between folders.
-- [x] Sectioning by states.
-- [x] Easy state menu.
+- ~~[x] Show files & folders as cards.~~
+- ~~[x] Navigation between folders.~~
+- ~~[x] Sectioning by states.~~
+- ~~[x] Easy state menu.~~
 
 ### March 2024 (Basic functionality)
+- [ ] Adapt to themes & light/dark modes.
 - [ ] Add new file/folder buttons.
 - [ ] Remember last state & consistent navigation.
 - [ ] Custom view modes per section.
 - [ ] Show non markdown files.
 - [ ] Rework folder states.
-- [ ] Adapt to themes & light/dark modes.
 
 ### April 2024 (Customisation & styling)
 - [ ] Access via action or new tab setting.
@@ -85,6 +69,23 @@ Below are the high level features in my current development plan along with when
 - [ ] Card colours.
 - [ ] Custom sectioning (ie. by date, by tags).
 - [ ] Multi-select / Batch edits.
+
+## 🪳 Report a bug
+Found something that's not quite working right or do you have a feature request? Don't be shy, feel free to make some noise over on the [GitHub Issues](https://github.com/daledesilva/obsidian_project-browser/issues) page. But be sure to check if someone has already posted the same issue and comment on theirs if they have.
+
+## Installation
+You can find this plugin in the plugin directory within Obsidian.
+<details>
+<summary>Click for help installing plugins</summary>
+
+1. Open your Obsidian vault and go to **Settings**.
+
+2. Click on **Community Plugins** in the side bar.
+
+3. If you haven't already, you will need to turn on community plugins.
+
+4. Search and install **Project Browser**.
+</details>
 
 ## ❤️ Support
 If you find this plugin saves you time or helps you in some way, please consider supporting my development of plugins and other free community material like this.
