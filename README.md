@@ -36,39 +36,39 @@ I record regular development diaries. [Subscribe and follow along](https://www.y
 Below are the high level features in my current development plan along with when they'll likely get implemented.
 
 ### February 2024 (Core functionality)
-- ~~[x] Show files & folders as cards.~~
-- ~~[x] Navigation between folders.~~
-- ~~[x] Sectioning by states.~~
-- ~~[x] Easy state menu.~~
+- Show files & folders as cards. ✅
+- Navigation between folders. ✅
+- Sectioning by states. ✅
+- Easy state menu. ✅
 
 ### March 2024 (Basic functionality)
-- [ ] Adapt to themes & light/dark modes.
-- [ ] Add new file/folder buttons.
-- [ ] Remember last state & consistent navigation.
-- [ ] Custom view modes per section.
-- [ ] Show non markdown files.
-- [ ] Rework folder states.
+- Adapt to themes & light/dark modes. ✅
+- Add new file/folder buttons.
+- Remember last state & consistent navigation.
+- Custom view modes per section.
+- Show non markdown files.
+- Rework folder states.
 
 ### April 2024 (Customisation & styling)
-- [ ] Access via action or new tab setting.
-- [ ] Enable customising states.
-- [ ] Enable customising new file/folder functionality.
-- [ ] Enable customising visible file types.
-- [ ] Custom folder hiding.
-- [ ] Card actions from in browser view (set state, delete, etc).
+- Access via action or new tab setting.
+- Enable customising states.
+- Enable customising new file/folder functionality.
+- Enable customising visible file types.
+- Custom folder hiding.
+- Card actions from in browser view (set state, delete, etc).
 
 ### May 2024 (Styling & accessibility)
-- [ ] Refine styling and responsivity.
-- [ ] Transition animations.
-- [ ] Accessibility refinement.
+- Refine styling and responsivity.
+- Transition animations.
+- Accessibility refinement.
 
 ### Future possibilities
-- [ ] Set card priorities.
-- [ ] Live filtering of cards.
-- [ ] Scale settings.
-- [ ] Card colours.
-- [ ] Custom sectioning (ie. by date, by tags).
-- [ ] Multi-select / Batch edits.
+- Set card priorities.
+- Live filtering of cards.
+- Scale settings.
+- Card colours.
+- Custom sectioning (ie. by date, by tags).
+- Multi-select / Batch edits.
 
 ## 🪳 Report a bug
 Found something that's not quite working right or do you have a feature request? Don't be shy, feel free to make some noise over on the [GitHub Issues](https://github.com/daledesilva/obsidian_project-browser/issues) page. But be sure to check if someone has already posted the same issue and comment on theirs if they have.
