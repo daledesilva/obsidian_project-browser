@@ -161,3 +161,9 @@ export const getItemsInFolder = (folder: TFolder): null | TAbstractFile[] => {
     
     return curFiles;
 }
+
+export const refreshFolderReference = (folder: TFolder): TFolder => {
+    const v = folder.vault;
+    const refreshedFolder = v.getAbstractFileByPath(folder.path) as TFolder;
+    return refreshedFolder;
+}
