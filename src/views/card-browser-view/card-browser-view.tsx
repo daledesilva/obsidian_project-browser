@@ -5,6 +5,7 @@ import { Root, createRoot } from "react-dom/client";
 import CardBrowser from "src/components/card-browser/card-browser";
 import { createContext } from 'react';
 import { PluginContext } from "src/utils/plugin-context";
+import { CurrentFolderMenu } from "src/components/current-folder-menu/current-folder-menu";
 
 //////////
 //////////

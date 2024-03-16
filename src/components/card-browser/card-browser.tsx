@@ -5,7 +5,8 @@ import { SectionHeader } from "../section-header/section-header";
 import { CardSet } from "../card-set/card-set";
 import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
-import { getSortedItemsInFolder } from 'src/logic/folder-processes';
+import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
+import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
 
 //////////
 //////////
@@ -18,14 +19,13 @@ export const CardBrowser = (props: CardBrowserProps) => {
     // const [files, setFiles] = useState
     const v = props.plugin.app.vault;
     const [curFolder, setCurFolder] = React.useState( v.getRoot() );
+    const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, curFolder) );
 
     // on mount
     React.useEffect( () => {
         //
     },[])
 
-    // TODO: This should return an array of states with items
-    const sectionsOfItems = getSortedItemsInFolder(props.plugin, curFolder);
     
     return <>
         <div
@@ -46,18 +46,24 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         <CardSet
                             items = {section.items}
                             onFileSelect = {openFile}
-                            onFolderSelect = {openFolder}
+                            onFolderSelect = {openChildFolder}
                         />
                     </div>
                 ))}
             </div>
         </div>
+        <CurrentFolderMenu
+            folder = {curFolder}
+            refreshView = {refreshView}
+            openFile = {openFile}
+        />
     </>;
 
     ////////
 
-    function openFolder(folder: TFolder) {
-        setCurFolder(folder);
+    function openFolder(nextFolder: TFolder) {
+        setCurFolder(nextFolder);
+        setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );
     }
     
     function openFile(file: TFile) {
@@ -68,9 +74,19 @@ export const CardBrowser = (props: CardBrowserProps) => {
         leaf.openFile(file);
     }
 
+    function openChildFolder(nextFolder: TFolder) {
+        openFolder(nextFolder);
+    }
     function openParentFolder() {
-        if(!curFolder.parent) return;
-        setCurFolder(curFolder.parent);
+        const nextFolder = curFolder.parent;
+        if(!nextFolder) return;
+        openFolder(nextFolder);
+    }
+
+    async function refreshView() {
+        const refreshedFolder = await refreshFolderReference(curFolder);
+        setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
+        setCurFolder(refreshedFolder);
     }
 
 };
