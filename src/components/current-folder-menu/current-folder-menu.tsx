@@ -28,7 +28,7 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
                 className = 'project-browser_new-button'
                 onClick = {() => newProject(plugin, props.folder)}    
             >
-                <Plus size={60} />
+                <Plus size={40} />
             </button>
         </div>
     </>
