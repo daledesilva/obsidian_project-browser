@@ -32,14 +32,14 @@ import { sanitizeFileName } from "./string-processes";
 
 
 
-export async function createProject(parentFolder: TFolder, projectName: string) {
+export async function createProject(parentFolder: TFolder, projectName: string): TFile {
     const v = parentFolder.vault;
     const projectPath = parentFolder.path + '/' + sanitizeFileName(projectName);
     
     const projectFolder = await createFolders(v, projectPath);
     const primaryProjectFile = await createDefaultMarkdownFiles(v, projectFolder, 'Article');
 
-    console.log('created ' + primaryProjectFile.path);
+    return primaryProjectFile;
 }
 
 

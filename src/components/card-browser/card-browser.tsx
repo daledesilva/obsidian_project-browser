@@ -85,11 +85,12 @@ export const CardBrowser = (props: CardBrowserProps) => {
     function refreshView() {
         // TODO: This doesn't work, not sure why
         // console.log('curFolder', curFolder);
-        // const refreshedFolder = refreshFolderReference(curFolder);
+        const refreshedFolder = refreshFolderReference(curFolder);
         // console.log(curFolder === refreshedFolder);
         // console.log('getSortedItemsInFolder(props.plugin, curFolder)', getSortedItemsInFolder(props.plugin, curFolder))
         // console.log('getSortedItemsInFolder(props.plugin, refreshedFolder)', getSortedItemsInFolder(props.plugin, refreshedFolder))
-        // setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
+        setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
+        setCurFolder(refreshedFolder);
     }
 
 };

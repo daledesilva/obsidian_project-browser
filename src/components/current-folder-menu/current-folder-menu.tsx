@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { NewProjectModal } from 'src/modals/new-project-modal/new-project-modal';
 import ProjectCardsPlugin from 'src/main';
+import { Plus } from 'lucide-react';
 
 //////////
 //////////
@@ -25,7 +26,7 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
                 className = 'project-browser_new-button'
                 onClick = {() => newProject(plugin, props.folder)}    
             >
-                +
+                <Plus size={60} />
             </button>
         </div>
     </>
@@ -39,6 +40,7 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
         })
         try {
             const newFile = await modal.showModal();
+            console.log('newFile', newFile);
             props.refreshView();
             // Open newFile
 

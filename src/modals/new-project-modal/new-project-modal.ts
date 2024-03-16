@@ -16,7 +16,7 @@ export class NewProjectModal extends Modal {
     plugin: ProjectCardsPlugin;
     folder: TFolder;
     projectName: string;
-    resolveModal: (file: boolean) => void;
+    resolveModal: (file: TFile) => void;
 	rejectModal: (reason: string) => void;
 
 	constructor(props: NewProjectModalProps) {
@@ -28,7 +28,7 @@ export class NewProjectModal extends Modal {
     /**
 	 * Opens the modal and returns the file created.
 	 */
-	public showModal(): Promise<boolean> {
+	public showModal(): Promise<TFile> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;
@@ -71,8 +71,8 @@ export class NewProjectModal extends Modal {
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Create project');
 			confirmBtn.onClick( () => {
-                createProject(this.folder, this.projectName)
-                this.resolveModal(true);
+                const file = createProject(this.folder, this.projectName)
+                this.resolveModal(file);
 				this.close();
 			})
 		})
