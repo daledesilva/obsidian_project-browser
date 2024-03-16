@@ -85,12 +85,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
     async function refreshView() {
         const refreshedFolder = await refreshFolderReference(curFolder);
-
-        // Add a delay for better feedback
-        setTimeout( () => { 
-            setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
-            setCurFolder(refreshedFolder);
-        }, 300)
+        setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
+        setCurFolder(refreshedFolder);
     }
 
 };

@@ -42,10 +42,15 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
         })
         try {
             // const newFile = await modal.showModal();
-            // props.refreshView();
             const newFile = await createProject(folder, 'Untitled');
-            props.openFile(newFile);
-            // Open newFile
+            // Slight delay for better feedback of view refreshing
+            setTimeout( () => { 
+                props.refreshView();
+                // Additional delay for notcing refresh before opening file
+                setTimeout( () => { 
+                    props.openFile(newFile);
+                }, 500);
+            }, 300)
 
         } catch(reason) {
             console.log(reason);
