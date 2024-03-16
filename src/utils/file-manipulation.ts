@@ -32,12 +32,15 @@ import { sanitizeFileName } from "./string-processes";
 
 
 
-export async function createProject(parentFolder: TFolder, projectName: string): TFile {
+export async function createProject(parentFolder: TFolder, projectName: string): Promise<TFile> {
     const v = parentFolder.vault;
     const projectPath = parentFolder.path + '/' + sanitizeFileName(projectName);
     
-    const projectFolder = await createFolders(v, projectPath);
-    const primaryProjectFile = await createDefaultMarkdownFiles(v, projectFolder, 'Article');
+    // Creating a project folder
+    // const projectFolder = await createFolders(v, projectPath);
+    // const primaryProjectFile = await createDefaultMarkdownFile(v, projectFolder, 'Article');
+    
+    const primaryProjectFile = await createDefaultMarkdownFile(v, parentFolder, sanitizeFileName(projectName));
 
     return primaryProjectFile;
 }
@@ -65,7 +68,7 @@ async function createFolders(vault: Vault, path: string): Promise<TFolder> {
     return folder;
 }
 
-async function createDefaultMarkdownFiles(vault: Vault, folder: TFolder, title: string): Promise<TFile> {
+async function createDefaultMarkdownFile(vault: Vault, folder: TFolder, title: string): Promise<TFile> {
     let filename = sanitizeFileName(title);
     // filename = unclashFileName(filename);
 

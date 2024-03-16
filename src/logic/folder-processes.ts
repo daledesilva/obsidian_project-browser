@@ -101,22 +101,22 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
             // TODO: If it's in the "treat as project" list
 
             // TODO: If it contains multiple files with states or it's subfolders contain multiple files with states
-            if(contentsIndicatesProject(plugin, item)) {
-                // Visually treat as a file/project
-                const state = getProjectState(plugin, item);
-                if(state) {
-                    if(!itemsBySection[state]) itemsBySection[state] = [];
-                    itemsBySection[state].push(item);
-                } else {
-                    if(!itemsBySection[' ']) itemsBySection[' '] = [];
-                    itemsBySection[' '].push(item);
-                }
+            // if(contentsIndicatesProject(plugin, item)) {
+            //     // Visually treat as a file/project
+            //     const state = getProjectState(plugin, item);
+            //     if(state) {
+            //         if(!itemsBySection[state]) itemsBySection[state] = [];
+            //         itemsBySection[state].push(item);
+            //     } else {
+            //         if(!itemsBySection[' ']) itemsBySection[' '] = [];
+            //         itemsBySection[' '].push(item);
+            //     }
 
-            } else {
+            // } else {
                 // Treat all other folders as folders
                 if(!itemsBySection['Folders']) itemsBySection['Folders'] = [];
                 itemsBySection['Folders'].push(item);
-            }
+            // }
 
         } else if(item instanceof TFile) {
             const frontmatter = getFileFrontmatter(plugin, item);

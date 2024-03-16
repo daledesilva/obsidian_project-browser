@@ -1,3 +1,4 @@
+import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
 import ProjectCardsPlugin from "src/main";
@@ -40,8 +41,8 @@ export class NewProjectModal extends Modal {
 		const {titleEl, contentEl} = this;
 
 		titleEl.setText('Create new project');
-		contentEl.createEl('p', {text: 'This will create a project in this location with an article inside it. You can then create other files inside that folder to support the project.'});
-        contentEl.createEl('p', {text: '(This will be more customisable and intuitive int he future, this is just the first implementation))'});
+		contentEl.createEl('p', {text: 'This will create a new note.'});
+        contentEl.createEl('p', {text: 'In the future this will be'});
 		
         new Setting(contentEl)
             .setClass('project-browser_setting')
@@ -49,12 +50,16 @@ export class NewProjectModal extends Modal {
             .addText((text) => {
                 text.setValue(this.projectName);
                 text.inputEl.addEventListener('blur', async (e) => {
-                    console.log('on blur');
                     // const value = folderPathSanitize(text.getValue(), plugin.settings);
                     // plugin.settings.folderNames.notes = value;
                     this.projectName = text.getValue();
-                    text.setValue(this.projectName);
                     // await plugin.saveSettings();
+                });
+                text.inputEl.addEventListener('keydown', (event) => {
+                    if ((event as KeyboardEvent).key === "Enter") {
+                        this.projectName = text.getValue();
+                        this.initCreateProject();
+                    }
                 });
             });
 
@@ -70,11 +75,7 @@ export class NewProjectModal extends Modal {
 			confirmBtn.setClass('project-browser_button');
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Create project');
-			confirmBtn.onClick( () => {
-                const file = createProject(this.folder, this.projectName)
-                this.resolveModal(file);
-				this.close();
-			})
+			confirmBtn.onClick( () => this.initCreateProject() )
 		})
 
 	}
@@ -85,5 +86,12 @@ export class NewProjectModal extends Modal {
 		contentEl.empty();
 	}
 
+    ////////
+
+    private async initCreateProject() {
+        const file = await createProject(this.folder, this.projectName)
+        this.resolveModal(file);
+        this.close();
+    }
 }
 

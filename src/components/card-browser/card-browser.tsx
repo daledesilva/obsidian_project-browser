@@ -55,6 +55,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         <CurrentFolderMenu
             folder = {curFolder}
             refreshView = {refreshView}
+            openFile = {openFile}
         />
     </>;
 

@@ -7,6 +7,7 @@ import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { NewProjectModal } from 'src/modals/new-project-modal/new-project-modal';
 import ProjectCardsPlugin from 'src/main';
 import { Plus } from 'lucide-react';
+import { createProject } from 'src/utils/file-manipulation';
 
 //////////
 //////////
@@ -14,6 +15,7 @@ import { Plus } from 'lucide-react';
 interface CurrentFolderMenuProps {
     folder: TFolder,
     refreshView: Function,
+    openFile: (file: TFile) => {},
 }
 
 export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
@@ -39,9 +41,10 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
             folder: folder,
         })
         try {
-            const newFile = await modal.showModal();
-            console.log('newFile', newFile);
-            props.refreshView();
+            // const newFile = await modal.showModal();
+            // props.refreshView();
+            const newFile = await createProject(folder, 'Untitled');
+            props.openFile(newFile);
             // Open newFile
 
         } catch(reason) {
