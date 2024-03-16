@@ -43,19 +43,18 @@ Below are the high level features in my current development plan along with when
 
 ### March 2024 (Basic functionality)
 - Adapt to light/dark modes. ✅
-- Add new file/folder buttons.
-- Remember last state & consistent navigation.
-- Custom view modes per section.
-- Show non markdown files.
-- Rework folder states.
+- Add new file button. 🚧 ***(Next release)***
+- Card actions from in browser view (set state, delete, etc).
+- Remember last folder & consistent navigation.
+- Rework multi-page project setup.
 
 ### April 2024 (Customisation & styling)
-- Access via action or new tab setting.
-- Enable customising states.
-- Enable customising new file/folder functionality.
-- Enable customising visible file types.
+- Show non markdown files.
 - Custom folder hiding.
-- Card actions from in browser view (set state, delete, etc).
+- Enable customising states.
+- Enable customising visible file types.
+- Access via action or new tab setting.
+- Custom view modes per section.
 
 ### May 2024 (Styling & accessibility)
 - Refine styling and responsivity.
