@@ -82,15 +82,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
         openFolder(nextFolder);
     }
 
-    function refreshView() {
-        // TODO: This doesn't work, not sure why
-        // console.log('curFolder', curFolder);
-        const refreshedFolder = refreshFolderReference(curFolder);
-        // console.log(curFolder === refreshedFolder);
-        // console.log('getSortedItemsInFolder(props.plugin, curFolder)', getSortedItemsInFolder(props.plugin, curFolder))
-        // console.log('getSortedItemsInFolder(props.plugin, refreshedFolder)', getSortedItemsInFolder(props.plugin, refreshedFolder))
-        setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
-        setCurFolder(refreshedFolder);
+    async function refreshView() {
+        const refreshedFolder = await refreshFolderReference(curFolder);
+
+        // Add a delay for better feedback
+        setTimeout( () => { 
+            setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
+            setCurFolder(refreshedFolder);
+        }, 300)
     }
 
 };

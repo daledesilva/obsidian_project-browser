@@ -162,8 +162,14 @@ export const getItemsInFolder = (folder: TFolder): null | TAbstractFile[] => {
     return curFiles;
 }
 
-export const refreshFolderReference = (folder: TFolder): TFolder => {
+export const refreshFolderReference = async (folder: TFolder): Promise<TFolder> => {
     const v = folder.vault;
     const refreshedFolder = v.getAbstractFileByPath(folder.path) as TFolder;
-    return refreshedFolder;
+
+    // NOTE: Returns a proimise with an artificial delay because getAbstractFilePath seems to take a sec to refresh the folder.
+    return new Promise(
+        (resolve) => setTimeout( () => {
+            resolve(refreshedFolder)
+        }, 10)
+    );
 }
