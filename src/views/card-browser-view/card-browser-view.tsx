@@ -12,20 +12,14 @@ import { isEmpty } from "src/utils/misc";
 //////////
 
 export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
-export const CARD_BROWSER_VIEW_STATE_TYPE = "card-browser-view-state";
 
-export interface CardBrowserViewState extends ViewState {
-    state: {
-        folder: TFolder;
-    }
+export interface CardBrowserViewState {
+    folder: TFolder;
 }
 
 export function setCardBrowserViewStateDefaults(plugin: ProjectCardsPlugin): CardBrowserViewState {
     return {
-        type: CARD_BROWSER_VIEW_STATE_TYPE,
-        state: {
-            folder: plugin.app.vault.getRoot(),
-        }
+        folder: plugin.app.vault.getRoot(),
     }
 }
 
@@ -59,7 +53,7 @@ export class ProjectCardsView extends ItemView {
     plugin: ProjectCardsPlugin;
     
     // CardBrowserViewState properties
-    viewState: CardBrowserViewState;
+    state: CardBrowserViewState;
 
     constructor(leaf: WorkspaceLeaf, plugin: ProjectCardsPlugin) {
         super(leaf);
@@ -83,8 +77,8 @@ export class ProjectCardsView extends ItemView {
         contentEl.empty();
         contentEl.setAttr('style', 'padding: 0;');
 
-        if(!this.viewState || isEmpty(this.viewState)) {
-            this.viewState = setCardBrowserViewStateDefaults(this.plugin);
+        if(!this.state || isEmpty(this.state)) {
+            this.state = setCardBrowserViewStateDefaults(this.plugin);
         }
 
         if(!this.root) this.root = createRoot(contentEl);
@@ -99,17 +93,18 @@ export class ProjectCardsView extends ItemView {
     // Done automatically when leaf navigates to change your view
     // Return your state here to provide it to Obsidian
     getState(): CardBrowserViewState {
-        console.log('getState', this.viewState);
-        return this.viewState;
+        console.log('getState', this.state);
+        return this.state;
     }
     
     // Called by Obsidian to provide your view with the state
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
-    setState(viewState: any, result: ViewStateResult): Promise<void> {
-        console.log('setState');
-        if(viewState.state.folder) this.viewState.state.folder = viewState.state.folder;
-        return super.setState(viewState, result);
+    setState(state: any, result: ViewStateResult): Promise<void> {
+        if(state.folder) this.state.folder = state.folder;
+        result.history = true;
+        console.log('setState, result:', JSON.parse(JSON.stringify(result)));
+        return super.setState(state, result);
     }
 
     async onClose() {
@@ -123,18 +118,18 @@ export class ProjectCardsView extends ItemView {
             <PluginContext.Provider value={this.plugin}>
                 <CardBrowser
                     plugin = {this.plugin}
-                    folder = {this.viewState.state.folder}
-                    updateViewState = {(viewStatePartial: any) => this.updateViewState(viewStatePartial)}
+                    folder = {this.state.folder}
+                    updateState = {(statePartial: any) => this.updateState(statePartial)}
                 />
             </PluginContext.Provider>
         );
     }
 
     // My function to update the state
-    async updateViewState(viewStatePartial: any) {
-        this.viewState = {...this.viewState, ...viewStatePartial};
-        this.setState(this.viewState, {history: true});
+    async updateState(statePartial: any) {
+        this.state = {...this.state, ...statePartial};
         
+        // this.setState(this.state, {history: true});
         // this.leaf.open(this);
         // this.renderView();
         // this.plugin.app.workspace.requestSaveLayout();  // Ask the workspace to save all workspce states // NOT NEEDED to save the state (getState is called when the user navigates away anyway)

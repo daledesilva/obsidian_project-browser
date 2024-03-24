@@ -7,7 +7,7 @@ import { TFile, TFolder, ViewStateResult, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
-import { CARD_BROWSER_VIEW_STATE_TYPE, CardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
+import { CardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
 
 //////////
 //////////
@@ -15,7 +15,7 @@ import { CARD_BROWSER_VIEW_STATE_TYPE, CardBrowserViewState } from 'src/views/ca
 interface CardBrowserProps {
     folder: TFolder,
     plugin: ProjectCardsPlugin,
-    updateViewState: (viewState: CardBrowserViewState) => void,
+    updateState: (viewState: CardBrowserViewState) => void,
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
@@ -65,11 +65,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
     ////////
 
     function openFolder(nextFolder: TFolder) {
-        props.updateViewState({
-            type: CARD_BROWSER_VIEW_STATE_TYPE,
-            state: {
-                folder: nextFolder,
-            }
+        props.updateState({
+            folder: nextFolder,
         });
         setFolder(nextFolder);
         setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );
