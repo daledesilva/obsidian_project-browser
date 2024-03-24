@@ -13,7 +13,7 @@ import { CardBrowserViewState } from 'src/views/card-browser-view/card-browser-v
 //////////
 
 interface CardBrowserProps {
-    folder: TFolder,
+    path: string,
     plugin: ProjectCardsPlugin,
     updateState: (viewState: CardBrowserViewState) => void,
 }
@@ -21,14 +21,17 @@ interface CardBrowserProps {
 export const CardBrowser = (props: CardBrowserProps) => {
     // const [files, setFiles] = useState
     const v = props.plugin.app.vault;
-    const [folder, setFolder] = React.useState(props.folder);
-    const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
+    // const [path, setPath] = React.useState(props.path);
+    const folder = v.getAbstractFileByPath(props.path) as TFolder; // TODO: Check this is valid?
+    // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
+    const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
 
     // on mount
     React.useEffect( () => {
         //
     },[])
 
+    // console.log('folder:', folder);
     
     return <>
         <div
@@ -66,10 +69,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
     function openFolder(nextFolder: TFolder) {
         props.updateState({
-            folder: nextFolder,
+            path: nextFolder.path,
         });
-        setFolder(nextFolder);
-        setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );
+        // setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );
     }
     
     function openFile(file: TFile) {
@@ -91,8 +93,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
     async function refreshView() {
         const refreshedFolder = await refreshFolderReference(folder);
-        setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
-        setFolder(refreshedFolder);
+        // setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
     }
 
 };

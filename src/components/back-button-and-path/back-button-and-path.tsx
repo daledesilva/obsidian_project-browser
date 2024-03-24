@@ -35,7 +35,7 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
         >
             {folderTrail.length > 1 && (
                 <button onClick={() => props.onBackClick()}>
-                    {'< Back'}
+                    {'^ Up'}
                 </button>
             )}
             {folderTrail.map( (folderName, index) => (

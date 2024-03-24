@@ -14,12 +14,12 @@ import { isEmpty } from "src/utils/misc";
 export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 
 export interface CardBrowserViewState {
-    folder: TFolder;
+    path: string;
 }
 
 export function setCardBrowserViewStateDefaults(plugin: ProjectCardsPlugin): CardBrowserViewState {
     return {
-        folder: plugin.app.vault.getRoot(),
+        path: plugin.app.vault.getRoot().path,
     }
 }
 
@@ -93,7 +93,7 @@ export class ProjectCardsView extends ItemView {
     // Done automatically when leaf navigates to change your view
     // Return your state here to provide it to Obsidian
     getState(): CardBrowserViewState {
-        console.log('getState', this.state);
+        // console.log('getState', this.state);
         return this.state;
     }
     
@@ -101,9 +101,10 @@ export class ProjectCardsView extends ItemView {
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
     setState(state: any, result: ViewStateResult): Promise<void> {
-        if(state.folder) this.state.folder = state.folder;
+        if(state.path) this.state.path = state.path;
         result.history = true;
-        console.log('setState, result:', JSON.parse(JSON.stringify(result)));
+        // console.log('setState, state:', state);\
+        this.renderView();
         return super.setState(state, result);
     }
 
@@ -114,11 +115,12 @@ export class ProjectCardsView extends ItemView {
     ////////
 
     renderView() {
+        // console.log('renderView');
         this.root.render(
             <PluginContext.Provider value={this.plugin}>
                 <CardBrowser
                     plugin = {this.plugin}
-                    folder = {this.state.folder}
+                    path = {this.state.path}
                     updateState = {(statePartial: any) => this.updateState(statePartial)}
                 />
             </PluginContext.Provider>
@@ -127,12 +129,42 @@ export class ProjectCardsView extends ItemView {
 
     // My function to update the state
     async updateState(statePartial: any) {
-        this.state = {...this.state, ...statePartial};
+
+        // Save current state to history before changing
+        await this.leaf.setViewState({
+            type: CARD_BROWSER_VIEW_TYPE,
+            state: this.state,
+        })
         
+        this.state = {...this.state, ...statePartial};
+        this.renderView();
+
+        // console.log('updating state:', JSON.parse(JSON.stringify(this.state)))
         // this.setState(this.state, {history: true});
+
+        
+        
+        // Doesn't have any effect:
+        // this.setState(this.state, {history: true});
+        
+        // Doesn't have any effect:
         // this.leaf.open(this);
-        // this.renderView();
-        // this.plugin.app.workspace.requestSaveLayout();  // Ask the workspace to save all workspce states // NOT NEEDED to save the state (getState is called when the user navigates away anyway)
-        // console.log('this.leaf.getViewState()', this.leaf.getViewState())
+        
+        // Doesn't adopt saved state:
+        // new ProjectCardsView(this.leaf, this.plugin);
+
+        // This seams to register a navigation point in the history stack but when back is clicked nothing happens:
+        // await this.leaf.setViewState({
+        //     type: CARD_BROWSER_VIEW_TYPE,
+        // })
+        
+        // Error about converting to circular structure (otherwise same behaviour as above)
+        // console.log('newState:', this.state);
+        
+        // this.leaf.open(this);
+
+        // Ask the workspace to save all workspce states:
+        // NOT NEEDED to save the state (getState is called when the user navigates away anyway)
+        // this.plugin.app.workspace.requestSaveLayout();
     }
 }
