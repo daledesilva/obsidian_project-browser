@@ -1,5 +1,5 @@
 import ProjectCardsPlugin from "src/main";
-import { FileView, ItemView, MarkdownView, TFolder, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { FileView, ItemView, MarkdownView, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser from "src/components/card-browser/card-browser";
@@ -45,12 +45,13 @@ function replaceActiveLeafWithCardBrowser(plugin: ProjectCardsPlugin) {
     let leaf = workspace.getActiveViewOfType(ItemView)?.leaf;
     if(!leaf) return;
 
-    const projectCardsView = new ProjectCardsView(leaf, plugin);
+    new ProjectCardsView(leaf, plugin);
 }
 
 export class ProjectCardsView extends ItemView {
     root: Root;
     plugin: ProjectCardsPlugin;
+    internalClick: boolean = false;
     
     // CardBrowserViewState properties
     state: CardBrowserViewState;
@@ -90,10 +91,10 @@ export class ProjectCardsView extends ItemView {
     }
 
     // Called by Obsidian to fetch the state from your view
-    // Done automatically when leaf navigates to change your view
+    // Done automatically when leaf navigates away from your view (ie. onClose)
     // Return your state here to provide it to Obsidian
     getState(): CardBrowserViewState {
-        // console.log('getState', this.state);
+        console.log('getState', this.state);
         return this.state;
     }
     
@@ -101,11 +102,19 @@ export class ProjectCardsView extends ItemView {
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
     setState(state: any, result: ViewStateResult): Promise<void> {
-        if(state.path) this.state.path = state.path;
-        result.history = true;
-        // console.log('setState, state:', state);\
+        console.log('CURRENT STATE:', this.state)
+        console.log('SET STATE:', state)
+        
+        // if(this.internalClick) {
+            result.history = true;
+        //     this.internalClick = false;
+        // }
+
+        // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
+        this.state = state;   // this line doesn't
+        
         this.renderView();
-        return super.setState(state, result);
+        return super.setState(this.state, result);
     }
 
     async onClose() {
@@ -115,7 +124,6 @@ export class ProjectCardsView extends ItemView {
     ////////
 
     renderView() {
-        // console.log('renderView');
         this.root.render(
             <PluginContext.Provider value={this.plugin}>
                 <CardBrowser
@@ -127,23 +135,34 @@ export class ProjectCardsView extends ItemView {
         );
     }
 
-    // My function to update the state
+    // My function that I call to navigate to a new folder
     async updateState(statePartial: any) {
 
         // Save current state to history before changing
-        await this.leaf.setViewState({
-            type: CARD_BROWSER_VIEW_TYPE,
-            state: this.state,
-        })
+        // await manuallySaveCurStateToHistory(this);
+
+        // this.state = {...this.state, ...statePartial};
+        // this.renderView();
         
-        this.state = {...this.state, ...statePartial};
-        this.renderView();
+        // const nextState = {...this.state, ...statePartial};
+        // this.setState(nextState, {history: true});
+        
+        this.internalClick = true;
+        const nextState = {...this.state, ...statePartial};
+        this.leaf.setViewState({
+            type: CARD_BROWSER_VIEW_TYPE,
+            state: nextState,
+        });
+
+        // const navigationOptions: ViewStateResult = {history: true};
+        // this.setState(nextState, navigationOptions);
+        
+
+
 
         // console.log('updating state:', JSON.parse(JSON.stringify(this.state)))
         // this.setState(this.state, {history: true});
 
-        
-        
         // Doesn't have any effect:
         // this.setState(this.state, {history: true});
         
@@ -168,3 +187,6 @@ export class ProjectCardsView extends ItemView {
         // this.plugin.app.workspace.requestSaveLayout();
     }
 }
+
+// NOTE: When Obsidian calls getState, it automatically adds your view to the history stack.
+// But if you change your view internally, you should call setViewState to add the entry you need.
