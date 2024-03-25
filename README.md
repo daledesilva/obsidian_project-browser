@@ -43,10 +43,11 @@ Below are the high level features in my current development plan along with when
 
 ### March 2024 (Basic functionality)
 - Adapt to light/dark modes. ✅
-- Add new file button. 🚧 ***(Next release)***
+- Add new file button. ✅
+- Remember last folder & consistent navigation. ✅
 - Card actions from in browser view (set state, delete, etc).
-- Remember last folder & consistent navigation.
 - Rework multi-page project setup.
+- Add quick delete button.
 
 ### April 2024 (Customisation & styling)
 - Show non markdown files.
