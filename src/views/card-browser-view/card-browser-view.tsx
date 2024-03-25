@@ -94,7 +94,6 @@ export class ProjectCardsView extends ItemView {
     // Done automatically when leaf navigates away from your view (ie. onClose)
     // Return your state here to provide it to Obsidian
     getState(): CardBrowserViewState {
-        console.log('getState', this.state);
         return this.state;
     }
     
@@ -102,16 +101,10 @@ export class ProjectCardsView extends ItemView {
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
     setState(state: any, result: ViewStateResult): Promise<void> {
-        console.log('CURRENT STATE:', this.state)
-        console.log('SET STATE:', state)
-        
-        // if(this.internalClick) {
-            result.history = true;
-        //     this.internalClick = false;
-        // }
+        result.history = true;
 
         // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
-        this.state = state;   // this line doesn't
+        this.state = state;   // this line works - you have to replace the whole object for navigation history to work properly
         
         this.renderView();
         return super.setState(this.state, result);
@@ -137,54 +130,12 @@ export class ProjectCardsView extends ItemView {
 
     // My function that I call to navigate to a new folder
     async updateState(statePartial: any) {
-
-        // Save current state to history before changing
-        // await manuallySaveCurStateToHistory(this);
-
-        // this.state = {...this.state, ...statePartial};
-        // this.renderView();
         
-        // const nextState = {...this.state, ...statePartial};
-        // this.setState(nextState, {history: true});
-        
-        this.internalClick = true;
         const nextState = {...this.state, ...statePartial};
         this.leaf.setViewState({
             type: CARD_BROWSER_VIEW_TYPE,
             state: nextState,
         });
-
-        // const navigationOptions: ViewStateResult = {history: true};
-        // this.setState(nextState, navigationOptions);
-        
-
-
-
-        // console.log('updating state:', JSON.parse(JSON.stringify(this.state)))
-        // this.setState(this.state, {history: true});
-
-        // Doesn't have any effect:
-        // this.setState(this.state, {history: true});
-        
-        // Doesn't have any effect:
-        // this.leaf.open(this);
-        
-        // Doesn't adopt saved state:
-        // new ProjectCardsView(this.leaf, this.plugin);
-
-        // This seams to register a navigation point in the history stack but when back is clicked nothing happens:
-        // await this.leaf.setViewState({
-        //     type: CARD_BROWSER_VIEW_TYPE,
-        // })
-        
-        // Error about converting to circular structure (otherwise same behaviour as above)
-        // console.log('newState:', this.state);
-        
-        // this.leaf.open(this);
-
-        // Ask the workspace to save all workspce states:
-        // NOT NEEDED to save the state (getState is called when the user navigates away anyway)
-        // this.plugin.app.workspace.requestSaveLayout();
     }
 }
 
