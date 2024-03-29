@@ -45,9 +45,6 @@ Below are the high level features in my current development plan along with when
 - Adapt to light/dark modes. ✅
 - Add new file button. ✅
 - Remember last folder & consistent navigation. ✅
-- Card actions from in browser view (set state, delete, etc).
-- Rework multi-page project setup.
-- Add quick delete button.
 
 ### April 2024 (Customisation & styling)
 - Show non markdown files.
@@ -61,6 +58,11 @@ Below are the high level features in my current development plan along with when
 - Refine styling and responsivity.
 - Transition animations.
 - Accessibility refinement.
+
+### June 2024 (New functionality)
+- Add quick delete button.
+- Card actions from in browser view (set state, delete, etc).
+- Rework multi-page project setup.
 
 ### Future possibilities
 - Set card priorities.
