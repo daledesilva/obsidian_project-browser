@@ -14,11 +14,12 @@ const stateMenuContainerClassName = 'project-browser_state-menu-container';
 //////////
 
 export function registerMarkdownViewMods(plugin: ProjectCardsPlugin) {
-    // NOTE: Opening a different file in the same leaf counts as an active-leaf-change, but the header get replaced, it updates.
-    plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', () => {
-		const viewType = plugin.app.workspace.getLeaf().view.getViewType();
+    // NOTE: Opening a different file in the same leaf counts as an active-leaf-change, but the header gets replaced, it updates.
+    plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
+        if(!leaf) return;
+
+		const viewType = leaf.view.getViewType();
 		if(viewType === 'markdown') {
-            // addMarkdownViewHeader(plugin);
             addStateHeader(plugin);
         }
 	}));

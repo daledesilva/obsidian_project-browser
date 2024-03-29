@@ -1,5 +1,5 @@
 import './state-menu.scss';
-import { TFile } from 'obsidian';
+import { MarkdownView, TFile } from 'obsidian';
 import * as React from "react";
 import { PluginContext } from 'src/utils/plugin-context';
 import classnames from 'classnames';
@@ -78,11 +78,11 @@ export const StateMenu = (props: StateMenuProps) => {
 
         plugin.registerEvent(plugin.app.workspace.on('file-open', (newFile) => {
             if(!newFile) return;
-            const viewType = plugin.app.workspace.getLeaf().view.getViewType();
-            if(viewType === 'markdown') {
-                setState( getFileState(plugin, newFile) );
-                setFile(newFile);
-            }
+            let leaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
+            if(!leaf) return;
+
+            setState( getFileState(plugin, newFile) );
+            setFile(newFile);
         }));
     }
 

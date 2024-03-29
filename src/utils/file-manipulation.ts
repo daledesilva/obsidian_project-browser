@@ -90,8 +90,6 @@ async function createNewMarkdownFile(vault: Vault, folder: TFolder, filename: st
 	} else {
         pathAndVersionedBasename = `${folder.path}/${filename} (${version})`;
 	}
-
-    console.log('pathAndVersionedBasename:', pathAndVersionedBasename)
     
     let fileRef: TFile;
 	if( await vault.adapter.exists(`${pathAndVersionedBasename}.md`) ) {

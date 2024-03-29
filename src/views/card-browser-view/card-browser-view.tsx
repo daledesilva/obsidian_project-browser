@@ -32,20 +32,15 @@ export function registerCardBrowserView (plugin: ProjectCardsPlugin) {
 }
 
 function loadOnNewTab(plugin: ProjectCardsPlugin) {
-	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', () => {
-		const viewType = plugin.app.workspace.getLeaf().view.getViewType();
+	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
+        if(!leaf) return;
+        
+		const viewType = leaf.view.getViewType();
 		if(viewType === 'empty') {
-            replaceActiveLeafWithCardBrowser(plugin);
+            // Replace whole leaf
+            new ProjectCardsView(leaf, plugin);
         }
 	}));
-}
-
-function replaceActiveLeafWithCardBrowser(plugin: ProjectCardsPlugin) {
-    let { workspace } = plugin.app;
-    let leaf = workspace.getActiveViewOfType(ItemView)?.leaf;
-    if(!leaf) return;
-
-    new ProjectCardsView(leaf, plugin);
 }
 
 export class ProjectCardsView extends ItemView {
