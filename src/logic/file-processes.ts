@@ -1,11 +1,11 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
-import ProjectCardsPlugin from "src/main";
+import ProjectBrowserPlugin from "src/main";
 import { getProjectExcerpt } from "./folder-processes";
 
 /////////
 /////////
 
-export const getExcerpt = async (plugin: ProjectCardsPlugin, item: TAbstractFile): Promise<null|string> => {
+export const getExcerpt = async (plugin: ProjectBrowserPlugin, item: TAbstractFile): Promise<null|string> => {
     const v = item.vault;
     let excerpt: null | string = null;
 

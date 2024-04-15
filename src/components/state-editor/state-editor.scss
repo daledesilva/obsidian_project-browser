@@ -1,0 +1,11 @@
+.ddc_pb_states-ctrl {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.ddc_pb_states-ctrl .ddc_pb_draggable {
+    padding: 10px;
+    border-radius: 1em;
+    background-color: rgba(255,255,255,0.1);
+}

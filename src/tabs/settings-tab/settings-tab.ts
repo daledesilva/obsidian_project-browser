@@ -1,3 +1,4 @@
+import { insertStateEditor } from 'src/components/state-editor/state-editor';
 import './settings-tab.scss';
 import { App, PluginSettingTab, Setting } from "obsidian";
 import InkPlugin from "src/main";
@@ -26,8 +27,11 @@ export class MySettingsTab extends PluginSettingTab {
 
 		// insertPrereleaseWarning(containerEl);
 		// containerEl.createEl('hr');
-
+		
 		insertMoreInfoLinks(containerEl);
+		
+		containerEl.createEl('hr');
+		insertStateEditor(containerEl, this.plugin);
 			
 		// TODO: Collapsible change log
 		// containerEl.createEl('p', {

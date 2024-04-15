@@ -6,9 +6,8 @@ import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
 
 /////////
 /////////
-export default class ProjectCardsPlugin extends Plugin {
+export default class ProjectBrowserPlugin extends Plugin {
 	settings: PluginSettings;
-
 
 	async onload() {
 		await this.loadSettings();

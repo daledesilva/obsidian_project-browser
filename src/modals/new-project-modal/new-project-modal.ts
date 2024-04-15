@@ -1,7 +1,7 @@
 import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
-import ProjectCardsPlugin from "src/main";
+import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
 import { createProject } from "src/utils/file-manipulation";
 
@@ -9,12 +9,12 @@ import { createProject } from "src/utils/file-manipulation";
 /////////
 
 interface NewProjectModalProps {
-    plugin: ProjectCardsPlugin,
+    plugin: ProjectBrowserPlugin,
     folder: TFolder,
 }
 
 export class NewProjectModal extends Modal {
-    plugin: ProjectCardsPlugin;
+    plugin: ProjectBrowserPlugin;
     folder: TFolder;
     projectName: string;
     resolveModal: (file: TFile) => void;

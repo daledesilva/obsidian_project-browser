@@ -5,7 +5,7 @@ import { PluginContext } from 'src/utils/plugin-context';
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { NewProjectModal } from 'src/modals/new-project-modal/new-project-modal';
-import ProjectCardsPlugin from 'src/main';
+import ProjectBrowserPlugin from 'src/main';
 import { Plus } from 'lucide-react';
 import { createProject } from 'src/utils/file-manipulation';
 
@@ -35,7 +35,7 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
 
     //////////
 
-    async function newProject(plugin: ProjectCardsPlugin, folder: TFolder) {
+    async function newProject(plugin: ProjectBrowserPlugin, folder: TFolder) {
         const modal = new NewProjectModal({
             plugin: plugin,
             folder: folder,

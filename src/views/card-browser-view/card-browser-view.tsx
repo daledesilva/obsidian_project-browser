@@ -1,4 +1,4 @@
-import ProjectCardsPlugin from "src/main";
+import ProjectBrowserPlugin from "src/main";
 import { FileView, ItemView, MarkdownView, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
@@ -17,13 +17,13 @@ export interface CardBrowserViewState {
     path: string;
 }
 
-export function setCardBrowserViewStateDefaults(plugin: ProjectCardsPlugin): CardBrowserViewState {
+export function setCardBrowserViewStateDefaults(plugin: ProjectBrowserPlugin): CardBrowserViewState {
     return {
         path: plugin.app.vault.getRoot().path,
     }
 }
 
-export function registerCardBrowserView (plugin: ProjectCardsPlugin) {
+export function registerCardBrowserView (plugin: ProjectBrowserPlugin) {
     plugin.registerView(
         CARD_BROWSER_VIEW_TYPE,
         (leaf) => new ProjectCardsView(leaf, plugin)
@@ -31,7 +31,7 @@ export function registerCardBrowserView (plugin: ProjectCardsPlugin) {
     loadOnNewTab(plugin);
 }
 
-function loadOnNewTab(plugin: ProjectCardsPlugin) {
+function loadOnNewTab(plugin: ProjectBrowserPlugin) {
 	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
         if(!leaf) return;
         
@@ -45,13 +45,13 @@ function loadOnNewTab(plugin: ProjectCardsPlugin) {
 
 export class ProjectCardsView extends ItemView {
     root: Root;
-    plugin: ProjectCardsPlugin;
+    plugin: ProjectBrowserPlugin;
     internalClick: boolean = false;
     
     // CardBrowserViewState properties
     state: CardBrowserViewState;
 
-    constructor(leaf: WorkspaceLeaf, plugin: ProjectCardsPlugin) {
+    constructor(leaf: WorkspaceLeaf, plugin: ProjectBrowserPlugin) {
         super(leaf);
         this.plugin = plugin;
         this.navigation = true;
