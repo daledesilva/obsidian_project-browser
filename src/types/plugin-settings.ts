@@ -11,7 +11,9 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	states: {
 		visible: [
 			'Idea',
+			'Shortlisted',
 			'Drafting',
+			'Focus',
 			'Final',
 		],
 		hidden: [

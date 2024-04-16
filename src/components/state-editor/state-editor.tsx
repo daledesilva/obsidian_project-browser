@@ -1,7 +1,7 @@
 import { Root, createRoot } from 'react-dom/client';
 import * as React from "react";
 import ProjectBrowserPlugin from 'src/main';
-import { ReactSortable } from "react-sortablejs";
+import { ItemInterface, ReactSortable } from "react-sortablejs";
 import './state-editor.scss';
 import classnames from 'classnames';
 
@@ -26,7 +26,6 @@ export function insertStateEditor(containerEl: HTMLElement, plugin: ProjectBrows
             // </PluginContext.Provider>
         );
     }
-    
 
 	// const sectionEl = containerEl.createDiv('ddc_pb_section');
 	// sectionEl.createEl('p', { text: `For information on this plugin's development, visit the links below. Feel free to leave comments in the development diaries on YouTube.` });
@@ -50,8 +49,8 @@ interface StateEditorProps {
 }
 
 export const StateEditor = (props: StateEditorProps) => {
-
-    const states = props.plugin.settings.states;
+    const [visibleStates, setVisibleStates] = React.useState<StateItem[]>( convertToStateItems(props.plugin.settings.states.visible) );
+    const [hiddenStates, setHiddenStates] = React.useState<StateItem[]>( convertToStateItems(props.plugin.settings.states.hidden) );
 
     return <>
         <div
@@ -60,8 +59,12 @@ export const StateEditor = (props: StateEditorProps) => {
             <h2>Order states</h2>
             <h3>Visible states</h3>
             <ReactSortable
-                list = {states.visible}
-                setList = {() => {}}
+                list = {visibleStates}
+                setList = { async (stateItems) => {
+                    props.plugin.settings.states.visible = convertToStates(stateItems);
+                    await props.plugin.saveSettings();
+                    setVisibleStates(stateItems);
+                }}
                 group = 'states'
                 animation = {200}
                 className = {classnames([
@@ -69,19 +72,23 @@ export const StateEditor = (props: StateEditorProps) => {
                     'ddc_pb_visible-states-ctrl',
                 ])}
             >
-                {states.visible.map((state) => (
+                {visibleStates.map((stateItem) => (
                     <div
-                        key = {state}
+                        key = {stateItem.state}
                         className = 'ddc_pb_draggable'
                     >
-                        {state}
+                        {stateItem.state}
                     </div>
                 ))}
             </ReactSortable>
             <h3>Hidden states</h3>
             <ReactSortable
-                list = {states.hidden}
-                setList = {() => {}}
+                list = {hiddenStates}
+                setList = { async (stateItems) => {
+                    props.plugin.settings.states.hidden = convertToStates(stateItems);
+                    await props.plugin.saveSettings();
+                    setHiddenStates(stateItems);
+                }}
                 group = 'states'
                 animation = {200}
                 className = {classnames([
@@ -89,17 +96,41 @@ export const StateEditor = (props: StateEditorProps) => {
                     'ddc_pb_hidden-states-ctrl',
                 ])}
             >
-                {states.hidden.map((state) => (
+                {hiddenStates.map((stateItem) => (
                     <div
-                        key = {state}
+                        key = {stateItem.state}
                         className = 'ddc_pb_draggable'
                     >
-                        {state}
+                        {stateItem.state}
                     </div>
                 ))}
             </ReactSortable>
-            {/* <h3>Unused states</h3>
-            <p>These state values exist but are being ignored by the Project Browser</p> */}
         </div>
     </>
+}
+
+///////
+///////
+
+interface StateItem extends ItemInterface {
+    state: string
+}
+
+function convertToStateItems(states: string[]): StateItem[] {
+    const stateItems: StateItem[] = [];
+    states.forEach( (stateName) => {
+        stateItems.push({
+            id: stateName,
+            state: stateName,
+        })
+    })
+    return stateItems;
+}
+
+function convertToStates(stateItems: StateItem[]): string[] {
+    const states: string[] = [];
+    stateItems.forEach( (stateItem) => {
+        states.push(stateItem.state)
+    })
+    return states;
 }
