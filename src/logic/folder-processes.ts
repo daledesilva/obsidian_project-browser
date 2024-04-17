@@ -145,7 +145,7 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
         })
     }
     
-    itemsBySectionArr = orderSections(itemsBySectionArr);
+    itemsBySectionArr = orderSections(itemsBySectionArr, plugin);
 
     return itemsBySectionArr;
 }

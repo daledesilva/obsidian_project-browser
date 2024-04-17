@@ -1,4 +1,5 @@
 import { TFile, TFolder } from "obsidian";
+import ProjectBrowserPlugin from "src/main";
 
 /////////
 /////////
@@ -8,8 +9,11 @@ export interface Section {
     items: Array<TFile | TFolder>
 }
 
-export const orderSections = (sections: Section[]): Section[] => {
-    const intendedOrder = ['Folders','Final', 'Drafting', 'Idea', ' ', 'Archived', 'Cancelled']
+export const orderSections = (sections: Section[], plugin: ProjectBrowserPlugin): Section[] => {
+    const intendedOrder = [...plugin.settings.states.visible];
+    intendedOrder.reverse();
+    intendedOrder.unshift('Folders');
+    intendedOrder.push(' ');
     
     // Create a map to store the original index of each section title
     const sectionMap = sections.reduce((accumulator, section, index) => {

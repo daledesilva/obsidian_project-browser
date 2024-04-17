@@ -30,7 +30,6 @@ export const StateMenu = (props: StateMenuProps) => {
     const visibleStates = plugin.settings.states.visible;
     const hiddenStates = plugin.settings.states.hidden;
 
-
     return <>
         {!menuIsActive && (
             <button
