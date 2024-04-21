@@ -4,6 +4,7 @@ import ProjectBrowserPlugin from 'src/main';
 import { ItemInterface, ReactSortable } from "react-sortablejs";
 import './state-editor.scss';
 import classnames from 'classnames';
+import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
 
 //////////
 //////////
@@ -56,55 +57,101 @@ export const StateEditor = (props: StateEditorProps) => {
         <div
             className = 'ddc_pb_section-header'
         >
-            <h2>Order states</h2>
-            <h3>Visible states</h3>
-            <ReactSortable
-                list = {visibleStates}
-                setList = { async (stateItems) => {
-                    props.plugin.settings.states.visible = convertToStates(stateItems);
-                    await props.plugin.saveSettings();
-                    setVisibleStates(stateItems);
-                }}
-                group = 'states'
-                animation = {200}
-                className = {classnames([
-                    'ddc_pb_states-ctrl',
-                    'ddc_pb_visible-states-ctrl',
-                ])}
-            >
-                {visibleStates.map((stateItem) => (
-                    <div
-                        key = {stateItem.state}
-                        className = 'ddc_pb_draggable'
+            <h2>Project states</h2>
+            <p>Your notes can exist in one state at a time. Visible states will appear the project browser tab, while hidden states will not. You can order, add, or delete states below. You can also drag states between visible and hidden.</p>
+
+            <div className="ddc_pb_states-section">
+                <h3>Visible states</h3>
+                <ReactSortable
+                    list = {visibleStates}
+                    setList = { async (stateItems) => {
+                        props.plugin.settings.states.visible = convertToStates(stateItems);
+                        await props.plugin.saveSettings();
+                        setVisibleStates(stateItems);
+                    }}
+                    group = 'states'
+                    animation = {200}
+                    className = {classnames([
+                        'ddc_pb_states-ctrl',
+                        'ddc_pb_visible-states-ctrl',
+                    ])}
+                >
+                    {visibleStates.map((stateItem) => (
+                        <div
+                            key = {stateItem.state}
+                            className = 'ddc_pb_draggable'
+                        >
+                            {stateItem.state}
+                        </div>
+                    ))}
+                </ReactSortable>
+                <div className="ddc_pb_states-button-group">
+                <button
+                        className = "ddc_pb_add-button"
+                        onClick = { async () => {
+                            new NewStateModal({
+                                plugin: props.plugin,
+                                title: ' Create new visible state',
+                                onSuccess: async (newState) => {
+                                    const newStates = props.plugin.settings.states.visible;
+                                    newStates.push(newState);
+                                    await props.plugin.saveSettings();
+                                    setVisibleStates( convertToStateItems(newStates) );
+                                }
+                            }).open();
+                        }}
                     >
-                        {stateItem.state}
-                    </div>
-                ))}
-            </ReactSortable>
-            <h3>Hidden states</h3>
-            <ReactSortable
-                list = {hiddenStates}
-                setList = { async (stateItems) => {
-                    props.plugin.settings.states.hidden = convertToStates(stateItems);
-                    await props.plugin.saveSettings();
-                    setHiddenStates(stateItems);
-                }}
-                group = 'states'
-                animation = {200}
-                className = {classnames([
-                    'ddc_pb_states-ctrl',
-                    'ddc_pb_hidden-states-ctrl',
-                ])}
-            >
-                {hiddenStates.map((stateItem) => (
-                    <div
-                        key = {stateItem.state}
-                        className = 'ddc_pb_draggable'
+                        +
+                    </button>
+                </div>
+            </div>
+
+            <div className="ddc_pb_states-section">
+                <h3>Hidden states</h3>
+                <ReactSortable
+                    list = {hiddenStates}
+                    setList = { async (stateItems) => {
+                        props.plugin.settings.states.hidden = convertToStates(stateItems);
+                        await props.plugin.saveSettings();
+                        setHiddenStates(stateItems);
+                    }}
+                    group = 'states'
+                    animation = {200}
+                    className = {classnames([
+                        'ddc_pb_states-ctrl',
+                        'ddc_pb_hidden-states-ctrl',
+                    ])}
+                >
+                    {hiddenStates.map((stateItem) => (
+                        <div
+                            key = {stateItem.state}
+                            className = 'ddc_pb_draggable'
+                        >
+                            {stateItem.state}
+                        </div>
+                    ))}
+                </ReactSortable>
+                <div className="ddc_pb_states-button-group">
+                    <button
+                        className = "ddc_pb_add-button"
+                        onClick = { async () => {
+                            await new NewStateModal({
+                                plugin: props.plugin,
+                                title: ' Create new hidden state',
+                                onSuccess: async (newState) => {
+                                    const newStates = props.plugin.settings.states.hidden;
+                                    newStates.push(newState);
+                                    await props.plugin.saveSettings();
+                                    setHiddenStates( convertToStateItems(newStates) );
+                                }
+                            }).open();
+                        }}
                     >
-                        {stateItem.state}
-                    </div>
-                ))}
-            </ReactSortable>
+                        +
+                    </button>
+                </div>
+            </div>
+
         </div>
     </>
 }

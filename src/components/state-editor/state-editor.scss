@@ -1,11 +1,43 @@
-.ddc_pb_states-ctrl {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
+.ddc_pb_states-section {
 
-.ddc_pb_states-ctrl .ddc_pb_draggable {
-    padding: 10px;
-    border-radius: 1em;
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.03);
+    border-radius: 16px;
+    padding: 1em;
+    margin-bottom: 1em;
+    display: flex;
+    flex-wrap: wrap;
+
+    h3 {
+        font-size: small;
+        margin: 0 0 1em 0;
+        font-weight: 200;
+        width: 100%;
+    }
+
+    .ddc_pb_states-ctrl {
+        flex-grow: 1;
+        display: flex;
+        flex-flow: row wrap;
+        gap: 0.5em;
+        row-gap: 0.9em;
+        
+        .ddc_pb_draggable {
+            padding: 10px;
+            border-radius: 1em;
+            background-color: rgba(255,255,255,0.1);
+        }
+    }
+
+    .ddc_pb_states-button-group {
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        
+
+        .ddc_pb_states-button {
+            width: fit-content;
+        }
+    }
+
 }
