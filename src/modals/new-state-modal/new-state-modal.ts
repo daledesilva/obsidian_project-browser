@@ -63,8 +63,6 @@ export class NewStateModal extends Modal {
                 });
             });
 
-		contentEl.createEl('p', {text: 'Note: You can move it between visible and hidden at any time after creation.'});
-
 		new Setting(contentEl).addButton(cancelBtn => {
 			cancelBtn.setClass('ddc_pb_button');
 			cancelBtn.setButtonText('Cancel');

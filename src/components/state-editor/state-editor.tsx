@@ -3,8 +3,9 @@ import * as React from "react";
 import ProjectBrowserPlugin from 'src/main';
 import { ItemInterface, ReactSortable } from "react-sortablejs";
 import './state-editor.scss';
-import classnames from 'classnames';
 import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
+import { GripVertical, Plus, Trash, X } from 'lucide-react';
+import classNames from 'classnames';
 
 //////////
 //////////
@@ -52,13 +53,15 @@ interface StateEditorProps {
 export const StateEditor = (props: StateEditorProps) => {
     const [visibleStates, setVisibleStates] = React.useState<StateItem[]>( convertToStateItems(props.plugin.settings.states.visible) );
     const [hiddenStates, setHiddenStates] = React.useState<StateItem[]>( convertToStateItems(props.plugin.settings.states.hidden) );
+    const [isDragging, setIsDragging] = React.useState<boolean>( false );
+    const deletedStates: StateItem[] = [];
 
     return <>
         <div
             className = 'ddc_pb_section-header'
         >
-            <h2>Project states</h2>
-            <p>Your notes can exist in one state at a time. Visible states will appear the project browser tab, while hidden states will not. You can order, add, or delete states below. You can also drag states between visible and hidden.</p>
+            <h2>Note states</h2>
+            <p>States will appear in reverse order in the project browser so that more progressed notes are shown higher. Hidden states will not show.</p>
 
             <div className="ddc_pb_states-section">
                 <h3>Visible states</h3>
@@ -71,17 +74,27 @@ export const StateEditor = (props: StateEditorProps) => {
                     }}
                     group = 'states'
                     animation = {200}
-                    className = {classnames([
+                    className = {classNames([
                         'ddc_pb_states-ctrl',
                         'ddc_pb_visible-states-ctrl',
                     ])}
+                    onStart = {() => {
+                        setIsDragging(true);
+                    }}
+                    onEnd = {() => {
+                        setIsDragging(false);
+                    }}
                 >
                     {visibleStates.map((stateItem) => (
                         <div
                             key = {stateItem.state}
                             className = 'ddc_pb_draggable'
                         >
+                            <GripVertical className='ddc_pb_drag-icon'/>
                             {stateItem.state}
+                            {/* <div className='ddc_pb_close-btn'>
+                                <X className='ddc_pb_delete-icon' size='5em'/>
+                            </div> */}
                         </div>
                     ))}
                 </ReactSortable>
@@ -101,7 +114,7 @@ export const StateEditor = (props: StateEditorProps) => {
                             }).open();
                         }}
                     >
-                        +
+                        <Plus/>
                     </button>
                 </div>
             </div>
@@ -115,9 +128,15 @@ export const StateEditor = (props: StateEditorProps) => {
                         await props.plugin.saveSettings();
                         setHiddenStates(stateItems);
                     }}
+                    onStart = {() => {
+                        setIsDragging(true);
+                    }}
+                    onEnd = {() => {
+                        setIsDragging(false);
+                    }}
                     group = 'states'
                     animation = {200}
-                    className = {classnames([
+                    className = {classNames([
                         'ddc_pb_states-ctrl',
                         'ddc_pb_hidden-states-ctrl',
                     ])}
@@ -127,6 +146,7 @@ export const StateEditor = (props: StateEditorProps) => {
                             key = {stateItem.state}
                             className = 'ddc_pb_draggable'
                         >
+                            <GripVertical className='ddc_pb_drag-icon'/>
                             {stateItem.state}
                         </div>
                     ))}
@@ -147,9 +167,33 @@ export const StateEditor = (props: StateEditorProps) => {
                             }).open();
                         }}
                     >
-                        +
+                        <Plus/>
                     </button>
                 </div>
+            </div>
+
+            <div
+                className = {classNames([
+                    'ddc_pb_states-section',
+                    'ddc_pb_state-dropzone',
+                    isDragging && 'ddc_pb_visible',
+                ])}
+            >
+                <h3>
+                    <Trash className='ddc_pb_delete-icon'/>
+                    Drag here to delete
+                </h3>
+                <ReactSortable
+                    list = {deletedStates}
+                    setList = { () => {}}   // Do nothing as the other lists will save their items
+                    group = 'states'
+                    animation = {200}
+                    className = {classNames([
+                        'ddc_pb_states-ctrl',
+                    ])}
+                >
+                    
+                </ReactSortable>
             </div>
 
         </div>
