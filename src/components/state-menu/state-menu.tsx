@@ -4,12 +4,14 @@ import * as React from "react";
 import { PluginContext } from 'src/utils/plugin-context';
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
+import ProjectBrowserPlugin from 'src/main';
 
 //////////
 //////////
 
 interface StateMenuProps {
     file: TFile,
+    plugin: ProjectBrowserPlugin
 }
 
 export const StateMenu = (props: StateMenuProps) => {
@@ -25,9 +27,8 @@ export const StateMenu = (props: StateMenuProps) => {
     let displayState = state;
     if(!displayState) displayState = 'Set State';
 
-    const visibleStates = ['Idea', 'Drafting', 'Final'];
-    const hiddenStates = ['Archived', 'Cancelled'];
-
+    const visibleStates = plugin.settings.states.visible;
+    const hiddenStates = plugin.settings.states.hidden;
 
     return <>
         {!menuIsActive && (

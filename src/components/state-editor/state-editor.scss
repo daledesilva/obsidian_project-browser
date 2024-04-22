@@ -1,0 +1,104 @@
+
+.ddc_pb_states-section {
+
+    background-color: rgba(255,255,255,0.03);
+    border-radius: 16px;
+    padding: 1em;
+    margin-bottom: 1em;
+    display: flex;
+    flex-wrap: wrap;
+
+    h3 {
+        font-size: small;
+        margin: 0 0 1em 0;
+        font-weight: 200;
+        width: 100%;
+    }
+
+    .ddc_pb_states-ctrl {
+        flex-grow: 1;
+        min-height: 2.5em;
+        min-width: 10em;
+
+        display: flex;
+        flex-flow: row wrap;
+        gap: 0.5em;
+        row-gap: 0.9em;
+        
+        
+        .ddc_pb_draggable {
+            padding: 8px 13px 8px 6px;
+            border-radius: 1em;
+            background-color: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .ddc_pb_drag-icon {
+                width: 1em;
+                height: 1em;
+                color: rgba(255,255,255,0.2);
+                overflow: hidden;
+            }
+
+            // Turns off because it hovers the wrong icon when indexes change
+            // &:hover {
+            //     .ddc_pb_drag-icon {
+            //         color: rgba(255,255,255,1);
+            //     }
+            // }
+
+        }
+    }
+
+    .ddc_pb_states-button-group {
+        flex-grow: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        
+
+        .ddc_pb_states-button {
+            width: fit-content;
+        }
+    }
+
+}
+
+
+
+.ddc_pb_states-section.ddc_pb_state-dropzone {
+
+    background-color: rgba(255,100,100,0.05);
+    border-radius: 16px;
+
+    height: 0;
+    padding: 0 1em;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
+    &.ddc_pb_visible {
+        height: 7em;
+        // height: fit-content;
+        padding: 1em;
+    }
+
+    h3 {
+        display: flex;
+        gap: 15px;
+        color: red;
+
+        .ddc_pb_delete-icon {
+            width: 1.5em;
+            height: 1.5em;
+            color: red;
+        }
+    }
+
+    position: relative;
+    .ddc_pb_dropzone-ctrl {
+        position: absolute;
+        inset: 0;
+        padding-top: 2em;
+    }
+
+}

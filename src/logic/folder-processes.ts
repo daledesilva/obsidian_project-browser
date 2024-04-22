@@ -1,5 +1,5 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
-import ProjectCardsPlugin from "src/main";
+import ProjectBrowserPlugin from "src/main";
 import { Section, orderSections } from "./section-processes";
 import { getFileFrontmatter } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
@@ -8,7 +8,7 @@ import { getFileExcerpt } from "./file-processes";
 ///////////
 
 
-export const isProjectFolder = async (plugin: ProjectCardsPlugin, folder: TFolder): Promise<boolean> => {
+export const isProjectFolder = async (plugin: ProjectBrowserPlugin, folder: TFolder): Promise<boolean> => {
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder)  return false;
 
@@ -25,7 +25,7 @@ export const isProjectFolder = async (plugin: ProjectCardsPlugin, folder: TFolde
     return false;
 }
 
-function contentsIndicatesProject(plugin: ProjectCardsPlugin, folder: TFolder): boolean {
+function contentsIndicatesProject(plugin: ProjectBrowserPlugin, folder: TFolder): boolean {
     const itemsInFolder = getItemsInFolder(folder);
     const fileStatesFound: string[] = [];
     
@@ -48,7 +48,7 @@ function contentsIndicatesProject(plugin: ProjectCardsPlugin, folder: TFolder): 
 
 // Returns first state found in folder
 // use isProjectFolder to ensure it's a project first
-function getProjectState(plugin: ProjectCardsPlugin, folder: TFolder): null | string {
+function getProjectState(plugin: ProjectBrowserPlugin, folder: TFolder): null | string {
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder) return null;
     
@@ -65,7 +65,7 @@ function getProjectState(plugin: ProjectCardsPlugin, folder: TFolder): null | st
     return null;
 }
 
-export const getProjectExcerpt = async (plugin: ProjectCardsPlugin, folder: TFolder): Promise<null|string> => {
+export const getProjectExcerpt = async (plugin: ProjectBrowserPlugin, folder: TFolder): Promise<null|string> => {
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder)  return null;
     
@@ -82,7 +82,7 @@ export const getProjectExcerpt = async (plugin: ProjectCardsPlugin, folder: TFol
     return null;
 }
 
-export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFolder): Section[] => {
+export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFolder): Section[] => {
     const itemsInFolder = getItemsInFolder(folder);
     
     interface ItemsBySectionMap {
@@ -145,7 +145,7 @@ export const getSortedItemsInFolder = (plugin: ProjectCardsPlugin, folder: TFold
         })
     }
     
-    itemsBySectionArr = orderSections(itemsBySectionArr);
+    itemsBySectionArr = orderSections(itemsBySectionArr, plugin);
 
     return itemsBySectionArr;
 }

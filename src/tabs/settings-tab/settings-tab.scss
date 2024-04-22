@@ -1,0 +1,30 @@
+.ddc_pb_section {
+    margin-bottom: 2em;
+}
+
+.ddc_pb_section details {
+    overflow: hidden;
+    border-style: solid;
+    border-color: rgba(var(--callout-color), var(--callout-border-opacity));
+    border-width: var(--callout-border-width);
+    border-radius: var(--callout-radius);
+    margin: 1em 0;
+    background-color: rgba(var(--callout-color), 0.05);
+    padding: var(--callout-padding);
+
+    --callout-color: 255,255,255;
+    &.warning {
+        --callout-color: var(--callout-warning);
+    }
+
+    summary {
+        font-weight: 600;
+    }
+}
+
+.ddc_pb_controls-section {
+    padding: 0.2em 1em;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-base-20);
+}

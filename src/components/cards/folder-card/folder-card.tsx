@@ -2,7 +2,7 @@ import './folder-card.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
 import { getProjectExcerpt, isProjectFolder } from 'src/logic/folder-processes';
-import ProjectCardsPlugin from 'src/main';
+import ProjectBrowserPlugin from 'src/main';
 import { PluginContext } from 'src/utils/plugin-context';
 
 /////////
@@ -45,7 +45,7 @@ export const FolderCard = (props: FolderCardProps) => {
     ///////
     ///////
 
-    async function getExcerpt(plugin:ProjectCardsPlugin,  folder:TFolder) {
+    async function getExcerpt(plugin:ProjectBrowserPlugin,  folder:TFolder) {
         // if(await isProjectFolder(plugin, folder)) {
         //     const excerpt = await getProjectExcerpt(plugin, folder);
         //     setExcerpt(excerpt);

@@ -1,5 +1,5 @@
 import './markdown-view-mods.scss';
-import ProjectCardsPlugin from "src/main";
+import ProjectBrowserPlugin from "src/main";
 import { ItemView } from "obsidian";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
@@ -13,7 +13,7 @@ const stateMenuContainerClassName = 'project-browser_state-menu-container';
 
 //////////
 
-export function registerMarkdownViewMods(plugin: ProjectCardsPlugin) {
+export function registerMarkdownViewMods(plugin: ProjectBrowserPlugin) {
     // NOTE: Opening a different file in the same leaf counts as an active-leaf-change, but the header gets replaced, it updates.
     plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
         if(!leaf) return;
@@ -25,7 +25,7 @@ export function registerMarkdownViewMods(plugin: ProjectCardsPlugin) {
 	}));
 }
 
-function addStateHeader(plugin: ProjectCardsPlugin) {
+function addStateHeader(plugin: ProjectBrowserPlugin) {
     let { workspace } = plugin.app;
     let leaf = workspace.getActiveViewOfType(ItemView)?.leaf;
     if(!leaf) return;

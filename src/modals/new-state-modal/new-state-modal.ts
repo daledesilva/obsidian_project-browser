@@ -8,28 +8,32 @@ import { createProject } from "src/utils/file-manipulation";
 /////////
 /////////
 
-interface NewProjectModalProps {
+interface NewStateModalProps {
     plugin: ProjectBrowserPlugin,
-    folder: TFolder,
+	title?: string,
+	onSuccess: (newState: string) => {},
 }
 
-export class NewProjectModal extends Modal {
+export class NewStateModal extends Modal {
     plugin: ProjectBrowserPlugin;
-    folder: TFolder;
-    projectName: string;
-    resolveModal: (file: TFile) => void;
+	title: string;
+	onSuccess: (newState: string) => {};
+	////
+    resolveModal: (state: string) => void;
 	rejectModal: (reason: string) => void;
+	state: string;
 
-	constructor(props: NewProjectModalProps) {
+	constructor(props: NewStateModalProps) {
 		super(props.plugin.app);
 		this.plugin = props.plugin;
-		this.folder = props.folder;
+		this.title = props.title ? props.title : 'Create new state'
+		this.onSuccess = props.onSuccess;
 	}
 
     /**
-	 * Opens the modal and returns the file created.
+	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<TFile> {
+	public showModal(): Promise<string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;
@@ -40,31 +44,27 @@ export class NewProjectModal extends Modal {
 	public onOpen() {
 		const {titleEl, contentEl} = this;
 
-		titleEl.setText('Create new project');
-		contentEl.createEl('p', {text: 'This will create a new note.'});
-        contentEl.createEl('p', {text: 'In the future this will be'});
-		
+		titleEl.setText(this.title);
+        
         new Setting(contentEl)
-            .setClass('project-browser_setting')
-            .setName('Project name')
+            .setClass('ddc_pb_setting')
+            .setName('Enter name of new state')
             .addText((text) => {
-                text.setValue(this.projectName);
                 text.inputEl.addEventListener('blur', async (e) => {
                     // const value = folderPathSanitize(text.getValue(), plugin.settings);
                     // plugin.settings.folderNames.notes = value;
-                    this.projectName = text.getValue();
+                    this.state = text.getValue();
                     // await plugin.saveSettings();
                 });
                 text.inputEl.addEventListener('keydown', (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
-                        this.projectName = text.getValue();
-                        this.initCreateProject();
+                        this.state = text.getValue();
                     }
                 });
             });
 
 		new Setting(contentEl).addButton(cancelBtn => {
-			cancelBtn.setClass('project-browser_button');
+			cancelBtn.setClass('ddc_pb_button');
 			cancelBtn.setButtonText('Cancel');
 			cancelBtn.onClick( () => {
                 this.rejectModal('cancelled');
@@ -72,10 +72,13 @@ export class NewProjectModal extends Modal {
 			})
 		})
 		.addButton( confirmBtn => {
-			confirmBtn.setClass('project-browser_button');
+			confirmBtn.setClass('ddc_pb_button');
 			confirmBtn.setCta();
-			confirmBtn.setButtonText('Create project');
-			confirmBtn.onClick( () => this.initCreateProject() )
+			confirmBtn.setButtonText('Create state');
+			confirmBtn.onClick( () => {
+				this.close();
+				this.onSuccess(this.state);
+			})
 		})
 
 	}
@@ -88,9 +91,9 @@ export class NewProjectModal extends Modal {
 
     ////////
 
-    private async initCreateProject() {
-        const file = await createProject(this.folder, this.projectName)
-        this.resolveModal(file);
+    private async initCreateState() {
+        // const file = await createProject(this.folder, this.projectName)
+        this.resolveModal(this.state);
         this.close();
     }
 }

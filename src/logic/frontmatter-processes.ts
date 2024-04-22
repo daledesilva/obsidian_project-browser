@@ -1,10 +1,10 @@
 import { FrontMatterCache, TFile } from "obsidian";
-import ProjectCardsPlugin from "src/main";
+import ProjectBrowserPlugin from "src/main";
 
 ////////////
 ////////////
 
-export const getFileFrontmatter = (plugin: null | ProjectCardsPlugin, file: TFile): {} | FrontMatterCache => {
+export const getFileFrontmatter = (plugin: null | ProjectBrowserPlugin, file: TFile): {} | FrontMatterCache => {
     if(!plugin) {
         console.log('getFrontmatter returned no frontmatter because plugin was undefined or null.')
         return {};
@@ -29,13 +29,13 @@ export const getFileFrontmatter = (plugin: null | ProjectCardsPlugin, file: TFil
     return frontmatter;
 }
 
-export const setFileFrontmatter = (plugin: ProjectCardsPlugin, file: TFile, newFrontmatter: FrontMatterCache) => {
+export const setFileFrontmatter = (plugin: ProjectBrowserPlugin, file: TFile, newFrontmatter: FrontMatterCache) => {
     plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
         frontmatter = newFrontmatter;
     });
 }
 
-export const getFileState = (plugin: ProjectCardsPlugin, file: TFile): null | string => {
+export const getFileState = (plugin: ProjectBrowserPlugin, file: TFile): null | string => {
     const frontmatter = getFileFrontmatter(plugin,file);
     if(!frontmatter) return null;
 
@@ -43,7 +43,7 @@ export const getFileState = (plugin: ProjectCardsPlugin, file: TFile): null | st
     return state;
 }
 
-export const setFileState = (plugin: ProjectCardsPlugin, file: TFile, state: null | string) => {
+export const setFileState = (plugin: ProjectBrowserPlugin, file: TFile, state: null | string) => {
     plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
         if(state) {
             frontmatter['state'] = state;

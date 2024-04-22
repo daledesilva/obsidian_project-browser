@@ -1,6 +1,6 @@
 import './card-browser.scss';
 import * as React from "react";
-import ProjectCardsPlugin from "src/main";
+import ProjectBrowserPlugin from "src/main";
 import { SectionHeader } from "../section-header/section-header";
 import { CardSet } from "../card-set/card-set";
 import { TFile, TFolder, ViewStateResult, WorkspaceLeaf } from 'obsidian';
@@ -14,7 +14,7 @@ import { CardBrowserViewState } from 'src/views/card-browser-view/card-browser-v
 
 interface CardBrowserProps {
     path: string,
-    plugin: ProjectCardsPlugin,
+    plugin: ProjectBrowserPlugin,
     updateState: (viewState: CardBrowserViewState) => void,
 }
 
