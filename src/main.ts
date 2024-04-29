@@ -3,6 +3,7 @@ import { DEFAULT_SETTINGS, PluginSettings } from 'src/types/plugin-settings';
 import { registerCardBrowserView } from './views/card-browser-view/card-browser-view';
 import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-view-mods';
 import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
+import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon } from './commands/open-project-browser';
 
 /////////
 /////////
@@ -16,6 +17,9 @@ export default class ProjectBrowserPlugin extends Plugin {
 
 		registerCardBrowserView(this)
 		registerMarkdownViewMods(this)
+
+		registerOpenProjectBrowserCommand(this);
+		registerOpenProjectBrowserRibbonIcon(this);
 
 		registerSettingsTab(this);
 		

@@ -37,10 +37,27 @@ function loadOnNewTab(plugin: ProjectBrowserPlugin) {
         
 		const viewType = leaf.view.getViewType();
 		if(viewType === 'empty') {
-            // Replace whole leaf
-            new ProjectCardsView(leaf, plugin);
+            replaceLeaf(leaf, plugin);
         }
 	}));
+}
+
+export function newProjectBrowserLeaf(plugin: ProjectBrowserPlugin) {
+    const leaf = plugin.app.workspace.getLeaf(true);
+    new ProjectCardsView(leaf, plugin);
+    plugin.app.workspace.setActiveLeaf(leaf)
+}
+
+// This works but you can't click back.
+export function replaceLeaf(leaf: WorkspaceLeaf, plugin: ProjectBrowserPlugin) {
+    new ProjectCardsView(leaf, plugin);
+}
+
+export function replaceMostRecentLeaf(plugin: ProjectBrowserPlugin) {
+    const leaf = plugin.app.workspace.getMostRecentLeaf();
+    if(leaf) {
+        leaf.open(new ProjectCardsView(leaf, plugin));
+    }
 }
 
 export class ProjectCardsView extends ItemView {
