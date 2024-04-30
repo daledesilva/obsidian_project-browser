@@ -13,8 +13,18 @@ export async function registerOpenProjectBrowserCommand(plugin: ProjectBrowserPl
 }
 
 export async function registerOpenProjectBrowserRibbonIcon(plugin: ProjectBrowserPlugin) {
+    // 'align-vertical-justify-start'
+    // 'align-vertical-justify-center'
+    // 'layout-list'
+    // 'book'
+    // 'album'
+    // 'book-copy'
+    // 'captions'
+    // 'gallery-vertical-end'
+    // 'archive'
+    // 'book-text'
     // 'wallet-cards'
-    plugin.addRibbonIcon('book-copy', 'Open project browser', () => {
+    plugin.addRibbonIcon('align-vertical-justify-start', 'Open project browser', () => {
         newProjectBrowserLeaf(plugin)
     });
 }

@@ -6,6 +6,7 @@ import './state-editor.scss';
 import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
 import { GripVertical, Plus, Trash, X } from 'lucide-react';
 import classNames from 'classnames';
+import { Setting } from 'obsidian';
 
 //////////
 //////////
@@ -13,8 +14,12 @@ import classNames from 'classnames';
 export function insertStateEditor(containerEl: HTMLElement, plugin: ProjectBrowserPlugin) {
     let root: Root;
 
+    new Setting(containerEl)
+    .setClass('ddc_pb_setting')
+    .setName('Note states')
+    .setDesc('States will appear in reverse order in the project browser so that more progressed notes are shown higher. Hidden states will not show.')
+    
     const sectionEl = containerEl.createDiv('ddc_pb_section');
-
     const contentEl = sectionEl.createDiv();
     this.root = createRoot(contentEl);
     renderView();
@@ -60,8 +65,6 @@ export const StateEditor = (props: StateEditorProps) => {
         <div
             className = 'ddc_pb_section-header'
         >
-            <h2>Note states</h2>
-            <p>States will appear in reverse order in the project browser so that more progressed notes are shown higher. Hidden states will not show.</p>
 
             <div className="ddc_pb_states-section">
                 <h3>Visible states</h3>

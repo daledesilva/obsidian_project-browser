@@ -20,7 +20,7 @@ export function registerMarkdownViewMods(plugin: ProjectBrowserPlugin) {
 
 		const viewType = leaf.view.getViewType();
 		if(viewType === 'markdown') {
-            addStateHeader(plugin);
+            if(plugin.settings.showStateMenu) addStateHeader(plugin);
         }
 	}));
 }

@@ -20,7 +20,7 @@ export class MySettingsTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	display(): void {
+	display = (): void => {
 		const {containerEl} = this;
 
 		containerEl.empty();
@@ -29,9 +29,8 @@ export class MySettingsTab extends PluginSettingTab {
 		// containerEl.createEl('hr');
 		
 		insertMoreInfoLinks(containerEl);
-		
-		containerEl.createEl('hr');
-		insertStateEditor(containerEl, this.plugin);
+		insertAccessSettings(containerEl, this.plugin, this.display);
+		insertNoteStateSettings(containerEl, this.plugin, this.display);
 			
 		// TODO: Collapsible change log
 		// containerEl.createEl('p', {
@@ -39,7 +38,7 @@ export class MySettingsTab extends PluginSettingTab {
 		// 	cls: 'ddc_pb_text-warning',
 		// });		
 		
-		// insertHighLevelSettings(containerEl, this.plugin, () => this.display());
+		// insertAccessSettings(containerEl, this.plugin, () => this.display());
 	
 		new Setting(containerEl)
 			.addButton( (button) => {
@@ -48,7 +47,7 @@ export class MySettingsTab extends PluginSettingTab {
 					new ConfirmationModal({
 						plugin: this.plugin,
 						title: 'Please confirm',
-						message: 'Revert to default settings for Project Browser plugin?',
+						message: 'Revert all Project Browser settings to defaults??',
 						confirmLabel: 'Reset settings',
 						confirmAction: async () => {
 							await this.plugin.resetSettings();
@@ -80,19 +79,64 @@ function insertMoreInfoLinks(containerEl: HTMLElement) {
 	});
 }
 
-function insertHighLevelSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
+function insertAccessSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
 
 		new Setting(containerEl)
 			.setClass('ddc_pb_setting')
-			.setName('Show state menu in notes')
+			.setName('Replace empty tab')
+			.setDesc('Create a new, empty tab to access the Project Browser.')
 			.addToggle((toggle) => {
-				toggle.setValue(plugin.settings.showStateMenu);
+				toggle.setValue(plugin.settings.access.replaceNewTab);
 				toggle.onChange(async (value) => {
-					plugin.settings.showStateMenu = value;
+					plugin.settings.access.replaceNewTab = value;
 					await plugin.saveSettings();
 					refresh();
 				});
 			});
+
+		new Setting(containerEl)
+			.setClass('ddc_pb_setting')
+			.setName('Enable ribbon icon')
+			.setDesc('Click an icon in the Obsidian ribbon menu bar to open the Project Browser in a new tab.')
+			.addToggle((toggle) => {
+				toggle.setValue(plugin.settings.access.enableRibbonIcon);
+				toggle.onChange(async (value) => {
+					plugin.settings.access.enableRibbonIcon = value;
+					await plugin.saveSettings();
+					refresh();
+				});
+			});
+
+		new Setting(containerEl)
+			.setClass('ddc_pb_setting')
+			.setName('Enable command')
+			.setDesc('Run a command from the Command Palette at any time to open the Project Browser in a new tab.')
+			.addToggle((toggle) => {
+				toggle.setValue(plugin.settings.access.enableCommand);
+				toggle.onChange(async (value) => {
+					plugin.settings.access.enableCommand = value;
+					await plugin.saveSettings();
+					refresh();
+				});
+			});
+
+}
+
+function insertNoteStateSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
+
+	new Setting(containerEl)
+	.setClass('ddc_pb_setting')
+	.setName('Show state menu in notes')
+	.addToggle((toggle) => {
+		toggle.setValue(plugin.settings.showStateMenu);
+		toggle.onChange(async (value) => {
+			plugin.settings.showStateMenu = value;
+			await plugin.saveSettings();
+			refresh();
+		});
+	});
+	
+	insertStateEditor(containerEl, plugin);
 
 }
 

@@ -12,12 +12,14 @@ interface NewStateModalProps {
     plugin: ProjectBrowserPlugin,
 	title?: string,
 	onSuccess: (newState: string) => {},
+	onReject?: (newState: string) => {},
 }
 
 export class NewStateModal extends Modal {
     plugin: ProjectBrowserPlugin;
 	title: string;
 	onSuccess: (newState: string) => {};
+	onReject: ((newState: string) => {}) | undefined;
 	////
     resolveModal: (state: string) => void;
 	rejectModal: (reason: string) => void;
@@ -28,6 +30,7 @@ export class NewStateModal extends Modal {
 		this.plugin = props.plugin;
 		this.title = props.title ? props.title : 'Create new state'
 		this.onSuccess = props.onSuccess;
+		this.onReject = props.onReject;
 	}
 
     /**
@@ -67,8 +70,8 @@ export class NewStateModal extends Modal {
 			cancelBtn.setClass('ddc_pb_button');
 			cancelBtn.setButtonText('Cancel');
 			cancelBtn.onClick( () => {
-                this.rejectModal('cancelled');
 				this.close();
+                if(this.rejectModal) this.rejectModal('cancelled');
 			})
 		})
 		.addButton( confirmBtn => {

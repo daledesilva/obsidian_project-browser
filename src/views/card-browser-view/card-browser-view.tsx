@@ -28,10 +28,9 @@ export function registerCardBrowserView (plugin: ProjectBrowserPlugin) {
         CARD_BROWSER_VIEW_TYPE,
         (leaf) => new ProjectCardsView(leaf, plugin)
     );
-    loadOnNewTab(plugin);
 }
 
-function loadOnNewTab(plugin: ProjectBrowserPlugin) {
+export function loadCardBrowserOnNewTab(plugin: ProjectBrowserPlugin) {
 	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
         if(!leaf) return;
         
