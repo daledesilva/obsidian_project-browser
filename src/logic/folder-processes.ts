@@ -139,7 +139,6 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
 
     let itemsBySectionArr: Section[] = [];
     for (const [key, value] of Object.entries(itemsBySection)) {
-        console.log('key', key);
         itemsBySectionArr.push({
             title: key,
             type: key === 'folders' ? 'folders' : key == ' ' ? 'stateless' : 'state',

@@ -70,8 +70,6 @@ interface BaseSectionProps {
 }
 const BaseSection = (props: React.PropsWithChildren<BaseSectionProps>) => {
 
-    console.log('className', props.className)
-
     return <>
         <div
             className = {classNames([
