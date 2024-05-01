@@ -1,9 +1,8 @@
 import './card-browser.scss';
 import * as React from "react";
 import ProjectBrowserPlugin from "src/main";
-import { SectionHeader } from "../section-header/section-header";
-import { CardSet } from "../card-set/card-set";
-import { TFile, TFolder, ViewStateResult, WorkspaceLeaf } from 'obsidian';
+import { FolderSection, StateSection, StatelessSection } from "../section/section";
+import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
@@ -30,8 +29,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
     React.useEffect( () => {
         //
     },[])
-
-    // console.log('folder:', folder);
     
     return <>
         <div
@@ -42,20 +39,17 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 onBackClick = {openParentFolder}
             />
             <div>
-                {sectionsOfItems.map( (section) => (
-                    <div key={section.title}>
-                        {section.title !== "Folders" && (
-                            <SectionHeader
-                                title = {section.title}
-                            />
-                        )}
-                        <CardSet
-                            items = {section.items}
-                            onFileSelect = {openFile}
-                            onFolderSelect = {openChildFolder}
-                        />
-                    </div>
-                ))}
+                {sectionsOfItems.map( (section) => (<>
+                    {section.type === "folders" && (
+                        <FolderSection section={section} openFolder={openFolder} key={section.title}/>
+                    )}
+                    {section.type === "state" && (
+                        <StateSection section={section} openFile={openFile} key={section.title}/>
+                    )}
+                    {section.type === "stateless" && (
+                        <StatelessSection section={section} openFile={openFile} key={section.title}/>
+                    )}
+                </>))}
             </div>
         </div>
         <CurrentFolderMenu

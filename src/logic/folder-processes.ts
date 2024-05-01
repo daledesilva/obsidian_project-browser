@@ -114,8 +114,8 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
 
             // } else {
                 // Treat all other folders as folders
-                if(!itemsBySection['Folders']) itemsBySection['Folders'] = [];
-                itemsBySection['Folders'].push(item);
+                if(!itemsBySection['folders']) itemsBySection['folders'] = [];
+                itemsBySection['folders'].push(item);
             // }
 
         } else if(item instanceof TFile) {
@@ -139,8 +139,10 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
 
     let itemsBySectionArr: Section[] = [];
     for (const [key, value] of Object.entries(itemsBySection)) {
+        console.log('key', key);
         itemsBySectionArr.push({
             title: key,
+            type: key === 'folders' ? 'folders' : key == ' ' ? 'stateless' : 'state',
             items: value
         })
     }

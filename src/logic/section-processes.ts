@@ -5,6 +5,7 @@ import ProjectBrowserPlugin from "src/main";
 /////////
 
 export interface Section {
+    type: "folders" | "state" | "stateless"
     title: string,
     items: Array<TFile | TFolder>
 }
@@ -12,7 +13,7 @@ export interface Section {
 export const orderSections = (sections: Section[], plugin: ProjectBrowserPlugin): Section[] => {
     const intendedOrder = [...plugin.settings.states.visible];
     intendedOrder.reverse();
-    intendedOrder.unshift('Folders');
+    intendedOrder.unshift('folders');
     intendedOrder.push(' ');
     
     // Create a map to store the original index of each section title

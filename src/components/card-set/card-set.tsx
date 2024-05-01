@@ -2,34 +2,48 @@ import './card-set.scss';
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
 import { FileCard } from "../cards/file-card/file-card";
-import { FolderCard } from "../cards/folder-card/folder-card";
+import { FolderButton } from "../cards/folder-button/folder-button";
 
 /////////
 /////////
 
-
-interface CardSetProps {
-    items: TAbstractFile[],
-    onFileSelect: (file: TFile) => void,
+interface FolderSetProps {
+    folders: TAbstractFile[],
     onFolderSelect: (folder: TFolder) => void,
 }
+export const FolderSet = (props: FolderSetProps) => {
 
-export const CardSet = (props: CardSetProps) => {
+    const cards = props.folders.map( folder => {
+        return <FolderButton
+            folder = {folder as TFolder}
+            key = {folder.path}
+            onSelect = {props.onFolderSelect}
+        />
+    });
 
-    const cards = props.items.map( item => {
-        if(item instanceof TFile) {
-            return <FileCard
-                file = {item}
-                key = {item.path}
-                onSelect = {props.onFileSelect}
-            />
-        } else if(item instanceof TFolder) {
-            return <FolderCard
-                folder = {item}
-                key = {item.path}
-                onSelect = {props.onFolderSelect}
-            />
-        }
+    return <>
+        <div
+            className = 'project-browser_folder-set'
+        >
+            {cards}
+        </div>
+    </>
+}
+
+///////
+
+interface NoteCardSetProps {
+    files: TAbstractFile[],
+    onFileSelect: (file: TFile) => void,
+}
+export const NoteCardSet = (props: NoteCardSetProps) => {
+
+    const cards = props.files.map( file => {
+        return <FileCard
+            file = {file as TFile}
+            key = {file.path}
+            onSelect = {props.onFileSelect}
+        />
     });
 
     return <>
@@ -40,5 +54,7 @@ export const CardSet = (props: CardSetProps) => {
         </div>
     </>
 }
+
+///////
 
 

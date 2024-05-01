@@ -1,4 +1,4 @@
-import './folder-card.scss';
+import './folder-button.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
 import { getProjectExcerpt, isProjectFolder } from 'src/logic/folder-processes';
@@ -9,12 +9,12 @@ import { PluginContext } from 'src/utils/plugin-context';
 /////////
 
 
-interface FolderCardProps {
+interface FolderButtonProps {
     folder: TFolder,
     onSelect: (folder: TFolder) => void,
 }
 
-export const FolderCard = (props: FolderCardProps) => {
+export const FolderButton = (props: FolderButtonProps) => {
     const v = props.folder.vault;
     const plugin = React.useContext(PluginContext);
 
@@ -27,19 +27,14 @@ export const FolderCard = (props: FolderCardProps) => {
     }, [])
     
     return <>
-        <article
-            className = 'project-browser_folder-card'
+        <button
+            className = 'project-browser_folder-button'
             onClick = { () => {
                 props.onSelect(props.folder)
             }}
         >
-            <h3>
-                {name}
-            </h3>
-            <p>
-                {excerpt}
-            </p>
-        </article>
+            {name}
+        </button>
     </>
 
     ///////
