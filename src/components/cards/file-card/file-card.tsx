@@ -1,4 +1,4 @@
-import './md-file-card.scss';
+import './file-card.scss';
 import { TFile } from "obsidian";
 import * as React from "react";
 import { getFileExcerpt } from "src/logic/file-processes";
@@ -8,21 +8,23 @@ import { PluginContext } from 'src/utils/plugin-context';
 /////////
 /////////
 
-interface MdFileCardProps {
+interface FileCardProps {
     file: TFile,
     onSelect: (file: TFile) => void,
 }
 
-export const MdFileCard = (props: MdFileCardProps) => {
+export const FileCard = (props: FileCardProps) => {
     const v = props.file.vault;
     const plugin = React.useContext(PluginContext);
 
-    const name = trimFilenameExt(props.file.name);
+    const name = props.file.basename; //trimFilenameExt(props.file.name);
     const [excerpt, setExcerpt] = React.useState('');
 
     React.useEffect( () => {
         if(!plugin) return;
-        getExcerpt(props.file);
+        if(props.file.extension.toLowerCase() == 'md') {
+            getExcerpt(props.file);
+        }
     }, [])
     
     return <>
