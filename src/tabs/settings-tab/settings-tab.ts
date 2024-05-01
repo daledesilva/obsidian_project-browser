@@ -1,5 +1,5 @@
 import { insertStateEditor } from 'src/components/state-editor/state-editor';
-import './settings-tab.scss';
+import 'src/shared/settings.scss';
 import { App, PluginSettingTab, Setting } from "obsidian";
 import InkPlugin from "src/main";
 import MyPlugin from "src/main";
@@ -62,7 +62,7 @@ export class MySettingsTab extends PluginSettingTab {
 }
 
 function insertMoreInfoLinks(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_section');
+	const sectionEl = containerEl.createDiv('ddc_settings_section');
 	sectionEl.createEl('p', { text: `For information on this plugin's development, visit the links below. Feel free to leave comments in the development diaries on YouTube.` });
 	const list = sectionEl.createEl('ul');
 	list.createEl('li').createEl('a', {
@@ -81,62 +81,66 @@ function insertMoreInfoLinks(containerEl: HTMLElement) {
 
 function insertAccessSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
 
-		new Setting(containerEl)
-			.setClass('ddc_pb_setting')
-			.setName('Replace empty tab')
-			.setDesc('Create a new, empty tab to access the Project Browser.')
-			.addToggle((toggle) => {
-				toggle.setValue(plugin.settings.access.replaceNewTab);
-				toggle.onChange(async (value) => {
-					plugin.settings.access.replaceNewTab = value;
-					await plugin.saveSettings();
-					refresh();
-				});
-			});
+	const sectionEl = containerEl.createDiv('ddc_settings_section');
 
-		new Setting(containerEl)
-			.setClass('ddc_pb_setting')
-			.setName('Enable ribbon icon')
-			.setDesc('Click an icon in the Obsidian ribbon menu bar to open the Project Browser in a new tab.')
-			.addToggle((toggle) => {
-				toggle.setValue(plugin.settings.access.enableRibbonIcon);
-				toggle.onChange(async (value) => {
-					plugin.settings.access.enableRibbonIcon = value;
-					await plugin.saveSettings();
-					refresh();
-				});
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Replace empty tab')
+		.setDesc('Create a new, empty tab to access the Project Browser.')
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.access.replaceNewTab);
+			toggle.onChange(async (value) => {
+				plugin.settings.access.replaceNewTab = value;
+				await plugin.saveSettings();
+				refresh();
 			});
+		});
 
-		new Setting(containerEl)
-			.setClass('ddc_pb_setting')
-			.setName('Enable command')
-			.setDesc('Run a command from the Command Palette at any time to open the Project Browser in a new tab.')
-			.addToggle((toggle) => {
-				toggle.setValue(plugin.settings.access.enableCommand);
-				toggle.onChange(async (value) => {
-					plugin.settings.access.enableCommand = value;
-					await plugin.saveSettings();
-					refresh();
-				});
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Enable ribbon icon')
+		.setDesc('Click an icon in the Obsidian ribbon menu bar to open the Project Browser in a new tab.')
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.access.enableRibbonIcon);
+			toggle.onChange(async (value) => {
+				plugin.settings.access.enableRibbonIcon = value;
+				await plugin.saveSettings();
+				refresh();
 			});
+		});
+
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Enable command')
+		.setDesc('Run a command from the Command Palette at any time to open the Project Browser in a new tab.')
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.access.enableCommand);
+			toggle.onChange(async (value) => {
+				plugin.settings.access.enableCommand = value;
+				await plugin.saveSettings();
+				refresh();
+			});
+		});
 
 }
 
 function insertNoteStateSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
-
-	new Setting(containerEl)
-	.setClass('ddc_pb_setting')
-	.setName('Show state menu in notes')
-	.addToggle((toggle) => {
-		toggle.setValue(plugin.settings.showStateMenu);
-		toggle.onChange(async (value) => {
-			plugin.settings.showStateMenu = value;
-			await plugin.saveSettings();
-			refresh();
+	const sectionEl = containerEl.createDiv('ddc_settings_section ddc_settings_controls-section');
+	sectionEl.createEl('h2', { text: 'Notes' });
+	sectionEl.createEl('p', { text: 'This section defines how Project Browser features are integrated on screen when your markdown notes display.' });
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Show state menu in notes')
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.showStateMenu);
+			toggle.onChange(async (value) => {
+				plugin.settings.showStateMenu = value;
+				await plugin.saveSettings();
+				refresh();
+			});
 		});
-	});
 	
-	insertStateEditor(containerEl, plugin);
+	insertStateEditor(sectionEl, plugin);
 
 }
 

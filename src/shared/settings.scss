@@ -1,8 +1,19 @@
-.ddc_pb_section {
+.ddc_settings_section {
     margin-bottom: 2em;
+
+    h2 {
+        margin-bottom: 0;
+    }
+    p {
+        margin-top: 0em;
+        color: var(--text-muted);
+        font-size: var(--font-ui-smaller);
+        padding-top: var(--size-4-1);
+        line-height: var(--line-height-tight);
+    }
 }
 
-.ddc_pb_section details {
+.ddc_settings_section details {
     overflow: hidden;
     border-style: solid;
     border-color: rgba(var(--callout-color), var(--callout-border-opacity));
@@ -22,7 +33,7 @@
     }
 }
 
-.ddc_pb_controls-section {
+.ddc_settings_controls-section {
     padding: 0.2em 1em;
     border: none;
     border-radius: 10px;

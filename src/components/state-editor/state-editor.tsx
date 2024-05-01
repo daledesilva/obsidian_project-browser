@@ -16,8 +16,8 @@ export function insertStateEditor(containerEl: HTMLElement, plugin: ProjectBrows
 
     new Setting(containerEl)
     .setClass('ddc_pb_setting')
-    .setName('Note states')
-    .setDesc('States will appear in reverse order in the project browser so that more progressed notes are shown higher. Hidden states will not show.')
+    .setName('States')
+    .setDesc('Notes states will appear in reverse order in the project browser so that more progressed notes are shown higher. Hidden states will not show.')
     
     const sectionEl = containerEl.createDiv('ddc_pb_section');
     const contentEl = sectionEl.createDiv();
