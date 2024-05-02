@@ -1,7 +1,7 @@
 {
 	"id": "project-browser",
 	"name": "Project Browser",
-	"version": "0.0.31",
+	"version": "0.0.41",
 	"minAppVersion": "1.00.0",
 	"description": "Replaces your new tab window with a browseable list of the files and folders in your vault.",
 	"author": "Dale de Silva",
