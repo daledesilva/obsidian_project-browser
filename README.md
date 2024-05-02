@@ -47,11 +47,11 @@ Below are the high level features in my current development plan along with when
 - Remember last folder & consistent navigation. ✅
 
 ### April 2024 (Customisation & styling)
-- Show non markdown files.
+- Show non markdown files without excerpt. ✅
 - Custom folder hiding.
-- Enable customising states.
+- Enable customising states. ✅
 - Enable customising visible file types.
-- Access via action or new tab setting.
+- Access via action or new tab setting. ✅
 - Custom view modes per section.
 
 ### May 2024 (Styling & accessibility)
