@@ -1,0 +1,18 @@
+
+
+.ddc_pb_list-note-card-set {
+    margin-bottom: 0em;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1em;
+    row-gap: 1em;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    width: 100%;
+
+    div {
+        min-width: 20%;
+        flex-basis: 20%;
+        flex-grow: 1;
+    }
+}

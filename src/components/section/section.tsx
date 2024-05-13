@@ -2,8 +2,13 @@ import classNames from 'classnames';
 import './section.scss';
 import * as React from "react";
 import { Section } from 'src/logic/section-processes';
-import { FolderSet, NoteCardSet } from '../card-set/card-set';
 import { TFile, TFolder } from 'obsidian';
+import { FolderButtonSet } from '../folder-button-set/folder-button-set';
+import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-card-set';
+import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
+import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
+import { MasonryListNoteCardSet } from '../masonry-list-note-card-set/masonry-list-note-card-set';
+import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
 
 //////////
 //////////
@@ -16,7 +21,7 @@ export const FolderSection = (props: FolderSectionProps) => {
 
     return <>
         <BaseSection key={props.section.title} className="ddc_pb_folder-section">
-            <FolderSet
+            <FolderButtonSet
                 folders = {props.section.items}
                 onFolderSelect = {props.openFolder}
             />
@@ -37,10 +42,22 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
             <SectionHeader>
                 {props.section.title}
             </SectionHeader>
-            <NoteCardSet
+            <DetailedNoteCardSet
                 files = {props.section.items}
                 onFileSelect = {props.openFile}
             />
+            {/* <SimpleNoteCardSet
+                files = {props.section.items}
+                onFileSelect = {props.openFile}
+            /> */}
+            {/* <SmallNoteCardSet
+                files = {props.section.items}
+                onFileSelect = {props.openFile}
+            /> */}
+            {/* <ListNoteCardSet
+                files = {props.section.items}
+                onFileSelect = {props.openFile}
+            /> */}
         </BaseSection>
     </>
 }
@@ -55,7 +72,7 @@ export const StatelessSection = (props: React.PropsWithChildren<StatelessSection
 
     return <>
         <BaseSection key={props.section.title} className="ddc_pb_stateless-section">
-            <NoteCardSet
+            <ListNoteCardSet
                 files = {props.section.items}
                 onFileSelect = {props.openFile}
             />

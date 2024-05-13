@@ -1,7 +1,7 @@
 import './card-set.scss';
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
-import { FileCard } from "../cards/file-card/file-card";
+import { DetailedNoteCard } from "../cards/detailed-note-card/detailed-note-card";
 import { FolderButton } from "../cards/folder-button/folder-button";
 
 /////////
@@ -39,7 +39,7 @@ interface NoteCardSetProps {
 export const NoteCardSet = (props: NoteCardSetProps) => {
 
     const cards = props.files.map( file => {
-        return <FileCard
+        return <DetailedNoteCard
             file = {file as TFile}
             key = {file.path}
             onSelect = {props.onFileSelect}

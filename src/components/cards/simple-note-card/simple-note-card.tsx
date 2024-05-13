@@ -1,4 +1,4 @@
-import './file-card.scss';
+import './simple-note-card.scss';
 import { TFile } from "obsidian";
 import * as React from "react";
 import { getFileExcerpt } from "src/logic/file-processes";
@@ -8,12 +8,12 @@ import { PluginContext } from 'src/utils/plugin-context';
 /////////
 /////////
 
-interface FileCardProps {
+interface SimpleNoteCardProps {
     file: TFile,
     onSelect: (file: TFile) => void,
 }
 
-export const FileCard = (props: FileCardProps) => {
+export const SimpleNoteCard = (props: SimpleNoteCardProps) => {
     const v = props.file.vault;
     const plugin = React.useContext(PluginContext);
 
@@ -29,17 +29,17 @@ export const FileCard = (props: FileCardProps) => {
     
     return <>
         <article
-            className = 'project-browser_file-card'
+            className = 'ddc_pb_simple-note-card'
             onClick = { () => {
                 props.onSelect(props.file)
+            }}
+            style = {{
+                rotate: Math.random() * 4 - 2 + 'rot',
             }}
         >
             <h3>
                 {name}
             </h3>
-            <p>
-                {excerpt}
-            </p>
         </article>
     </>
 

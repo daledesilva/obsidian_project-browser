@@ -1,14 +1,14 @@
-.ddc_pb_state-section .project-browser_file-card {
+.ddc_pb_state-section .ddc_pb_list-note-card {
     background: var(--color-base-00);
 }
 
-.ddc_pb_stateless-section .project-browser_file-card {
+.ddc_pb_stateless-section .ddc_pb_list-note-card {
     background: var(--color-base-10);
 }
 
-.project-browser_file-card {
-    width: 20em;
-    max-width: 40em;
+.ddc_pb_list-note-card {
+    // width: fit-content;
+
     padding: 1em;
     border-radius: 8px;
     // outline: 1px solid var(--color-base-30, rgba(255,255,255,0.5));
@@ -18,26 +18,16 @@
     h3 {
         padding: 0;
         margin: 0;
+        text-wrap: balance;
 
-        font-size: var(--font-text-size);
-        font-weight: var(--font-medium);
+        font-size: var(--font-small);
+        font-weight: var(--font-extralight);
+        // font-weight: var(--font-medium);
 
         // Truncate long text
         // display: -webkit-box;
         // -webkit-line-clamp: 3;
         // -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    p {
-        font-size: var(--font-small);
-        opacity: 0.5;
-        padding: 0;
-        margin: 0.5em 0 0 0;
-
-        // Truncate long text
-        display: -webkit-box;
-        -webkit-line-clamp: 6;
-        -webkit-box-orient: vertical;
         overflow: hidden;
     }
 

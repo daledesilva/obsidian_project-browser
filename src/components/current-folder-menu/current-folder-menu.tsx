@@ -15,7 +15,7 @@ import { createProject } from 'src/utils/file-manipulation';
 interface CurrentFolderMenuProps {
     folder: TFolder,
     refreshView: Function,
-    openFile: (file: TFile) => {},
+    openFile: (file: TFile) => void,
 }
 
 export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
