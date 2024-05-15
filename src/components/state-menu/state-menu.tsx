@@ -43,28 +43,28 @@ export const StateMenu = (props: StateMenuProps) => {
         )}
         {menuIsActive && (<>
             <div className='project-browser_visible-state-btns'>
-                {visibleStates.map( (thisState) => (
+                {visibleStates.map( (thisStatesSettings) => (
                     <button
                         className = {classnames([
                             'project-browser_state-btn',
-                            thisState === state && 'is-set',
+                            thisStatesSettings.name === state && 'is-set',
                         ])}
-                        onClick = {() => setStateAndCloseMenu(thisState)}    
+                        onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
                     >
-                        {thisState}
+                        {thisStatesSettings.name}
                     </button>
                 ))}
             </div>
             <div className='project-browser_hidden-state-btns'>
-                {hiddenStates.map( (thisState) => (
+                {hiddenStates.map( (thisStatesSettings) => (
                     <button
                         className = {classnames([
                             'project-browser_state-btn',
-                            thisState === state && 'is-set',
+                            thisStatesSettings.name === state && 'is-set',
                         ])}
-                        onClick = {() => setStateAndCloseMenu(thisState)}    
+                        onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
                     >
-                        {thisState}
+                        {thisStatesSettings.name}
                     </button>
                 ))}
             </div>
