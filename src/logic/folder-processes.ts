@@ -1,6 +1,6 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import ProjectBrowserPlugin from "src/main";
-import { Section, orderSections } from "./section-processes";
+import { Section, getStateSettings, orderSections } from "./section-processes";
 import { getFileFrontmatter } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 
@@ -139,11 +139,28 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
 
     let itemsBySectionArr: Section[] = [];
     for (const [key, value] of Object.entries(itemsBySection)) {
-        itemsBySectionArr.push({
-            title: key,
-            type: key === 'folders' ? 'folders' : key == ' ' ? 'stateless' : 'state',
-            items: value
-        })
+        if(key === 'folders') {
+            itemsBySectionArr.push({
+                title: key,
+                type: 'folders',
+                items: value,
+                settings: plugin.settings.folders,
+            })
+        } else if(key == ' ') {
+            itemsBySectionArr.push({
+                title: key,
+                type: 'stateless',
+                items: value,
+                settings: plugin.settings.stateless,
+            })
+        } else {
+            itemsBySectionArr.push({
+                title: key,
+                type: 'state',
+                items: value,
+                settings: getStateSettings(plugin, key),
+            })
+        }
     }
     
     itemsBySectionArr = orderSections(itemsBySectionArr, plugin);

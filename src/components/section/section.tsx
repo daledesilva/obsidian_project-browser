@@ -9,6 +9,7 @@ import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set'
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { MasonryListNoteCardSet } from '../masonry-list-note-card-set/masonry-list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
+import { StateViewMode } from 'src/types/plugin-settings';
 
 //////////
 //////////
@@ -42,22 +43,34 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
             <SectionHeader>
                 {props.section.title}
             </SectionHeader>
-            <DetailedNoteCardSet
-                files = {props.section.items}
-                onFileSelect = {props.openFile}
-            />
-            {/* <SimpleNoteCardSet
-                files = {props.section.items}
-                onFileSelect = {props.openFile}
-            /> */}
-            {/* <SmallNoteCardSet
-                files = {props.section.items}
-                onFileSelect = {props.openFile}
-            /> */}
-            {/* <ListNoteCardSet
-                files = {props.section.items}
-                onFileSelect = {props.openFile}
-            /> */}
+
+            {props.section.settings.defaultView === StateViewMode.DetailedCards && (
+                <DetailedNoteCardSet
+                    files = {props.section.items}
+                    onFileSelect = {props.openFile}
+                />
+            )}
+
+            {props.section.settings.defaultView === StateViewMode.SimpleCards && (
+                <SimpleNoteCardSet
+                    files = {props.section.items}
+                    onFileSelect = {props.openFile}
+                />
+            )}
+
+            {props.section.settings.defaultView === StateViewMode.SmallCards && (
+                <SmallNoteCardSet
+                    files = {props.section.items}
+                    onFileSelect = {props.openFile}
+                />
+            )}
+
+            {props.section.settings.defaultView === StateViewMode.List && (
+                <ListNoteCardSet
+                    files = {props.section.items}
+                    onFileSelect = {props.openFile}
+                />
+            )}
         </BaseSection>
     </>
 }

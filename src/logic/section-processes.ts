@@ -1,5 +1,6 @@
 import { TFile, TFolder } from "obsidian";
 import ProjectBrowserPlugin from "src/main";
+import { FolderSettings, StateSettings } from "src/types/plugin-settings";
 
 /////////
 /////////
@@ -8,10 +9,11 @@ export interface Section {
     type: "folders" | "state" | "stateless"
     title: string,
     items: Array<TFile | TFolder>
+    settings: FolderSettings | StateSettings,
 }
 
 export const orderSections = (sections: Section[], plugin: ProjectBrowserPlugin): Section[] => {
-    const intendedOrder = [...plugin.settings.states.visible];
+    const intendedOrder = plugin.settings.states.visible.map( stateSettings => stateSettings.name );
     intendedOrder.reverse();
     intendedOrder.unshift('folders');
     intendedOrder.push(' ');
@@ -23,7 +25,7 @@ export const orderSections = (sections: Section[], plugin: ProjectBrowserPlugin)
     }, {} as Record<string, number>);
     
     // Sort the sections based on their intended order
-    let sortedSections = intendedOrder.map((title) => sections[sectionMap[title]]) || [];
+    let sortedSections = intendedOrder.map((name) => sections[sectionMap[name]]) || [];
 
     for(let i=sortedSections.length-1; i>=0; i--) {
         if(sortedSections[i] === undefined){
@@ -36,3 +38,11 @@ export const orderSections = (sections: Section[], plugin: ProjectBrowserPlugin)
 
 
 
+export function getStateSettings(plugin: ProjectBrowserPlugin, name: string): StateSettings {
+    const allSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
+    for(let i=0; i<=allSettings.length; i++) {
+        if(!allSettings[i]) continue;
+        if(allSettings[i].name === name) return allSettings[i];
+    }
+    return plugin.settings.stateless;
+}

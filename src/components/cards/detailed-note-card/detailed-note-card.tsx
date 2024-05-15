@@ -37,10 +37,19 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
                 rotate: Math.random() * 4 - 2 + 'deg',
             }}
         >
-            <h3>
+            <h3
+                style = {{
+                    rotate: Math.random() * 2 - 1 + 'deg',
+                }}
+            >
                 {name}
             </h3>
-            <p>
+            <p
+                style = {{
+                    width: 'fit-content',
+                    rotate: Math.random() * 2 - 1 + 'deg',
+                }}
+            >
                 {excerpt}
             </p>
         </article>
