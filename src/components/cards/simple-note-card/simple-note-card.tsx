@@ -39,7 +39,6 @@ export const SimpleNoteCard = (props: SimpleNoteCardProps) => {
         >
             <h3
                 style = {{
-                    width: 'fit-content',
                     rotate: Math.random() * 2 - 1 + 'deg',
                 }}
             >
