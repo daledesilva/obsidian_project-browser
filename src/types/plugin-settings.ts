@@ -54,11 +54,11 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 			},
 			{
 				name: 'Drafting',
-				defaultView: StateViewMode.SimpleCards,
+				defaultView: StateViewMode.DetailedCards,
 			},
 			{
 				name: 'Focus',
-				defaultView: StateViewMode.DetailedCards,
+				defaultView: StateViewMode.SimpleCards,
 			},
 			{
 				name: 'Final',

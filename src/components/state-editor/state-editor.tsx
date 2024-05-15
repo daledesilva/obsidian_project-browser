@@ -7,6 +7,7 @@ import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
 import { GripVertical, Plus, Trash, X } from 'lucide-react';
 import classNames from 'classnames';
 import { Setting } from 'obsidian';
+import { StateSettings } from 'src/types/plugin-settings';
 
 //////////
 //////////
@@ -71,9 +72,9 @@ export const StateEditor = (props: StateEditorProps) => {
                 <ReactSortable
                     list = {visibleStates}
                     setList = { async (stateItems) => {
-                        props.plugin.settings.states.visible = convertToStates(stateItems);
-                        await props.plugin.saveSettings();
-                        setVisibleStates(stateItems);
+                        // props.plugin.settings.states.visible = convertToStates(stateItems);
+                        // await props.plugin.saveSettings();
+                        // setVisibleStates(stateItems);
                     }}
                     group = 'states'
                     animation = {200}
@@ -109,10 +110,10 @@ export const StateEditor = (props: StateEditorProps) => {
                                 plugin: props.plugin,
                                 title: ' Create new visible state',
                                 onSuccess: async (newState) => {
-                                    const newStates = props.plugin.settings.states.visible;
-                                    newStates.push(newState);
-                                    await props.plugin.saveSettings();
-                                    setVisibleStates( convertToStateItems(newStates) );
+                                    // const newStates = props.plugin.settings.states.visible;
+                                    // newStates.push(newState);
+                                    // await props.plugin.saveSettings();
+                                    // setVisibleStates( convertToStateItems(newStates) );
                                 }
                             }).open();
                         }}
@@ -127,9 +128,9 @@ export const StateEditor = (props: StateEditorProps) => {
                 <ReactSortable
                     list = {hiddenStates}
                     setList = { async (stateItems) => {
-                        props.plugin.settings.states.hidden = convertToStates(stateItems);
-                        await props.plugin.saveSettings();
-                        setHiddenStates(stateItems);
+                        // props.plugin.settings.states.hidden = convertToStates(stateItems);
+                        // await props.plugin.saveSettings();
+                        // setHiddenStates(stateItems);
                     }}
                     onStart = {() => {
                         setIsDragging(true);
@@ -162,10 +163,10 @@ export const StateEditor = (props: StateEditorProps) => {
                                 plugin: props.plugin,
                                 title: ' Create new hidden state',
                                 onSuccess: async (newState) => {
-                                    const newStates = props.plugin.settings.states.hidden;
-                                    newStates.push(newState);
-                                    await props.plugin.saveSettings();
-                                    setHiddenStates( convertToStateItems(newStates) );
+                                    // const newStates = props.plugin.settings.states.hidden;
+                                    // newStates.push(newState);
+                                    // await props.plugin.saveSettings();
+                                    // setHiddenStates( convertToStateItems(newStates) );
                                 }
                             }).open();
                         }}
@@ -210,12 +211,12 @@ interface StateItem extends ItemInterface {
     state: string
 }
 
-function convertToStateItems(states: string[]): StateItem[] {
+function convertToStateItems(stateSettings: StateSettings[]): StateItem[] {
     const stateItems: StateItem[] = [];
-    states.forEach( (stateName) => {
+    stateSettings.forEach( (thisStateSettings) => {
         stateItems.push({
-            id: stateName,
-            state: stateName,
+            id: thisStateSettings.name,
+            state: thisStateSettings.name,
         })
     })
     return stateItems;
