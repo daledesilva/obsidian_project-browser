@@ -13,13 +13,13 @@ interface ListNoteCardSetProps {
 export const ListNoteCardSet = (props: ListNoteCardSetProps) => {
 
     const cards = props.files.map( file => {
-        return <div>
+        return (
             <ListNoteCard
                 file = {file as TFile}
                 key = {file.path}
                 onSelect = {props.onFileSelect}
             />
-        </div>
+        )
     });
 
     return <>

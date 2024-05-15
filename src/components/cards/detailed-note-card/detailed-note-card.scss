@@ -7,7 +7,6 @@
 }
 
 .ddc_pb_detailed-note-card {
-    max-width: 25em;
     padding: 1em 1.2em;
     border-radius: 8px;
     // outline: 1px solid var(--color-base-30, rgba(255,255,255,0.5));
@@ -35,6 +34,9 @@
         -webkit-line-clamp: 6;
         -webkit-box-orient: vertical;
         overflow: hidden;
+
+        // This breaks long strings anywhere (Without hyphening) if necessary
+        overflow-wrap: anywhere;
     }
 
     &:hover {

@@ -1,18 +1,21 @@
 
 
 .ddc_pb_list-note-card-set {
+    margin-top: 5em;
     margin-bottom: 0em;
     display: flex;
     flex-wrap: wrap;
-    column-gap: 1em;
-    row-gap: 1em;
-    align-items: flex-start;
-    justify-content: space-evenly;
+    justify-content: flex-start;
+    align-items: stretch;
     width: 100%;
 
-    div {
-        min-width: 20%;
-        flex-basis: 20%;
+    column-gap: 1em;
+    row-gap: 1em;
+    > * {
+        flex-basis: 15em;
         flex-grow: 1;
+        flex-shrink: 1;
+        // max-width: auto;
     }
+
 }

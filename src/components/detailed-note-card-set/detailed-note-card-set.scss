@@ -4,9 +4,56 @@
     margin-bottom: 0em;
     display: flex;
     flex-wrap: wrap;
-    column-gap: 1em;
-    row-gap: 2em;
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
+
+    // column-gap: 2%;
+    // row-gap: 1em;
+    // > * {
+    //     flex-basis: 300px;
+    //     flex-shrink: 1;
+    //     flex-grow: 1;
+    //     max-width: 100%;
+    // }
+    column-gap: 0%;
+    row-gap: 1em;
+    > * {
+        width: 100%;
+        flex-shrink: 1;
+    }
+
+    @media (min-width: 600px) {
+        column-gap: 2%;
+        row-gap: 1em;
+        > * {
+            width: 49%;
+        }
+    }
+
+    @media (min-width: 900px) {
+        column-gap: 2%;
+        row-gap: 1em;
+        > * {
+            width: 32%;
+        }
+    }
+
+    @media (min-width: 1400px) {
+        column-gap: 1%;
+        row-gap: 2em;
+        > * {
+            width: 24%;
+            max-width: 35em;
+        }
+    }
+
+    @media (min-width: 2000px) {
+        column-gap: 1.5em;
+        row-gap: 2em;
+        > * {
+            width: 30em;
+            max-width: 24%;
+        }
+    }
 }
