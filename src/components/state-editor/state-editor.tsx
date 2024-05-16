@@ -7,7 +7,7 @@ import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
 import { GripVertical, Plus, Trash, X } from 'lucide-react';
 import classNames from 'classnames';
 import { Setting } from 'obsidian';
-import { StateSettings } from 'src/types/plugin-settings';
+import { StateSettings, StateViewMode } from 'src/types/plugin-settings';
 
 //////////
 //////////
@@ -72,9 +72,9 @@ export const StateEditor = (props: StateEditorProps) => {
                 <ReactSortable
                     list = {visibleStates}
                     setList = { async (stateItems) => {
-                        // props.plugin.settings.states.visible = convertToStates(stateItems);
-                        // await props.plugin.saveSettings();
-                        // setVisibleStates(stateItems);
+                        props.plugin.settings.states.visible = convertToStates(stateItems);
+                        await props.plugin.saveSettings();
+                        setVisibleStates(stateItems);
                     }}
                     group = 'states'
                     animation = {200}
@@ -91,11 +91,11 @@ export const StateEditor = (props: StateEditorProps) => {
                 >
                     {visibleStates.map((stateItem) => (
                         <div
-                            key = {stateItem.state}
+                            key = {stateItem.id}
                             className = 'ddc_pb_draggable'
                         >
                             <GripVertical className='ddc_pb_drag-icon'/>
-                            {stateItem.state}
+                            {stateItem.stateSettings.name}
                             {/* <div className='ddc_pb_close-btn'>
                                 <X className='ddc_pb_delete-icon' size='5em'/>
                             </div> */}
@@ -109,11 +109,11 @@ export const StateEditor = (props: StateEditorProps) => {
                             new NewStateModal({
                                 plugin: props.plugin,
                                 title: ' Create new visible state',
-                                onSuccess: async (newState) => {
-                                    // const newStates = props.plugin.settings.states.visible;
-                                    // newStates.push(newState);
-                                    // await props.plugin.saveSettings();
-                                    // setVisibleStates( convertToStateItems(newStates) );
+                                onSuccess: async (newStateName) => {
+                                    const newStates = props.plugin.settings.states.visible;
+                                    newStates.push( createStateSettings(newStateName) );
+                                    await props.plugin.saveSettings();
+                                    setVisibleStates( convertToStateItems(newStates) );
                                 }
                             }).open();
                         }}
@@ -128,9 +128,9 @@ export const StateEditor = (props: StateEditorProps) => {
                 <ReactSortable
                     list = {hiddenStates}
                     setList = { async (stateItems) => {
-                        // props.plugin.settings.states.hidden = convertToStates(stateItems);
-                        // await props.plugin.saveSettings();
-                        // setHiddenStates(stateItems);
+                        props.plugin.settings.states.hidden = convertToStates(stateItems);
+                        await props.plugin.saveSettings();
+                        setHiddenStates(stateItems);
                     }}
                     onStart = {() => {
                         setIsDragging(true);
@@ -147,11 +147,11 @@ export const StateEditor = (props: StateEditorProps) => {
                 >
                     {hiddenStates.map((stateItem) => (
                         <div
-                            key = {stateItem.state}
+                            key = {stateItem.id}
                             className = 'ddc_pb_draggable'
                         >
                             <GripVertical className='ddc_pb_drag-icon'/>
-                            {stateItem.state}
+                            {stateItem.stateSettings.name}
                         </div>
                     ))}
                 </ReactSortable>
@@ -162,11 +162,11 @@ export const StateEditor = (props: StateEditorProps) => {
                             await new NewStateModal({
                                 plugin: props.plugin,
                                 title: ' Create new hidden state',
-                                onSuccess: async (newState) => {
-                                    // const newStates = props.plugin.settings.states.hidden;
-                                    // newStates.push(newState);
-                                    // await props.plugin.saveSettings();
-                                    // setHiddenStates( convertToStateItems(newStates) );
+                                onSuccess: async (newStateName) => {
+                                    const newStates = props.plugin.settings.states.hidden;
+                                    newStates.push( createStateSettings(newStateName) );
+                                    await props.plugin.saveSettings();
+                                    setHiddenStates( convertToStateItems(newStates) );
                                 }
                             }).open();
                         }}
@@ -208,7 +208,8 @@ export const StateEditor = (props: StateEditorProps) => {
 ///////
 
 interface StateItem extends ItemInterface {
-    state: string
+    id: string,
+    stateSettings: StateSettings
 }
 
 function convertToStateItems(stateSettings: StateSettings[]): StateItem[] {
@@ -216,16 +217,23 @@ function convertToStateItems(stateSettings: StateSettings[]): StateItem[] {
     stateSettings.forEach( (thisStateSettings) => {
         stateItems.push({
             id: thisStateSettings.name,
-            state: thisStateSettings.name,
+            stateSettings: thisStateSettings,
         })
     })
     return stateItems;
 }
 
-function convertToStates(stateItems: StateItem[]): string[] {
-    const states: string[] = [];
+function convertToStates(stateItems: StateItem[]): StateSettings[] {
+    const states: StateSettings[] = [];
     stateItems.forEach( (stateItem) => {
-        states.push(stateItem.state)
+        states.push(stateItem.stateSettings)
     })
     return states;
+}
+
+function createStateSettings(name: string): StateSettings {
+    return {
+        defaultView: StateViewMode.DetailedCards,
+        name: name,
+    }
 }

@@ -18,6 +18,7 @@ export interface FolderSettings {
 }
 
 export interface PluginSettings {
+	settingsVersion: string,
 	access: {
 		replaceNewTab: boolean,
 		enableRibbonIcon: boolean,
@@ -33,6 +34,7 @@ export interface PluginSettings {
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
+	settingsVersion: '0.0.5',	// Settings version aligns with the version number of the plugin it was updated in
 	access: {
 		replaceNewTab: true,
 		enableRibbonIcon: true,
