@@ -111,7 +111,9 @@ export class ProjectCardsView extends ItemView {
             if(this.eState?.scrollOffset) {
                 this.contentEl.scrollTo(0, this.eState.scrollOffset);
             }
-        }, 10);
+        }, 50);
+        // Lower than 50ms and it might run before hte page has loaded fully.
+        // REVIEW: Need to reasses. Perhaps it should continually run while page is loading?
 
         
         contentEl.addEventListener('scrollend', (e) => {
