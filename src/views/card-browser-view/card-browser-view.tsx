@@ -125,11 +125,11 @@ export class ProjectCardsView extends ItemView {
     // Done automatically when leaf navigates away from your view (ie. onClose)
     // Return your state here to provide it to Obsidian
     getState(): CardBrowserViewState {
-        console.log('SAVING state');
+        // console.log('SAVING state');
         return this.state;
     }
     getEphemeralState(): CardBrowserViewEState {
-        console.log('SAVING Ephemeral State');
+        // console.log('SAVING Ephemeral State');
         return this.eState;
     }
     
@@ -137,7 +137,7 @@ export class ProjectCardsView extends ItemView {
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
     setState(state: any, result: ViewStateResult): Promise<void> {
-        console.log('LOADING state');
+        // console.log('LOADING state');
         result.history = true;
 
         // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
@@ -148,7 +148,7 @@ export class ProjectCardsView extends ItemView {
     }
 
     setEphemeralState(state: any): void {
-        console.log('LOADING Ephemeral State:', state);
+        // console.log('LOADING Ephemeral State:', state);
         this.eState = state;
         return super.setEphemeralState(this.state);
     }
