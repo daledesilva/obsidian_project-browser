@@ -20,6 +20,12 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
     const name = props.file.basename; //trimFilenameExt(props.file.name);
     const [excerpt, setExcerpt] = React.useState('');
 
+    const [articleRotation] = React.useState(Math.random() * 4 - 2);
+    const [titleRotation] = React.useState(Math.random() * 2 - 1);
+    const [blurbRotation] = React.useState(Math.random() * 2 - 1);
+
+    ////////
+
     React.useEffect( () => {
         if(!plugin) return;
         if(props.file.extension.toLowerCase() == 'md') {
@@ -34,19 +40,19 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
                 props.onSelect(props.file)
             }}
             style = {{
-                rotate: Math.random() * 4 - 2 + 'deg',
+                rotate: articleRotation + 'deg',
             }}
         >
             <h3
                 style = {{
-                    rotate: Math.random() * 2 - 1 + 'deg',
+                    rotate: titleRotation + 'deg',
                 }}
             >
                 {name}
             </h3>
             <p
                 style = {{
-                    rotate: Math.random() * 2 - 1 + 'deg',
+                    rotate: blurbRotation + 'deg',
                 }}
             >
                 {excerpt}

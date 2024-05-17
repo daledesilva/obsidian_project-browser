@@ -20,6 +20,10 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
     const name = props.file.basename; //trimFilenameExt(props.file.name);
     const [excerpt, setExcerpt] = React.useState('');
 
+    const [articleRotation] = React.useState(Math.random() * 4 - 2);
+
+    ////////
+
     React.useEffect( () => {
         if(!plugin) return;
         if(props.file.extension.toLowerCase() == 'md') {
@@ -34,7 +38,7 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
                 props.onSelect(props.file)
             }}
             style = {{
-                rotate: Math.random() * 4 - 2 + 'deg',
+                rotate: articleRotation + 'deg',
             }}
         >
             <h3>
