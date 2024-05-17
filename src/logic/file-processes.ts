@@ -1,6 +1,7 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import ProjectBrowserPlugin from "src/main";
 import { getProjectExcerpt } from "./folder-processes";
+import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView } from "src/views/card-browser-view/card-browser-view";
 
 /////////
 /////////
@@ -50,4 +51,13 @@ export function removeCodeBlocks(text: string): string {
 export function simplifyWhiteSpace(text: string): string {
     const lineBreakRegex = /(\\n|\\n\s+|\s+\\n)+/;
     return text.replace(lineBreakRegex, '. ');
+}
+
+export function getScrollOffset(plugin: ProjectBrowserPlugin): number {
+    const editor = plugin.app.workspace.activeEditor?.editor;
+
+    console.log(plugin.app.workspace.getActiveViewOfType(ProjectCardsView));
+    if(!editor) return 0;
+
+    return editor.getScrollInfo().top;
 }

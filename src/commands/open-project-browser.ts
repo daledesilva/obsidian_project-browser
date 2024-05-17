@@ -1,3 +1,4 @@
+import { PLUGIN_ICON } from "src/constants";
 import ProjectBrowserPlugin from "src/main";
 import { newProjectBrowserLeaf, replaceMostRecentLeaf } from "src/views/card-browser-view/card-browser-view";
 
@@ -24,7 +25,7 @@ export async function registerOpenProjectBrowserRibbonIcon(plugin: ProjectBrowse
     // 'archive'
     // 'book-text'
     // 'wallet-cards'
-    plugin.addRibbonIcon('align-vertical-justify-start', 'Open project browser', () => {
+    plugin.addRibbonIcon(PLUGIN_ICON, 'Open project browser', () => {
         newProjectBrowserLeaf(plugin)
     });
 }

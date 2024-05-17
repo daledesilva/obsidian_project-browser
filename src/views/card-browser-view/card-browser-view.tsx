@@ -7,6 +7,7 @@ import { createContext } from 'react';
 import { PluginContext } from "src/utils/plugin-context";
 import { CurrentFolderMenu } from "src/components/current-folder-menu/current-folder-menu";
 import { isEmpty } from "src/utils/misc";
+import { PLUGIN_ICON } from "src/constants";
 
 //////////
 //////////
@@ -16,6 +17,14 @@ export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 export interface CardBrowserViewState {
     path: string;
 }
+export type PartialCardBrowserViewState = Partial<CardBrowserViewState>;
+
+export interface CardBrowserViewEState {
+    scrollOffset?: number,
+}
+export type PartialCardBrowserViewEState = Partial<CardBrowserViewEState>;
+
+
 
 export function setCardBrowserViewStateDefaults(plugin: ProjectBrowserPlugin): CardBrowserViewState {
     return {
@@ -66,12 +75,13 @@ export class ProjectCardsView extends ItemView {
     
     // CardBrowserViewState properties
     state: CardBrowserViewState;
+    eState: CardBrowserViewEState;
 
     constructor(leaf: WorkspaceLeaf, plugin: ProjectBrowserPlugin) {
         super(leaf);
         this.plugin = plugin;
         this.navigation = true;
-        // icon = // Put a card icon here
+        this.icon = PLUGIN_ICON;
         
         leaf.open(this);
     }
@@ -95,30 +105,52 @@ export class ProjectCardsView extends ItemView {
 
         if(!this.root) this.root = createRoot(contentEl);
 
-        // REVIEW: Need to use this.registerInterval?
+        // Wait for a split second because the state updates asynchronously
         setTimeout( () => {
             this.renderView();
-        }, 50); // Wait for a split second because the state updates asynchronously
+            if(this.eState?.scrollOffset) {
+                this.contentEl.scrollTo(0, this.eState.scrollOffset);
+            }
+        }, 10);
+
+        
+        contentEl.addEventListener('scrollend', (e) => {
+            this.saveScrollOffset();
+        })
+
+
     }
 
     // Called by Obsidian to fetch the state from your view
     // Done automatically when leaf navigates away from your view (ie. onClose)
     // Return your state here to provide it to Obsidian
     getState(): CardBrowserViewState {
+        console.log('SAVING state');
         return this.state;
+    }
+    getEphemeralState(): CardBrowserViewEState {
+        console.log('SAVING Ephemeral State');
+        return this.eState;
     }
     
     // Called by Obsidian to provide your view with the state
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
     setState(state: any, result: ViewStateResult): Promise<void> {
+        console.log('LOADING state');
         result.history = true;
 
         // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
         this.state = state;   // this line works - you have to replace the whole object for navigation history to work properly
-        
+
         this.renderView();
         return super.setState(this.state, result);
+    }
+
+    setEphemeralState(state: any): void {
+        console.log('LOADING Ephemeral State:', state);
+        this.eState = state;
+        return super.setEphemeralState(this.state);
     }
 
     async onClose() {
@@ -133,19 +165,30 @@ export class ProjectCardsView extends ItemView {
                 <CardBrowser
                     plugin = {this.plugin}
                     path = {this.state.path}
-                    updateState = {(statePartial: any) => this.updateState(statePartial)}
+                    setCardBrowserState = {(statePartial: PartialCardBrowserViewState) => this.setCardBrowserState(statePartial)}
+                    saveScrollOffset = {this.saveScrollOffset}
                 />
             </PluginContext.Provider>
         );
     }
 
     // My function that I call to navigate to a new folder
-    async updateState(statePartial: any) {
-        
+    async setCardBrowserState(statePartial: PartialCardBrowserViewState) {        
         const nextState = {...this.state, ...statePartial};
         this.leaf.setViewState({
             type: CARD_BROWSER_VIEW_TYPE,
             state: nextState,
+        });
+    }
+
+    saveScrollOffset = async () => {
+        const scrollOffset = this.contentEl.scrollTop;
+        
+        // Not sure what ephemeral state actually does.
+        // State seems to be tied to view type, while ephemeral state is tied to view instance?
+        // Which would explain why subfolders don't adopt the scorll position
+        this.leaf.setEphemeralState({
+            scrollOffset,
         });
     }
 }

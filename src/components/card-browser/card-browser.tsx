@@ -6,7 +6,8 @@ import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
-import { CardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
+import { CardBrowserViewState, PartialCardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
+import { getScrollOffset } from 'src/logic/file-processes';
 
 //////////
 //////////
@@ -14,7 +15,8 @@ import { CardBrowserViewState } from 'src/views/card-browser-view/card-browser-v
 interface CardBrowserProps {
     path: string,
     plugin: ProjectBrowserPlugin,
-    updateState: (viewState: CardBrowserViewState) => void,
+    setCardBrowserState: (viewState: PartialCardBrowserViewState) => void,
+    saveScrollOffset: Function,
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
@@ -62,7 +64,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     ////////
 
     function openFolder(nextFolder: TFolder) {
-        props.updateState({
+        props.setCardBrowserState({
             path: nextFolder.path,
         });
         // setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );
@@ -70,9 +72,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
     
     function openFile(file: TFile) {
         let { workspace } = props.plugin.app;
-        let leaf: null | WorkspaceLeaf;
-        leaf = workspace.getMostRecentLeaf();
-        if(!leaf) leaf = workspace.getLeaf();
+        let leaf = workspace.getMostRecentLeaf();
+
+        if(leaf) {
+            props.saveScrollOffset();
+        } else {
+            leaf = workspace.getLeaf();
+        }
+
         leaf.openFile(file);
     }
 
