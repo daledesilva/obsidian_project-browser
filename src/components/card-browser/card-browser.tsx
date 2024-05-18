@@ -41,17 +41,19 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 onBackClick = {openParentFolder}
             />
             <div>
-                {sectionsOfItems.map( (section) => (<>
-                    {section.type === "folders" && (
-                        <FolderSection section={section} openFolder={openFolder} key={section.title}/>
-                    )}
-                    {section.type === "state" && (
-                        <StateSection section={section} openFile={openFile} key={section.title}/>
-                    )}
-                    {section.type === "stateless" && (
-                        <StatelessSection section={section} openFile={openFile} key={section.title}/>
-                    )}
-                </>))}
+                {sectionsOfItems.map( (section) => (
+                    <div  key={section.title}>
+                        {section.type === "folders" && (
+                            <FolderSection section={section} openFolder={openFolder}/>
+                        )}
+                        {section.type === "state" && (
+                            <StateSection section={section} openFile={openFile}/>
+                        )}
+                        {section.type === "stateless" && (
+                            <StatelessSection section={section} openFile={openFile}/>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
         <CurrentFolderMenu
