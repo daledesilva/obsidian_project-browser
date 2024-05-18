@@ -188,7 +188,7 @@ export class ProjectCardsView extends ItemView {
         
         // Not sure what ephemeral state actually does.
         // State seems to be tied to view type, while ephemeral state is tied to view instance?
-        // Which would explain why subfolders don't adopt the scorll position
+        // Which would explain why subfolders don't adopt the scroll position
         this.leaf.setEphemeralState({
             scrollOffset,
         });

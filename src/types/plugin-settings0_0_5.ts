@@ -1,23 +1,26 @@
-export enum StateViewMode {
+export enum StateViewMode_0_0_5 {
 	DetailedCards = 'Detailed Cards',
 	SimpleCards = 'Simple Cards',
 	SmallCards = 'Small Cards',
 	List = 'List',
 }
 
-export enum FolderViewMode {
+export enum FolderViewMode_0_0_5 {
 	Small = 'Small',
 }
 
-export interface StateSettings {
+export interface StateSettings_0_0_5 {
 	name: string,
-	defaultView: StateViewMode,
+	defaultView: StateViewMode_0_0_5,
 }
 export interface FolderSettings {
-	defaultView: FolderViewMode,
+	defaultView: FolderViewMode_0_0_5,
 }
 
-export interface PluginSettings {
+/////////////
+/////////////
+
+export interface PluginSettings_0_0_5 {
 	settingsVersion: string,
 	access: {
 		replaceNewTab: boolean,
@@ -27,13 +30,16 @@ export interface PluginSettings {
 	showStateMenu: boolean,
 	folders: FolderSettings,
 	states: {
-		visible: StateSettings[],
-		hidden: StateSettings[],
+		visible: StateSettings_0_0_5[],
+		hidden: StateSettings_0_0_5[],
 	},
-	stateless: StateSettings,
+	stateless: StateSettings_0_0_5,
 }
 
-export const DEFAULT_SETTINGS: PluginSettings = {
+/////////////
+/////////////
+
+export const DEFAULT_SETTINGS_0_0_5: PluginSettings_0_0_5 = {
 	settingsVersion: '0.0.5',	// Settings version aligns with the version number of the plugin it was updated in
 	access: {
 		replaceNewTab: true,
@@ -42,44 +48,44 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	},
 	showStateMenu: true,
 	folders: {
-		defaultView: FolderViewMode.Small,
+		defaultView: FolderViewMode_0_0_5.Small,
 	},
 	states: {
 		visible: [
 			{
 				name: 'Idea',
-				defaultView: StateViewMode.SmallCards,
+				defaultView: StateViewMode_0_0_5.SmallCards,
 			},
 			{
 				name: 'Shortlisted',
-				defaultView: StateViewMode.SmallCards,
+				defaultView: StateViewMode_0_0_5.SmallCards,
 			},
 			{
 				name: 'Drafting',
-				defaultView: StateViewMode.DetailedCards,
+				defaultView: StateViewMode_0_0_5.DetailedCards,
 			},
 			{
 				name: 'Focus',
-				defaultView: StateViewMode.SimpleCards,
+				defaultView: StateViewMode_0_0_5.SimpleCards,
 			},
 			{
 				name: 'Final',
-				defaultView: StateViewMode.SmallCards,
+				defaultView: StateViewMode_0_0_5.SmallCards,
 			},
 		],
 		hidden: [
 			{
 				name: 'Archived',
-				defaultView: StateViewMode.List,
+				defaultView: StateViewMode_0_0_5.SmallCards,
 			},
 			{
 				name: 'Cancelled',
-				defaultView: StateViewMode.List,
+				defaultView: StateViewMode_0_0_5.DetailedCards,
 			},
 		],
 	},
 	stateless: {
 		name: '',
-		defaultView: StateViewMode.List,
+		defaultView: StateViewMode_0_0_5.List,
 	},
 }

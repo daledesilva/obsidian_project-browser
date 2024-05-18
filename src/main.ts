@@ -1,18 +1,19 @@
 import { Notice, Plugin } from 'obsidian';
-import { DEFAULT_SETTINGS, PluginSettings } from 'src/types/plugin-settings';
+import { DEFAULT_SETTINGS_0_0_5, PluginSettings_0_0_5 } from 'src/types/plugin-settings0_0_5';
 import { loadCardBrowserOnNewTab, registerCardBrowserView } from './views/card-browser-view/card-browser-view';
 import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-view-mods';
 import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
 import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon } from './commands/open-project-browser';
+import { migrateOutdatedSettings } from './types/plugin-settings-migrations';
 
 /////////
 /////////
 export default class ProjectBrowserPlugin extends Plugin {
-	settings: PluginSettings;
+	settings: PluginSettings_0_0_5;
 
 	async onload() {
 		await this.loadSettings();
-
+		
 		// this.app.emulateMobile(false);
 
 		registerCardBrowserView(this)
@@ -38,7 +39,14 @@ export default class ProjectBrowserPlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = await this.loadData();
+
+		if(Object.isEmpty(this.settings)) {
+			this.settings = Object.assign({}, DEFAULT_SETTINGS_0_0_5, this.settings);
+		} else {
+			this.settings = migrateOutdatedSettings(this.settings);
+			this.saveSettings();
+		}	
 	}
 
 	async saveSettings() {
@@ -46,7 +54,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 	}
 
 	async resetSettings() {
-		this.settings = JSON.parse( JSON.stringify(DEFAULT_SETTINGS) );
+		this.settings = JSON.parse( JSON.stringify(DEFAULT_SETTINGS_0_0_5) );
 		this.saveSettings();
 		new Notice('Project Browser plugin settings reset');
 	}

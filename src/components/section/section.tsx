@@ -9,7 +9,7 @@ import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set'
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { MasonryListNoteCardSet } from '../masonry-list-note-card-set/masonry-list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
-import { StateViewMode } from 'src/types/plugin-settings';
+import { StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
 
 //////////
 //////////
@@ -44,28 +44,28 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
                 {props.section.title}
             </SectionHeader>
 
-            {props.section.settings.defaultView === StateViewMode.DetailedCards && (
+            {props.section.settings.defaultView === StateViewMode_0_0_5.DetailedCards && (
                 <DetailedNoteCardSet
                     files = {props.section.items}
                     onFileSelect = {props.openFile}
                 />
             )}
 
-            {props.section.settings.defaultView === StateViewMode.SimpleCards && (
+            {props.section.settings.defaultView === StateViewMode_0_0_5.SimpleCards && (
                 <SimpleNoteCardSet
                     files = {props.section.items}
                     onFileSelect = {props.openFile}
                 />
             )}
 
-            {props.section.settings.defaultView === StateViewMode.SmallCards && (
+            {props.section.settings.defaultView === StateViewMode_0_0_5.SmallCards && (
                 <SmallNoteCardSet
                     files = {props.section.items}
                     onFileSelect = {props.openFile}
                 />
             )}
 
-            {props.section.settings.defaultView === StateViewMode.List && (
+            {props.section.settings.defaultView === StateViewMode_0_0_5.List && (
                 <ListNoteCardSet
                     files = {props.section.items}
                     onFileSelect = {props.openFile}

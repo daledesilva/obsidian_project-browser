@@ -1,6 +1,6 @@
 import { TFile, TFolder } from "obsidian";
 import ProjectBrowserPlugin from "src/main";
-import { FolderSettings, StateSettings } from "src/types/plugin-settings";
+import { FolderSettings, StateSettings_0_0_5 } from "src/types/plugin-settings0_0_5";
 
 /////////
 /////////
@@ -9,7 +9,7 @@ export interface Section {
     type: "folders" | "state" | "stateless"
     title: string,
     items: Array<TFile | TFolder>
-    settings: FolderSettings | StateSettings,
+    settings: FolderSettings | StateSettings_0_0_5,
 }
 
 export const orderSections = (sections: Section[], plugin: ProjectBrowserPlugin): Section[] => {
@@ -38,7 +38,7 @@ export const orderSections = (sections: Section[], plugin: ProjectBrowserPlugin)
 
 
 
-export function getStateSettings(plugin: ProjectBrowserPlugin, name: string): StateSettings {
+export function getStateSettings(plugin: ProjectBrowserPlugin, name: string): StateSettings_0_0_5 {
     const allSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
     for(let i=0; i<=allSettings.length; i++) {
         if(!allSettings[i]) continue;
