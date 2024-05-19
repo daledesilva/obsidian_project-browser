@@ -27,26 +27,45 @@
         
         
         .ddc_pb_draggable {
-            padding: 8px 13px 8px 6px;
+            // padding: 8px 13px 8px 6px;
+            padding: 8px 6px 8px 6px;
             border-radius: 1em;
             background-color: rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 13px;
 
-            .ddc_pb_drag-icon {
-                width: 1em;
-                height: 1em;
+            .ddc_pb_draggable-label {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+
+                &:hover {
+                    .ddc_pb_drag-icon {
+                        color: rgba(255,255,255,1);
+                    }
+                }
+            }
+
+            .ddc_pb_icon {
                 color: rgba(255,255,255,0.2);
                 overflow: hidden;
             }
 
-            // Turns off because it hovers the wrong icon when indexes change
-            // &:hover {
-            //     .ddc_pb_drag-icon {
-            //         color: rgba(255,255,255,1);
-            //     }
-            // }
+            .ddc_pb_drag-icon {
+                width: 1em;
+                height: 1em;
+            }
+
+            .ddc_pb_settings-icon {
+                width: 1.5em;
+                height: 1.5em;
+
+                &:hover {
+                    color: rgba(255,255,255,1);
+                }
+            }
+
 
         }
     }

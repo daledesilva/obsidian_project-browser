@@ -4,10 +4,11 @@ import ProjectBrowserPlugin from 'src/main';
 import { ItemInterface, ReactSortable } from "react-sortablejs";
 import './state-editor.scss';
 import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
-import { GripVertical, Plus, Trash, X } from 'lucide-react';
+import { Cog, Ellipsis, GripVertical, Plus, Settings, Trash, X } from 'lucide-react';
 import classNames from 'classnames';
 import { Setting } from 'obsidian';
 import { StateSettings_0_0_5, StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
+import { EditStateModal } from 'src/modals/edit-state-modal/edit-state-modal';
 
 //////////
 //////////
@@ -89,11 +90,29 @@ export const StateEditor = (props: StateEditorProps) => {
                             key = {stateItem.id}
                             className = 'ddc_pb_draggable'
                         >
-                            <GripVertical className='ddc_pb_drag-icon'/>
-                            {stateItem.stateSettings.name}
-                            {/* <div className='ddc_pb_close-btn'>
-                                <X className='ddc_pb_delete-icon' size='5em'/>
-                            </div> */}
+                            <div className='ddc_pb_draggable-label'>
+                                <GripVertical className='ddc_pb_icon ddc_pb_drag-icon'/>
+                                {stateItem.stateSettings.name}
+                            </div>
+                            <Settings
+                                className = 'ddc_pb_icon ddc_pb_settings-icon'
+                                onClick = { async () => {
+                                    new EditStateModal({
+                                        plugin: props.plugin,
+                                        stateSettings: stateItem.stateSettings,
+                                        onSuccess: async (modifiedState) => {
+                                            const newStates = props.plugin.settings.states.visible.map((stateInArray) => {
+                                                if(stateInArray.name === stateItem.stateSettings.name) {
+                                                    stateInArray.name = modifiedState.name;
+                                                }
+                                                return stateInArray;
+                                            })
+                                            await props.plugin.saveSettings();
+                                            setVisibleStates( convertToStateItems(newStates) );
+                                        }
+                                    }).open();
+                                }}
+                            />
                         </div>
                     ))}
                 </ReactSortable>
@@ -145,8 +164,29 @@ export const StateEditor = (props: StateEditorProps) => {
                             key = {stateItem.id}
                             className = 'ddc_pb_draggable'
                         >
-                            <GripVertical className='ddc_pb_drag-icon'/>
-                            {stateItem.stateSettings.name}
+                            <div className='ddc_pb_draggable-label'>
+                                <GripVertical className='ddc_pb_icon ddc_pb_drag-icon'/>
+                                {stateItem.stateSettings.name}
+                            </div>
+                            <Settings
+                                className = 'ddc_pb_icon ddc_pb_settings-icon'
+                                onClick = { async () => {
+                                    await new EditStateModal({
+                                        plugin: props.plugin,
+                                        stateSettings: stateItem.stateSettings,
+                                        onSuccess: async (modifiedState) => {
+                                            const newStates = props.plugin.settings.states.hidden.map((stateInArray) => {
+                                                if(stateInArray.name === stateItem.stateSettings.name) {
+                                                    stateInArray.name = modifiedState.name;
+                                                }
+                                                return stateInArray;
+                                            })
+                                            await props.plugin.saveSettings();
+                                            setHiddenStates( convertToStateItems(newStates) );
+                                        }
+                                    }).open();
+                                }}
+                            />
                         </div>
                     ))}
                 </ReactSortable>
