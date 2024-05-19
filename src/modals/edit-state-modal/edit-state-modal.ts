@@ -23,12 +23,12 @@ export class EditStateModal extends Modal {
 	////
     resolveModal: (modifiedStateSettings: StateSettings_0_0_5) => void;
 	rejectModal: (reason: string) => void;
-	stateSettings: StateSettings_0_0_5;
+	state: StateSettings_0_0_5;
 
 	constructor(props: EditStateModalProps) {
 		super(props.plugin.app);
 		this.plugin = props.plugin;
-		this.stateSettings = props.stateSettings;
+		this.state = props.stateSettings;
 		this.onSuccess = props.onSuccess;
 		this.onReject = props.onReject;
 	}
@@ -55,13 +55,13 @@ export class EditStateModal extends Modal {
             .setClass('ddc_pb_setting')
             .setName('Name')
             .addText((text) => {
-				text.setValue(this.stateSettings.name);
+				text.setValue(this.state.name);
                 text.inputEl.addEventListener('blur', async (e) => {
-                    this.stateSettings.name = text.getValue();
+                    this.state.name = text.getValue().trim();	// TODO: Put in proper sanitation
                 });
                 text.inputEl.addEventListener('keydown', (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
-                        this.stateSettings.name = text.getValue();
+                        this.state.name = text.getValue().trim();	// TODO: Put in proper sanitation
                     }
                 });
             });
@@ -74,9 +74,9 @@ export class EditStateModal extends Modal {
 				Object.values(StateViewMode_0_0_5).map((viewModeStr) => {
 					dropdown.addOption(viewModeStr, viewModeStr);
 				});
-				dropdown.setValue(this.stateSettings.defaultView.toString());
+				dropdown.setValue(this.state.defaultView.toString());
 				dropdown.selectEl.addEventListener('change', (event) => {
-                    this.stateSettings.defaultView = dropdown.getValue() as StateViewMode_0_0_5;
+                    this.state.defaultView = dropdown.getValue() as StateViewMode_0_0_5;
                 });
 			})
 
@@ -93,8 +93,9 @@ export class EditStateModal extends Modal {
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Save state');
 			confirmBtn.onClick( () => {
+				if(!this.state.name) return;
 				this.close();
-				this.onSuccess(this.stateSettings);
+				this.onSuccess(this.state);
 			})
 		})
 

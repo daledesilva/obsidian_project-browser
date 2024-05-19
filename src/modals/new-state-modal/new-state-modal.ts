@@ -3,6 +3,7 @@ import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
+import { StateSettings_0_0_5, StateViewMode_0_0_5 } from "src/types/plugin-settings0_0_5";
 import { createProject } from "src/utils/file-manipulation";
 
 /////////
@@ -11,19 +12,22 @@ import { createProject } from "src/utils/file-manipulation";
 interface NewStateModalProps {
     plugin: ProjectBrowserPlugin,
 	title?: string,
-	onSuccess: (newState: string) => {},
-	onReject?: (newState: string) => {},
+	onSuccess: (newState: StateSettings_0_0_5) => {},
+	onReject?: (reason: string) => {},
 }
 
 export class NewStateModal extends Modal {
     plugin: ProjectBrowserPlugin;
 	title: string;
-	onSuccess: (newState: string) => {};
-	onReject: ((newState: string) => {}) | undefined;
+	onSuccess: (newState: StateSettings_0_0_5) => {};
+	onReject: ((reason: string) => {}) | undefined;
 	////
-    resolveModal: (state: string) => void;
+    resolveModal: (state: StateSettings_0_0_5) => void;
 	rejectModal: (reason: string) => void;
-	state: string;
+	state: StateSettings_0_0_5 = {
+		name: '',
+		defaultView: StateViewMode_0_0_5.DetailedCards
+	}
 
 	constructor(props: NewStateModalProps) {
 		super(props.plugin.app);
@@ -36,7 +40,7 @@ export class NewStateModal extends Modal {
     /**
 	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<string> {
+	public showModal(): Promise<StateSettings_0_0_5 | string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;
@@ -54,17 +58,27 @@ export class NewStateModal extends Modal {
             .setName('Enter name of new state')
             .addText((text) => {
                 text.inputEl.addEventListener('blur', async (e) => {
-                    // const value = folderPathSanitize(text.getValue(), plugin.settings);
-                    // plugin.settings.folderNames.notes = value;
-                    this.state = text.getValue();
-                    // await plugin.saveSettings();
+                    this.state.name = text.getValue().trim();	// TODO: Put in proper sanitation
                 });
                 text.inputEl.addEventListener('keydown', (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
-                        this.state = text.getValue();
+                        this.state.name = text.getValue().trim();	// TODO: Put in proper sanitation
                     }
                 });
             });
+
+		new Setting(contentEl)
+            .setClass('ddc_pb_setting')
+            .setName('Default view')
+			.addDropdown((dropdown) => {
+				Object.values(StateViewMode_0_0_5).map((viewModeStr) => {
+					dropdown.addOption(viewModeStr, viewModeStr);
+				});
+				dropdown.setValue(this.state.defaultView.toString());
+				dropdown.selectEl.addEventListener('change', (event) => {
+                    this.state.defaultView = dropdown.getValue() as StateViewMode_0_0_5;
+                });
+			})
 
 		new Setting(contentEl).addButton(cancelBtn => {
 			cancelBtn.setClass('ddc_pb_button');
@@ -79,6 +93,7 @@ export class NewStateModal extends Modal {
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Create state');
 			confirmBtn.onClick( () => {
+				if(!this.state.name) return;	// TODO: Put in proper field validation and feedback
 				this.close();
 				this.onSuccess(this.state);
 			})

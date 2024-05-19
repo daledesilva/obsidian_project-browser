@@ -123,9 +123,9 @@ export const StateEditor = (props: StateEditorProps) => {
                             new NewStateModal({
                                 plugin: props.plugin,
                                 title: ' Create new visible state',
-                                onSuccess: async (newStateName) => {
+                                onSuccess: async (newState) => {
                                     const newStates = props.plugin.settings.states.visible;
-                                    newStates.push( createStateSettings(newStateName) );
+                                    newStates.push(newState);
                                     await props.plugin.saveSettings();
                                     setVisibleStates( convertToStateItems(newStates) );
                                 }
@@ -171,7 +171,7 @@ export const StateEditor = (props: StateEditorProps) => {
                             <Settings
                                 className = 'ddc_pb_icon ddc_pb_settings-icon'
                                 onClick = { async () => {
-                                    await new EditStateModal({
+                                    new EditStateModal({
                                         plugin: props.plugin,
                                         stateSettings: stateItem.stateSettings,
                                         onSuccess: async (modifiedState) => {
@@ -194,12 +194,12 @@ export const StateEditor = (props: StateEditorProps) => {
                     <button
                         className = "ddc_pb_add-button"
                         onClick = { async () => {
-                            await new NewStateModal({
+                            new NewStateModal({
                                 plugin: props.plugin,
                                 title: ' Create new hidden state',
-                                onSuccess: async (newStateName) => {
+                                onSuccess: async (newState) => {
                                     const newStates = props.plugin.settings.states.hidden;
-                                    newStates.push( createStateSettings(newStateName) );
+                                    newStates.push(newState);
                                     await props.plugin.saveSettings();
                                     setHiddenStates( convertToStateItems(newStates) );
                                 }
@@ -265,11 +265,4 @@ function convertToStates(stateItems: StateItem[]): StateSettings_0_0_5[] {
         states.push(stateItem.stateSettings)
     })
     return states;
-}
-
-function createStateSettings(name: string): StateSettings_0_0_5 {
-    return {
-        defaultView: StateViewMode_0_0_5.DetailedCards,
-        name: name,
-    }
 }
