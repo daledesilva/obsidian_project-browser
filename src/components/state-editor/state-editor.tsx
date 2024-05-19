@@ -15,11 +15,6 @@ import { StateSettings_0_0_5, StateViewMode_0_0_5 } from 'src/types/plugin-setti
 export function insertStateEditor(containerEl: HTMLElement, plugin: ProjectBrowserPlugin) {
     let root: Root;
 
-    new Setting(containerEl)
-    .setClass('ddc_pb_setting')
-    .setName('States')
-    .setDesc('Notes states will appear in reverse order in the project browser so that more progressed notes are shown higher. Hidden states will not show.')
-    
     const sectionEl = containerEl.createDiv('ddc_pb_section');
     const contentEl = sectionEl.createDiv();
     this.root = createRoot(contentEl);
@@ -179,7 +174,7 @@ export const StateEditor = (props: StateEditorProps) => {
             <div
                 className = {classNames([
                     'ddc_pb_states-section',
-                    'ddc_pb_state-dropzone',
+                    'ddc_pb_dropzone-section',
                     isDragging && 'ddc_pb_visible',
                 ])}
             >
@@ -194,6 +189,7 @@ export const StateEditor = (props: StateEditorProps) => {
                     animation = {200}
                     className = {classNames([
                         'ddc_pb_states-ctrl',
+                        'ddc_pb_dropzone-ctrl',
                     ])}
                 >
                     

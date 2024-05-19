@@ -1,14 +1,19 @@
 .ddc_pb_section {    
     // min-width: 20em;
-    margin-bottom: 3em;
+    // margin-bottom: 3em;
 }
 .ddc_pb_folder-section {
 
 }
-.ddc_pb_section.ddc_pb_state-section {
+.ddc_pb_state-section {
     background-color: var(--color-base-10);
     border-radius: 16px;
     padding: 1em 1em;
+}
+.ddc_pb_dropzone-section {
+    background-color: var(--color-base-10);
+    border-radius: 16px;
+    padding: 1em 1em 0;
 }
 .ddc_pb_section.ddc_pb_stateless-section {
 
@@ -34,3 +39,4 @@
         letter-spacing: 0.05em;
     }
 }
+

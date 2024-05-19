@@ -30,7 +30,8 @@ export class MySettingsTab extends PluginSettingTab {
 		
 		insertMoreInfoLinks(containerEl);
 		insertAccessSettings(containerEl, this.plugin, this.display);
-		insertNoteStateSettings(containerEl, this.plugin, this.display);
+		insertStateSettings(containerEl, this.plugin, this.display);
+		insertNoteSettings(containerEl, this.plugin, this.display);
 			
 		// TODO: Collapsible change log
 		// containerEl.createEl('p', {
@@ -62,7 +63,7 @@ export class MySettingsTab extends PluginSettingTab {
 }
 
 function insertMoreInfoLinks(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_settings_section');
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section');
 	sectionEl.createEl('p', { text: `For information on this plugin's development, visit the links below. Feel free to leave comments in the development diaries on YouTube.` });
 	const list = sectionEl.createEl('ul');
 	list.createEl('li').createEl('a', {
@@ -81,7 +82,7 @@ function insertMoreInfoLinks(containerEl: HTMLElement) {
 
 function insertAccessSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
 
-	const sectionEl = containerEl.createDiv('ddc_settings_section');
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section');
 
 	new Setting(sectionEl)
 		.setClass('ddc_pb_setting')
@@ -124,8 +125,16 @@ function insertAccessSettings(containerEl: HTMLElement, plugin: InkPlugin, refre
 
 }
 
-function insertNoteStateSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
-	const sectionEl = containerEl.createDiv('ddc_settings_section ddc_settings_controls-section');
+function insertStateSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
+	sectionEl.createEl('h2', { text: 'States' });
+	sectionEl.createEl('p', { text: `This is the list of categories that Project Browser will help assign notes and group by in the Browser view. Add new states and drag them to reorder or delete.` });
+	// sectionEl.createEl('p', { text: `Notes states will appear in reverse order in the Browser view so that more progressed notes are shown higher. Hidden states will not show.` });
+	insertStateEditor(sectionEl, plugin);
+}
+
+function insertNoteSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
 	sectionEl.createEl('h2', { text: 'Notes' });
 	sectionEl.createEl('p', { text: 'This section defines how Project Browser features are integrated on screen when your markdown notes display.' });
 	new Setting(sectionEl)
@@ -139,26 +148,24 @@ function insertNoteStateSettings(containerEl: HTMLElement, plugin: InkPlugin, re
 				refresh();
 			});
 		});
-	
-	insertStateEditor(sectionEl, plugin);
 
 }
 
 function insertDrawingSettings(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_section ddc_pb_controls-section');
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
 	sectionEl.createEl('h2', { text: 'Drawing' });
 	sectionEl.createEl('p', { text: `While editing a Markdown file, run the action 'Insert new hand drawn section' to embed a drawing canvas.` });
 }
 
 function insertWritingSettings(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_section ddc_pb_controls-section');
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
 	sectionEl.createEl('h2', { text: 'Writing' });
 	sectionEl.createEl('p', { text: `While editing a Markdown file, run the action 'Insert new handwriting section' to embed a section for writing with a stylus.` });
 	insertWritingLimitations(sectionEl);
 }
 
 function insertWritingLimitations(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_section ddc_pb_current-limitations-section');
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_current-limitations-section');
 	const accordion = sectionEl.createEl('details');
 	accordion.createEl('summary', { text: `Notable writing limitations (Expand for details)` });
 	accordion.createEl('p', { text: `Only the last 300 strokes will be visible while writing (Others will dissapear). This is because the plugin currently experiences lag while displaying long amounts of writing that degrades pen fluidity.` });
@@ -166,8 +173,8 @@ function insertWritingLimitations(containerEl: HTMLElement) {
 }
 
 function insertPrereleaseWarning(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_section ddc_pb_prerelease-warning-section');
-	const accordion = sectionEl.createEl('details', {cls: 'warning'});
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_prerelease-warning-section');
+	const accordion = sectionEl.createEl('details', {cls: 'ddc_pb_settings-section-warning'});
 	accordion.createEl('summary', { text: `This plugin is in an Alpha state (Expand for details)` });
 	accordion.createEl('p', { text: `What does Alpha mean? Development of products like this plugin often involve moving through multiple different stages (e.g. Alpha, Beta, then Standard Release).` });
 	accordion.createEl('p', { text: `Alpha, the current stage, means that this plugin is in early development and may undergo large changes that break or change previous functionality.` });
@@ -175,7 +182,7 @@ function insertPrereleaseWarning(containerEl: HTMLElement) {
 }
 
 function insertGenericWarning(containerEl: HTMLElement, text: string) {
-	const sectionEl = containerEl.createDiv('ddc_pb_section ddc_pb_generic-warning-section');
-	const warningEl = sectionEl.createDiv('warning');
+	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_generic-warning-section');
+	const warningEl = sectionEl.createDiv('ddc_pb_settings-section-warning');
 	warningEl.createEl('p', {text});
 }

@@ -67,7 +67,7 @@
 
 
 
-.ddc_pb_states-section.ddc_pb_state-dropzone {
+.ddc_pb_states-section.ddc_pb_dropzone-section {
 
     background-color: rgba(255,100,100,0.05);
     border-radius: 16px;
@@ -78,7 +78,6 @@
     transition: all 0.2s ease-in-out;
     &.ddc_pb_visible {
         height: 7em;
-        // height: fit-content;
         padding: 1em;
     }
 
@@ -98,7 +97,7 @@
     .ddc_pb_dropzone-ctrl {
         position: absolute;
         inset: 0;
-        padding-top: 2em;
+        padding: 3.5em 1em;
     }
 
 }

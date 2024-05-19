@@ -1,4 +1,4 @@
-.ddc_settings_section {
+.ddc_pb_settings-section {
     margin-bottom: 2em;
 
     h2 {
@@ -13,7 +13,7 @@
     }
 }
 
-.ddc_settings_section details {
+.ddc_pb_settings-section .ddc_pb_settings-section-details {
     overflow: hidden;
     border-style: solid;
     border-color: rgba(var(--callout-color), var(--callout-border-opacity));
@@ -33,7 +33,7 @@
     }
 }
 
-.ddc_settings_controls-section {
+.ddc_pb_controls-section {
     padding: 0.2em 1em;
     border: none;
     border-radius: 10px;

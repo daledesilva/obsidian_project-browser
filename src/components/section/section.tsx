@@ -7,7 +7,6 @@ import { FolderButtonSet } from '../folder-button-set/folder-button-set';
 import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-card-set';
 import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
-import { MasonryListNoteCardSet } from '../masonry-list-note-card-set/masonry-list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
 import { StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
 
