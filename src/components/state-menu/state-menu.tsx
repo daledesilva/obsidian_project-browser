@@ -30,47 +30,49 @@ export const StateMenu = (props: StateMenuProps) => {
     const visibleStates = plugin.settings.states.visible;
     const hiddenStates = plugin.settings.states.hidden;
 
-    return <>
-        {!menuIsActive && (
-            <button
-                className='project-browser_state-btn'
-                onClick = {() => {
-                    setMenuIsActive(true);
-                }}    
-            >
-                {displayState}
-            </button>
-        )}
-        {menuIsActive && (<>
-            <div className='project-browser_visible-state-btns'>
-                {visibleStates.map( (thisStatesSettings) => (
-                    <button
-                        className = {classnames([
-                            'project-browser_state-btn',
-                            thisStatesSettings.name === state && 'is-set',
-                        ])}
-                        onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
-                    >
-                        {thisStatesSettings.name}
-                    </button>
-                ))}
-            </div>
-            <div className='project-browser_hidden-state-btns'>
-                {hiddenStates.map( (thisStatesSettings) => (
-                    <button
-                        className = {classnames([
-                            'project-browser_state-btn',
-                            thisStatesSettings.name === state && 'is-set',
-                        ])}
-                        onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
-                    >
-                        {thisStatesSettings.name}
-                    </button>
-                ))}
-            </div>
-            
-        </>)}
-    </>
+    return (
+        <div className="ddc_pb_state-menu">
+            {!menuIsActive && (
+                <button
+                    className='ddc_pb_state-btn'
+                    onClick = {() => {
+                        setMenuIsActive(true);
+                    }}    
+                >
+                    {displayState}
+                </button>
+            )}
+            {menuIsActive && (<>
+                <div className='ddc_pb_visible-state-btns'>
+                    {visibleStates.map( (thisStatesSettings) => (
+                        <button
+                            className = {classnames([
+                                'ddc_pb_state-btn',
+                                thisStatesSettings.name === state && 'is-set',
+                            ])}
+                            onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
+                        >
+                            {thisStatesSettings.name}
+                        </button>
+                    ))}
+                </div>
+                <div className='ddc_pb_hidden-state-btns'>
+                    {hiddenStates.map( (thisStatesSettings) => (
+                        <button
+                            className = {classnames([
+                                'ddc_pb_state-btn',
+                                thisStatesSettings.name === state && 'is-set',
+                            ])}
+                            onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
+                        >
+                            {thisStatesSettings.name}
+                        </button>
+                    ))}
+                </div>
+                
+            </>)}
+        </div>
+    )
 
     //////////
 

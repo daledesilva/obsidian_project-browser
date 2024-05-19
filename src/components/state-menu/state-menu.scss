@@ -1,14 +1,26 @@
-.project-browser_visible-state-btns,
-.project-browser_hidden-state-btns {
+
+
+.ddc_pb_state-menu {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 1em;
+    padding: 1px;   // So the outline on the buttons doesn't get clipped
+}
+
+.ddc_pb_visible-state-btns,
+.ddc_pb_hidden-state-btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
     gap: 0.2em;
 }
 
 
 
-.project-browser_state-btn {
+.ddc_pb_state-btn {
     background-color: unset !important;
 
     color: var(--color-base-40, rgba(255, 255, 255, 0.5));

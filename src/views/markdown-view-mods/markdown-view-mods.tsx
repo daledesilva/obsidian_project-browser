@@ -9,7 +9,7 @@ import { StateMenu } from 'src/components/state-menu/state-menu';
 //////////
 //////////
 
-const stateMenuContainerClassName = 'project-browser_state-menu-container';
+const stateMenuContainerClassName = 'ddc_pb_state-menu-container';
 
 //////////
 
@@ -42,7 +42,7 @@ function addStateHeader(plugin: ProjectBrowserPlugin) {
         let stateMenuRoot = createRoot(stateMenuContainerEl);
         stateMenuRoot.render(
             <PluginContext.Provider value={plugin}>
-                <StateMenu file={activeFile}/>
+                <StateMenu file={activeFile} plugin={plugin}/>
             </PluginContext.Provider>
         )
     }

@@ -1,7 +1,6 @@
 .project-browser_state-menu-container {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    gap: 1.5em;
-    padding: 3px;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
