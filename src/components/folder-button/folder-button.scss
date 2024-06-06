@@ -1,20 +1,23 @@
 .project-browser_folder-button {
     // width: 20em;
     min-width: 6em;
-    padding: 1.2em 1em;
+    padding: 1em 1em;
+    font-size: var(--font-smallest);
     border-radius: 3em;
     
-    font-size: var(--font-text-size);
     color: var(--text-normal);
     opacity: 0.5;
     background-color: var(--interactive-normal);
-    // outline: 1px solid var(--color-base-30, rgba(255,255,255,0.5));
-    // box-shadow: 5px 5px 0 var(--color-base-30, rgba(255,255,255,0.5));
 
     cursor: pointer;
 
     &:hover {
         opacity: 1;
         background: var(--interactive-normal);
+    }
+
+    @media (min-width: 600px) {
+        padding: 1.2em 1em;
+        font-size: var(--font-small);
     }
 }

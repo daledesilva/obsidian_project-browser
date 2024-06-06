@@ -2,7 +2,7 @@ import './card-set.scss';
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import * as React from "react";
 import { DetailedNoteCard } from "../cards/detailed-note-card/detailed-note-card";
-import { FolderButton } from "../cards/folder-button/folder-button";
+import { FolderButton } from "../folder-button/folder-button";
 
 /////////
 /////////

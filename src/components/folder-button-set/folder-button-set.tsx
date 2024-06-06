@@ -1,7 +1,7 @@
 import './folder-button-set.scss';
 import { TAbstractFile, TFolder } from "obsidian";
 import * as React from "react";
-import { FolderButton } from "../cards/folder-button/folder-button";
+import { FolderButton } from "../folder-button/folder-button";
 
 /////////
 /////////
