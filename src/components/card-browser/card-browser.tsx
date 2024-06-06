@@ -39,6 +39,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             <BackButtonAndPath
                 folder = {folder}
                 onBackClick = {openParentFolder}
+                onFolderClick = { (folder: TFolder) => openFolder(folder)}
             />
             <div>
                 {sectionsOfItems.map( (section) => (

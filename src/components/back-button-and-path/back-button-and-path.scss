@@ -1,7 +1,45 @@
 
 .project-browser_back-button-and-path {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 1em;
-    margin-bottom: 2em;
+    margin-bottom: 0.5em;
+
+    font-size: var(--font-smallest);
+    color: var(--text-faint);
+
+    .ddc_pb_icon {
+        height: 1.3em;
+        width: 1.3em;
+        box-sizing: content-box;
+        padding: 0.8em;
+        &:hover {
+            color: var(--link-color);
+        }
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+        box-sizing: content-box;
+        padding: 0.7em;
+        
+        &:hover {
+            color: var(--link-color);
+            text-decoration: underline;
+        }
+    }
+
+    div {
+        box-sizing: content-box;
+        padding: 0.7em 0;
+        
+        &.ddc_pb_current-folder {
+            padding: 0.7em;
+            color: var(--text-normal);
+            font-weight: var(--bold-weight);
+        }
+    }
+
+
 }
