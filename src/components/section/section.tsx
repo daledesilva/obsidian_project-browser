@@ -9,6 +9,7 @@ import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set'
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
 import { StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
+import { sortItemsAlphabetically } from 'src/utils/sorting';
 
 //////////
 //////////
@@ -19,10 +20,12 @@ interface FolderSectionProps {
 }
 export const FolderSection = (props: FolderSectionProps) => {
 
+    const sortedFolders = sortItemsAlphabetically(props.section.items, 'ascending');
+
     return <>
         <BaseSection key={props.section.title} className="ddc_pb_folder-section">
             <FolderButtonSet
-                folders = {props.section.items}
+                folders = {sortedFolders}
                 onFolderSelect = {props.openFolder}
             />
         </BaseSection>
@@ -37,6 +40,8 @@ interface StateSectionProps {
 }
 export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) => {
 
+    const sortedFiles = sortItemsAlphabetically(props.section.items, 'ascending');
+
     return <>
         <BaseSection key={props.section.title} className="ddc_pb_state-section">
             <SectionHeader>
@@ -45,28 +50,28 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
 
             {props.section.settings.defaultView === StateViewMode_0_0_5.DetailedCards && (
                 <DetailedNoteCardSet
-                    files = {props.section.items}
+                    files = {sortedFiles}
                     onFileSelect = {props.openFile}
                 />
             )}
 
             {props.section.settings.defaultView === StateViewMode_0_0_5.SimpleCards && (
                 <SimpleNoteCardSet
-                    files = {props.section.items}
+                    files = {sortedFiles}
                     onFileSelect = {props.openFile}
                 />
             )}
 
             {props.section.settings.defaultView === StateViewMode_0_0_5.SmallCards && (
                 <SmallNoteCardSet
-                    files = {props.section.items}
+                    files = {sortedFiles}
                     onFileSelect = {props.openFile}
                 />
             )}
 
             {props.section.settings.defaultView === StateViewMode_0_0_5.List && (
                 <ListNoteCardSet
-                    files = {props.section.items}
+                    files = {sortedFiles}
                     onFileSelect = {props.openFile}
                 />
             )}
@@ -82,10 +87,12 @@ interface StatelessSectionProps {
 }
 export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
 
+    const sortedFiles = sortItemsAlphabetically(props.section.items, 'ascending');
+
     return <>
         <BaseSection key={props.section.title} className="ddc_pb_stateless-section">
             <ListNoteCardSet
-                files = {props.section.items}
+                files = {sortedFiles}
                 onFileSelect = {props.openFile}
             />
         </BaseSection>
