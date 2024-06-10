@@ -21,7 +21,7 @@ export type PartialCardBrowserViewState = Partial<CardBrowserViewState>;
 
 export interface CardBrowserViewEState {
     scrollOffset?: number,
-    lastOpenFilePath?: string,
+    lastOpenedFilePath?: string,
 }
 export type PartialCardBrowserViewEState = Partial<CardBrowserViewEState>;
 
@@ -106,14 +106,15 @@ export class ProjectCardsView extends ItemView {
 
         if(!this.root) this.root = createRoot(contentEl);
 
+        // TODO: Need to code a way to respond when it happens rather than timed (Maybe setEphermeralState function?);
         // Wait for a split second because the state updates asynchronously
         setTimeout( () => {
             this.renderView();
             if(this.eState?.scrollOffset) {
                 this.contentEl.scrollTo(0, this.eState.scrollOffset);
             }
-            if(this.eState?.lastOpenFilePath) {
-                // this.contentEl.scrollTo(0, this.eState.scrollOffset);
+            if(this.eState?.lastOpenedFilePath) {
+                // setLastOpenedFilePath(this.eState.lastOpenedFilePath);
             }
         }, 50);
         // Lower than 50ms and it might run before hte page has loaded fully.
@@ -121,7 +122,7 @@ export class ProjectCardsView extends ItemView {
 
         
         contentEl.addEventListener('scrollend', (e) => {
-            this.saveScrollOffset();
+            this.saveReturnState();
         })
 
 
@@ -172,7 +173,8 @@ export class ProjectCardsView extends ItemView {
                     plugin = {this.plugin}
                     path = {this.state.path}
                     setCardBrowserState = {(statePartial: PartialCardBrowserViewState) => this.setCardBrowserState(statePartial)}
-                    saveScrollOffset = {this.saveScrollOffset}
+                    saveReturnState = {this.saveReturnState}
+                    view = {this}
                 />
             </PluginContext.Provider>
         );
@@ -187,15 +189,24 @@ export class ProjectCardsView extends ItemView {
         });
     }
 
-    saveScrollOffset = async () => {
+    saveReturnState = async (props?: {lastOpenedFilePath?: string}) => {
         const scrollOffset = this.contentEl.scrollTop;
         
         // Not sure what ephemeral state actually does.
         // State seems to be tied to view type, while ephemeral state is tied to view instance?
         // Which would explain why subfolders don't adopt the scroll position
-        this.leaf.setEphemeralState({
-            scrollOffset,
-        });
+
+        if(props?.lastOpenedFilePath) {
+            this.leaf.setEphemeralState({
+                scrollOffset,
+                lastOpenedFilePath: props.lastOpenedFilePath,
+            });
+
+        } else {
+            this.leaf.setEphemeralState({
+                scrollOffset,
+            });
+        }
     }
 }
 

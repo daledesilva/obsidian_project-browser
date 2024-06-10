@@ -2,11 +2,11 @@ import './card-browser.scss';
 import * as React from "react";
 import ProjectBrowserPlugin from "src/main";
 import { FolderSection, StateSection, StatelessSection } from "../section/section";
-import { TFile, TFolder, WorkspaceLeaf } from 'obsidian';
+import { TFile, TFolder, View, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
-import { CardBrowserViewState, PartialCardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
+import { CardBrowserViewState, PartialCardBrowserViewState, ProjectCardsView } from 'src/views/card-browser-view/card-browser-view';
 import { getScrollOffset } from 'src/logic/file-processes';
 
 //////////
@@ -16,7 +16,8 @@ interface CardBrowserProps {
     path: string,
     plugin: ProjectBrowserPlugin,
     setCardBrowserState: (viewState: PartialCardBrowserViewState) => void,
-    saveScrollOffset: Function,
+    saveReturnState: (props: {lastOpenedFilePath: string}) => {},
+    view: ProjectCardsView,
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
@@ -26,6 +27,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const folder = v.getAbstractFileByPath(props.path) as TFolder; // TODO: Check this is valid?
     // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
     const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
+
+    const eState = props.view.getEphemeralState();
+    const lastOpenedFilePath = eState?.lastOpenedFilePath || '';
 
     // on mount
     React.useEffect( () => {
@@ -48,10 +52,10 @@ export const CardBrowser = (props: CardBrowserProps) => {
                             <FolderSection section={section} openFolder={openFolder}/>
                         )}
                         {section.type === "state" && (
-                            <StateSection section={section} openFile={openFile}/>
+                            <StateSection section={section} openFile={openFile} lastOpenedFilePath={lastOpenedFilePath}/>
                         )}
                         {section.type === "stateless" && (
-                            <StatelessSection section={section} openFile={openFile}/>
+                            <StatelessSection section={section} openFile={openFile} lastOpenedFilePath={lastOpenedFilePath}/>
                         )}
                     </div>
                 ))}
@@ -67,6 +71,15 @@ export const CardBrowser = (props: CardBrowserProps) => {
     ////////
 
     function openFolder(nextFolder: TFolder) {
+        let { workspace } = props.plugin.app;
+        let leaf = workspace.getMostRecentLeaf();
+        
+        if(leaf) {
+            props.saveReturnState({
+                lastOpenedFilePath: '',
+            });
+        }
+
         props.setCardBrowserState({
             path: nextFolder.path,
         });
@@ -78,7 +91,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
         let leaf = workspace.getMostRecentLeaf();
 
         if(leaf) {
-            props.saveScrollOffset();
+            props.saveReturnState({
+                lastOpenedFilePath: file.path,
+            });
         } else {
             leaf = workspace.getLeaf();
         }

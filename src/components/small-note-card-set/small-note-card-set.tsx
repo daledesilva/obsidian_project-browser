@@ -9,6 +9,7 @@ import { SmallNoteCard } from '../cards/small-note-card/small-note-card';
 interface SmallNoteCardSetProps {
     files: TAbstractFile[],
     onFileSelect: (file: TFile) => void,
+    lastOpenedFilePath?: string,
 }
 export const SmallNoteCardSet = (props: SmallNoteCardSetProps) => {
 
@@ -17,6 +18,7 @@ export const SmallNoteCardSet = (props: SmallNoteCardSetProps) => {
             file = {file as TFile}
             key = {file.path}
             onSelect = {props.onFileSelect}
+            showCloseTransition = {props.lastOpenedFilePath === file.path}
         />
     });
 

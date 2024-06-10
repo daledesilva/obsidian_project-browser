@@ -44,7 +44,9 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
                     isCurrentFolder = {index === folderTrail.length-1}
                 />
                 {index < folderTrail.length-1 && (
-                    <div>
+                    <div
+                        key = {index + '/'}
+                    >
                         {'>'}
                     </div>
                 )}
