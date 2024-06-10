@@ -17,12 +17,6 @@ interface BackButtonAndPathProps {
 
 export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
     
-
-    // let folderTrail: string[] = [];
-    // if(props.folder.path !== '/') {
-    //     folderTrail = props.folder.path.split('/');
-    // }
-
     const folderTrail: TFolder[] = [props.folder];
     while(folderTrail[folderTrail.length-1].parent) {
         // @ts-ignore
@@ -30,14 +24,7 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
     }
     folderTrail.reverse();
 
-    console.log('folderTrail', folderTrail)
-
-    // folderTrail.unshift(rootName);
-    // let displayPath = rootName;
-    // const isInSubfolder = folderTrail.length > 0;
-    // if(isInSubfolder) {
-    //     displayPath += ' / ' + folderTrail.join(' / ');
-    // }
+    /////////
 
     return <>
         <div
@@ -81,8 +68,6 @@ function PathButton(props: PathButtonProps) {
     } else {
         name = props.folder.name;
     }
-
-    console.log('isCurrentFolder', props.isCurrentFolder)
 
     return <>
         {props.onClick && (

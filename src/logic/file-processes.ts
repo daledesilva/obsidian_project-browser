@@ -56,7 +56,6 @@ export function simplifyWhiteSpace(text: string): string {
 export function getScrollOffset(plugin: ProjectBrowserPlugin): number {
     const editor = plugin.app.workspace.activeEditor?.editor;
 
-    console.log(plugin.app.workspace.getActiveViewOfType(ProjectCardsView));
     if(!editor) return 0;
 
     return editor.getScrollInfo().top;

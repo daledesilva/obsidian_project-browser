@@ -34,7 +34,7 @@ export const StateMenu = (props: StateMenuProps) => {
 
     React.useEffect( () => {
         firstRunRef.current = false;
-        
+
         function handleClickOutside(event: any) {
             if (stateMenuRef.current && !stateMenuRef.current.contains(event.target)) {
                 setMenuIsActive(false);
@@ -69,8 +69,9 @@ export const StateMenu = (props: StateMenuProps) => {
             )}
             {menuIsActive && (<>
                 <div className='ddc_pb_visible-state-btns'>
-                    {visibleStates.map( (thisStatesSettings) => (
+                    {visibleStates.map( (thisStatesSettings, index) => (
                         <button
+                            key = {index}
                             className = {classnames([
                                 'ddc_pb_state-btn',
                                 'ddc_pb_visible-state',
@@ -83,8 +84,9 @@ export const StateMenu = (props: StateMenuProps) => {
                     ))}
                 </div>
                 <div className='ddc_pb_hidden-state-btns'>
-                    {hiddenStates.map( (thisStatesSettings) => (
+                    {hiddenStates.map( (thisStatesSettings, index) => (
                         <button
+                            key = {index}
                             className = {classnames([
                                 'ddc_pb_state-btn',
                                 'ddc_pb_hidden-state',
