@@ -172,8 +172,8 @@ export class ProjectCardsView extends ItemView {
 
             // eState isn't always ready or accurate immediately. Therefore, there's a delay here and in CSS animations
             setTimeout( () => {
-                console.log('eState ----- ', this.eState);
-                console.log('state ----- ', this.state);
+                // console.log('eState ----- ', this.eState);
+                // console.log('state ----- ', this.state);
                 if(this.eState?.scrollOffset) this.contentEl.scrollTo(0, this.eState.scrollOffset);
             }, 50);
 
