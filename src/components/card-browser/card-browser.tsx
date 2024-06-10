@@ -29,6 +29,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
 
     const eState = props.view.getEphemeralState();
+    console.log('eState inside:', eState)
     const lastOpenedFilePath = eState?.lastOpenedFilePath || '';
 
     // on mount

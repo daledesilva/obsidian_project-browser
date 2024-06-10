@@ -106,26 +106,7 @@ export class ProjectCardsView extends ItemView {
 
         if(!this.root) this.root = createRoot(contentEl);
 
-        // TODO: Need to code a way to respond when it happens rather than timed (Maybe setEphermeralState function?);
-        // Wait for a split second because the state updates asynchronously
-        setTimeout( () => {
-            this.renderView();
-            if(this.eState?.scrollOffset) {
-                this.contentEl.scrollTo(0, this.eState.scrollOffset);
-            }
-            if(this.eState?.lastOpenedFilePath) {
-                // setLastOpenedFilePath(this.eState.lastOpenedFilePath);
-            }
-        }, 50);
-        // Lower than 50ms and it might run before hte page has loaded fully.
-        // REVIEW: Need to reasses. Perhaps it should continually run while page is loading?
-
-        
-        contentEl.addEventListener('scrollend', (e) => {
-            this.saveReturnState();
-        })
-
-
+        this.renderView();
     }
 
     // Called by Obsidian to fetch the state from your view
@@ -144,20 +125,25 @@ export class ProjectCardsView extends ItemView {
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
     setState(state: any, result: ViewStateResult): Promise<void> {
-        // console.log('LOADING state');
+        // console.log('LOADING state', state);
         result.history = true;
 
         // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
         this.state = state;   // this line works - you have to replace the whole object for navigation history to work properly
 
+        this.contentEl.addEventListener('scrollend', (e) => {
+            this.saveReturnState();
+        })
+
         this.renderView();
+
         return super.setState(this.state, result);
     }
 
-    setEphemeralState(state: any): void {
-        // console.log('LOADING Ephemeral State:', state);
-        this.eState = state;
-        return super.setEphemeralState(this.state);
+    setEphemeralState(eState: any): void {
+        // console.log('LOADING Ephemeral State:', eState);
+        this.eState = eState;
+        return super.setEphemeralState(this.eState);
     }
 
     async onClose() {
@@ -167,17 +153,32 @@ export class ProjectCardsView extends ItemView {
     ////////
 
     renderView() {
-        this.root.render(
-            <PluginContext.Provider value={this.plugin}>
-                <CardBrowser
-                    plugin = {this.plugin}
-                    path = {this.state.path}
-                    setCardBrowserState = {(statePartial: PartialCardBrowserViewState) => this.setCardBrowserState(statePartial)}
-                    saveReturnState = {this.saveReturnState}
-                    view = {this}
-                />
-            </PluginContext.Provider>
-        );
+
+        // TODO: The below timeouts are because the eState takes a second to load. Instead, the CarBrowser should send back a function to update the eState (and State?), and simply respond to that funciton when called by setEphermeral state.
+        // eState isn't always ready or accurate immediately. Therefore, there's a delay here and in CSS animations
+        setTimeout( () => {
+
+            this.root.render(
+                <PluginContext.Provider value={this.plugin}>
+                    <CardBrowser
+                        plugin = {this.plugin}
+                        path = {this.state.path}
+                        setCardBrowserState = {(statePartial: PartialCardBrowserViewState) => this.setCardBrowserState(statePartial)}
+                        saveReturnState = {this.saveReturnState}
+                        view = {this}
+                    />
+                </PluginContext.Provider>
+            );
+
+            // eState isn't always ready or accurate immediately. Therefore, there's a delay here and in CSS animations
+            setTimeout( () => {
+                console.log('eState ----- ', this.eState);
+                console.log('state ----- ', this.state);
+                if(this.eState?.scrollOffset) this.contentEl.scrollTo(0, this.eState.scrollOffset);
+            }, 50);
+
+        }, 50);
+        
     }
 
     // My function that I call to navigate to a new folder
@@ -208,6 +209,7 @@ export class ProjectCardsView extends ItemView {
             });
         }
     }
+
 }
 
 // NOTE: When Obsidian calls getState, it automatically adds your view to the history stack.

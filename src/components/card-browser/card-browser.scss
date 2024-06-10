@@ -13,4 +13,17 @@
     padding: var(--browser-block-start-margin) var(--browser-inline-margin) 20em var(--browser-inline-margin);
     margin-top: 0;
     overflow-y: auto;
+
+    animation-name: transition-on;
+    animation-duration: 0.2s;
+    animation-delay: 0.1s;
+    animation-fill-mode: backwards;
+}
+
+
+
+@keyframes transition-on {
+    from {
+        opacity: 0;
+    }
 }
