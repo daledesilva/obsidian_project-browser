@@ -26,8 +26,10 @@
         overflow: hidden;
     }
 
-    &:hover {
-        // background: var(--color-base-10);
-        outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            // background: var(--color-base-10);
+            outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
+        }
     }
 }
