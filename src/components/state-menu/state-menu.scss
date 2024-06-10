@@ -20,11 +20,16 @@
 
 
 
-.ddc_pb_state-btn {
-    background-color: unset !important;
+@keyframes highlight-and-fade {
+    from {
+        color: var(--text-on-accent, rgba(255, 255, 255, 0.5));
+        outline: 1px solid var(--text-accent, rgba(255, 255, 255, 0)) !important;
+        background-color: var(--interactive-accent, rgba(255, 255, 255, 0.5));
+    }
+}
 
-    color: var(--color-base-40, rgba(255, 255, 255, 0.5));
-    outline: 1px solid var(--color-base-30, rgba(255, 255, 255, 0.5));
+
+.ddc_pb_state-btn {
     font-size: 0.8em;
     border-left: 8px;
     margin: 0;
@@ -32,18 +37,63 @@
     box-shadow: none !important;
 
     cursor: pointer;
-
-    &:hover {
-        color: var(--color-base-100, rgba(255, 255, 255, 0.5));
-        outline-color: var(--color-base-50, rgba(255, 255, 255, 0.5));
-    }
     
-    &.is-set {
-        color: var(--color-base-70, rgba(255, 255, 255, 0.5));;
-        background-color: var(--color-base-20, rgba(255, 255, 255, 0.5)) !important;
+    &.ddc_pb_in-closed-menu {
+        animation-duration: 1s;
+        animation-name: highlight-and-fade;
+
+        color: var(--text-faint, rgba(255, 255, 255, 0.5));
+        outline: 1px solid var(--color-base-30, rgba(255, 255, 255, 0.5));
+        background-color: rgba(0, 0, 0, 0);
+        
         &:hover {
-            color: var(--color-base-50, rgba(255, 255, 255, 0.5));
-            outline: none;
+            color: var(--text-accent, rgba(255, 255, 255, 0.5));
+            outline: 1px solid var(--text-accent, rgba(255, 255, 255, 0.5)) !important;
         }
     }
+    
+    
+
+    &.ddc_pb_visible-state {
+        color: var(--text-muted, rgba(255, 255, 255, 0.5));;
+        outline: 1px solid var(--color-base-30, rgba(255, 255, 255, 0.5));
+        background-color: rgba(0, 0, 0, 0);
+        
+        &:hover {
+            color: var(--text-on-accent, rgba(255, 255, 255, 0.5));;
+            background-color: var(--interactive-accent, rgba(255, 255, 255, 0.5)) !important;
+            outline: none;
+        }
+        
+        &.is-set {
+            color: var(--text-accent, rgba(255, 255, 255, 0.5));
+            outline: 1px solid var(--text-accent, rgba(255, 255, 255, 0.5)) !important;
+            &:hover {
+                color: var(--text-faint, rgba(255, 255, 255, 0.5));
+                outline: none !important;
+                background-color: var(--interactive-normal, rgba(255, 255, 255, 0.5)) !important;
+            }
+        }
+    }
+
+    &.ddc_pb_hidden-state {
+        color: var(--text-faint, rgba(255, 255, 255, 0.5));
+        outline: 1px solid var(--color-base-30, rgba(255, 255, 255, 0.5));
+
+        &:hover {
+            color: var(--text-normal, rgba(255, 255, 255, 0.5));;
+            background-color: var(--interactive-normal, rgba(255, 255, 255, 0.5)) !important;
+        }
+        
+        &.is-set {
+            color: var(--text-on-accent-inverted, rgba(255, 255, 255, 0.5));;
+            background-color: var(--interactive-accent-hover, rgba(255, 255, 255, 0.5)) !important;
+            outline: none;
+            &:hover {
+                color: var(--text-faint, rgba(255, 255, 255, 0.5));;
+                background-color: var(--interactive-normal, rgba(255, 255, 255, 0.5)) !important;
+            }
+        }
+    }
+
 }
