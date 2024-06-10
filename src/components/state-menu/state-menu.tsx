@@ -18,10 +18,11 @@ export const StateMenu = (props: StateMenuProps) => {
     const plugin = React.useContext(PluginContext);
     if(!plugin) return <></>;
 
-    const stateMenuRef = React.useRef<HTMLDivElement>(null)
     const [file, setFile] = React.useState( props.file );
     const [state, setState] = React.useState( getFileState(plugin, file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
+    const firstRunRef = React.useRef<boolean>(true);
+    const stateMenuRef = React.useRef<HTMLDivElement>(null)
 
     listenForFileChanges();
 
@@ -32,6 +33,8 @@ export const StateMenu = (props: StateMenuProps) => {
     const hiddenStates = plugin.settings.states.hidden;
 
     React.useEffect( () => {
+        firstRunRef.current = false;
+        
         function handleClickOutside(event: any) {
             if (stateMenuRef.current && !stateMenuRef.current.contains(event.target)) {
                 setMenuIsActive(false);
@@ -42,7 +45,7 @@ export const StateMenu = (props: StateMenuProps) => {
         return () => {
             document.removeEventListener('pointerdown', handleClickOutside);
         };
-        
+
     }, [])
 
     return (
@@ -55,6 +58,7 @@ export const StateMenu = (props: StateMenuProps) => {
                     className = {classnames([
                         'ddc_pb_state-btn',
                         'ddc_pb_in-closed-menu',
+                        !firstRunRef.current && 'ddc_pb_has-return-transition'
                     ])}
                     onClick = {() => {
                         setMenuIsActive(true);
