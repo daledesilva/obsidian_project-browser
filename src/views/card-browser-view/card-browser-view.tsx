@@ -1,5 +1,5 @@
 import ProjectBrowserPlugin from "src/main";
-import { FileView, ItemView, MarkdownView, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { FileView, ItemView, MarkdownView, TFile, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser from "src/components/card-browser/card-browser";
@@ -21,6 +21,7 @@ export type PartialCardBrowserViewState = Partial<CardBrowserViewState>;
 
 export interface CardBrowserViewEState {
     scrollOffset?: number,
+    lastOpenFilePath?: string,
 }
 export type PartialCardBrowserViewEState = Partial<CardBrowserViewEState>;
 
@@ -110,6 +111,9 @@ export class ProjectCardsView extends ItemView {
             this.renderView();
             if(this.eState?.scrollOffset) {
                 this.contentEl.scrollTo(0, this.eState.scrollOffset);
+            }
+            if(this.eState?.lastOpenFilePath) {
+                // this.contentEl.scrollTo(0, this.eState.scrollOffset);
             }
         }, 50);
         // Lower than 50ms and it might run before hte page has loaded fully.
