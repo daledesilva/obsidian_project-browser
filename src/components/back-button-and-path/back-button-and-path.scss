@@ -4,11 +4,25 @@
     flex-direction: row;
     align-items: center;
     margin-bottom: 0.5em;
+    margin-inline-start: calc(-1 * var(--browser-inline-margin));
+    margin-inline-end: calc(-1 * var(--browser-inline-margin));
 
     font-size: var(--font-smallest);
     color: var(--text-faint);
 
+    overflow-x: auto;
+
+    // TODO: Make this an scss function
+    // Hide scrollbar but keep functionality
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+
     .ddc_pb_icon {
+        flex-shrink: 0;
         height: 1.3em;
         width: 1.3em;
         box-sizing: content-box;
