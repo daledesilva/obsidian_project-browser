@@ -20,7 +20,7 @@ export interface CardBrowserHandlers {
 interface CardBrowserProps {
     path: string,
     plugin: ProjectBrowserPlugin,
-    setCardBrowserState: (viewState: PartialCardBrowserViewState) => void,
+    setViewStateWithHistory: (viewState: PartialCardBrowserViewState) => void,
     saveReturnState: (props: {lastOpenedFilePath: string}) => {},
     setHandlers: (handlers: CardBrowserHandlers) => void,
 }
@@ -91,7 +91,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             });
         }
 
-        props.setCardBrowserState({
+        props.setViewStateWithHistory({
             path: nextFolder.path,
         });
         // setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );

@@ -158,7 +158,7 @@ export class ProjectCardsView extends ItemView {
                 <CardBrowser
                     plugin = {this.plugin}
                     path = {this.state.path}
-                    setCardBrowserState = {(statePartial: PartialCardBrowserViewState) => this.setCardBrowserState(statePartial)}
+                    setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
                     saveReturnState = {this.saveReturnState}
                     setHandlers = {(handlers) => this.setCardBrowserHandlers(handlers)}
                 />
@@ -179,10 +179,12 @@ export class ProjectCardsView extends ItemView {
     }
 
     // My function that I call to navigate to a new folder
-    setCardBrowserState(statePartial: PartialCardBrowserViewState) {       
+    setViewStateWithHistory(statePartial: PartialCardBrowserViewState) {       
         const nextState = {...this.state, ...statePartial};
-        this.state = nextState;
-        this.updateCardBrowser();
+        this.leaf.setViewState({
+            type: CARD_BROWSER_VIEW_TYPE,
+            state: nextState,
+        });
     }
 
     saveReturnState = async (props?: {lastOpenedFilePath?: string}) => {
