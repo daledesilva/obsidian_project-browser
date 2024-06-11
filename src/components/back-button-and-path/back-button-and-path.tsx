@@ -28,7 +28,7 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
 
     return <>
         <div
-            className = 'project-browser_back-button-and-path'
+            className = 'ddc_pb_back-button-and-path'
         >
             {folderTrail.length > 1 && (
                 <CornerLeftUp
@@ -39,6 +39,7 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
             {folderTrail.map( (folder, index) => (
                 <div
                     key = {index}
+                    className = 'ddc_pb_breadcrumb'
                 >
                     <PathButton
                         folder = {folder}

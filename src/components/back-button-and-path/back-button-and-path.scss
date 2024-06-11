@@ -1,5 +1,5 @@
 
-.project-browser_back-button-and-path {
+.ddc_pb_back-button-and-path {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -20,7 +20,12 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 
-
+    
+    .ddc_pb_breadcrumb {
+        display: flex;
+        flex-direction: row;
+    }
+    
     .ddc_pb_icon {
         flex-shrink: 0;
         height: 1.3em;

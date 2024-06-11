@@ -26,15 +26,15 @@ interface CardBrowserProps {
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
+    const [state, setState] = React.useState<CardBrowserViewState>({path: props.path});
+    const [eState, setEState] = React.useState<CardBrowserViewEState>();
+
     // const [files, setFiles] = useState
     const v = props.plugin.app.vault;
     // const [path, setPath] = React.useState(props.path);
-    const folder = v.getAbstractFileByPath(props.path) as TFolder; // TODO: Check this is valid?
+    const folder = v.getAbstractFileByPath(state.path) as TFolder; // TODO: Check this is valid?
     // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
     const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
-
-    const [state, setState] = React.useState<CardBrowserViewState>();
-    const [eState, setEState] = React.useState<CardBrowserViewEState>();
     
     const lastOpenedFilePath = eState?.lastOpenedFilePath || '';
     console.log('lastOpenedFilePath', lastOpenedFilePath);

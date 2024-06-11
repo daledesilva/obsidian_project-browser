@@ -116,11 +116,9 @@ export class ProjectCardsView extends ItemView {
     // Done automatically when leaf navigates away from your view (ie. onClose)
     // Return your state here to provide it to Obsidian
     getState(): CardBrowserViewState {
-        // console.log('SAVING state');
         return this.state;
     }
     getEphemeralState(): CardBrowserViewEState {
-        // console.log('SAVING Ephemeral State');
         return this.eState;
     }
     
@@ -181,12 +179,10 @@ export class ProjectCardsView extends ItemView {
     }
 
     // My function that I call to navigate to a new folder
-    async setCardBrowserState(statePartial: PartialCardBrowserViewState) {        
+    setCardBrowserState(statePartial: PartialCardBrowserViewState) {       
         const nextState = {...this.state, ...statePartial};
-        this.leaf.setViewState({
-            type: CARD_BROWSER_VIEW_TYPE,
-            state: nextState,
-        });
+        this.state = nextState;
+        this.updateCardBrowser();
     }
 
     saveReturnState = async (props?: {lastOpenedFilePath?: string}) => {
@@ -210,6 +206,3 @@ export class ProjectCardsView extends ItemView {
     }
 
 }
-
-// NOTE: When Obsidian calls getState, it automatically adds your view to the history stack.
-// But if you change your view internally, you should call setViewState to add the entry you need.
