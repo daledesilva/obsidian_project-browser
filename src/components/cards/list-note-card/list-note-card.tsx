@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import './list-note-card.scss';
 import { TFile } from "obsidian";
 import * as React from "react";
@@ -11,6 +12,7 @@ import { PluginContext } from 'src/utils/plugin-context';
 interface ListNoteCardProps {
     file: TFile,
     onSelect: (file: TFile) => void,
+    showCloseTransition: boolean,
 }
 
 export const ListNoteCard = (props: ListNoteCardProps) => {
@@ -29,7 +31,10 @@ export const ListNoteCard = (props: ListNoteCardProps) => {
     
     return <>
         <article
-            className = 'ddc_pb_list-note-card'
+            className = {classNames([
+                'ddc_pb_list-note-card',
+                props.showCloseTransition && 'ddc_pb_closing'
+            ])}
             onClick = { () => {
                 props.onSelect(props.file)
             }}

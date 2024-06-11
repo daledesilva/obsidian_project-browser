@@ -17,12 +17,6 @@ interface BackButtonAndPathProps {
 
 export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
     
-
-    // let folderTrail: string[] = [];
-    // if(props.folder.path !== '/') {
-    //     folderTrail = props.folder.path.split('/');
-    // }
-
     const folderTrail: TFolder[] = [props.folder];
     while(folderTrail[folderTrail.length-1].parent) {
         // @ts-ignore
@@ -30,18 +24,11 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
     }
     folderTrail.reverse();
 
-    console.log('folderTrail', folderTrail)
-
-    // folderTrail.unshift(rootName);
-    // let displayPath = rootName;
-    // const isInSubfolder = folderTrail.length > 0;
-    // if(isInSubfolder) {
-    //     displayPath += ' / ' + folderTrail.join(' / ');
-    // }
+    /////////
 
     return <>
         <div
-            className = 'project-browser_back-button-and-path'
+            className = 'ddc_pb_back-button-and-path'
         >
             {folderTrail.length > 1 && (
                 <CornerLeftUp
@@ -49,19 +36,23 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
                     className = 'ddc_pb_icon'
                 />
             )}
-            {folderTrail.map( (folder, index) => (<>
-                <PathButton
+            {folderTrail.map( (folder, index) => (
+                <div
                     key = {index}
-                    folder = {folder}
-                    onClick = {folderTrail.length > 1 && index !== folderTrail.length-1 ? props.onFolderClick : undefined}
-                    isCurrentFolder = {index === folderTrail.length-1}
-                />
-                {index < folderTrail.length-1 && (
-                    <div>
-                        {'>'}
-                    </div>
-                )}
-            </>))}
+                    className = 'ddc_pb_breadcrumb'
+                >
+                    <PathButton
+                        folder = {folder}
+                        onClick = {folderTrail.length > 1 && index !== folderTrail.length-1 ? props.onFolderClick : undefined}
+                        isCurrentFolder = {index === folderTrail.length-1}
+                    />
+                    {index < folderTrail.length-1 && (
+                        <div>
+                            {'>'}
+                        </div>
+                    )}
+                </div>
+            ))}
         </div>
     </>
 }
@@ -81,8 +72,6 @@ function PathButton(props: PathButtonProps) {
     } else {
         name = props.folder.name;
     }
-
-    console.log('isCurrentFolder', props.isCurrentFolder)
 
     return <>
         {props.onClick && (

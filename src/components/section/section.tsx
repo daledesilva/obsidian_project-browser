@@ -37,6 +37,7 @@ export const FolderSection = (props: FolderSectionProps) => {
 interface StateSectionProps {
     section: Section,
     openFile: (file: TFile) => void,
+    lastOpenedFilePath: string,
 }
 export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) => {
 
@@ -52,6 +53,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
                 <DetailedNoteCardSet
                     files = {sortedFiles}
                     onFileSelect = {props.openFile}
+                    lastOpenedFilePath = {props.lastOpenedFilePath}
                 />
             )}
 
@@ -59,6 +61,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
                 <SimpleNoteCardSet
                     files = {sortedFiles}
                     onFileSelect = {props.openFile}
+                    lastOpenedFilePath = {props.lastOpenedFilePath}
                 />
             )}
 
@@ -66,6 +69,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
                 <SmallNoteCardSet
                     files = {sortedFiles}
                     onFileSelect = {props.openFile}
+                    lastOpenedFilePath = {props.lastOpenedFilePath}
                 />
             )}
 
@@ -73,6 +77,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
                 <ListNoteCardSet
                     files = {sortedFiles}
                     onFileSelect = {props.openFile}
+                    lastOpenedFilePath = {props.lastOpenedFilePath}
                 />
             )}
         </BaseSection>
@@ -84,6 +89,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
 interface StatelessSectionProps {
     section: Section,
     openFile: (file: TFile) => void,
+    lastOpenedFilePath: string,
 }
 export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
 
@@ -94,6 +100,7 @@ export const StatelessSection = (props: React.PropsWithChildren<StatelessSection
             <ListNoteCardSet
                 files = {sortedFiles}
                 onFileSelect = {props.openFile}
+                lastOpenedFilePath = {props.lastOpenedFilePath}
             />
         </BaseSection>
     </>

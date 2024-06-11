@@ -21,6 +21,8 @@ export const StateMenu = (props: StateMenuProps) => {
     const [file, setFile] = React.useState( props.file );
     const [state, setState] = React.useState( getFileState(plugin, file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
+    const firstRunRef = React.useRef<boolean>(true);
+    const stateMenuRef = React.useRef<HTMLDivElement>(null)
 
     listenForFileChanges();
 
@@ -30,11 +32,34 @@ export const StateMenu = (props: StateMenuProps) => {
     const visibleStates = plugin.settings.states.visible;
     const hiddenStates = plugin.settings.states.hidden;
 
+    React.useEffect( () => {
+        firstRunRef.current = false;
+
+        function handleClickOutside(event: any) {
+            if (stateMenuRef.current && !stateMenuRef.current.contains(event.target)) {
+                setMenuIsActive(false);
+            }
+        }
+        
+        document.addEventListener('pointerdown', handleClickOutside);
+        return () => {
+            document.removeEventListener('pointerdown', handleClickOutside);
+        };
+
+    }, [])
+
     return (
-        <div className="ddc_pb_state-menu">
+        <div
+            className = "ddc_pb_state-menu"
+            ref = {stateMenuRef}
+            >
             {!menuIsActive && (
                 <button
-                    className='ddc_pb_state-btn'
+                    className = {classnames([
+                        'ddc_pb_state-btn',
+                        'ddc_pb_in-closed-menu',
+                        !firstRunRef.current && 'ddc_pb_has-return-transition'
+                    ])}
                     onClick = {() => {
                         setMenuIsActive(true);
                     }}    
@@ -44,10 +69,12 @@ export const StateMenu = (props: StateMenuProps) => {
             )}
             {menuIsActive && (<>
                 <div className='ddc_pb_visible-state-btns'>
-                    {visibleStates.map( (thisStatesSettings) => (
+                    {visibleStates.map( (thisStatesSettings, index) => (
                         <button
+                            key = {index}
                             className = {classnames([
                                 'ddc_pb_state-btn',
+                                'ddc_pb_visible-state',
                                 thisStatesSettings.name === state && 'is-set',
                             ])}
                             onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
@@ -57,10 +84,12 @@ export const StateMenu = (props: StateMenuProps) => {
                     ))}
                 </div>
                 <div className='ddc_pb_hidden-state-btns'>
-                    {hiddenStates.map( (thisStatesSettings) => (
+                    {hiddenStates.map( (thisStatesSettings, index) => (
                         <button
+                            key = {index}
                             className = {classnames([
                                 'ddc_pb_state-btn',
+                                'ddc_pb_hidden-state',
                                 thisStatesSettings.name === state && 'is-set',
                             ])}
                             onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
