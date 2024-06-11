@@ -6,18 +6,23 @@ import { TFile, TFolder, View, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
-import { CardBrowserViewState, PartialCardBrowserViewState, ProjectCardsView } from 'src/views/card-browser-view/card-browser-view';
+import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState, ProjectCardsView } from 'src/views/card-browser-view/card-browser-view';
 import { getScrollOffset } from 'src/logic/file-processes';
 
 //////////
 //////////
+
+export interface CardBrowserHandlers {
+    setEState: (eState: CardBrowserViewEState) => void,
+    setState: (eState: CardBrowserViewState) => void,
+}
 
 interface CardBrowserProps {
     path: string,
     plugin: ProjectBrowserPlugin,
     setCardBrowserState: (viewState: PartialCardBrowserViewState) => void,
     saveReturnState: (props: {lastOpenedFilePath: string}) => {},
-    view: ProjectCardsView,
+    setHandlers: (handlers: CardBrowserHandlers) => void,
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
@@ -28,13 +33,18 @@ export const CardBrowser = (props: CardBrowserProps) => {
     // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
     const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
 
-    const eState = props.view.getEphemeralState();
-    console.log('eState inside:', eState)
+    const [state, setState] = React.useState<CardBrowserViewState>();
+    const [eState, setEState] = React.useState<CardBrowserViewEState>();
+    
     const lastOpenedFilePath = eState?.lastOpenedFilePath || '';
+    console.log('lastOpenedFilePath', lastOpenedFilePath);
 
     // on mount
     React.useEffect( () => {
-        //
+        props.setHandlers({
+            setEState:  (eState) => setEState(eState),
+            setState:  (state) => setState(state),
+        })
     },[])
     
     return <>

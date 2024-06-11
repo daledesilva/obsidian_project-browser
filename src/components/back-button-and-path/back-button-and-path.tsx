@@ -36,21 +36,22 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
                     className = 'ddc_pb_icon'
                 />
             )}
-            {folderTrail.map( (folder, index) => (<>
-                <PathButton
+            {folderTrail.map( (folder, index) => (
+                <div
                     key = {index}
-                    folder = {folder}
-                    onClick = {folderTrail.length > 1 && index !== folderTrail.length-1 ? props.onFolderClick : undefined}
-                    isCurrentFolder = {index === folderTrail.length-1}
-                />
-                {index < folderTrail.length-1 && (
-                    <div
-                        key = {index + '/'}
-                    >
-                        {'>'}
-                    </div>
-                )}
-            </>))}
+                >
+                    <PathButton
+                        folder = {folder}
+                        onClick = {folderTrail.length > 1 && index !== folderTrail.length-1 ? props.onFolderClick : undefined}
+                        isCurrentFolder = {index === folderTrail.length-1}
+                    />
+                    {index < folderTrail.length-1 && (
+                        <div>
+                            {'>'}
+                        </div>
+                    )}
+                </div>
+            ))}
         </div>
     </>
 }
