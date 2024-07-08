@@ -34,6 +34,7 @@
 		"react-dom": "^18.2.0",
 		"react-redux": "^9.1.0",
 		"react-sortablejs": "^6.1.4",
+		"semver": "^7.6.2",
 		"sortablejs": "^1.15.2"
 	}
 }

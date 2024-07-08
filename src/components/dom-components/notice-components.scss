@@ -1,0 +1,91 @@
+.ddc_pb_notice {
+    
+    // Make mobile notifications consistent with reliable contrast
+    background-color: var(--background-primary-alt) !important;
+    border: solid 1px var(--background-modifier-border) !important;
+    border-radius: var(--radius-m) !important;
+    box-shadow: 0 2px 8px var(--background-modifier-box-shadow) !important;
+    text-align: left !important;
+
+
+    // Forcing explicitly clicking a button to dismiss
+    pointer-events: none;
+    
+    p.ddc_pb_notice-label {
+        color: var(--text-faint);
+        font-size: var(--font-small);
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        margin-block-start: 0.1em;
+        color: var(--text-accent);
+    }
+    p {
+        font-size: var(--font-text-size);
+        color: var(--text-normal);
+    }
+    blockquote {
+        font-size: var(--font-text-size);
+        padding: 0.5em 0.8em;
+        margin-inline: 0;
+        color: var(--text-accent);
+        background-color: var(--background-primary);
+        border-radius: var(--button-radius);
+        display: block;
+    }
+    ul, ol {
+        padding-inline-start: 1em;
+        list-style-position: outside;
+        li {
+            margin-block-end: 1ch;
+        }
+    }
+    a {
+        pointer-events: all;
+    }
+
+    .ddc_pb_notice-cta-bar {
+        display: flex;
+        flex-direction: row-reverse; // 
+        justify-content: space-between;
+        
+        Button {
+            pointer-events: all;
+            // margin-left: auto; // Right aligns when no siblings
+
+            &.ddc_pb_tertiary-btn {
+                color: var(--text-faint);
+                background: none;
+                box-shadow: none;
+                margin-inline: 0;
+                padding-inline: 0;
+
+                // shift text to true bottom
+                padding-top: calc( var(--size-4-1) * 2 );
+                padding-bottom: 0 !important;
+                display: inline-flex;
+                align-items: flex-end;
+                line-height: var(--font-ui-small) !important;
+    
+                &:hover {
+                    color: var(--text-normal);
+                    text-decoration: underline;
+                }
+            }
+
+            &.ddc_pb_primary-btn {
+                color: var(--text-on-accent);
+                background-color: var(--interactive-accent);
+                
+                &:hover {
+                    background-color: var(--interactive-accent-hover);
+                }
+            }
+
+        }
+        
+
+    }
+}
