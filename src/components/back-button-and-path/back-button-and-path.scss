@@ -3,6 +3,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+    
     margin-bottom: 0.5em;
     margin-inline-start: calc(-1 * var(--browser-inline-margin));
     margin-inline-end: calc(-1 * var(--browser-inline-margin));
@@ -24,6 +27,7 @@
     .ddc_pb_breadcrumb {
         display: flex;
         flex-direction: row;
+        align-items: center;
     }
     
     .ddc_pb_icon {
@@ -51,7 +55,7 @@
 
     div {
         box-sizing: content-box;
-        padding: 0.7em 0;
+        padding: 0;
         
         &.ddc_pb_current-folder {
             padding: 0.7em;
