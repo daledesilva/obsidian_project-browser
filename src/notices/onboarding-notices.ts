@@ -41,93 +41,92 @@ export async function showOnboardingNotices(plugin: ProjectBrowserPlugin) {
     if(primaryBtnEl) {
         primaryBtnEl.addEventListener('click', () => {
             notice.hide();
-            showDevelopmentWelcomeNotice(plugin);
+            showBrowserViewNotice(plugin);
         });
     }
 
 }
 
-// function showHandwritingWelcomeTip(plugin: ProjectBrowserPlugin) {
-//     const noticeBody = createInkNoticeTemplate();
-//     noticeBody.createEl('h1').setText(`Inserting handwriting sections...`);
-//     noticeBody.createEl('p').setText(`In any markdown note, run the following command to begin writing where your cursor is.`);
-//     noticeBody.createEl('blockquote').setText(`"Insert new handwriting section"`);
-//     noticeBody.createEl('p').setText(`( Cmd+P or swipe down )`);
+function showBrowserViewNotice(plugin: ProjectBrowserPlugin) {
+    const noticeBody = createNoticeTemplate();
+    noticeBody.createEl('h1').setText(`The Browse view...`);
+    noticeBody.createEl('p').setText(`By default, the Browse view appears when you create a new tab, but you can alter this in the settings.`);
+    noticeBody.createEl('p').setText(`You can also open it from the button in the ribbon menu.`);
+    // noticeBody.createEl('icon');
     
-//     const {
-//         primaryBtnEl,
-//         tertiaryBtnEl
-//     } = createNoticeCtaBar(noticeBody, {
-//         primaryLabel: 'Continue',
-//         tertiaryLabel: 'Dismiss for now',
-//     })
+    const {
+        primaryBtnEl,
+        tertiaryBtnEl
+    } = createNoticeCtaBar(noticeBody, {
+        primaryLabel: 'Continue',
+        tertiaryLabel: 'Dismiss for now',
+    })
 
-//     const notice = launchPersistentNotice(noticeBody);
+    const notice = launchPersistentNotice(noticeBody);
 
-//     if(primaryBtnEl) {
-//         primaryBtnEl.addEventListener('click', () => {
-//             notice.hide();
-//             showDrawingWelcomeTip(plugin);
-//         });
-//     }
+    if(primaryBtnEl) {
+        primaryBtnEl.addEventListener('click', () => {
+            notice.hide();
+            showNotesNotice(plugin);
+        });
+    }
     
-// }
+}
 
-// function showDrawingWelcomeTip(plugin: ProjectBrowserPlugin) {
-//     const noticeBody = createInkNoticeTemplate();
-//     noticeBody.createEl('h1').setText(`Drawing sections...`);
-//     noticeBody.createEl('p').setText(`Drawing sections are in early development.`);
-//     noticeBody.createEl('p').setText(`You can turn them on in the settings (and restart Obsidian) if you'd like to begin using them.`);
+function showNotesNotice(plugin: ProjectBrowserPlugin) {
+    const noticeBody = createNoticeTemplate();
+    noticeBody.createEl('h1').setText(`Note statuses...`);
+    noticeBody.createEl('p').setText(`The status for a note can be assigned through a status button at the top of the note.`);
+    noticeBody.createEl('p').setText(`Notes in each folder are organised in the browse view by status.`);
 
-//     const {
-//         primaryBtnEl,
-//         tertiaryBtnEl
-//     } = createNoticeCtaBar(noticeBody, {
-//         primaryLabel: 'Continue',
-//         tertiaryLabel: 'Dismiss for now',
-//     })
+    const {
+        primaryBtnEl,
+        tertiaryBtnEl
+    } = createNoticeCtaBar(noticeBody, {
+        primaryLabel: 'Continue',
+        tertiaryLabel: 'Dismiss for now',
+    })
 
-//     const notice = launchPersistentNotice(noticeBody);
+    const notice = launchPersistentNotice(noticeBody);
 
-//     if(primaryBtnEl) {
-//         primaryBtnEl.addEventListener('click', () => {
-//             notice.hide();
-//             showSyncingWelcomeTip(plugin);
-//         });
-//     }
+    if(primaryBtnEl) {
+        primaryBtnEl.addEventListener('click', () => {
+            notice.hide();
+            showCustomisationNotice(plugin);
+        });
+    }
     
-// }
+}
 
-// function showSyncingWelcomeTip(plugin: ProjectBrowserPlugin) {
-//     const noticeBody = createInkNoticeTemplate();
-//     noticeBody.createEl('h1').setText(`Syncing with your vault...`);
-//     noticeBody.createEl('p').setText(`Ink files live in your vault and can sync with it to other devices.`);
-//     noticeBody.createEl('p').setText(`If using Obsidian Sync, turn on "Sync all other types" in the Obsidian Sync settings.`);
+function showCustomisationNotice(plugin: ProjectBrowserPlugin) {
+    const noticeBody = createNoticeTemplate();
+    noticeBody.createEl('h1').setText(`Customisation...`);
+    noticeBody.createEl('p').setText(`The set of statuses, their order, and the view mode they display their notes in can all be customised in the settings.`);
 
-//     const {
-//         primaryBtnEl,
-//         tertiaryBtnEl
-//     } = createNoticeCtaBar(noticeBody, {
-//         primaryLabel: 'Continue',
-//         tertiaryLabel: 'Dismiss for now',
-//     })
+    const {
+        primaryBtnEl,
+        tertiaryBtnEl
+    } = createNoticeCtaBar(noticeBody, {
+        primaryLabel: 'Continue',
+        tertiaryLabel: 'Dismiss for now',
+    })
 
-//     const notice = launchPersistentNotice(noticeBody);
+    const notice = launchPersistentNotice(noticeBody);
 
-//     if(primaryBtnEl) {
-//         primaryBtnEl.addEventListener('click', () => {
-//             notice.hide();
-//             showDevelopmentWelcomeTip(plugin);
-//         });
-//     }
+    if(primaryBtnEl) {
+        primaryBtnEl.addEventListener('click', () => {
+            notice.hide();
+            showDevelopmentWelcomeNotice(plugin);
+        });
+    }
     
-// }
+}
 
 
 function showDevelopmentWelcomeNotice(plugin: ProjectBrowserPlugin) {
     const noticeBody = createNoticeTemplate();
-    noticeBody.createEl('h1').setText(`Help improve Ink...`);
-    noticeBody.createEl('p').setText(`Ink is under construction. This means it has features missing and sometimes has bugs.`);
+    noticeBody.createEl('h1').setText(`Help improve Project Browser...`);
+    noticeBody.createEl('p').setText(`Project Browser is under construction. This means it has features missing and sometimes has bugs.`);
     noticeBody.createEl('p').setText(`If you notice any, please report them through the link in the settings.`);
     
     const {
@@ -142,8 +141,8 @@ function showDevelopmentWelcomeNotice(plugin: ProjectBrowserPlugin) {
         tertiaryBtnEl.addEventListener('click', () => {
             notice.hide();
             noticeShowingOrDismissed = false;
-            plugin.settings.onboardingNotices.welcomeTipRead = true;
-            plugin.settings.onboardingNotices.lastVersionTipRead = plugin.manifest.version;
+            plugin.settings.onboardingNotices.welcomeNoticeRead = true;
+            plugin.settings.onboardingNotices.lastVersionNoticeRead = plugin.manifest.version;
             plugin.saveSettings();
         });
     }
