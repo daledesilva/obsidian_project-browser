@@ -67,12 +67,16 @@ function insertMoreInfoLinks(containerEl: HTMLElement) {
 	sectionEl.createEl('p', { text: `For information on this plugin's development, visit the links below. Feel free to leave comments in the development diaries on YouTube.` });
 	const list = sectionEl.createEl('ul');
 	list.createEl('li').createEl('a', {
+		href: 'https://github.com/daledesilva/obsidian_project-browser/releases',
+		text: 'Latest changes'
+	});
+	list.createEl('li').createEl('a', {
 		href: 'https://github.com/daledesilva/obsidian_project-browser',
 		text: 'Roadmap'
 	});
 	list.createEl('li').createEl('a', {
 		href: 'https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=VO6nlt2v0KG224cY',
-		text: 'Development Diaries.'
+		text: 'Development diaries.'
 	});
 	list.createEl('li').createEl('a', {
 		href: 'https://github.com/daledesilva/obsidian_project-browser/issues',
