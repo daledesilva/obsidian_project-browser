@@ -181,6 +181,8 @@ export const getItemsInFolder = (folder: TFolder): null | TAbstractFile[] => {
 }
 
 export const refreshFolderReference = async (folder: TFolder): Promise<TFolder> => {
+    
+    // TODO: This is redundant since it's already passing in a TFolder
     const v = folder.vault;
     const refreshedFolder = v.getAbstractFileByPath(folder.path) as TFolder;
 

@@ -2,7 +2,7 @@ import './card-browser.scss';
 import * as React from "react";
 import ProjectBrowserPlugin from "src/main";
 import { FolderSection, StateSection, StatelessSection } from "../section/section";
-import { TFile, TFolder, View, WorkspaceLeaf } from 'obsidian';
+import { Menu, Notice, TFile, TFolder, View, WorkspaceLeaf } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
