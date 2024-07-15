@@ -52,4 +52,5 @@ export const setFileState = (plugin: ProjectBrowserPlugin, file: TFile, state: n
             // delete frontmatter['state']; // This doesn't work
         }
     });
+    plugin.refreshFileDependants();
 }

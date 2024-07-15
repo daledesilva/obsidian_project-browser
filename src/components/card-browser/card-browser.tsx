@@ -8,6 +8,7 @@ import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
 import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState, ProjectCardsView } from 'src/views/card-browser-view/card-browser-view';
 import { getScrollOffset } from 'src/logic/file-processes';
+import { v4 as uuidv4 } from 'uuid';
 
 //////////
 //////////
@@ -26,6 +27,7 @@ interface CardBrowserProps {
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
+    const [viewInstanceId] = React.useState<string>(uuidv4());
     const [state, setState] = React.useState<CardBrowserViewState>({path: props.path});
     const [eState, setEState] = React.useState<CardBrowserViewEState>();
 
@@ -33,11 +35,11 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const v = props.plugin.app.vault;
     // const [path, setPath] = React.useState(props.path);
     const folder = v.getAbstractFileByPath(state.path) as TFolder; // TODO: Check this is valid?
-    // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
-    const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
+    const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
+    // const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
     
     const lastOpenedFilePath = eState?.lastOpenedFilePath || '';
-    console.log('lastOpenedFilePath', lastOpenedFilePath);
+    // console.log('lastOpenedFilePath', lastOpenedFilePath);
 
     // on mount
     React.useEffect( () => {
@@ -45,6 +47,12 @@ export const CardBrowser = (props: CardBrowserProps) => {
             setEState:  (eState) => setEState(eState),
             setState:  (state) => setState(state),
         })
+
+        props.plugin.addFileDependant(`card-browser_${viewInstanceId}`, refreshView);
+
+        // NOTE: When the view is changed to something else, this is never given the chance to unmount.
+        // Must removeDependant from elsewhere?
+        // return;
     },[])
     
     return <>
@@ -122,8 +130,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
     }
 
     async function refreshView() {
-        const refreshedFolder = await refreshFolderReference(folder);
-        // setSectionsOfItems( getSortedItemsInFolder(props.plugin, refreshedFolder) );
+        // Reassess all files for correct states and new/removed files
+        setSectionsOfItems( getSortedItemsInFolder(props.plugin, folder) );
     }
 
 };

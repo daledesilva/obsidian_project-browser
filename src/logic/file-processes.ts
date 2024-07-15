@@ -1,7 +1,8 @@
-import { TAbstractFile, TFile, TFolder } from "obsidian";
+import { Notice, TAbstractFile, TFile, TFolder, Vault } from "obsidian";
 import ProjectBrowserPlugin from "src/main";
 import { getProjectExcerpt } from "./folder-processes";
 import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView } from "src/views/card-browser-view/card-browser-view";
+import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 
 /////////
 /////////
@@ -59,4 +60,22 @@ export function getScrollOffset(plugin: ProjectBrowserPlugin): number {
     if(!editor) return 0;
 
     return editor.getScrollInfo().top;
+}
+
+export function deleteFileImmediately(plugin: ProjectBrowserPlugin, file: TFile) {
+    file.vault.delete(file);
+    plugin.refreshFileDependants();
+}
+
+export function deleteFileWithConfirmation(plugin: ProjectBrowserPlugin, file: TFile) {
+    new ConfirmationModal({
+        plugin,
+        title: 'Delete note?',
+        message: `Are you sure you'd like to delete "${file.name}" ?`,
+        confirmLabel: 'Delete note',
+        confirmAction: async () => {
+            deleteFileImmediately(plugin, file);
+            new Notice(`Deleted "${file.name}"`);
+        }
+    }).open();
 }

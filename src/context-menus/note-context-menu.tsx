@@ -1,5 +1,6 @@
 import { Menu, Notice, TFile } from "obsidian";
 import * as React from "react";
+import { deleteFileWithConfirmation } from "src/logic/file-processes";
 import { refreshFolderReference } from "src/logic/folder-processes";
 import { getFileState, setFileState } from "src/logic/frontmatter-processes";
 import ProjectBrowserPlugin from "src/main";
@@ -24,28 +25,7 @@ export function registerNoteContextMenu(plugin: ProjectBrowserPlugin, el: HTMLEl
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(plugin, file, state.name)
-                    setTimeout(() => {
-                        console.log('folder', folder);
-                        
-                        let { workspace } = plugin.app;
-                        let leaf = workspace.getMostRecentLeaf();
-                        
-                        // if(leaf) {
-                        //     leaf.setViewState({
-                        //         type: CARD_BROWSER_VIEW_TYPE,
-                        //         // state: leaf.getViewState(),
-                        //     });
-                        // }
-
-                        // leaf?.view.load();
-
-                        // leaf?.view.unload();
-                        // leaf?.view.load();
-
-                        // newProjectBrowserLeaf(plugin)
-
-                    }, 1000)
+                    setFileState(plugin, file, state.name);
                 });
             });
         })
@@ -57,10 +37,7 @@ export function registerNoteContextMenu(plugin: ProjectBrowserPlugin, el: HTMLEl
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(plugin, file, state.name)
-                    setTimeout(() => {
-                        if(folder) refreshFolderReference(folder);
-                    }, 1000)
+                    setFileState(plugin, file, state.name);
                 })
             });
         })
@@ -69,23 +46,8 @@ export function registerNoteContextMenu(plugin: ProjectBrowserPlugin, el: HTMLEl
 
         menu.addItem((item) =>
             item.setTitle("Delete note")
-            .onClick(() => {
-                new Notice("Deleted");
-                new ConfirmationModal({
-                    plugin,
-                    title: 'Delete note?',
-                    message: `Are you sure you'd like to delete "${file.name}" ?`,
-                    confirmLabel: 'Delete note',
-                    confirmAction: async () => {
-                        file.vault.delete(file);
-                        if(folder) refreshFolderReference(folder);
-                    }
-                }).open();
-            })
+            .onClick(() => deleteFileWithConfirmation(plugin, file))
         );
-
-        
-
 
         menu.showAtMouseEvent(event);
 

@@ -11,6 +11,10 @@ import { DEFAULT_SETTINGS_0_1_0, PluginSettings_0_1_0 } from './types/plugin-set
 /////////
 export default class ProjectBrowserPlugin extends Plugin {
 	settings: PluginSettings_0_1_0;
+	refreshFileDependantsTimeout: NodeJS.Timer;
+	fileDependants: {
+		[key: string]: Function;
+	} = {};
 
 	async onload() {
 		await this.loadSettings();
@@ -33,12 +37,18 @@ export default class ProjectBrowserPlugin extends Plugin {
 		// });
 
 		showOnboardingNotices_maybe(this);
+
+		this.app.vault.on('create', () => this.refreshFileDependants())
+		this.app.vault.on('delete', () => this.refreshFileDependants())
+		this.app.vault.on('rename', () => this.refreshFileDependants())
 	}
 	
 
 	onunload() {
 		// Make sure to stop anything here
-
+		this.app.vault.off('create', () => this.refreshFileDependants())
+		this.app.vault.off('delete', () => this.refreshFileDependants())
+		this.app.vault.off('rename', () => this.refreshFileDependants())
 	}
 
 	async loadSettings() {
@@ -60,6 +70,28 @@ export default class ProjectBrowserPlugin extends Plugin {
 		this.settings = JSON.parse( JSON.stringify(DEFAULT_SETTINGS_0_1_0) );
 		this.saveSettings();
 		new Notice('Project Browser plugin settings reset');
+	}
+
+	addFileDependant(id: string, handler: Function) {
+		this.fileDependants[id] = handler;
+	}
+
+	removeFileDependant(id: string) {
+		delete this.fileDependants[id];
+	}
+
+	async refreshFileDependants() {
+		clearTimeout(this.refreshFileDependantsTimeout);
+		this.refreshFileDependantsTimeout = setTimeout(() => {
+			Object.entries(this.fileDependants).forEach( ([key, handler]) => {
+				try {
+					handler()
+				} catch(e) {
+					// TODO: This is never called because the functions seem to still fire without error even though view no longer exists
+					this.removeFileDependant(key)
+				}
+			})
+		}, 100)
 	}
 
 }
