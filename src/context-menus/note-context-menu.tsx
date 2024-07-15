@@ -3,6 +3,7 @@ import * as React from "react";
 import { refreshFolderReference } from "src/logic/folder-processes";
 import { getFileState, setFileState } from "src/logic/frontmatter-processes";
 import ProjectBrowserPlugin from "src/main";
+import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { PluginContext } from "src/utils/plugin-context";
 import { CARD_BROWSER_VIEW_TYPE, newProjectBrowserLeaf } from "src/views/card-browser-view/card-browser-view";
 
@@ -70,7 +71,16 @@ export function registerNoteContextMenu(plugin: ProjectBrowserPlugin, el: HTMLEl
             item.setTitle("Delete note")
             .onClick(() => {
                 new Notice("Deleted");
-                if(folder) refreshFolderReference(folder);
+                new ConfirmationModal({
+                    plugin,
+                    title: 'Delete note?',
+                    message: `Are you sure you'd like to delete "${file.name}" ?`,
+                    confirmLabel: 'Delete note',
+                    confirmAction: async () => {
+                        file.vault.delete(file);
+                        if(folder) refreshFolderReference(folder);
+                    }
+                }).open();
             })
         );
 
