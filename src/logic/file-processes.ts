@@ -67,6 +67,11 @@ export function deleteFileImmediately(plugin: ProjectBrowserPlugin, file: TFile)
     plugin.refreshFileDependants();
 }
 
+export function deleteFolderImmediately(plugin: ProjectBrowserPlugin, folder: TFolder) {
+    folder.vault.delete(folder, true);
+    plugin.refreshFileDependants();
+}
+
 export function deleteFileWithConfirmation(plugin: ProjectBrowserPlugin, file: TFile) {
     new ConfirmationModal({
         plugin,
@@ -76,6 +81,19 @@ export function deleteFileWithConfirmation(plugin: ProjectBrowserPlugin, file: T
         confirmAction: async () => {
             deleteFileImmediately(plugin, file);
             new Notice(`Deleted "${file.name}"`);
+        }
+    }).open();
+}
+
+export function deleteFolderWithConfirmation(plugin: ProjectBrowserPlugin, folder: TFolder) {
+    new ConfirmationModal({
+        plugin,
+        title: 'Delete folder & contents?',
+        message: `Are you sure you'd like to delete "${folder.name}" and it's contents?`,
+        confirmLabel: 'Delete folder & contents',
+        confirmAction: async () => {
+            deleteFolderImmediately(plugin, folder);
+            new Notice(`Deleted "${folder.name}"`);
         }
     }).open();
 }

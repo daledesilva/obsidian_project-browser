@@ -3,6 +3,9 @@ import './back-button-and-path.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
 import classNames from 'classnames';
+import { registerNoteContextMenu } from 'src/context-menus/note-context-menu';
+import { PluginContext } from 'src/utils/plugin-context';
+import { registerFolderContextMenu } from 'src/context-menus/folder-context-menu';
 
 
 /////////
@@ -64,7 +67,14 @@ interface PathButtonProps {
 }
 function PathButton(props: PathButtonProps) {
     const v = props.folder.vault;
+    const plugin = React.useContext(PluginContext);
     const rootName = v.getName();
+    const buttonRef = React.useRef(null);
+
+    React.useEffect( () => {
+        if(!plugin) return;
+        if(buttonRef.current) registerFolderContextMenu(plugin, buttonRef.current, props.folder);
+    })
 
     let name: string;
     if(props.folder.path === '/') {
@@ -83,6 +93,7 @@ function PathButton(props: PathButtonProps) {
         )}
         {!props.onClick && (
             <div
+                ref = {buttonRef}
                 onClick = {() => props.onClick(props.folder)}
                 className = {classNames([
                     props.isCurrentFolder && 'ddc_pb_current-folder'

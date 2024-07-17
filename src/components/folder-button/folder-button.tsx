@@ -1,6 +1,7 @@
 import './folder-button.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
+import { registerFolderContextMenu } from 'src/context-menus/folder-context-menu';
 import { getProjectExcerpt, isProjectFolder } from 'src/logic/folder-processes';
 import ProjectBrowserPlugin from 'src/main';
 import { PluginContext } from 'src/utils/plugin-context';
@@ -17,17 +18,19 @@ interface FolderButtonProps {
 export const FolderButton = (props: FolderButtonProps) => {
     const v = props.folder.vault;
     const plugin = React.useContext(PluginContext);
+    const buttonRef = React.useRef(null);
 
     const name = props.folder.name;
     const [excerpt, setExcerpt] = React.useState<null|string>('');
 
     React.useEffect( () => {
         if(!plugin) return;
-        getExcerpt(plugin, props.folder);
+        if(buttonRef.current) registerFolderContextMenu(plugin, buttonRef.current, props.folder);
     }, [])
     
     return <>
         <button
+            ref = {buttonRef}
             className = 'project-browser_folder-button'
             onClick = { () => {
                 props.onSelect(props.folder)
