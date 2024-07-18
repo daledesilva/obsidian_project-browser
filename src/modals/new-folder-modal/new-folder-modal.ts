@@ -4,6 +4,7 @@ import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
 import { createProject } from "src/utils/file-manipulation";
+import { folderPathSanitize } from "src/utils/string-processes";
 
 /////////
 /////////
@@ -88,7 +89,9 @@ export class NewFolderModal extends Modal {
     ////////
 
     private async createFolder() {
-		const folder = await this.plugin.app.vault.createFolder(`${this.baseFolder.path}/${this.folderName}`);
+		let folderPath = `${this.baseFolder.path}/${this.folderName}`;
+		folderPath = folderPathSanitize(folderPath);
+		const folder = await this.plugin.app.vault.createFolder(folderPath);
         this.resolveModal(folder);
         this.close();
     }
