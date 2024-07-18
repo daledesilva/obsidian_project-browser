@@ -9,6 +9,8 @@ import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
 import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState, ProjectCardsView } from 'src/views/card-browser-view/card-browser-view';
 import { getScrollOffset } from 'src/logic/file-processes';
 import { v4 as uuidv4 } from 'uuid';
+import { PluginContext } from 'src/utils/plugin-context';
+import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
 
 //////////
 //////////
@@ -30,6 +32,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [viewInstanceId] = React.useState<string>(uuidv4());
     const [state, setState] = React.useState<CardBrowserViewState>({path: props.path});
     const [eState, setEState] = React.useState<CardBrowserViewEState>();
+    const plugin = React.useContext(PluginContext);
+    const browserRef = React.useRef(null);
 
     // const [files, setFiles] = useState
     const v = props.plugin.app.vault;
@@ -43,6 +47,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
     // on mount
     React.useEffect( () => {
+        if(!plugin) return;
+        
         props.setHandlers({
             setEState:  (eState) => setEState(eState),
             setState:  (state) => setState(state),
@@ -53,10 +59,13 @@ export const CardBrowser = (props: CardBrowserProps) => {
         // NOTE: When the view is changed to something else, this is never given the chance to unmount.
         // Must removeDependant from elsewhere?
         // return;
+
+        if(browserRef.current) registerCardBrowserContextMenu(plugin, browserRef.current, folder);
     },[])
     
     return <>
         <div
+            ref = {browserRef}
             className = 'project-browser_browser'
         >
             <BackButtonAndPath
