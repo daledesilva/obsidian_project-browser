@@ -7,7 +7,7 @@ import { createProject } from "src/utils/file-manipulation";
 ////////
 ////////
 
-export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, commands: {openFile: Function}) {
+export function registerStateSectionContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, state: string, commands: {openFile: Function}) {
     
     el.addEventListener('contextmenu', function(event) {
         
@@ -16,17 +16,13 @@ export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el:
         menu.addItem((item) =>
             item.setTitle("New note")
                 .onClick(async () => {
-                    const newFile = await createProject(baseFolder, 'Untitled');
+                    const newFile = await createProject(baseFolder, 'Untitled', {
+                        plugin,
+                        state,
+                    });
+                    // TODO: This delay should be set as a constant globally to guarantee it's longer than other delay of file appear
                     setTimeout( () => commands.openFile(newFile), 500);
                 })
-        );
-
-        menu.addItem((item) =>
-            item.setTitle("New folder")
-                .onClick(() => new NewFolderModal({
-                    plugin,
-                    baseFolder,
-                }).showModal())
         );
 
         menu.showAtMouseEvent(event);

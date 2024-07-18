@@ -3,6 +3,8 @@
 
 import { App, DataWriteOptions, FileManager, TFile, TFolder, Vault, normalizePath } from "obsidian";
 import { sanitizeFileName } from "./string-processes";
+import { setFileState } from "src/logic/frontmatter-processes";
+import ProjectBrowserPlugin from "src/main";
 
 // //////////
 // //////////
@@ -31,8 +33,11 @@ import { sanitizeFileName } from "./string-processes";
 // }
 
 
-
-export async function createProject(parentFolder: TFolder, projectName: string): Promise<TFile> {
+interface ProjectDefaults {
+    plugin: ProjectBrowserPlugin,
+    state?: string
+}
+export async function createProject(parentFolder: TFolder, projectName: string, defaults?: ProjectDefaults ): Promise<TFile> {
     const v = parentFolder.vault;
         
     // Creating a project folder
@@ -40,6 +45,10 @@ export async function createProject(parentFolder: TFolder, projectName: string):
     // const primaryProjectFile = await createDefaultMarkdownFile(v, projectFolder, 'Article');
     
     const primaryProjectFile = await createDefaultMarkdownFile(v, parentFolder, projectName);
+
+    if(defaults) {
+        if(defaults.state) setFileState(defaults.plugin, primaryProjectFile, defaults.state);
+    }
 
     return primaryProjectFile;
 }

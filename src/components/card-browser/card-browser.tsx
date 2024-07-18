@@ -82,7 +82,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                             <FolderSection section={section} openFolder={openFolder}/>
                         )}
                         {section.type === "state" && (
-                            <StateSection section={section} openFile={openFile} lastOpenedFilePath={lastOpenedFilePath}/>
+                            <StateSection folder={folder} section={section} openFile={openFile} lastOpenedFilePath={lastOpenedFilePath}/>
                         )}
                         {section.type === "stateless" && (
                             <StatelessSection section={section} openFile={openFile} lastOpenedFilePath={lastOpenedFilePath}/>
