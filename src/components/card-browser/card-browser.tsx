@@ -60,7 +60,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
         // Must removeDependant from elsewhere?
         // return;
 
-        if(browserRef.current) registerCardBrowserContextMenu(plugin, browserRef.current, folder);
+        if(browserRef.current) {
+            registerCardBrowserContextMenu(plugin, browserRef.current, folder, {openFile});
+        }
     },[])
     
     return <>

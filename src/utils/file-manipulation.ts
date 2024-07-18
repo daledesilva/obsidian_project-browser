@@ -34,13 +34,12 @@ import { sanitizeFileName } from "./string-processes";
 
 export async function createProject(parentFolder: TFolder, projectName: string): Promise<TFile> {
     const v = parentFolder.vault;
-    const projectPath = parentFolder.path + '/' + sanitizeFileName(projectName);
-    
+        
     // Creating a project folder
     // const projectFolder = await createFolders(v, projectPath);
     // const primaryProjectFile = await createDefaultMarkdownFile(v, projectFolder, 'Article');
     
-    const primaryProjectFile = await createDefaultMarkdownFile(v, parentFolder, sanitizeFileName(projectName));
+    const primaryProjectFile = await createDefaultMarkdownFile(v, parentFolder, projectName);
 
     return primaryProjectFile;
 }
@@ -82,25 +81,29 @@ async function createDefaultMarkdownFile(vault: Vault, folder: TFolder, title: s
  * Creates an empty markdown file and returns it. If the file exists already it creates a new one and appends a version number.
  * Don't include file extension unless it should appear in the note's title.
  */
-async function createNewMarkdownFile(vault: Vault, folder: TFolder, filename: string, writeOptions: DataWriteOptions, version: number = 1) : Promise<TFile> {
+async function createNewMarkdownFile(vault: Vault, folder: TFolder, filename: string, writeOptions: DataWriteOptions, version: number = 1) : Promise<TFile | null> {
     let pathAndVersionedBasename;
-    
-	if(version == 1) {
-        pathAndVersionedBasename = `${folder.path}/${filename}`;
-	} else {
-        pathAndVersionedBasename = `${folder.path}/${filename} (${version})`;
-	}
-    
-    let fileRef: TFile;
-	if( await vault.adapter.exists(`${pathAndVersionedBasename}.md`) ) {
-		// File already exists, try appending a number (or higher number)
-		fileRef = await createNewMarkdownFile(vault, folder, filename, writeOptions, version+1);
+    let fileRef: TFile | null = null;
 
-	} else {
-		// It doesn't yet exist, so create it
-		fileRef = await vault.create(`${pathAndVersionedBasename}.md`, '', writeOptions);
+    try {
+    
+        if(version == 1) {
+            pathAndVersionedBasename = `${folder.path}/${filename}`;
+        } else {
+            pathAndVersionedBasename = `${folder.path}/${filename} (${version})`;
+        }
+        
+        if( await vault.adapter.exists(`${pathAndVersionedBasename}.md`) ) {
+            // File already exists, try appending a number (or higher number)
+            fileRef = await createNewMarkdownFile(vault, folder, filename, writeOptions, version+1);
+        } else {
+            // It doesn't yet exist, so create it
+            fileRef = await vault.create(`${pathAndVersionedBasename}.md`, '', writeOptions);
+        }
 
-	}
+    } catch(reason) {
+        console.log(reason)
+    }
 	
 	return fileRef;
 }
