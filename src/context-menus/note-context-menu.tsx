@@ -22,11 +22,16 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
     const fileState = getFileState(props.plugin, props.file);
     const folder = props.file.parent;
 
+    const visibleStates = JSON.parse(JSON.stringify(props.plugin.settings.states.visible));
+    visibleStates.reverse();
+    const hiddenStates = JSON.parse(JSON.stringify(props.plugin.settings.states.hidden));
+    hiddenStates.reverse();
+
     props.noteEl.addEventListener('contextmenu', function(event) {
                 
         const menu = new Menu();
 
-        props.plugin.settings.states.visible.forEach( (state) => {
+        visibleStates.forEach( (state) => {
             menu.addItem((item) => {
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);
@@ -39,7 +44,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
 
         menu.addSeparator();
 
-        props.plugin.settings.states.hidden.forEach( (state) => {
+        hiddenStates.forEach( (state) => {
             menu.addItem((item) => {
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);

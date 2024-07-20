@@ -172,7 +172,7 @@ export class ProjectCardsView extends ItemView {
     setCardBrowserHandlers = (handlers: CardBrowserHandlers) => {
         this.cardBrowserHandlers = handlers;
         // Run immediately to apply scroll offset if present
-        this.updateCardBrowser();
+        // this.updateCardBrowser();
     }
 
     updateCardBrowser = () => {
