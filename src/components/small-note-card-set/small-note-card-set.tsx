@@ -8,17 +8,13 @@ import { SmallNoteCard } from '../cards/small-note-card/small-note-card';
 
 interface SmallNoteCardSetProps {
     files: TAbstractFile[],
-    onFileSelect: (file: TFile) => void,
-    lastTouchedFilePath?: string,
 }
 export const SmallNoteCardSet = (props: SmallNoteCardSetProps) => {
 
     const cards = props.files.map( file => {
         return <SmallNoteCard
-            file = {file as TFile}
             key = {file.path}
-            onSelect = {props.onFileSelect}
-            showSettleTransition = {props.lastTouchedFilePath === file.path}
+            file = {file as TFile}
         />
     });
 

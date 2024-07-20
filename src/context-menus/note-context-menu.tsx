@@ -11,33 +11,40 @@ import { CARD_BROWSER_VIEW_TYPE, newProjectBrowserLeaf } from "src/views/card-br
 ////////
 ////////
 
-export function registerNoteContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, file: TFile) {
-    const fileState = getFileState(plugin, file);
+interface registerNoteContextMenuProps {
+    plugin: ProjectBrowserPlugin,
+    noteEl: HTMLElement,
+    file: TFile,
+}
 
-    const folder = file.parent;
+export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
+    const fileState = getFileState(props.plugin, props.file);
+    const folder = props.file.parent;
 
-    el.addEventListener('contextmenu', function(event) {
+    props.noteEl.addEventListener('contextmenu', function(event) {
                 
         const menu = new Menu();
 
-        plugin?.settings.states.visible.forEach( (state) => {
+        props.plugin.settings.states.visible.forEach( (state) => {
             menu.addItem((item) => {
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(plugin, file, state.name);
+                    setFileState(props.plugin, props.file, state.name);
+                    props.prepForVisualUpdate();
                 });
             });
         })
 
         menu.addSeparator();
 
-        plugin?.settings.states.hidden.forEach( (state) => {
+        props.plugin.settings.states.hidden.forEach( (state) => {
             menu.addItem((item) => {
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(plugin, file, state.name);
+                    setFileState(props.plugin, props.file, state.name);
+                    props.prepForVisualUpdate();
                 })
             });
         })
@@ -46,7 +53,10 @@ export function registerNoteContextMenu(plugin: ProjectBrowserPlugin, el: HTMLEl
 
         menu.addItem((item) =>
             item.setTitle("Delete note")
-            .onClick(() => deleteFileWithConfirmation(plugin, file))
+            .onClick(() => {
+                deleteFileWithConfirmation(props.plugin, props.file);
+                props.prepForVisualUpdate();
+            })
         );
 
         menu.showAtMouseEvent(event);

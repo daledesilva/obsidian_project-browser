@@ -8,7 +8,6 @@ import { FolderButton } from "../folder-button/folder-button";
 
 interface FolderButtonSetProps {
     folders: TAbstractFile[],
-    onFolderSelect: (folder: TFolder) => void,
 }
 export const FolderButtonSet = (props: FolderButtonSetProps) => {
 
@@ -16,7 +15,6 @@ export const FolderButtonSet = (props: FolderButtonSetProps) => {
         return <FolderButton
             folder = {folder as TFolder}
             key = {folder.path}
-            onSelect = {props.onFolderSelect}
         />
     });
 

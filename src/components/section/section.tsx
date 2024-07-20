@@ -12,13 +12,13 @@ import { StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
 import { sortItemsAlphabetically } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { PluginContext } from 'src/utils/plugin-context';
+import { CardBrowserContext } from '../card-browser/card-browser';
 
 //////////
 //////////
 
 interface FolderSectionProps {
     section: Section,
-    openFolder: (folder: TFolder) => void,
 }
 export const FolderSection = (props: FolderSectionProps) => {
 
@@ -28,7 +28,6 @@ export const FolderSection = (props: FolderSectionProps) => {
         <BaseSection key={props.section.title} className="ddc_pb_folder-section">
             <FolderButtonSet
                 folders = {sortedFolders}
-                onFolderSelect = {props.openFolder}
             />
         </BaseSection>
     </>
@@ -37,20 +36,19 @@ export const FolderSection = (props: FolderSectionProps) => {
 ///////
 
 interface StateSectionProps {
-    folder: TFolder,
     section: Section,
-    openFile: (file: TFile) => void,
-    lastTouchedFilePath: string,
 }
 export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) => {
     const plugin = React.useContext(PluginContext);
+    const cardBrowserContext = React.useContext(CardBrowserContext);
     const sectionRef = React.useRef(null);
 
     React.useEffect( () => {
         if(!plugin) return;
+        if(!cardBrowserContext.folder) return;
         
         if(sectionRef.current) {
-            registerStateSectionContextMenu(plugin, sectionRef.current, props.folder, props.section.title, {openFile: props.openFile});
+            registerStateSectionContextMenu(plugin, sectionRef.current, cardBrowserContext.folder, props.section.title, {openFile: cardBrowserContext.openFile});
         }
     })
 
@@ -69,32 +67,24 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
             {props.section.settings.defaultView === StateViewMode_0_0_5.DetailedCards && (
                 <DetailedNoteCardSet
                     files = {sortedFiles}
-                    onFileSelect = {props.openFile}
-                    lastTouchedFilePath = {props.lastTouchedFilePath}
                 />
             )}
 
             {props.section.settings.defaultView === StateViewMode_0_0_5.SimpleCards && (
                 <SimpleNoteCardSet
                     files = {sortedFiles}
-                    onFileSelect = {props.openFile}
-                    lastTouchedFilePath = {props.lastTouchedFilePath}
                 />
             )}
 
             {props.section.settings.defaultView === StateViewMode_0_0_5.SmallCards && (
                 <SmallNoteCardSet
                     files = {sortedFiles}
-                    onFileSelect = {props.openFile}
-                    lastTouchedFilePath = {props.lastTouchedFilePath}
                 />
             )}
 
             {props.section.settings.defaultView === StateViewMode_0_0_5.List && (
                 <ListNoteCardSet
                     files = {sortedFiles}
-                    onFileSelect = {props.openFile}
-                    lastTouchedFilePath = {props.lastTouchedFilePath}
                 />
             )}
         </BaseSection>
@@ -107,6 +97,7 @@ interface StatelessSectionProps {
     section: Section,
     openFile: (file: TFile) => void,
     lastTouchedFilePath: string,
+    saveLastTouchedFilepath: (filepath: string) => void,
 }
 export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
 

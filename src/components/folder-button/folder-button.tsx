@@ -5,6 +5,7 @@ import { registerFolderContextMenu } from 'src/context-menus/folder-context-menu
 import { getProjectExcerpt, isProjectFolder } from 'src/logic/folder-processes';
 import ProjectBrowserPlugin from 'src/main';
 import { PluginContext } from 'src/utils/plugin-context';
+import { CardBrowserContext } from '../card-browser/card-browser';
 
 /////////
 /////////
@@ -12,12 +13,12 @@ import { PluginContext } from 'src/utils/plugin-context';
 
 interface FolderButtonProps {
     folder: TFolder,
-    onSelect: (folder: TFolder) => void,
 }
 
 export const FolderButton = (props: FolderButtonProps) => {
     const v = props.folder.vault;
     const plugin = React.useContext(PluginContext);
+    const cardBrowserContext = React.useContext(CardBrowserContext);
     const buttonRef = React.useRef(null);
 
     const name = props.folder.name;
@@ -33,7 +34,7 @@ export const FolderButton = (props: FolderButtonProps) => {
             ref = {buttonRef}
             className = 'project-browser_folder-button'
             onClick = { () => {
-                props.onSelect(props.folder)
+                cardBrowserContext.openFolder(props.folder)
             }}
         >
             {name}

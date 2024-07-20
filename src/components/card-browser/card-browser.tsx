@@ -14,6 +14,21 @@ import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-c
 //////////
 //////////
 
+export const CardBrowserContext = React.createContext<{
+    folder: null | TFolder,
+    lastTouchedFilePath: string,
+    rememberLastTouchedFile: (file: TFile) => void,
+    openFile: (file: TFile) => void,
+    openFolder: (folder: TFolder) => void,
+    refreshView: () => void,
+}>({
+    folder: null,
+    lastTouchedFilePath: '',
+    rememberLastTouchedFile: () => {},
+    openFile: () => {},
+    openFolder: () => {},
+    refreshView: () => {},
+});
 export interface CardBrowserHandlers {
     setEState: (eState: CardBrowserViewEState) => void,
     setState: (eState: CardBrowserViewState) => void,
@@ -67,45 +82,61 @@ export const CardBrowser = (props: CardBrowserProps) => {
         }
     },[])
     
-    return <>
-        <div
-            ref = {browserRef}
-            className = 'project-browser_browser'
-        >
-            <BackButtonAndPath
-                folder = {folder}
-                onBackClick = {openParentFolder}
-                onFolderClick = { (folder: TFolder) => openFolder(folder)}
-            />
-            <div>
-                {sectionsOfItems.map( (section) => (
-                    <div  key={section.title}>
-                        {section.type === "folders" && (
-                            <FolderSection section={section} openFolder={openFolder}/>
-                        )}
-                        {section.type === "state" && (
-                            <StateSection folder={folder} section={section} openFile={openFile} lastTouchedFilePath={lastTouchedFilePath}/>
-                        )}
-                        {section.type === "stateless" && (
-                            <StatelessSection section={section} openFile={openFile} lastTouchedFilePath={lastTouchedFilePath}/>
-                        )}
-                    </div>
-                ))}
+    return (
+        <CardBrowserContext.Provider value={{
+            folder,
+            lastTouchedFilePath,
+            rememberLastTouchedFile,
+            openFile,
+            openFolder,
+            refreshView,
+        }}>
+            <div
+                ref = {browserRef}
+                className = 'project-browser_browser'
+            >
+                <BackButtonAndPath
+                    folder = {folder}
+                    onBackClick = {openParentFolder}
+                    onFolderClick = { (folder: TFolder) => openFolder(folder)}
+                />
+                <div>
+                    {sectionsOfItems.map( (section) => (
+                        <div  key={section.title}>
+                            {section.type === "folders" && (
+                                <FolderSection section={section}/>
+                            )}
+                            {section.type === "state" && (
+                                <StateSection section={section}/>
+                            )}
+                            {section.type === "stateless" && (
+                                <StatelessSection section={section}/>
+                            )}
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
-        <CurrentFolderMenu
-            folder = {folder}
-            refreshView = {refreshView}
-            openFile = {openFile}
-        />
-    </>;
+            <CurrentFolderMenu
+                folder = {folder}
+                refreshView = {refreshView}
+                openFile = {openFile}
+            />
+        </CardBrowserContext.Provider>
+    );
 
     ////////
+
+    function rememberLastTouchedFile(file: TFile) {
+        props.saveReturnState({
+            lastTouchedFilePath: file.path,
+        });
+    }
 
     function openFolder(nextFolder: TFolder) {
         let { workspace } = props.plugin.app;
         let leaf = workspace.getMostRecentLeaf();
         
+        // REVIEW: What does this help with?
         if(leaf) {
             props.saveReturnState({
                 lastTouchedFilePath: '',

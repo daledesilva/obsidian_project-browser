@@ -6,30 +6,35 @@ import { getFileExcerpt } from "src/logic/file-processes";
 import { trimFilenameExt } from 'src/logic/string-processes';
 import { PluginContext } from 'src/utils/plugin-context';
 import { registerNoteContextMenu } from 'src/context-menus/note-context-menu';
+import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 
 /////////
 /////////
 
 interface ListNoteCardProps {
     file: TFile,
-    onSelect: (file: TFile) => void,
-    showSettleTransition: boolean,
 }
 
 export const ListNoteCard = (props: ListNoteCardProps) => {
     const v = props.file.vault;
     const plugin = React.useContext(PluginContext);
+    const cardBrowserContext = React.useContext(CardBrowserContext);
     const noteRef = React.useRef(null);
 
     const name = props.file.basename; //trimFilenameExt(props.file.name);
     const [excerpt, setExcerpt] = React.useState('');
+    const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
 
     React.useEffect( () => {
         if(!plugin) return;
         if(props.file.extension.toLowerCase() == 'md') {
             getExcerpt(props.file);
         }
-        if(noteRef.current) registerNoteContextMenu(plugin, noteRef.current, props.file);
+        if(noteRef.current) registerNoteContextMenu({
+            plugin,
+            noteEl: noteRef.current,
+            file: props.file,
+        });
     }, [])
     
     return <>
@@ -37,10 +42,10 @@ export const ListNoteCard = (props: ListNoteCardProps) => {
             ref = {noteRef}
             className = {classNames([
                 'ddc_pb_list-note-card',
-                props.showSettleTransition && 'ddc_pb_closing'
+                showSettleTransition && 'ddc_pb_closing'
             ])}
             onClick = { () => {
-                props.onSelect(props.file)
+                cardBrowserContext.openFile(props.file)
             }}
             // style = {{
             //     rotate: Math.random() * 4 - 2 + 'deg',
