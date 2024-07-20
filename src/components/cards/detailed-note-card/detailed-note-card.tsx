@@ -16,7 +16,6 @@ interface DetailedNoteCardProps {
 }
 
 export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
-    const v = props.file.vault;
     const plugin = React.useContext(PluginContext);
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const noteRef = React.useRef(null);

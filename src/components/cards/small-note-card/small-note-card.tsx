@@ -16,13 +16,11 @@ interface SmallNoteCardProps {
 }
 
 export const SmallNoteCard = (props: SmallNoteCardProps) => {
-    const v = props.file.vault;
     const plugin = React.useContext(PluginContext);
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const noteRef = React.useRef(null);
 
     const name = props.file.basename; //trimFilenameExt(props.file.name);
-    const [excerpt, setExcerpt] = React.useState('');
     const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
 
     const [articleRotation] = React.useState(Math.random() * 4 - 2);
@@ -31,9 +29,6 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
 
     React.useEffect( () => {
         if(!plugin) return;
-        if(props.file.extension.toLowerCase() == 'md') {
-            getExcerpt(props.file);
-        }
         if(noteRef.current) registerNoteContextMenu({
             plugin,
             noteEl: noteRef.current,
@@ -63,12 +58,6 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
 
     ///////
     ///////
-
-    async function getExcerpt(file: TFile) {
-        const excerpt = await getFileExcerpt(file);
-        if(!excerpt) return;
-        setExcerpt(excerpt);
-    }
 
 }
 
