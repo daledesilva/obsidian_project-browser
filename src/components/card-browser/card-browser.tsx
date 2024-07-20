@@ -2,12 +2,11 @@ import './card-browser.scss';
 import * as React from "react";
 import ProjectBrowserPlugin from "src/main";
 import { FolderSection, StateSection, StatelessSection } from "../section/section";
-import { Menu, Notice, TFile, TFolder, View, WorkspaceLeaf } from 'obsidian';
+import { TFile, TFolder } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
-import { getSortedItemsInFolder, refreshFolderReference } from 'src/logic/folder-processes';
+import { getSortedItemsInFolder } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
-import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState, ProjectCardsView } from 'src/views/card-browser-view/card-browser-view';
-import { getScrollOffset } from 'src/logic/file-processes';
+import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
 import { v4 as uuidv4 } from 'uuid';
 import { PluginContext } from 'src/utils/plugin-context';
 import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
@@ -30,7 +29,10 @@ interface CardBrowserProps {
 
 export const CardBrowser = (props: CardBrowserProps) => {
     const [viewInstanceId] = React.useState<string>(uuidv4());
-    const [state, setState] = React.useState<CardBrowserViewState>({path: props.path});
+    const [state, setState] = React.useState<CardBrowserViewState>({
+        id: uuidv4(),
+        path: props.path
+    });
     const [eState, setEState] = React.useState<CardBrowserViewEState>();
     const plugin = React.useContext(PluginContext);
     const browserRef = React.useRef(null);
@@ -39,8 +41,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const v = props.plugin.app.vault;
     // const [path, setPath] = React.useState(props.path);
     const folder = v.getAbstractFileByPath(state.path) as TFolder; // TODO: Check this is valid?
-    const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
-    // const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
+    // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
+    const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
     
     const lastOpenedFilePath = eState?.lastOpenedFilePath || '';
     // console.log('lastOpenedFilePath', lastOpenedFilePath);
@@ -113,10 +115,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
         props.setViewStateWithHistory({
             path: nextFolder.path,
         });
-        // setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );
-        // setState({
-        //     path: nextFolder.path,
-        // })
     }
     
     function openFile(file: TFile) {
@@ -134,9 +132,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
         leaf.openFile(file);
     }
 
-    function openChildFolder(nextFolder: TFolder) {
-        openFolder(nextFolder);
-    }
     function openParentFolder() {
         const nextFolder = folder.parent;
         if(!nextFolder) return;
@@ -144,8 +139,10 @@ export const CardBrowser = (props: CardBrowserProps) => {
     }
 
     async function refreshView() {
-        // Reassess all files for correct states and new/removed files
-        setSectionsOfItems( getSortedItemsInFolder(props.plugin, folder) );
+        setState({
+            ...state,
+            id: uuidv4(),
+        });
     }
 
 };

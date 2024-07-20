@@ -15,7 +15,7 @@ import { registerFolderContextMenu } from 'src/context-menus/folder-context-menu
 interface BackButtonAndPathProps {
     folder: TFolder,
     onBackClick: Function,
-    onFolderClick: (folder: TFolder) => {},
+    onFolderClick: (folder: TFolder) => void,
 }
 
 export const BackButtonAndPath = (props: BackButtonAndPathProps) => {

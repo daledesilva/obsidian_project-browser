@@ -15,6 +15,7 @@ import { PLUGIN_ICON } from "src/constants";
 export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 
 export interface CardBrowserViewState {
+    id: string, // to allow for forcing a refresh
     path: string;
 }
 export type PartialCardBrowserViewState = Partial<CardBrowserViewState>;
@@ -168,6 +169,7 @@ export class ProjectCardsView extends ItemView {
 
     setCardBrowserHandlers(handlers: CardBrowserHandlers) {
         this.cardBrowserHandlers = handlers;
+        // Run immediately to apply scroll offset if present
         this.updateCardBrowser();
     }
 
