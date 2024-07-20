@@ -31,7 +31,6 @@ export const ListNoteCard = (props: ListNoteCardProps) => {
             file: props.file,
             onFileChange: () => {
                 cardBrowserContext.rememberLastTouchedFile(props.file);
-                cardBrowserContext.refreshView();
             },
         });
     }, [])

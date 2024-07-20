@@ -38,7 +38,9 @@ interface CardBrowserProps {
     path: string,
     plugin: ProjectBrowserPlugin,
     setViewStateWithHistory: (viewState: PartialCardBrowserViewState) => void,
-    saveReturnState: (props: {lastTouchedFilePath: string}) => {},
+    rememberLastTouchedFilepath: (filepath: string) => {},
+    resetLastTouchedFilepath: Function,
+    refreshFromStates: Function,
     setHandlers: (handlers: CardBrowserHandlers) => void,
 }
 
@@ -127,21 +129,17 @@ export const CardBrowser = (props: CardBrowserProps) => {
     ////////
 
     function rememberLastTouchedFile(file: TFile) {
-        console.log('lastTouched:', file.path)
-        props.saveReturnState({
-            lastTouchedFilePath: file.path,
-        });
+        props.rememberLastTouchedFilepath(file.path);
+        props.refreshFromStates();
     }
 
     function openFolder(nextFolder: TFolder) {
         let { workspace } = props.plugin.app;
         let leaf = workspace.getMostRecentLeaf();
-        
-        // REVIEW: What does this help with?
+
+        // TODO: Unwrap this (remove if)??
         if(leaf) {
-            props.saveReturnState({
-                lastTouchedFilePath: '',
-            });
+            props.resetLastTouchedFilepath();
         }
 
         props.setViewStateWithHistory({
@@ -154,9 +152,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         let leaf = workspace.getMostRecentLeaf();
 
         if(leaf) {
-            props.saveReturnState({
-                lastTouchedFilePath: file.path,
-            });
+            props.rememberLastTouchedFilepath(file.path);
         } else {
             leaf = workspace.getLeaf();
         }
@@ -171,7 +167,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
     }
 
     async function refreshView() {
-        console.log('refresh view');
         setState({
             ...state,
             id: uuidv4(),

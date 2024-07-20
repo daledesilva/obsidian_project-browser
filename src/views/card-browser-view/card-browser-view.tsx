@@ -81,7 +81,7 @@ export class ProjectCardsView extends ItemView {
     state: CardBrowserViewState;
     eState: CardBrowserViewEState;
     cardBrowserHandlers: CardBrowserHandlers;
-
+    
     constructor(leaf: WorkspaceLeaf, plugin: ProjectBrowserPlugin) {
         super(leaf);
         this.plugin = plugin;
@@ -160,20 +160,22 @@ export class ProjectCardsView extends ItemView {
                     plugin = {this.plugin}
                     path = {this.state.path}
                     setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
-                    saveReturnState = {this.saveReturnState}
+                    rememberLastTouchedFilepath = {this.rememberLastTouchedFilepath}
+                    resetLastTouchedFilepath = {this.resetLastTouchedFilepath}
+                    refreshFromStates = {this.updateCardBrowser}
                     setHandlers = {(handlers) => this.setCardBrowserHandlers(handlers)}
                 />
             </PluginContext.Provider>
         );
     }
 
-    setCardBrowserHandlers(handlers: CardBrowserHandlers) {
+    setCardBrowserHandlers = (handlers: CardBrowserHandlers) => {
         this.cardBrowserHandlers = handlers;
         // Run immediately to apply scroll offset if present
         this.updateCardBrowser();
     }
 
-    updateCardBrowser() {
+    updateCardBrowser = () => {
         if(!this.cardBrowserHandlers) return;
         if(this.state) this.cardBrowserHandlers.setState(this.state);
         if(this.eState) this.cardBrowserHandlers.setEState(this.eState);
@@ -181,12 +183,35 @@ export class ProjectCardsView extends ItemView {
     }
 
     // My function that I call to navigate to a new folder
-    setViewStateWithHistory(statePartial: PartialCardBrowserViewState) {       
+    setViewStateWithHistory = (statePartial: PartialCardBrowserViewState) => {
         const nextState = {...this.state, ...statePartial};
         this.leaf.setViewState({
             type: CARD_BROWSER_VIEW_TYPE,
             state: nextState,
         });
+    }
+
+    rememberLastTouchedFilepath = (lastTouchedFilePath: string): CardBrowserViewEState => {
+        this.eState = {
+            ...this.eState,
+            lastTouchedFilePath,
+        };
+        return this.eState;
+    }
+    resetLastTouchedFilepath = (): CardBrowserViewEState => {
+        this.eState = {
+            ...this.eState,
+            lastTouchedFilePath: '',
+        };
+        return this.eState;
+    }
+
+    rememberScrollOffset = (): CardBrowserViewEState => {
+        const scrollOffset = this.contentEl.scrollTop;
+        this.eState = {
+            scrollOffset,
+        };
+        return this.eState;
     }
 
     saveReturnState = async (props?: {lastTouchedFilePath?: string}) => {

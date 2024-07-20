@@ -81,6 +81,8 @@ export default class ProjectBrowserPlugin extends Plugin {
 	}
 
 	async refreshFileDependants() {
+		// Debounce slightly just so that batch file edits occur once
+		
 		clearTimeout(this.refreshFileDependantsTimeout);
 		this.refreshFileDependantsTimeout = setTimeout(() => {
 			Object.entries(this.fileDependants).forEach( ([key, handler]) => {
