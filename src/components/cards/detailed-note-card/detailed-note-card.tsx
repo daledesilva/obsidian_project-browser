@@ -38,9 +38,18 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
         if(noteRef.current) registerNoteContextMenu({
             plugin,
             noteEl: noteRef.current,
-            file: props.file
+            file: props.file,
+            onFileChange: () => {
+                cardBrowserContext.rememberLastTouchedFile(props.file);
+                cardBrowserContext.refreshView();
+            },
         });
     }, [])
+
+    console.log('rerendering');
+    console.log('props.file.path', props.file.path)
+    console.log('cardBrowserContext.lastTouchedFilePath', cardBrowserContext.lastTouchedFilePath)
+    console.log('showSettleTransition', showSettleTransition);
     
     return <>
         <article

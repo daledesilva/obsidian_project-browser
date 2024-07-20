@@ -29,6 +29,10 @@ export const ListNoteCard = (props: ListNoteCardProps) => {
             plugin,
             noteEl: noteRef.current,
             file: props.file,
+            onFileChange: () => {
+                cardBrowserContext.rememberLastTouchedFile(props.file);
+                cardBrowserContext.refreshView();
+            },
         });
     }, [])
     

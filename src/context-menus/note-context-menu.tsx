@@ -15,6 +15,7 @@ interface registerNoteContextMenuProps {
     plugin: ProjectBrowserPlugin,
     noteEl: HTMLElement,
     file: TFile,
+    onFileChange: Function,
 }
 
 export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
@@ -31,7 +32,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
                     setFileState(props.plugin, props.file, state.name);
-                    props.prepForVisualUpdate();
+                    props.onFileChange();
                 });
             });
         })
@@ -44,7 +45,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
                     setFileState(props.plugin, props.file, state.name);
-                    props.prepForVisualUpdate();
+                    props.onFileChange();
                 })
             });
         })
@@ -55,7 +56,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
             item.setTitle("Delete note")
             .onClick(() => {
                 deleteFileWithConfirmation(props.plugin, props.file);
-                props.prepForVisualUpdate();
+                props.onFileChange();
             })
         );
 

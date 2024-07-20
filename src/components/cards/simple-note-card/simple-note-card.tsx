@@ -33,7 +33,11 @@ export const SimpleNoteCard = (props: SimpleNoteCardProps) => {
         if(noteRef.current) registerNoteContextMenu({
             plugin,
             noteEl: noteRef.current,
-            file: props.file
+            file: props.file,
+            onFileChange: () => {
+                cardBrowserContext.rememberLastTouchedFile(props.file);
+                cardBrowserContext.refreshView();
+            },
         });
     }, [])
     

@@ -95,12 +95,8 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
 
 interface StatelessSectionProps {
     section: Section,
-    openFile: (file: TFile) => void,
-    lastTouchedFilePath: string,
-    saveLastTouchedFilepath: (filepath: string) => void,
 }
 export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
-
     const sortedFiles = sortItemsAlphabetically(props.section.items, 'ascending');
 
     return <>
@@ -110,8 +106,6 @@ export const StatelessSection = (props: React.PropsWithChildren<StatelessSection
         >
             <ListNoteCardSet
                 files = {sortedFiles}
-                onFileSelect = {props.openFile}
-                lastTouchedFilePath = {props.lastTouchedFilePath}
             />
         </BaseSection>
     </>

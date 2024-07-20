@@ -127,6 +127,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     ////////
 
     function rememberLastTouchedFile(file: TFile) {
+        console.log('lastTouched:', file.path)
         props.saveReturnState({
             lastTouchedFilePath: file.path,
         });
@@ -170,6 +171,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     }
 
     async function refreshView() {
+        console.log('refresh view');
         setState({
             ...state,
             id: uuidv4(),
