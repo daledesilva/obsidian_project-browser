@@ -29,10 +29,6 @@ export const CardBrowserContext = React.createContext<{
     openFolder: () => {},
     refreshView: () => {},
 });
-export interface CardBrowserHandlers {
-    setEState: (eState: CardBrowserViewEState) => void,
-    setState: (eState: CardBrowserViewState) => void,
-}
 
 interface CardBrowserProps {
     path: string,
@@ -40,17 +36,13 @@ interface CardBrowserProps {
     setViewStateWithHistory: (viewState: PartialCardBrowserViewState) => void,
     rememberLastTouchedFilepath: (filepath: string) => {},
     resetLastTouchedFilepath: Function,
-    refreshFromStates: Function,
-    setHandlers: (handlers: CardBrowserHandlers) => void,
+    getViewStates: () => {state: CardBrowserViewState, eState: CardBrowserViewEState},
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
     const [viewInstanceId] = React.useState<string>(uuidv4());
-    const [state, setState] = React.useState<CardBrowserViewState>({
-        id: uuidv4(),
-        path: props.path
-    });
-    const [eState, setEState] = React.useState<CardBrowserViewEState>();
+    const [refreshId, setRefreshId] = React.useState<number>(uuidv4());
+    const {state, eState} = props.getViewStates();
     const plugin = React.useContext(PluginContext);
     const browserRef = React.useRef(null);
 
@@ -62,17 +54,11 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
     
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
-    // console.log('lastTouchedFilePath', lastTouchedFilePath);
 
     // on mount
     React.useEffect( () => {
         if(!plugin) return;
         
-        props.setHandlers({
-            setEState:  (eState) => setEState(eState),
-            setState:  (state) => setState(state),
-        })
-
         props.plugin.addFileDependant(`card-browser_${viewInstanceId}`, refreshView);
 
         // NOTE: When the view is changed to something else, this is never given the chance to unmount.
@@ -83,6 +69,11 @@ export const CardBrowser = (props: CardBrowserProps) => {
             registerCardBrowserContextMenu(plugin, browserRef.current, folder, {openFile});
         }
     },[])
+
+
+    function refreshView() {
+        setRefreshId(uuidv4());
+    }
     
     return (
         <CardBrowserContext.Provider value={{
@@ -91,7 +82,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
             rememberLastTouchedFile,
             openFile,
             openFolder,
-            refreshView,
         }}>
             <div
                 ref = {browserRef}
@@ -130,7 +120,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
     function rememberLastTouchedFile(file: TFile) {
         props.rememberLastTouchedFilepath(file.path);
-        props.refreshFromStates();
     }
 
     function openFolder(nextFolder: TFolder) {
@@ -166,12 +155,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
         openFolder(nextFolder);
     }
 
-    async function refreshView() {
-        setState({
-            ...state,
-            id: uuidv4(),
-        });
-    }
 
 };
 

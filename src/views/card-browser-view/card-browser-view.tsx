@@ -162,8 +162,12 @@ export class ProjectCardsView extends ItemView {
                     setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
                     rememberLastTouchedFilepath = {this.rememberLastTouchedFilepath}
                     resetLastTouchedFilepath = {this.resetLastTouchedFilepath}
-                    refreshFromStates = {this.updateCardBrowser}
-                    setHandlers = {(handlers) => this.setCardBrowserHandlers(handlers)}
+                    getViewStates = {() => {
+                        return {
+                            eState: this.eState,
+                            state: this.state,
+                        }
+                    }}
                 />
             </PluginContext.Provider>
         );
