@@ -186,7 +186,7 @@ export const refreshFolderReference = async (folder: TFolder): Promise<TFolder> 
     const v = folder.vault;
     const refreshedFolder = v.getAbstractFileByPath(folder.path) as TFolder;
 
-    // NOTE: Returns a proimise with an artificial delay because getAbstractFilePath seems to take a sec to refresh the folder.
+    // NOTE: Returns a promise with an artificial delay because getAbstractFilePath seems to take a sec to refresh the folder.
     return new Promise(
         (resolve) => setTimeout( () => {
             resolve(refreshedFolder)

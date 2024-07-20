@@ -114,6 +114,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
             path: nextFolder.path,
         });
         // setSectionsOfItems(getSortedItemsInFolder(props.plugin, nextFolder) );
+        // setState({
+        //     path: nextFolder.path,
+        // })
     }
     
     function openFile(file: TFile) {

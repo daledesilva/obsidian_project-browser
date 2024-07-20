@@ -67,15 +67,8 @@ interface PathButtonProps {
 }
 function PathButton(props: PathButtonProps) {
     const v = props.folder.vault;
-    const plugin = React.useContext(PluginContext);
     const rootName = v.getName();
-    const buttonRef = React.useRef(null);
-
-    React.useEffect( () => {
-        if(!plugin) return;
-        if(buttonRef.current) registerFolderContextMenu(plugin, buttonRef.current, props.folder);
-    })
-
+    
     let name: string;
     if(props.folder.path === '/') {
         name = rootName;
@@ -93,7 +86,6 @@ function PathButton(props: PathButtonProps) {
         )}
         {!props.onClick && (
             <div
-                ref = {buttonRef}
                 onClick = {() => props.onClick(props.folder)}
                 className = {classNames([
                     props.isCurrentFolder && 'ddc_pb_current-folder'
