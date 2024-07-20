@@ -9,7 +9,7 @@ import { ListNoteCard } from '../cards/list-note-card/list-note-card';
 interface ListNoteCardSetProps {
     files: TAbstractFile[],
     onFileSelect: (file: TFile) => void,
-    lastOpenedFilePath?: string,
+    lastTouchedFilePath?: string,
 }
 export const ListNoteCardSet = (props: ListNoteCardSetProps) => {
 
@@ -19,7 +19,7 @@ export const ListNoteCardSet = (props: ListNoteCardSetProps) => {
                 file = {file as TFile}
                 key = {file.path}
                 onSelect = {props.onFileSelect}
-                showCloseTransition = {props.lastOpenedFilePath === file.path}
+                showSettleTransition = {props.lastTouchedFilePath === file.path}
             />
         )
     });

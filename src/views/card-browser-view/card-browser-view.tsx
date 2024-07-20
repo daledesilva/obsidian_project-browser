@@ -22,7 +22,7 @@ export type PartialCardBrowserViewState = Partial<CardBrowserViewState>;
 
 export interface CardBrowserViewEState {
     scrollOffset?: number,
-    lastOpenedFilePath?: string,
+    lastTouchedFilePath?: string,
 }
 export type PartialCardBrowserViewEState = Partial<CardBrowserViewEState>;
 
@@ -189,17 +189,17 @@ export class ProjectCardsView extends ItemView {
         });
     }
 
-    saveReturnState = async (props?: {lastOpenedFilePath?: string}) => {
+    saveReturnState = async (props?: {lastTouchedFilePath?: string}) => {
         const scrollOffset = this.contentEl.scrollTop;
         
         // Not sure what ephemeral state actually does.
         // State seems to be tied to view type, while ephemeral state is tied to view instance?
         // Which would explain why subfolders don't adopt the scroll position
 
-        if(props?.lastOpenedFilePath) {
+        if(props?.lastTouchedFilePath) {
             this.eState = {
                 scrollOffset,
-                lastOpenedFilePath: props.lastOpenedFilePath,
+                lastTouchedFilePath: props.lastTouchedFilePath,
             };
 
         } else {

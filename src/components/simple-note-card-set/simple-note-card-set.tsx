@@ -9,7 +9,7 @@ import { SimpleNoteCard } from '../cards/simple-note-card/simple-note-card';
 interface SimpleNoteCardSetProps {
     files: TAbstractFile[],
     onFileSelect: (file: TFile) => void,
-    lastOpenedFilePath?: string,
+    lastTouchedFilePath?: string,
 }
 export const SimpleNoteCardSet = (props: SimpleNoteCardSetProps) => {
 
@@ -18,7 +18,7 @@ export const SimpleNoteCardSet = (props: SimpleNoteCardSetProps) => {
             file = {file as TFile}
             key = {file.path}
             onSelect = {props.onFileSelect}
-            showCloseTransition = {props.lastOpenedFilePath === file.path}
+            showSettleTransition = {props.lastTouchedFilePath === file.path}
         />
     });
 

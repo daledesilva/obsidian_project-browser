@@ -13,7 +13,7 @@ import { registerNoteContextMenu } from 'src/context-menus/note-context-menu';
 interface ListNoteCardProps {
     file: TFile,
     onSelect: (file: TFile) => void,
-    showCloseTransition: boolean,
+    showSettleTransition: boolean,
 }
 
 export const ListNoteCard = (props: ListNoteCardProps) => {
@@ -37,7 +37,7 @@ export const ListNoteCard = (props: ListNoteCardProps) => {
             ref = {noteRef}
             className = {classNames([
                 'ddc_pb_list-note-card',
-                props.showCloseTransition && 'ddc_pb_closing'
+                props.showSettleTransition && 'ddc_pb_closing'
             ])}
             onClick = { () => {
                 props.onSelect(props.file)

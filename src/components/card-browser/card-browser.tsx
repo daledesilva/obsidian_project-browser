@@ -23,7 +23,7 @@ interface CardBrowserProps {
     path: string,
     plugin: ProjectBrowserPlugin,
     setViewStateWithHistory: (viewState: PartialCardBrowserViewState) => void,
-    saveReturnState: (props: {lastOpenedFilePath: string}) => {},
+    saveReturnState: (props: {lastTouchedFilePath: string}) => {},
     setHandlers: (handlers: CardBrowserHandlers) => void,
 }
 
@@ -44,8 +44,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
     // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
     const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
     
-    const lastOpenedFilePath = eState?.lastOpenedFilePath || '';
-    // console.log('lastOpenedFilePath', lastOpenedFilePath);
+    const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
+    // console.log('lastTouchedFilePath', lastTouchedFilePath);
 
     // on mount
     React.useEffect( () => {
@@ -84,10 +84,10 @@ export const CardBrowser = (props: CardBrowserProps) => {
                             <FolderSection section={section} openFolder={openFolder}/>
                         )}
                         {section.type === "state" && (
-                            <StateSection folder={folder} section={section} openFile={openFile} lastOpenedFilePath={lastOpenedFilePath}/>
+                            <StateSection folder={folder} section={section} openFile={openFile} lastTouchedFilePath={lastTouchedFilePath}/>
                         )}
                         {section.type === "stateless" && (
-                            <StatelessSection section={section} openFile={openFile} lastOpenedFilePath={lastOpenedFilePath}/>
+                            <StatelessSection section={section} openFile={openFile} lastTouchedFilePath={lastTouchedFilePath}/>
                         )}
                     </div>
                 ))}
@@ -108,7 +108,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         
         if(leaf) {
             props.saveReturnState({
-                lastOpenedFilePath: '',
+                lastTouchedFilePath: '',
             });
         }
 
@@ -123,7 +123,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
         if(leaf) {
             props.saveReturnState({
-                lastOpenedFilePath: file.path,
+                lastTouchedFilePath: file.path,
             });
         } else {
             leaf = workspace.getLeaf();

@@ -13,7 +13,7 @@ import { registerNoteContextMenu } from 'src/context-menus/note-context-menu';
 interface SmallNoteCardProps {
     file: TFile,
     onSelect: (file: TFile) => void,
-    showCloseTransition: boolean,
+    showSettleTransition: boolean,
 }
 
 export const SmallNoteCard = (props: SmallNoteCardProps) => {
@@ -41,7 +41,7 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
             ref = {noteRef}
             className = {classNames([
                 'ddc_pb_small-note-card',
-                props.showCloseTransition && 'ddc_pb_closing'
+                props.showSettleTransition && 'ddc_pb_closing'
             ])}
             onClick = { () => {
                 props.onSelect(props.file)
