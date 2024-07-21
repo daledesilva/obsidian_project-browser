@@ -181,7 +181,6 @@ export class ProjectCardsView extends ItemView {
     }
 
     applyScrollOffset = () => {
-        console.log('this.eState?.scrollOffset', this.eState?.scrollOffset);
         setTimeout( () => {
             if(this.eState?.scrollOffset) this.contentEl.scrollTo(0, this.eState.scrollOffset);
         }, 50)
@@ -213,7 +212,6 @@ export class ProjectCardsView extends ItemView {
 
     saveReturnState = async (props?: {lastTouchedFilePath?: string}) => {
         const scrollOffset = this.contentEl.scrollTop;
-        console.log('saving', scrollOffset);
         
         // Not sure what ephemeral state actually does.
         // State seems to be tied to view type, while ephemeral state is tied to view instance?
