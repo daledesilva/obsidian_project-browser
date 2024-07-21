@@ -72,7 +72,13 @@ export default class ProjectBrowserPlugin extends Plugin {
 		new Notice('Project Browser plugin settings reset');
 	}
 
-	addFileDependant(id: string, handler: Function) {
+	/**
+	 * Allows registering a handler function that should be called whenever files change across Obsidian.
+	 * ie. Use it to refresh a view whenever files are deleted, created, or changed outside of that view.
+	 * @param id 
+	 * @param handler 
+	 */
+	addGlobalFileDependant(id: string, handler: Function) {
 		this.fileDependants[id] = handler;
 	}
 

@@ -132,12 +132,12 @@ export class ProjectCardsView extends ItemView {
         // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
         this.state = state;   // this line works - you have to replace the whole object for navigation history to work properly
 
-        this.contentEl.addEventListener('scrollend', (e) => {
+        // NOTE: This used to be on scrollend, but it was missing some instances where the user would scroll then quickly click
+        this.contentEl.addEventListener('scroll', (e) => {
             this.saveReturnState();
         })
 
         this.cardBrowserHandlers?.rerender();
-        this.applyScrollOffset();
 
         return super.setState(this.state, result);
     }
@@ -145,7 +145,6 @@ export class ProjectCardsView extends ItemView {
     setEphemeralState(eState: any): void {
         this.eState = eState;
         this.cardBrowserHandlers?.rerender();
-        this.applyScrollOffset();
         return super.setEphemeralState(this.eState);
     }
 
@@ -182,7 +181,10 @@ export class ProjectCardsView extends ItemView {
     }
 
     applyScrollOffset = () => {
-        if(this.eState?.scrollOffset) this.contentEl.scrollTo(0, this.eState.scrollOffset);
+        console.log('this.eState?.scrollOffset', this.eState?.scrollOffset);
+        setTimeout( () => {
+            if(this.eState?.scrollOffset) this.contentEl.scrollTo(0, this.eState.scrollOffset);
+        }, 50)
     }
 
     // My function that I call to navigate to a new folder
@@ -209,16 +211,9 @@ export class ProjectCardsView extends ItemView {
         return this.eState;
     }
 
-    rememberScrollOffset = (): CardBrowserViewEState => {
-        const scrollOffset = this.contentEl.scrollTop;
-        this.eState = {
-            scrollOffset,
-        };
-        return this.eState;
-    }
-
     saveReturnState = async (props?: {lastTouchedFilePath?: string}) => {
         const scrollOffset = this.contentEl.scrollTop;
+        console.log('saving', scrollOffset);
         
         // Not sure what ephemeral state actually does.
         // State seems to be tied to view type, while ephemeral state is tied to view instance?

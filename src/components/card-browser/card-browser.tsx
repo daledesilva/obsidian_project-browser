@@ -67,7 +67,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         props.passBackHandlers({
             rerender,
         })
-        props.plugin.addFileDependant(`card-browser_${viewInstanceId}`, rerender);
+        props.plugin.addGlobalFileDependant(`card-browser_${viewInstanceId}`, rerender);
 
         // NOTE: When the view is changed to something else, this is never given the chance to unmount.
         // Must removeDependant from elsewhere?
