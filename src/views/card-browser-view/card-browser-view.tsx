@@ -136,14 +136,16 @@ export class ProjectCardsView extends ItemView {
             this.saveReturnState();
         })
 
-        this.updateCardBrowser();
+        this.cardBrowserHandlers?.rerender();
+        this.applyScrollOffset();
 
         return super.setState(this.state, result);
     }
 
     setEphemeralState(eState: any): void {
         this.eState = eState;
-        this.updateCardBrowser();
+        this.cardBrowserHandlers?.rerender();
+        this.applyScrollOffset();
         return super.setEphemeralState(this.eState);
     }
 
@@ -168,6 +170,7 @@ export class ProjectCardsView extends ItemView {
                             state: this.state,
                         }
                     }}
+                    passBackHandlers = {this.setCardBrowserHandlers}
                 />
             </PluginContext.Provider>
         );
@@ -175,14 +178,10 @@ export class ProjectCardsView extends ItemView {
 
     setCardBrowserHandlers = (handlers: CardBrowserHandlers) => {
         this.cardBrowserHandlers = handlers;
-        // Run immediately to apply scroll offset if present
-        // this.updateCardBrowser();
+        this.applyScrollOffset();
     }
 
-    updateCardBrowser = () => {
-        if(!this.cardBrowserHandlers) return;
-        if(this.state) this.cardBrowserHandlers.setState(this.state);
-        if(this.eState) this.cardBrowserHandlers.setEState(this.eState);
+    applyScrollOffset = () => {
         if(this.eState?.scrollOffset) this.contentEl.scrollTo(0, this.eState.scrollOffset);
     }
 

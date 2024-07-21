@@ -10,7 +10,7 @@ import { createProject } from "src/utils/file-manipulation";
 export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, commands: {openFile: Function}) {
     
     el.addEventListener('contextmenu', function(event) {
-        
+        event.stopPropagation();
         const menu = new Menu();
 
         menu.addItem((item) =>
@@ -23,10 +23,12 @@ export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el:
 
         menu.addItem((item) =>
             item.setTitle("New folder")
-                .onClick(() => new NewFolderModal({
-                    plugin,
-                    baseFolder,
-                }).showModal())
+                .onClick(() => {
+                    new NewFolderModal({
+                        plugin,
+                        baseFolder,
+                    }).showModal()
+                })
         );
 
         menu.showAtMouseEvent(event);

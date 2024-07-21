@@ -14,7 +14,6 @@ import { createProject } from 'src/utils/file-manipulation';
 
 interface CurrentFolderMenuProps {
     folder: TFolder,
-    refreshView: Function,
     openFile: (file: TFile) => void,
 }
 
@@ -45,7 +44,7 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
             const newFile = await createProject(folder, 'Untitled');
             // Slight delay for better feedback of view refreshing
             // setTimeout( () => { 
-            //     props.refreshView();
+            //     cardBrowserContext.rerender();
                 // Additional delay for notcing refresh before opening file
                 // setTimeout( () => { 
                     props.openFile(newFile);

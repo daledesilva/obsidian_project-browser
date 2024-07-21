@@ -10,7 +10,7 @@ import { createProject } from "src/utils/file-manipulation";
 export function registerStateSectionContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, state: string, commands: {openFile: Function}) {
     
     el.addEventListener('contextmenu', function(event) {
-        
+        event.stopPropagation();
         const menu = new Menu();
 
         menu.addItem((item) =>

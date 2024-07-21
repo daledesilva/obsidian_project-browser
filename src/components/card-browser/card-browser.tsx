@@ -20,15 +20,19 @@ export const CardBrowserContext = React.createContext<{
     rememberLastTouchedFile: (file: TFile) => void,
     openFile: (file: TFile) => void,
     openFolder: (folder: TFolder) => void,
-    refreshView: () => void,
+    rerender: () => void,
 }>({
     folder: null,
     lastTouchedFilePath: '',
     rememberLastTouchedFile: () => {},
     openFile: () => {},
     openFolder: () => {},
-    refreshView: () => {},
+    rerender: () => {},
 });
+
+export interface CardBrowserHandlers {
+    rerender: Function,
+}
 
 interface CardBrowserProps {
     path: string,
@@ -37,6 +41,7 @@ interface CardBrowserProps {
     rememberLastTouchedFilepath: (filepath: string) => {},
     resetLastTouchedFilepath: Function,
     getViewStates: () => {state: CardBrowserViewState, eState: CardBrowserViewEState},
+    passBackHandlers: (handlers: CardBrowserHandlers) => void,
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
@@ -59,7 +64,10 @@ export const CardBrowser = (props: CardBrowserProps) => {
     React.useEffect( () => {
         if(!plugin) return;
         
-        props.plugin.addFileDependant(`card-browser_${viewInstanceId}`, refreshView);
+        props.passBackHandlers({
+            rerender,
+        })
+        props.plugin.addFileDependant(`card-browser_${viewInstanceId}`, rerender);
 
         // NOTE: When the view is changed to something else, this is never given the chance to unmount.
         // Must removeDependant from elsewhere?
@@ -71,7 +79,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     },[])
 
 
-    function refreshView() {
+    function rerender() {
         setRefreshId(uuidv4());
     }
     
@@ -110,7 +118,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
             </div>
             <CurrentFolderMenu
                 folder = {folder}
-                refreshView = {refreshView}
                 openFile = {openFile}
             />
         </CardBrowserContext.Provider>
@@ -125,12 +132,12 @@ export const CardBrowser = (props: CardBrowserProps) => {
     function openFolder(nextFolder: TFolder) {
         let { workspace } = props.plugin.app;
         let leaf = workspace.getMostRecentLeaf();
-
+        
         // TODO: Unwrap this (remove if)??
         if(leaf) {
             props.resetLastTouchedFilepath();
         }
-
+        
         props.setViewStateWithHistory({
             path: nextFolder.path,
         });

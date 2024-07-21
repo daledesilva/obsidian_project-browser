@@ -28,7 +28,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
     hiddenStates.reverse();
 
     props.noteEl.addEventListener('contextmenu', function(event) {
-                
+        event.stopPropagation();                
         const menu = new Menu();
 
         visibleStates.forEach( (state) => {
