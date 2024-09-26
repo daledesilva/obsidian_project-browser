@@ -28,9 +28,14 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
     hiddenStates.reverse();
 
     props.noteEl.addEventListener('contextmenu', function(event) {
-        event.stopPropagation();                
+        
+        // Prevent container divs opening their context menus
+        event.stopPropagation();
+        
+        // Close other menus (Only works on iOS for some reason, but also only needed there)
+        document.body.click();
+        
         const menu = new Menu();
-
         visibleStates.forEach( (state) => {
             menu.addItem((item) => {
                 item.setTitle(state.name);
@@ -41,9 +46,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
                 });
             });
         })
-
         menu.addSeparator();
-
         hiddenStates.forEach( (state) => {
             menu.addItem((item) => {
                 item.setTitle(state.name);
@@ -54,9 +57,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
                 })
             });
         })
-
         menu.addSeparator();
-
         menu.addItem((item) =>
             item.setTitle("Delete note")
             .onClick(() => {
@@ -64,7 +65,6 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
                 props.onFileChange();
             })
         );
-
         menu.showAtMouseEvent(event);
 
     }, false);

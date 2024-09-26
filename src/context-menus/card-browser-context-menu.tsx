@@ -10,9 +10,14 @@ import { createProject } from "src/utils/file-manipulation";
 export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, commands: {openFile: Function}) {
     
     el.addEventListener('contextmenu', function(event) {
+        
+        // Prevent container divs opening their context menus
         event.stopPropagation();
-        const menu = new Menu();
 
+        // Close other menus (Only works on iOS for some reason, but also only needed there)
+        document.body.click();
+
+        const menu = new Menu();
         menu.addItem((item) =>
             item.setTitle("New note")
                 .onClick(async () => {
@@ -20,7 +25,6 @@ export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el:
                     setTimeout( () => commands.openFile(newFile), 500);
                 })
         );
-
         menu.addItem((item) =>
             item.setTitle("New folder")
                 .onClick(() => {
@@ -30,7 +34,6 @@ export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el:
                     }).showModal()
                 })
         );
-
         menu.showAtMouseEvent(event);
 
     }, false);

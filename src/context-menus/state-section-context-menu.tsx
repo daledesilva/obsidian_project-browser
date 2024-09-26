@@ -10,9 +10,14 @@ import { createProject } from "src/utils/file-manipulation";
 export function registerStateSectionContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, state: string, commands: {openFile: Function}) {
     
     el.addEventListener('contextmenu', function(event) {
-        event.stopPropagation();
-        const menu = new Menu();
 
+        // Prevent container divs opening their context menus
+        event.stopPropagation();
+
+        // Close other menus (Only works on iOS for some reason, but also only needed there)
+        document.body.click();
+
+        const menu = new Menu();
         menu.addItem((item) =>
             item.setTitle("New note")
                 .onClick(async () => {
@@ -24,7 +29,6 @@ export function registerStateSectionContextMenu(plugin: ProjectBrowserPlugin, el
                     setTimeout( () => commands.openFile(newFile), 500);
                 })
         );
-
         menu.showAtMouseEvent(event);
 
     }, false);
