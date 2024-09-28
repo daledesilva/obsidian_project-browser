@@ -5,20 +5,21 @@ import { refreshFolderReference } from "src/logic/folder-processes";
 import { getFileState, setFileState } from "src/logic/frontmatter-processes";
 import ProjectBrowserPlugin from "src/main";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
+import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PluginContext } from "src/utils/plugin-context";
 import { CARD_BROWSER_VIEW_TYPE, newProjectBrowserLeaf } from "src/views/card-browser-view/card-browser-view";
 
 ////////
 ////////
 
-interface registerNoteContextMenuProps {
+interface registerFileContextMenuProps {
     plugin: ProjectBrowserPlugin,
-    noteEl: HTMLElement,
+    fileButtonEl: HTMLElement,
     file: TFile,
     onFileChange: Function,
 }
 
-export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
+export function registerFileContextMenu(props: registerFileContextMenuProps) {
     const fileState = getFileState(props.plugin, props.file);
     const folder = props.file.parent;
 
@@ -27,7 +28,7 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
     const hiddenStates = JSON.parse(JSON.stringify(props.plugin.settings.states.hidden));
     hiddenStates.reverse();
 
-    props.noteEl.addEventListener('contextmenu', function(event) {
+    props.fileButtonEl.addEventListener('contextmenu', function(event) {
         
         // Prevent container divs opening their context menus
         event.stopPropagation();
@@ -61,7 +62,11 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
         menu.addItem((item) =>
             item.setTitle("Rename")
             .onClick(() => {
-                renameFileOrFolderInPlace(props.file, props.noteEl);
+                // renameFileOrFolderInPlace(props.file, props.noteEl);
+                new RenameFileModal({
+                    plugin: props.plugin,
+                    file: props.file,
+                }).showModal()
                 props.onFileChange();
             })
         );

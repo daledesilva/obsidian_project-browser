@@ -51,6 +51,7 @@ export function folderPathSanitize(str: string) {
 		pathArr[j] = sanitizeFileName(pathArr[j]);
 	}
 	pathStr = pathArr.join('/');
+	if(pathStr === '') pathStr = 'Unknown';		// TODO: This needs better handling
 	return pathStr;
 }
 

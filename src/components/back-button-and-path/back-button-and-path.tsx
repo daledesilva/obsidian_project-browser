@@ -3,7 +3,7 @@ import './back-button-and-path.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
 import classNames from 'classnames';
-import { registerNoteContextMenu } from 'src/context-menus/note-context-menu';
+import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { PluginContext } from 'src/utils/plugin-context';
 import { registerFolderContextMenu } from 'src/context-menus/folder-context-menu';
 

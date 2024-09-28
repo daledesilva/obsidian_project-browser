@@ -5,7 +5,7 @@ import * as React from "react";
 import { getFileExcerpt } from "src/logic/file-processes";
 import { trimFilenameExt } from 'src/logic/string-processes';
 import { PluginContext } from 'src/utils/plugin-context';
-import { registerNoteContextMenu } from 'src/context-menus/note-context-menu';
+import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 
 /////////
@@ -29,9 +29,9 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
 
     React.useEffect( () => {
         if(!plugin) return;
-        if(noteRef.current) registerNoteContextMenu({
+        if(noteRef.current) registerFileContextMenu({
             plugin,
-            noteEl: noteRef.current,
+            fileButtonEl: noteRef.current,
             file: props.file,
             onFileChange: () => {
                 cardBrowserContext.rememberLastTouchedFile(props.file);
