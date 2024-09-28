@@ -2,6 +2,7 @@ import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation, renameFileOrFolderInPlace, renameFolderInPlace } from "src/logic/file-processes";
 import ProjectBrowserPlugin from "src/main";
 import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
+import { hideFolder } from "src/utils/file-manipulation";
 
 ////////
 ////////
@@ -21,6 +22,13 @@ export function registerFolderContextMenu(plugin: ProjectBrowserPlugin, folderBt
             item.setTitle("Set as launch folder")
                 .onClick(() => {
                     plugin.settings.access.launchFolder = folder.path;
+                    plugin.saveSettings();
+                })
+        );
+        menu.addItem((item) =>
+            item.setTitle("Hide folder")
+                .onClick(() => {
+                    hideFolder(plugin, folder);
                 })
         );
         menu.addSeparator();

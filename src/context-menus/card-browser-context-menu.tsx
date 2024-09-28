@@ -27,6 +27,7 @@ export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el:
             item.setTitle("Set as launch folder")
                 .onClick(() => {
                     plugin.settings.access.launchFolder = commands.getCurFolder().path;
+                    plugin.saveSettings();
                 })
         );
         menu.addSeparator();

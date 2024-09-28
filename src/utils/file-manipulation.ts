@@ -163,3 +163,69 @@ async function createNewMarkdownFile(vault: Vault, folder: TFolder, filename: st
 	
 	return fileRef;
 }
+
+
+async function createFolderSettingsFile(vault: Vault, folder: TFolder) : Promise<TFile | null> {
+    let file: TFile | null = null;
+    const filename = `${folder.path}/folder-settings.pbs`;
+    const defaultSettings = {
+        _description: `Obsidian Project Browser folder settings`
+    }
+
+    try {
+        file = vault.getFileByPath(filename);
+    } catch (e) {
+        console.log(`Error fetching folder settings file`, e);
+    }
+
+    if(!file) {
+        try {
+            file = await vault.create(filename, JSON.stringify(defaultSettings, null, 2));
+        } catch(e) {
+            console.log(`Error creating folder settings file`, e);
+        }
+    }
+	
+	return file;
+}
+
+
+export async function hideFolder(plugin: ProjectBrowserPlugin, folder: TFolder): Promise<void> {
+    const v = plugin.app.vault;
+
+    const settingsFile = await createFolderSettingsFile(v, folder);
+    if(!settingsFile) return;
+
+    let folderSettings;
+    try {
+        folderSettings = JSON.parse( await v.read(settingsFile) );
+    } catch(e) {
+        console.log(`Error reading folder settings`, e);
+        console.log(`Creating empty settings`);
+        folderSettings = {};
+    }
+
+    folderSettings.hidden = true;
+
+    await v.modify(settingsFile, JSON.stringify(folderSettings, null, 2) );
+}
+
+export async function unhideFolder(plugin: ProjectBrowserPlugin, folder: TFolder): Promise<void> {
+    const v = plugin.app.vault;
+
+    const settingsFile = await createFolderSettingsFile(v, folder);
+    if(!settingsFile) return;
+
+    let folderSettings;
+    try {
+        folderSettings = JSON.parse( await v.read(settingsFile) );
+    } catch(e) {
+        console.log(`Error reading folder settings`, e);
+        console.log(`Creating empty settings`);
+        folderSettings = {};
+    }
+
+    delete folderSettings.hidden;
+
+    await v.modify(settingsFile, JSON.stringify(folderSettings, null, 2) );
+}
