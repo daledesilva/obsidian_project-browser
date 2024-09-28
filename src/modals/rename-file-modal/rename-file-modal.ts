@@ -1,5 +1,5 @@
 import { Keyboard } from "lucide-react";
-import { App, Modal, Notice, Setting, TFile, TFolder as TFile } from "obsidian";
+import { App, Modal, Notice, Setting, TFile } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";

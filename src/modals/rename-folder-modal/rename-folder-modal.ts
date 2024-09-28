@@ -1,34 +1,35 @@
 import { Keyboard } from "lucide-react";
-import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
+import { App, Modal, Notice, Setting, TFolder } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
-import { createFolder, createProject } from "src/utils/file-manipulation";
+import { createFolder, createProject, renameTFile, renameTFolder } from "src/utils/file-manipulation";
 import { folderPathSanitize } from "src/utils/string-processes";
 
 /////////
 /////////
 
-interface NewFolderModalProps {
+interface RenameFolderModalProps {
     plugin: ProjectBrowserPlugin,
-    baseFolder: TFolder,
+    folder: TFolder,
 }
 
-export class NewFolderModal extends Modal {
+export class RenameFolderModal extends Modal {
     plugin: ProjectBrowserPlugin;
-    baseFolder: TFolder;
-    folderName: string;
+    folder: TFolder;
+    name: string;
     resolveModal: (file: TFolder) => void;
 	rejectModal: (reason: string) => void;
 
-	constructor(props: NewFolderModalProps) {
+	constructor(props: RenameFolderModalProps) {
 		super(props.plugin.app);
 		this.plugin = props.plugin;
-		this.baseFolder = props.baseFolder;
+		this.folder = props.folder;
+		this.name = props.folder.name;
 	}
 
     /**
-	 * Opens the modal and returns the file created.
+	 * Opens the modal and returns the folder that was renamed.
 	 */
 	public showModal(): Promise<TFolder> {
 		return new Promise((resolve, reject) => {
@@ -41,29 +42,27 @@ export class NewFolderModal extends Modal {
 	public onOpen() {
 		const {titleEl, contentEl} = this;
 
-		titleEl.setText('Create new folder');
-		// contentEl.createEl('p', {text: 'This will create a folder with the name you specify.'});
+		titleEl.setText('Rename folder');
 		
-        new Setting(contentEl)
+        const inputSetting = new Setting(contentEl)
             .setClass('project-browser_setting')
             .setName('Folder name')
             .addText((text) => {
-                text.setValue(this.folderName);
+                text.setValue(this.name);
                 text.inputEl.addEventListener('blur', async (e) => {
-                    // const value = folderPathSanitize(text.getValue(), plugin.settings);
-                    // plugin.settings.folderNames.notes = value;
-                    this.folderName = text.getValue();
-                    // await plugin.saveSettings();
+                    this.name = folderPathSanitize(text.getValue());
+					text.inputEl.value = this.name;
                 });
-                text.inputEl.addEventListener('keydown', async (event) => {
+                text.inputEl.addEventListener('keyup', async (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
-                        this.folderName = text.getValue();
-						let folderPath = `${this.baseFolder.path}/${this.folderName}`;
-						const newFolder = await createFolder(this.plugin, folderPath);
-						this.resolveModal(newFolder);
+						this.name = folderPathSanitize(text.getValue());
+                        renameTFolder(this.folder, this.name);	// TODO: If this fails, the modal should report a fail
+						this.resolveModal(this.folder);
 						this.close();
                     }
                 });
+				text.inputEl.focus();
+				text.inputEl.select();
             });
 
 		new Setting(contentEl).addButton(cancelBtn => {
@@ -77,15 +76,13 @@ export class NewFolderModal extends Modal {
 		.addButton( confirmBtn => {
 			confirmBtn.setClass('project-browser_button');
 			confirmBtn.setCta();
-			confirmBtn.setButtonText('Create folder');
-			confirmBtn.onClick( async () => {
-				let folderPath = `${this.baseFolder.path}/${this.folderName}`;
-				const newFolder = await createFolder(this.plugin, folderPath);
-				this.resolveModal(newFolder);
+			confirmBtn.setButtonText('Save');
+			confirmBtn.onClick(() => {
+				renameTFolder(this.folder, this.name);	// TODO: If this fails, the modal should report a fail
+				this.resolveModal(this.folder);
 				this.close();
-			} )
+			})
 		})
-
 	}
 
 	public onClose() {
@@ -93,6 +90,8 @@ export class NewFolderModal extends Modal {
 		titleEl.empty();
 		contentEl.empty();
 	}
+
+	//////
 
 }
 

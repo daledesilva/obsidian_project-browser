@@ -1,6 +1,7 @@
 import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation, renameFileOrFolderInPlace, renameFolderInPlace } from "src/logic/file-processes";
 import ProjectBrowserPlugin from "src/main";
+import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
 
 ////////
 ////////
@@ -19,8 +20,11 @@ export function registerFolderContextMenu(plugin: ProjectBrowserPlugin, folderBt
         menu.addItem((item) =>
             item.setTitle("Rename folder")
                 .onClick(() => {
-                    console.log('el', folderBtnEl);
-                    renameFileOrFolderInPlace(folder, folderBtnEl)
+                    // renameFileOrFolderInPlace(folder, folderBtnEl)
+                    new RenameFolderModal({
+                        plugin,
+                        folder,
+                    }).showModal()
                 })
         );
         menu.addItem((item) =>
