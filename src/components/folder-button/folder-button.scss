@@ -26,5 +26,11 @@
 }
 
 .ddc_pb_hidden-folder {
-    display: none;
+    // display: none;
+    outline: solid 3px var(--interactive-hover);
+    outline-offset: -2px;
+    outline-style: dashed;
+    box-shadow: none !important;
+    color: var(--text-muted);
+    opacity: 0.3;
 }
