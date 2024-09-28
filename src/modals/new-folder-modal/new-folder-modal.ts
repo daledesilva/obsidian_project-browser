@@ -4,7 +4,7 @@ import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
 import { createFolder, createProject } from "src/utils/file-manipulation";
-import { folderPathSanitize } from "src/utils/string-processes";
+import { folderPathSanitize, sanitizeFileFolderName } from "src/utils/string-processes";
 
 /////////
 /////////
@@ -17,7 +17,7 @@ interface NewFolderModalProps {
 export class NewFolderModal extends Modal {
     plugin: ProjectBrowserPlugin;
     baseFolder: TFolder;
-    folderName: string;
+    name: string;
     resolveModal: (file: TFolder) => void;
 	rejectModal: (reason: string) => void;
 
@@ -48,17 +48,18 @@ export class NewFolderModal extends Modal {
             .setClass('project-browser_setting')
             .setName('Folder name')
             .addText((text) => {
-                text.setValue(this.folderName);
+                text.setValue(this.name);
                 text.inputEl.addEventListener('blur', async (e) => {
-                    // const value = folderPathSanitize(text.getValue(), plugin.settings);
-                    // plugin.settings.folderNames.notes = value;
-                    this.folderName = text.getValue();
-                    // await plugin.saveSettings();
+                    this.name = sanitizeFileFolderName(text.getValue());
+					if(this.name.trim() ==='') this.name = 'Unnamed';
+					text.setValue(this.name);
                 });
-                text.inputEl.addEventListener('keydown', async (event) => {
+                text.inputEl.addEventListener('keyup', async (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
-                        this.folderName = text.getValue();
-						let folderPath = `${this.baseFolder.path}/${this.folderName}`;
+                        this.name = sanitizeFileFolderName(text.getValue());
+						if(this.name.trim() ==='') this.name = 'Unnamed';
+						text.setValue(this.name);
+						let folderPath = `${this.baseFolder.path}/${this.name}`;
 						const newFolder = await createFolder(this.plugin, folderPath);
 						this.resolveModal(newFolder);
 						this.close();
@@ -79,7 +80,7 @@ export class NewFolderModal extends Modal {
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Create folder');
 			confirmBtn.onClick( async () => {
-				let folderPath = `${this.baseFolder.path}/${this.folderName}`;
+				let folderPath = `${this.baseFolder.path}/${this.name}`;
 				const newFolder = await createFolder(this.plugin, folderPath);
 				this.resolveModal(newFolder);
 				this.close();

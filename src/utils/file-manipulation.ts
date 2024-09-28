@@ -2,7 +2,7 @@
 // import ProjectCardsPlugin from "src/main";
 
 import { App, DataWriteOptions, FileManager, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
-import { folderPathSanitize, parseFilepath, sanitizeFileName } from "./string-processes";
+import { folderPathSanitize, parseFilepath, sanitizeFileFolderName } from "./string-processes";
 import { setFileState } from "src/logic/frontmatter-processes";
 import ProjectBrowserPlugin from "src/main";
 
@@ -62,7 +62,7 @@ export async function createFolder(plugin: ProjectBrowserPlugin, folderPath: str
 
 export async function renameAbstractFile(abstractFile: TAbstractFile, newName: string | null): Promise<string|null> {
     if(!newName) return null;
-    const safeFilename = folderPathSanitize(newName);
+    const safeFilename = sanitizeFileFolderName(newName);
     if(abstractFile instanceof TFile) {
         return await renameTFile(abstractFile, safeFilename);
     } if(abstractFile instanceof TFolder) {
@@ -124,7 +124,7 @@ async function createFolders(vault: Vault, path: string): Promise<TFolder> {
 }
 
 async function createDefaultMarkdownFile(vault: Vault, folder: TFolder, title: string): Promise<TFile> {
-    let filename = sanitizeFileName(title);
+    let filename = sanitizeFileFolderName(title);
     // filename = unclashFileName(filename);
 
     let content = '';//getDefaultMdFileContent();

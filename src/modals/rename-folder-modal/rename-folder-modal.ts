@@ -4,7 +4,7 @@ import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
 import { createFolder, createProject, renameTFile, renameTFolder } from "src/utils/file-manipulation";
-import { folderPathSanitize } from "src/utils/string-processes";
+import { folderPathSanitize, sanitizeFileFolderName } from "src/utils/string-processes";
 
 /////////
 /////////
@@ -50,12 +50,15 @@ export class RenameFolderModal extends Modal {
             .addText((text) => {
                 text.setValue(this.name);
                 text.inputEl.addEventListener('blur', async (e) => {
-                    this.name = folderPathSanitize(text.getValue());
-					text.inputEl.value = this.name;
+					this.name = sanitizeFileFolderName(text.getValue());
+					if(this.name.trim() ==='') this.name = 'Unnamed';
+					text.setValue(this.name);
                 });
                 text.inputEl.addEventListener('keyup', async (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
-						this.name = folderPathSanitize(text.getValue());
+						this.name = sanitizeFileFolderName(text.getValue());
+						if(this.name.trim() ==='') this.name = 'Unnamed';
+						text.setValue(this.name);
                         renameTFolder(this.folder, this.name);	// TODO: If this fails, the modal should report a fail
 						this.resolveModal(this.folder);
 						this.close();

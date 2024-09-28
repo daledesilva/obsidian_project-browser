@@ -4,6 +4,7 @@ import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
 import { createProject } from "src/utils/file-manipulation";
+import { sanitizeFileFolderName } from "src/utils/string-processes";
 
 /////////
 /////////
@@ -16,7 +17,7 @@ interface NewProjectModalProps {
 export class NewProjectModal extends Modal {
     plugin: ProjectBrowserPlugin;
     folder: TFolder;
-    projectName: string;
+    name: string;
     resolveModal: (file: TFile) => void;
 	rejectModal: (reason: string) => void;
 
@@ -48,16 +49,17 @@ export class NewProjectModal extends Modal {
             .setClass('project-browser_setting')
             .setName('Project name')
             .addText((text) => {
-                text.setValue(this.projectName);
+                text.setValue(this.name);
                 text.inputEl.addEventListener('blur', async (e) => {
-                    // const value = folderPathSanitize(text.getValue(), plugin.settings);
-                    // plugin.settings.folderNames.notes = value;
-                    this.projectName = text.getValue();
-                    // await plugin.saveSettings();
+                    this.name = sanitizeFileFolderName(text.getValue());
+					if(this.name.trim() ==='') this.name = 'Unnamed';
+					text.setValue(this.name);
                 });
                 text.inputEl.addEventListener('keydown', (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
-                        this.projectName = text.getValue();
+                        this.name = sanitizeFileFolderName(text.getValue());
+						if(this.name.trim() ==='') this.name = 'Unnamed';
+						text.setValue(this.name);
                         this.initCreateProject();
                     }
                 });
@@ -89,7 +91,7 @@ export class NewProjectModal extends Modal {
     ////////
 
     private async initCreateProject() {
-        const file = await createProject(this.folder, this.projectName)
+        const file = await createProject(this.folder, this.name)
         this.resolveModal(file);
         this.close();
     }

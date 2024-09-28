@@ -30,7 +30,7 @@ let reservedRe = /^\.+$/;
 let windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 let windowsTrailingRe = /[\. ]+$/;
 
-export function sanitizeFileName(name: string) {
+export function sanitizeFileFolderName(name: string) {
 	return name
 		.replace(illegalRe, '')
 		.replace(controlRe, '')
@@ -43,15 +43,14 @@ export function sanitizeFileName(name: string) {
  * Removes characters from a folder that cannot be used.
  */
 // TODO: UNTESTED
-export function folderPathSanitize(str: string) {
+export function folderPathSanitize(str: string): string {
 	let pathStr = str;
 	let pathArr;
 	pathArr = pathStr.split('/');
 	for(let j=0; j<pathArr.length; j++){
-		pathArr[j] = sanitizeFileName(pathArr[j]);
+		pathArr[j] = sanitizeFileFolderName(pathArr[j]);
 	}
 	pathStr = pathArr.join('/');
-	if(pathStr === '') pathStr = 'Unknown';		// TODO: This needs better handling
 	return pathStr;
 }
 
