@@ -36,6 +36,7 @@
 		"classnames": "^2.5.1",
 		"esbuild-plugin-copy": "^2.0.1",
 		"esbuild-sass-plugin": "^2.4.4",
+		"jotai": "^2.10.0",
 		"lucide-react": "^0.358.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

@@ -10,6 +10,7 @@ import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewStat
 import { v4 as uuidv4 } from 'uuid';
 import { PluginContext } from 'src/utils/plugin-context';
 import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
+import { atom, useSetAtom } from 'jotai';
 
 //////////
 //////////
@@ -33,6 +34,7 @@ export const CardBrowserContext = React.createContext<{
 export interface CardBrowserHandlers {
     rerender: Function,
 }
+// export const cardBrowserHandlers = atom<CardBrowserHandlers>()
 
 interface CardBrowserProps {
     path: string,
@@ -51,12 +53,13 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const plugin = React.useContext(PluginContext);
     const browserRef = React.useRef(null);
 
+    // const setCardBrowserHandlers = useSetAtom(cardBrowserHandlers);
+
     // const [files, setFiles] = useState
     const v = props.plugin.app.vault;
     // const [path, setPath] = React.useState(props.path);
     const initialFolder = v.getFolderByPath(state.path) || v.getRoot(); // TODO: Check this is valid?
-    // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
-    const sectionsOfItems = getSortedItemsInFolder(props.plugin, initialFolder);
+    let sectionsOfItems = getSortedItemsInFolder(props.plugin, initialFolder);
     
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
 

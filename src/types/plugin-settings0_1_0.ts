@@ -9,11 +9,11 @@ export enum FolderViewMode_0_1_0 {
 	Small = 'Small',
 }
 
-export interface StateSettings_0_1_0 {
+export interface PluginStateSettings_0_1_0 {
 	name: string,
 	defaultView: StateViewMode_0_1_0,
 }
-export interface FolderSettings {
+export interface PluginFolderSettings {
 	defaultView: FolderViewMode_0_1_0,
 }
 
@@ -35,12 +35,12 @@ export interface PluginSettings_0_1_0 {
 		launchFolder: string,
 	}
 	showStateMenu: boolean,
-	folders: FolderSettings,
+	folders: PluginFolderSettings,
 	states: {
-		visible: StateSettings_0_1_0[],
-		hidden: StateSettings_0_1_0[],
+		visible: PluginStateSettings_0_1_0[],
+		hidden: PluginStateSettings_0_1_0[],
 	},
-	stateless: StateSettings_0_1_0,
+	stateless: PluginStateSettings_0_1_0,
 }
 
 /////////////

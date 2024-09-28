@@ -95,7 +95,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 				try {
 					handler()
 				} catch(e) {
-					// TODO: This is never called because the functions seem to still fire without error even though view no longer exists
+					// TODO: This is never called because the functions seem to still fire without error even when a view no longer exists
 					this.removeFileDependant(key)
 				}
 			})

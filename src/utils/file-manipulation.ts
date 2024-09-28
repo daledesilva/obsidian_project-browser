@@ -5,6 +5,8 @@ import { App, DataWriteOptions, FileManager, TAbstractFile, TFile, TFolder, Vaul
 import { folderPathSanitize, parseFilepath, sanitizeFileFolderName } from "./string-processes";
 import { setFileState } from "src/logic/frontmatter-processes";
 import ProjectBrowserPlugin from "src/main";
+import { DEFAULT_FOLDER_SETTINGS_0_1_2, FolderSettings } from "src/types/folder-settings0_1_2";
+import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 
 // //////////
 // //////////
@@ -165,67 +167,65 @@ async function createNewMarkdownFile(vault: Vault, folder: TFolder, filename: st
 }
 
 
-async function createFolderSettingsFile(vault: Vault, folder: TFolder) : Promise<TFile | null> {
-    let file: TFile | null = null;
-    const filename = `${folder.path}/folder-settings.pbs`;
-    const defaultSettings = {
-        _description: `Obsidian Project Browser folder settings`
-    }
+export async function getFolderSettings(vault: Vault, folder: TFolder) : Promise<FolderSettings> {
+    let settingsFile: TFile | null = null;
+    let folderSettings: FolderSettings = JSON.parse(JSON.stringify(DEFAULT_FOLDER_SETTINGS_0_1_2));
+    const filename = `${folder.path}/${FOLDER_SETTINGS_FILENAME}`;
 
     try {
-        file = vault.getFileByPath(filename);
-    } catch (e) {
-        console.log(`Error fetching folder settings file`, e);
-    }
+        settingsFile = vault.getFileByPath(filename);
+    } catch (e) {}
 
-    if(!file) {
+    if(settingsFile) {
         try {
-            file = await vault.create(filename, JSON.stringify(defaultSettings, null, 2));
+            folderSettings = {
+                ...folderSettings,
+                ...JSON.parse( await vault.read(settingsFile) )
+            };
+        } catch(e) {
+            console.log(`Error reading folder settings`, e);
+            console.log(`Creating empty settings`);
+        }
+    }
+	
+	return folderSettings;
+}
+
+export async function saveFolderSettings(vault: Vault, folder: TFolder, settings: FolderSettings) {
+    let settingsFile: TFile | null = null;
+    const filename = `${folder.path}/${FOLDER_SETTINGS_FILENAME}`;
+
+    try {
+        settingsFile = vault.getFileByPath(filename);
+    } catch (e) {}
+
+    if(settingsFile) {
+        try {
+            await vault.modify(settingsFile, JSON.stringify(settings, null, 2) );
+        } catch(e) {
+            console.log(`Error writing to folder settings file`, e);
+        }
+
+    } else {
+        try {
+            await vault.create(filename, JSON.stringify(settings, null, 2));
         } catch(e) {
             console.log(`Error creating folder settings file`, e);
         }
     }
-	
-	return file;
 }
 
 
 export async function hideFolder(plugin: ProjectBrowserPlugin, folder: TFolder): Promise<void> {
-    const v = plugin.app.vault;
-
-    const settingsFile = await createFolderSettingsFile(v, folder);
-    if(!settingsFile) return;
-
-    let folderSettings;
-    try {
-        folderSettings = JSON.parse( await v.read(settingsFile) );
-    } catch(e) {
-        console.log(`Error reading folder settings`, e);
-        console.log(`Creating empty settings`);
-        folderSettings = {};
-    }
-
-    folderSettings.hidden = true;
-
-    await v.modify(settingsFile, JSON.stringify(folderSettings, null, 2) );
+    const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    folderSettings.isHidden = true;
+    saveFolderSettings(plugin.app.vault, folder, folderSettings);
 }
 
 export async function unhideFolder(plugin: ProjectBrowserPlugin, folder: TFolder): Promise<void> {
-    const v = plugin.app.vault;
-
-    const settingsFile = await createFolderSettingsFile(v, folder);
-    if(!settingsFile) return;
-
-    let folderSettings;
-    try {
-        folderSettings = JSON.parse( await v.read(settingsFile) );
-    } catch(e) {
-        console.log(`Error reading folder settings`, e);
-        console.log(`Creating empty settings`);
-        folderSettings = {};
-    }
-
-    delete folderSettings.hidden;
-
-    await v.modify(settingsFile, JSON.stringify(folderSettings, null, 2) );
+    const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    delete folderSettings.isHidden;
+    saveFolderSettings(plugin.app.vault, folder, folderSettings);
 }
+
+

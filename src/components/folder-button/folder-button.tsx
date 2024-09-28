@@ -6,6 +6,8 @@ import { getProjectExcerpt, isProjectFolder } from 'src/logic/folder-processes';
 import ProjectBrowserPlugin from 'src/main';
 import { PluginContext } from 'src/utils/plugin-context';
 import { CardBrowserContext } from '../card-browser/card-browser';
+import { getFolderSettings } from 'src/utils/file-manipulation';
+import classNames from 'classnames';
 
 /////////
 /////////
@@ -21,22 +23,38 @@ export const FolderButton = (props: FolderButtonProps) => {
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const buttonRef = React.useRef(null);
 
-    const name = props.folder.name;
+    const [isHidden, setIsHidden] = React.useState(true);
     const [excerpt, setExcerpt] = React.useState<null|string>('');
+
+    const name = props.folder.name;
 
     React.useEffect( () => {
         if(!plugin) return;
-        if(buttonRef.current) registerFolderContextMenu(plugin, buttonRef.current, props.folder);
+        if(buttonRef.current) registerFolderContextMenu({
+            plugin,
+            folderBtnEl: buttonRef.current,
+            folder: props.folder,
+            onFolderChange: () => {
+                // Slight delay so that settings changes get picked up
+                setTimeout( async () => {
+                    applyFolderSettings()
+                }, 200)
+            }
+        });
+        applyFolderSettings();
     }, [])
     
     return <>
         <button
             ref = {buttonRef}
-            className = 'project-browser_folder-button'
+            className = {classNames([
+                'ddc_pb_folder-button',
+                isHidden && 'ddc_pb_hidden-folder',
+            ])}
             onClick = { () => {
                 cardBrowserContext.openFolder(props.folder)
             }}
-        >
+            >
             {name}
         </button>
     </>
@@ -51,6 +69,15 @@ export const FolderButton = (props: FolderButtonProps) => {
         // } else {
         //     // It's a category folder, so no excerpt yet
         // }
+    }
+
+    async function applyFolderSettings() {
+        const settings = await getFolderSettings(v, props.folder);
+        if(settings.isHidden) {
+            setIsHidden(true);
+        } else {
+            setIsHidden(false);
+        }
     }
 
 }

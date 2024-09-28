@@ -3,7 +3,7 @@ import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
-import { StateSettings_0_0_5, StateViewMode_0_0_5 } from "src/types/plugin-settings0_0_5";
+import { PluginStateSettings_0_0_5, StateViewMode_0_0_5 } from "src/types/plugin-settings0_0_5";
 import { createProject } from "src/utils/file-manipulation";
 
 /////////
@@ -11,19 +11,19 @@ import { createProject } from "src/utils/file-manipulation";
 
 interface EditStateModalProps {
     plugin: ProjectBrowserPlugin,
-	stateSettings: StateSettings_0_0_5,
-	onSuccess: (modifiedStateSettings: StateSettings_0_0_5) => {},
+	stateSettings: PluginStateSettings_0_0_5,
+	onSuccess: (modifiedStateSettings: PluginStateSettings_0_0_5) => {},
 	onReject?: (reason: string) => {},
 }
 
 export class EditStateModal extends Modal {
     plugin: ProjectBrowserPlugin;
-	onSuccess: (modifiedStateSettings: StateSettings_0_0_5) => {};
+	onSuccess: (modifiedStateSettings: PluginStateSettings_0_0_5) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
-    resolveModal: (modifiedStateSettings: StateSettings_0_0_5) => void;
+    resolveModal: (modifiedStateSettings: PluginStateSettings_0_0_5) => void;
 	rejectModal: (reason: string) => void;
-	state: StateSettings_0_0_5;
+	state: PluginStateSettings_0_0_5;
 
 	constructor(props: EditStateModalProps) {
 		super(props.plugin.app);
@@ -36,7 +36,7 @@ export class EditStateModal extends Modal {
     /**
 	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<StateSettings_0_0_5 | string> {
+	public showModal(): Promise<PluginStateSettings_0_0_5 | string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;

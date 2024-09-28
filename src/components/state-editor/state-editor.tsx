@@ -7,7 +7,7 @@ import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
 import { Cog, Ellipsis, GripVertical, Plus, Settings, Trash, X } from 'lucide-react';
 import classNames from 'classnames';
 import { Setting } from 'obsidian';
-import { StateSettings_0_0_5, StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
+import { PluginStateSettings_0_0_5, StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
 import { EditStateModal } from 'src/modals/edit-state-modal/edit-state-modal';
 
 //////////
@@ -245,10 +245,10 @@ export const StateEditor = (props: StateEditorProps) => {
 
 interface StateItem extends ItemInterface {
     id: string,
-    stateSettings: StateSettings_0_0_5
+    stateSettings: PluginStateSettings_0_0_5
 }
 
-function convertToStateItems(stateSettings: StateSettings_0_0_5[]): StateItem[] {
+function convertToStateItems(stateSettings: PluginStateSettings_0_0_5[]): StateItem[] {
     const stateItems: StateItem[] = [];
     stateSettings.forEach( (thisStateSettings) => {
         stateItems.push({
@@ -259,8 +259,8 @@ function convertToStateItems(stateSettings: StateSettings_0_0_5[]): StateItem[] 
     return stateItems;
 }
 
-function convertToStates(stateItems: StateItem[]): StateSettings_0_0_5[] {
-    const states: StateSettings_0_0_5[] = [];
+function convertToStates(stateItems: StateItem[]): PluginStateSettings_0_0_5[] {
+    const states: PluginStateSettings_0_0_5[] = [];
     stateItems.forEach( (stateItem) => {
         states.push(stateItem.stateSettings)
     })

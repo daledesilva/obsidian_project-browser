@@ -1,4 +1,4 @@
-.project-browser_folder-button {
+.ddc_pb_folder-button {
     // width: 20em;
     min-width: 6em;
     border-radius: 3em;
@@ -23,4 +23,8 @@
         }
     }
     
+}
+
+.ddc_pb_hidden-folder {
+    display: none;
 }

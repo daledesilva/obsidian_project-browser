@@ -3,7 +3,7 @@ import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
-import { StateSettings_0_0_5, StateViewMode_0_0_5 } from "src/types/plugin-settings0_0_5";
+import { PluginStateSettings_0_0_5, StateViewMode_0_0_5 } from "src/types/plugin-settings0_0_5";
 import { createProject } from "src/utils/file-manipulation";
 
 /////////
@@ -12,19 +12,19 @@ import { createProject } from "src/utils/file-manipulation";
 interface NewStateModalProps {
     plugin: ProjectBrowserPlugin,
 	title?: string,
-	onSuccess: (newState: StateSettings_0_0_5) => {},
+	onSuccess: (newState: PluginStateSettings_0_0_5) => {},
 	onReject?: (reason: string) => {},
 }
 
 export class NewStateModal extends Modal {
     plugin: ProjectBrowserPlugin;
 	title: string;
-	onSuccess: (newState: StateSettings_0_0_5) => {};
+	onSuccess: (newState: PluginStateSettings_0_0_5) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
-    resolveModal: (state: StateSettings_0_0_5) => void;
+    resolveModal: (state: PluginStateSettings_0_0_5) => void;
 	rejectModal: (reason: string) => void;
-	state: StateSettings_0_0_5 = {
+	state: PluginStateSettings_0_0_5 = {
 		name: '',
 		defaultView: StateViewMode_0_0_5.DetailedCards
 	}
@@ -40,7 +40,7 @@ export class NewStateModal extends Modal {
     /**
 	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<StateSettings_0_0_5 | string> {
+	public showModal(): Promise<PluginStateSettings_0_0_5 | string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;
