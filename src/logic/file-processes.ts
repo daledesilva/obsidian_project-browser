@@ -100,48 +100,30 @@ export function deleteFolderWithConfirmation(plugin: ProjectBrowserPlugin, folde
 }
 
 export function renameFileOrFolderInPlace(abstractFile: TAbstractFile, origEl: HTMLElement) {
-    origEl.contentEditable = 'true';
-    // try {
-    //     (origEl as HTMLButtonElement).disabled = true;
-    //     (origEl as HTMLButtonElement).addEventListener('click', (e) => {
-    //         e.preventDefault();
-    //     });
-    //     (origEl as HTMLButtonElement).addEventListener('mousedown', (e) => {
-    //         e.preventDefault();
-    //     });
-    //     (origEl as HTMLButtonElement).addEventListener('mouseup', (e) => {
-    //         e.preventDefault();
-    //     });
-    // } catch(e) {}
-    const selection = window.getSelection();
-    if(!selection) return;
-    
     const origName = abstractFile.name;
-    selection.selectAllChildren(origEl);
+    const origDisplay = origEl.style.display;
 
-    // const inputElement = document.createElement('input');
-    // inputElement.type = 'text';
-    // inputElement.value = origEl.textContent || 'unnamed';
-    // inputElement.classList.add(...origEl.classList);
+    const inputElement = document.createElement('input');
+    inputElement.type = 'text';
+    inputElement.value = origEl.textContent || 'unnamed';
+    inputElement.classList.add(...origEl.classList);
 
-    // origEl.parentNode?.replaceChild(inputElement, origEl);
-    // inputElement.focus();
-    // inputElement.select();
+    origEl.parentNode?.insertBefore(inputElement, origEl);
+    inputElement.focus();
+    inputElement.select();
+    origEl.style.display = 'none';
 
-
-
-    const detectEnterAndSave = (e: KeyboardEvent) => {
+    const detectExitKey = (e: KeyboardEvent) => {
         if(e.key === 'Enter') {
-            new Notice('Enter key pressed');
             saveAbstractFile();
             endRenamingMode();
-        } else if(e.key === 'Esc') {
+        } else if(e.key === 'Escape') {
             endRenamingMode();
         }
     }
 
     const saveAbstractFile = async () => {
-        const savedFilename = await renameAbstractFile(abstractFile, origEl.textContent);
+        const savedFilename = await renameAbstractFile(abstractFile, inputElement.value);
         if(savedFilename) {
             new Notice(`Renamed ${origName} to ${savedFilename}`);
         } else {
@@ -150,9 +132,10 @@ export function renameFileOrFolderInPlace(abstractFile: TAbstractFile, origEl: H
     }
 
     const endRenamingMode = async () => {
-        origEl.contentEditable = 'false';
-        origEl.removeEventListener('keypress', detectEnterAndSave);
+        inputElement.parentNode?.removeChild(inputElement);
+        origEl.style.display = origDisplay;
     }
 
-    origEl.addEventListener('keypress', detectEnterAndSave)
+    inputElement.addEventListener('keyup', detectExitKey);
+    inputElement.addEventListener('blur', endRenamingMode);
 }

@@ -59,14 +59,14 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
         })
         menu.addSeparator();
         menu.addItem((item) =>
-            item.setTitle("Rename note")
+            item.setTitle("Rename")
             .onClick(() => {
                 renameFileOrFolderInPlace(props.file, props.noteEl);
                 props.onFileChange();
             })
         );
         menu.addItem((item) =>
-            item.setTitle("Delete note")
+            item.setTitle("Delete")
             .onClick(() => {
                 deleteFileWithConfirmation(props.plugin, props.file);
                 props.onFileChange();
