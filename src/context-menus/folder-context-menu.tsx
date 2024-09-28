@@ -18,6 +18,13 @@ export function registerFolderContextMenu(plugin: ProjectBrowserPlugin, folderBt
         
         const menu = new Menu();
         menu.addItem((item) =>
+            item.setTitle("Set as launch folder")
+                .onClick(() => {
+                    plugin.settings.access.launchFolder = folder.path;
+                })
+        );
+        menu.addSeparator();
+        menu.addItem((item) =>
             item.setTitle("Rename folder")
                 .onClick(() => {
                     // renameFileOrFolderInPlace(folder, folderBtnEl)

@@ -57,7 +57,7 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 		replaceNewTab: true,
 		enableRibbonIcon: true,
 		enableCommand: true,
-		launchFolder: '',
+		launchFolder: '/',
 	},
 	showStateMenu: true,
 	folders: {

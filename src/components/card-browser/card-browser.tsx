@@ -54,9 +54,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
     // const [files, setFiles] = useState
     const v = props.plugin.app.vault;
     // const [path, setPath] = React.useState(props.path);
-    const folder = v.getAbstractFileByPath(state.path) as TFolder; // TODO: Check this is valid?
+    const initialFolder = v.getFolderByPath(state.path) || v.getRoot(); // TODO: Check this is valid?
     // const [sectionsOfItems, setSectionsOfItems] = React.useState( getSortedItemsInFolder(props.plugin, folder) );
-    const sectionsOfItems = getSortedItemsInFolder(props.plugin, folder);
+    const sectionsOfItems = getSortedItemsInFolder(props.plugin, initialFolder);
     
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
 
@@ -73,11 +73,19 @@ export const CardBrowser = (props: CardBrowserProps) => {
         // Must removeDependant from elsewhere?
         // return;
 
-        if(browserRef.current) {
-            registerCardBrowserContextMenu(plugin, browserRef.current, folder, {openFile});
+        if(plugin && browserRef.current) {
+            registerCardBrowserContextMenu(plugin, browserRef.current, initialFolder, {
+                openFile,
+                getCurFolder,
+            });
         }
+        
     },[])
 
+    const getCurFolder = (): TFolder => {
+        const curFolder = v.getFolderByPath(props.getViewStates().state.path) || v.getRoot();
+        return curFolder;
+    }
 
     function rerender() {
         setRefreshId(uuidv4());
@@ -85,7 +93,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     
     return (
         <CardBrowserContext.Provider value={{
-            folder,
+            folder: initialFolder,
             lastTouchedFilePath,
             rememberLastTouchedFile,
             openFile,
@@ -96,7 +104,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 className = 'project-browser_browser'
             >
                 <BackButtonAndPath
-                    folder = {folder}
+                    folder = {initialFolder}
                     onBackClick = {openParentFolder}
                     onFolderClick = { (folder: TFolder) => openFolder(folder)}
                 />
@@ -117,7 +125,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 </div>
             </div>
             <CurrentFolderMenu
-                folder = {folder}
+                folder = {initialFolder}
                 openFile = {openFile}
             />
         </CardBrowserContext.Provider>
@@ -157,7 +165,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     }
 
     function openParentFolder() {
-        const nextFolder = folder.parent;
+        const nextFolder = initialFolder.parent;
         if(!nextFolder) return;
         openFolder(nextFolder);
     }

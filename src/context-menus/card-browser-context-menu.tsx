@@ -1,4 +1,5 @@
 import { Menu, TFolder } from "obsidian";
+import { EventHandler } from "react";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
 import ProjectBrowserPlugin from "src/main";
 import { NewFolderModal } from "src/modals/new-folder-modal/new-folder-modal";
@@ -7,21 +8,32 @@ import { createProject } from "src/utils/file-manipulation";
 ////////
 ////////
 
-export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, commands: {openFile: Function}) {
+export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, commands: {
+    openFile: Function,
+    getCurFolder: () => TFolder,
+}) {
+    el.addEventListener('contextmenu', contextMenuHandler);
     
-    el.addEventListener('contextmenu', function(event) {
+    function contextMenuHandler(e) {
         
         // Prevent container divs opening their context menus
-        event.stopPropagation();
+        e.stopPropagation();
 
         // Close other menus (Only works on iOS for some reason, but also only needed there)
         document.body.click();
 
         const menu = new Menu();
         menu.addItem((item) =>
+            item.setTitle("Set as launch folder")
+                .onClick(() => {
+                    plugin.settings.access.launchFolder = commands.getCurFolder().path;
+                })
+        );
+        menu.addSeparator();
+        menu.addItem((item) =>
             item.setTitle("New note")
                 .onClick(async () => {
-                    const newFile = await createProject(baseFolder, 'Untitled');
+                    const newFile = await createProject(commands.getCurFolder(), 'Untitled');
                     setTimeout( () => commands.openFile(newFile), 500);
                 })
         );
@@ -30,12 +42,12 @@ export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el:
                 .onClick(() => {
                     new NewFolderModal({
                         plugin,
-                        baseFolder,
+                        baseFolder: commands.getCurFolder(),
                     }).showModal()
                 })
         );
-        menu.showAtMouseEvent(event);
+        menu.showAtMouseEvent(e);
 
-    }, false);
+    }
 
 }
