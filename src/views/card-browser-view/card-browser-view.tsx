@@ -1,5 +1,5 @@
 import ProjectBrowserPlugin from "src/main";
-import { FileView, ItemView, MarkdownView, TFile, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { FileView, ItemView, MarkdownView, Notice, TFile, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser, { CardBrowserHandlers } from "src/components/card-browser/card-browser";
@@ -15,7 +15,7 @@ import { PLUGIN_ICON } from "src/constants";
 export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 
 export interface CardBrowserViewState {
-    id: string, // to allow for forcing a refresh
+    id?: string, // to allow for forcing a refresh
     path: string;
 }
 export type PartialCardBrowserViewState = Partial<CardBrowserViewState>;
@@ -29,8 +29,13 @@ export type PartialCardBrowserViewEState = Partial<CardBrowserViewEState>;
 
 
 export function setCardBrowserViewStateDefaults(plugin: ProjectBrowserPlugin): CardBrowserViewState {
+    let launchPath = plugin.settings.access.launchFolder
+    if(!plugin.app.vault.getFolderByPath(launchPath)) {
+        new Notice('Launch folder not found. Launching in root of vault instead. Update your launch folder in the Project Browser plugin settings.', 10000)
+        launchPath = plugin.app.vault.getRoot().path;
+    }
     return {
-        path: plugin.app.vault.getRoot().path,
+        path: launchPath,
     }
 }
 

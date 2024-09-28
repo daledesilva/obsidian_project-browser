@@ -32,6 +32,7 @@ export interface PluginSettings_0_1_0 {
 		replaceNewTab: boolean,
 		enableRibbonIcon: boolean,
 		enableCommand: boolean,
+		launchFolder: string,
 	}
 	showStateMenu: boolean,
 	folders: FolderSettings,
@@ -56,6 +57,7 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 		replaceNewTab: true,
 		enableRibbonIcon: true,
 		enableCommand: true,
+		launchFolder: '',
 	},
 	showStateMenu: true,
 	folders: {

@@ -4,6 +4,7 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import InkPlugin from "src/main";
 import MyPlugin from "src/main";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
+import { folderPathSanitize } from 'src/utils/string-processes';
 
 /////////
 /////////
@@ -126,6 +127,20 @@ function insertAccessSettings(containerEl: HTMLElement, plugin: InkPlugin, refre
 				refresh();
 			});
 		});
+
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Launch folder')
+		.setDesc('Which folder should new Project Browser tabs open in.')
+		.addText((text) => {
+			text.setValue(plugin.settings.access.launchFolder);
+			text.inputEl.addEventListener( 'blur', (e) => {
+				const safeValue = folderPathSanitize(text.getValue());
+				text.setValue(safeValue);
+				plugin.settings.access.launchFolder = safeValue;
+				plugin.saveSettings();
+			})
+		})
 
 }
 
