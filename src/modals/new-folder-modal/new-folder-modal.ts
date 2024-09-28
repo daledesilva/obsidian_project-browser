@@ -3,7 +3,7 @@ import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
 import { singleOrPlural } from "src/logic/string-processes";
 import ProjectBrowserPlugin from "src/main";
 import MyPlugin from "src/main";
-import { createProject } from "src/utils/file-manipulation";
+import { createFolder, createProject } from "src/utils/file-manipulation";
 import { folderPathSanitize } from "src/utils/string-processes";
 
 /////////
@@ -55,10 +55,13 @@ export class NewFolderModal extends Modal {
                     this.folderName = text.getValue();
                     // await plugin.saveSettings();
                 });
-                text.inputEl.addEventListener('keydown', (event) => {
+                text.inputEl.addEventListener('keydown', async (event) => {
                     if ((event as KeyboardEvent).key === "Enter") {
                         this.folderName = text.getValue();
-                        this.createFolder();
+						let folderPath = `${this.baseFolder.path}/${this.folderName}`;
+						const newFolder = await createFolder(this.plugin, folderPath);
+						this.resolveModal(newFolder);
+						this.close();
                     }
                 });
             });
@@ -75,7 +78,12 @@ export class NewFolderModal extends Modal {
 			confirmBtn.setClass('project-browser_button');
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Create folder');
-			confirmBtn.onClick( () => this.createFolder() )
+			confirmBtn.onClick( async () => {
+				let folderPath = `${this.baseFolder.path}/${this.folderName}`;
+				const newFolder = await createFolder(this.plugin, folderPath);
+				this.resolveModal(newFolder);
+				this.close();
+			} )
 		})
 
 	}
@@ -86,14 +94,5 @@ export class NewFolderModal extends Modal {
 		contentEl.empty();
 	}
 
-    ////////
-
-    private async createFolder() {
-		let folderPath = `${this.baseFolder.path}/${this.folderName}`;
-		folderPath = folderPathSanitize(folderPath);
-		const folder = await this.plugin.app.vault.createFolder(folderPath);
-        this.resolveModal(folder);
-        this.close();
-    }
 }
 

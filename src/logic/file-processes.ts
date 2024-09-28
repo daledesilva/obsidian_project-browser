@@ -3,6 +3,7 @@ import ProjectBrowserPlugin from "src/main";
 import { getProjectExcerpt } from "./folder-processes";
 import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView } from "src/views/card-browser-view/card-browser-view";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
+import { renameAbstractFile } from "src/utils/file-manipulation";
 
 /////////
 /////////
@@ -96,4 +97,62 @@ export function deleteFolderWithConfirmation(plugin: ProjectBrowserPlugin, folde
             new Notice(`Deleted "${folder.name}"`);
         }
     }).open();
+}
+
+export function renameFileOrFolderInPlace(abstractFile: TAbstractFile, origEl: HTMLElement) {
+    origEl.contentEditable = 'true';
+    // try {
+    //     (origEl as HTMLButtonElement).disabled = true;
+    //     (origEl as HTMLButtonElement).addEventListener('click', (e) => {
+    //         e.preventDefault();
+    //     });
+    //     (origEl as HTMLButtonElement).addEventListener('mousedown', (e) => {
+    //         e.preventDefault();
+    //     });
+    //     (origEl as HTMLButtonElement).addEventListener('mouseup', (e) => {
+    //         e.preventDefault();
+    //     });
+    // } catch(e) {}
+    const selection = window.getSelection();
+    if(!selection) return;
+    
+    const origName = abstractFile.name;
+    selection.selectAllChildren(origEl);
+
+    // const inputElement = document.createElement('input');
+    // inputElement.type = 'text';
+    // inputElement.value = origEl.textContent || 'unnamed';
+    // inputElement.classList.add(...origEl.classList);
+
+    // origEl.parentNode?.replaceChild(inputElement, origEl);
+    // inputElement.focus();
+    // inputElement.select();
+
+
+
+    const detectEnterAndSave = (e: KeyboardEvent) => {
+        if(e.key === 'Enter') {
+            new Notice('Enter key pressed');
+            saveAbstractFile();
+            endRenamingMode();
+        } else if(e.key === 'Esc') {
+            endRenamingMode();
+        }
+    }
+
+    const saveAbstractFile = async () => {
+        const savedFilename = await renameAbstractFile(abstractFile, origEl.textContent);
+        if(savedFilename) {
+            new Notice(`Renamed ${origName} to ${savedFilename}`);
+        } else {
+            new Notice(`Couldn't rename file.`);
+        }
+    }
+
+    const endRenamingMode = async () => {
+        origEl.contentEditable = 'false';
+        origEl.removeEventListener('keypress', detectEnterAndSave);
+    }
+
+    origEl.addEventListener('keypress', detectEnterAndSave)
 }

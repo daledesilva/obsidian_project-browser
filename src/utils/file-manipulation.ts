@@ -1,8 +1,8 @@
 // import { FOLDER_NAME } from "src/constants";
 // import ProjectCardsPlugin from "src/main";
 
-import { App, DataWriteOptions, FileManager, TFile, TFolder, Vault, normalizePath } from "obsidian";
-import { sanitizeFileName } from "./string-processes";
+import { App, DataWriteOptions, FileManager, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
+import { folderPathSanitize, parseFilepath, sanitizeFileName } from "./string-processes";
 import { setFileState } from "src/logic/frontmatter-processes";
 import ProjectBrowserPlugin from "src/main";
 
@@ -51,6 +51,53 @@ export async function createProject(parentFolder: TFolder, projectName: string, 
     }
 
     return primaryProjectFile;
+}
+
+
+export async function createFolder(plugin: ProjectBrowserPlugin, folderPath: string): Promise<TFolder> {
+    const safeFolderPath = folderPathSanitize(folderPath);
+    const folder = await plugin.app.vault.createFolder(safeFolderPath);
+    return folder
+}
+
+export async function renameAbstractFile(abstractFile: TAbstractFile, newName: string | null): Promise<string|null> {
+    if(!newName) return null;
+    const safeFilename = folderPathSanitize(newName);
+    if(abstractFile instanceof TFile) {
+        return await renameTFile(abstractFile, safeFilename);
+    } if(abstractFile instanceof TFolder) {
+        return await renameTFolder(abstractFile, safeFilename);
+    }
+    
+    console.log('Unknown AbstractFile Type:', abstractFile);
+    return null;
+}
+
+export async function renameTFile(file: TFile, safeName: string): Promise<string|null> {
+    const {ext} = parseFilepath(file.name);
+    try {
+        if(ext) {
+            const safeNameWithExt = `${safeName}.${ext}`;
+            file.vault.rename(file, safeNameWithExt);
+            return safeNameWithExt;
+        } else {
+            file.vault.rename(file, `${safeName}`);
+            return safeName;
+        }
+    } catch(e) {
+        console.log(e)
+        return null;
+    }
+}
+
+export async function renameTFolder(folder: TFolder, safeName: string): Promise<string|null> {
+    try {
+        folder.vault.rename(folder, `${safeName}`);
+        return safeName;
+    } catch(e) {
+        console.log(e)
+        return null;
+    }
 }
 
 

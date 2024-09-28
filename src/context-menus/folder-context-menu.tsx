@@ -1,13 +1,13 @@
 import { Menu, TFolder } from "obsidian";
-import { deleteFolderWithConfirmation } from "src/logic/file-processes";
+import { deleteFolderWithConfirmation, renameFileOrFolderInPlace, renameFolderInPlace } from "src/logic/file-processes";
 import ProjectBrowserPlugin from "src/main";
 
 ////////
 ////////
 
-export function registerFolderContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, folder: TFolder) {
+export function registerFolderContextMenu(plugin: ProjectBrowserPlugin, folderBtnEl: HTMLElement, folder: TFolder) {
     
-    el.addEventListener('contextmenu', function(event) {
+    folderBtnEl.addEventListener('contextmenu', function(event) {
 
         // Prevent container divs opening their context menus
         event.stopPropagation();
@@ -16,6 +16,13 @@ export function registerFolderContextMenu(plugin: ProjectBrowserPlugin, el: HTML
         document.body.click();
         
         const menu = new Menu();
+        menu.addItem((item) =>
+            item.setTitle("Rename folder")
+                .onClick(() => {
+                    console.log('el', folderBtnEl);
+                    renameFileOrFolderInPlace(folder, folderBtnEl)
+                })
+        );
         menu.addItem((item) =>
             item.setTitle("Delete folder")
                 .onClick(() => {

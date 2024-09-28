@@ -1,6 +1,6 @@
 import { Menu, Notice, TFile } from "obsidian";
 import * as React from "react";
-import { deleteFileWithConfirmation } from "src/logic/file-processes";
+import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic/file-processes";
 import { refreshFolderReference } from "src/logic/folder-processes";
 import { getFileState, setFileState } from "src/logic/frontmatter-processes";
 import ProjectBrowserPlugin from "src/main";
@@ -58,6 +58,13 @@ export function registerNoteContextMenu(props: registerNoteContextMenuProps) {
             });
         })
         menu.addSeparator();
+        menu.addItem((item) =>
+            item.setTitle("Rename note")
+            .onClick(() => {
+                renameFileOrFolderInPlace(props.file, props.noteEl);
+                props.onFileChange();
+            })
+        );
         menu.addItem((item) =>
             item.setTitle("Delete note")
             .onClick(() => {
