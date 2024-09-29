@@ -119,6 +119,9 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
             // }
 
         } else if(item instanceof TFile) {
+            // DOn't show Project Browser settings files
+            if(item.extension.toLowerCase() === 'pbs') return;
+
             const frontmatter = getFileFrontmatter(plugin, item);
             // if(frontmatter['tags']) {
             //     frontmatter['tags'].forEach( (tag) => {
