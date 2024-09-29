@@ -8,6 +8,8 @@ import { PluginContext } from "src/utils/plugin-context";
 import { CurrentFolderMenu } from "src/components/current-folder-menu/current-folder-menu";
 import { isEmpty } from "src/utils/misc";
 import { PLUGIN_ICON } from "src/constants";
+import { Provider as JotaiProvider } from 'jotai';
+import { deviceMemoryStore } from "src/logic/device-memory";
 
 //////////
 //////////
@@ -162,20 +164,22 @@ export class ProjectCardsView extends ItemView {
     renderView() {
         this.root.render(
             <PluginContext.Provider value={this.plugin}>
-                <CardBrowser
-                    plugin = {this.plugin}
-                    path = {this.state.path}
-                    setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
-                    rememberLastTouchedFilepath = {this.rememberLastTouchedFilepath}
-                    resetLastTouchedFilepath = {this.resetLastTouchedFilepath}
-                    getViewStates = {() => {
-                        return {
-                            eState: this.eState,
-                            state: this.state,
-                        }
-                    }}
-                    passBackHandlers = {this.setCardBrowserHandlers}
-                />
+                <JotaiProvider store={deviceMemoryStore}>
+                    <CardBrowser
+                        plugin = {this.plugin}
+                        path = {this.state.path}
+                        setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
+                        rememberLastTouchedFilepath = {this.rememberLastTouchedFilepath}
+                        resetLastTouchedFilepath = {this.resetLastTouchedFilepath}
+                        getViewStates = {() => {
+                            return {
+                                eState: this.eState,
+                                state: this.state,
+                            }
+                        }}
+                        passBackHandlers = {this.setCardBrowserHandlers}
+                    />
+                </JotaiProvider>
             </PluginContext.Provider>
         );
     }
