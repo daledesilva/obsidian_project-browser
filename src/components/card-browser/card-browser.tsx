@@ -104,7 +104,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         }}>
             <div
                 ref = {browserRef}
-                className = 'project-browser_browser'
+                className = 'ddc_pb_browser'
             >
                 <BackButtonAndPath
                     folder = {initialFolder}

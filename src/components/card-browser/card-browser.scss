@@ -1,4 +1,6 @@
-.project-browser_browser {
+.ddc_pb_browser {
+    min-height: 100%;
+
     --browser-inline-margin: 0.5em;
     --browser-block-start-margin: 0em;
     @media (min-width: 400px) {

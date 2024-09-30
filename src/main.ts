@@ -80,6 +80,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 	 */
 	addGlobalFileDependant(id: string, handler: Function) {
 		this.fileDependants[id] = handler;
+		console.log('added file dependant:', id);
 	}
 
 	removeFileDependant(id: string) {
@@ -93,10 +94,10 @@ export default class ProjectBrowserPlugin extends Plugin {
 		this.refreshFileDependantsTimeout = setTimeout(() => {
 			Object.entries(this.fileDependants).forEach( ([key, handler]) => {
 				try {
-					handler()
+					handler();
 				} catch(e) {
 					// TODO: This is never called because the functions seem to still fire without error even when a view no longer exists
-					this.removeFileDependant(key)
+					this.removeFileDependant(key);
 				}
 			})
 		}, 100)
