@@ -1,13 +1,13 @@
 import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
-import ProjectBrowserPlugin from "src/main";
-import { NewFolderModal } from "src/modals/new-folder-modal/new-folder-modal";
+import { getGlobals } from "src/logic/stores";
 import { createProject } from "src/utils/file-manipulation";
 
 ////////
 ////////
 
-export function registerStateSectionContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, state: string, commands: {openFile: Function}) {
+export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFolder, state: string, commands: {openFile: Function}) {
+    const {plugin} = getGlobals();
     
     el.addEventListener('contextmenu', function(event) {
 
@@ -22,7 +22,6 @@ export function registerStateSectionContextMenu(plugin: ProjectBrowserPlugin, el
             item.setTitle("New note")
                 .onClick(async () => {
                     const newFile = await createProject(baseFolder, 'Untitled', {
-                        plugin,
                         state,
                     });
                     // TODO: This delay should be set as a constant globally to guarantee it's longer than other delay of file appear

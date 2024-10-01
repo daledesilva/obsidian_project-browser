@@ -3,13 +3,11 @@ import { TFolder } from "obsidian";
 import * as React from "react";
 import { registerFolderContextMenu } from 'src/context-menus/folder-context-menu';
 import { getProjectExcerpt, isProjectFolder } from 'src/logic/folder-processes';
-import ProjectBrowserPlugin from 'src/main';
-import { PluginContext } from 'src/utils/plugin-context';
 import { CardBrowserContext } from '../card-browser/card-browser';
 import { getFolderSettings } from 'src/utils/file-manipulation';
 import classNames from 'classnames';
-import { getShowHiddenFolders, showHiddenFoldersAtom } from 'src/logic/device-memory';
 import { useAtom, useAtomValue } from 'jotai';
+import { getGlobals, showHiddenFoldersAtom } from 'src/logic/stores';
 
 /////////
 /////////
@@ -20,8 +18,8 @@ interface FolderButtonProps {
 }
 
 export const FolderButton = (props: FolderButtonProps) => {
+    const {plugin} = getGlobals();
     const v = props.folder.vault;
-    const plugin = React.useContext(PluginContext);
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const buttonRef = React.useRef(null);
 
@@ -34,7 +32,6 @@ export const FolderButton = (props: FolderButtonProps) => {
     React.useEffect( () => {
         if(!plugin) return;
         if(buttonRef.current) registerFolderContextMenu({
-            plugin,
             folderBtnEl: buttonRef.current,
             folder: props.folder,
             onFolderChange: () => {
@@ -68,7 +65,7 @@ export const FolderButton = (props: FolderButtonProps) => {
     ///////
     ///////
 
-    async function getExcerpt(plugin:ProjectBrowserPlugin,  folder:TFolder) {
+    async function getExcerpt(folder:TFolder) {
         // if(await isProjectFolder(plugin, folder)) {
         //     const excerpt = await getProjectExcerpt(plugin, folder);
         //     setExcerpt(excerpt);

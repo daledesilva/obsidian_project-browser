@@ -1,14 +1,15 @@
 import { Notice, TAbstractFile, TFile, TFolder, Vault } from "obsidian";
-import ProjectBrowserPlugin from "src/main";
 import { getProjectExcerpt } from "./folder-processes";
 import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView } from "src/views/card-browser-view/card-browser-view";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { renameAbstractFile } from "src/utils/file-manipulation";
+import { getGlobals } from "./stores";
 
 /////////
 /////////
 
-export const getExcerpt = async (plugin: ProjectBrowserPlugin, item: TAbstractFile): Promise<null|string> => {
+export const getExcerpt = async (item: TAbstractFile): Promise<null|string> => {
+    const {plugin} = getGlobals();
     const v = item.vault;
     let excerpt: null | string = null;
 
@@ -16,7 +17,7 @@ export const getExcerpt = async (plugin: ProjectBrowserPlugin, item: TAbstractFi
     // Otherwise do all below (createExcerpt)
 
     if(item instanceof TFile)           excerpt = await getFileExcerpt(item);
-    else if(item instanceof TFolder)    excerpt = await getProjectExcerpt(plugin, item)
+    else if(item instanceof TFolder)    excerpt = await getProjectExcerpt(item)
 
     return excerpt;
 }
@@ -55,7 +56,8 @@ export function simplifyWhiteSpace(text: string): string {
     return text.replace(lineBreakRegex, '. ');
 }
 
-export function getScrollOffset(plugin: ProjectBrowserPlugin): number {
+export function getScrollOffset(): number {
+    const {plugin} = getGlobals();
     const editor = plugin.app.workspace.activeEditor?.editor;
 
     if(!editor) return 0;
@@ -63,37 +65,41 @@ export function getScrollOffset(plugin: ProjectBrowserPlugin): number {
     return editor.getScrollInfo().top;
 }
 
-export function deleteFileImmediately(plugin: ProjectBrowserPlugin, file: TFile) {
+export function deleteFileImmediately(file: TFile) {
+    const {plugin} = getGlobals();
     file.vault.delete(file);
     plugin.refreshFileDependants();
 }
 
-export function deleteFolderImmediately(plugin: ProjectBrowserPlugin, folder: TFolder) {
+export function deleteFolderImmediately(folder: TFolder) {
+    const {plugin} = getGlobals();
     folder.vault.delete(folder, true);
     plugin.refreshFileDependants();
 }
 
-export function deleteFileWithConfirmation(plugin: ProjectBrowserPlugin, file: TFile) {
+export function deleteFileWithConfirmation(file: TFile) {
+    const {plugin} = getGlobals();
     new ConfirmationModal({
         plugin,
         title: 'Delete note?',
         message: `Are you sure you'd like to delete "${file.name}" ?`,
         confirmLabel: 'Delete note',
         confirmAction: async () => {
-            deleteFileImmediately(plugin, file);
+            deleteFileImmediately(file);
             new Notice(`Deleted "${file.name}"`);
         }
     }).open();
 }
 
-export function deleteFolderWithConfirmation(plugin: ProjectBrowserPlugin, folder: TFolder) {
+export function deleteFolderWithConfirmation(folder: TFolder) {
+    const {plugin} = getGlobals();
     new ConfirmationModal({
         plugin,
         title: 'Delete folder & contents?',
         message: `Are you sure you'd like to delete "${folder.name}" and it's contents?`,
         confirmLabel: 'Delete folder & contents',
         confirmAction: async () => {
-            deleteFolderImmediately(plugin, folder);
+            deleteFolderImmediately(folder);
             new Notice(`Deleted "${folder.name}"`);
         }
     }).open();

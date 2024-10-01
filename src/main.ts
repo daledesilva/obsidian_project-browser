@@ -6,9 +6,13 @@ import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon
 import { migrateOutdatedSettings } from './types/plugin-settings-migrations';
 import { showOnboardingNotices_maybe } from './notices/onboarding-notices';
 import { DEFAULT_SETTINGS_0_1_0, PluginSettings_0_1_0 } from './types/plugin-settings0_1_0';
+import { atom, createStore, useSetAtom } from 'jotai';
+import { error } from 'console';
+import { globalsAtom, globalsStore, setGlobals } from './logic/stores';
 
 /////////
 /////////
+
 export default class ProjectBrowserPlugin extends Plugin {
 	settings: PluginSettings_0_1_0;
 	refreshFileDependantsTimeout: NodeJS.Timer;
@@ -21,14 +25,18 @@ export default class ProjectBrowserPlugin extends Plugin {
 		
 		// this.app.emulateMobile(false);
 
-		registerCardBrowserView(this)
-		registerMarkdownViewMods(this)
+		setGlobals({
+			plugin: this,
+		})
 
-		if(this.settings.access.replaceNewTab)		loadCardBrowserOnNewTab(this);
-		if(this.settings.access.enableRibbonIcon)	registerOpenProjectBrowserRibbonIcon(this);
-		if(this.settings.access.enableCommand)		registerOpenProjectBrowserCommand(this);
+		registerCardBrowserView()
+		registerMarkdownViewMods()
 
-		registerSettingsTab(this);
+		if(this.settings.access.replaceNewTab)		loadCardBrowserOnNewTab();
+		if(this.settings.access.enableRibbonIcon)	registerOpenProjectBrowserRibbonIcon();
+		if(this.settings.access.enableCommand)		registerOpenProjectBrowserCommand();
+
+		registerSettingsTab();
 		
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
@@ -36,7 +44,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 		// 	console.log('click', evt);
 		// });
 
-		showOnboardingNotices_maybe(this);
+		showOnboardingNotices_maybe();
 
 		this.app.vault.on('create', () => this.refreshFileDependants())
 		this.app.vault.on('delete', () => this.refreshFileDependants())
@@ -80,7 +88,6 @@ export default class ProjectBrowserPlugin extends Plugin {
 	 */
 	addGlobalFileDependant(id: string, handler: Function) {
 		this.fileDependants[id] = handler;
-		console.log('added file dependant:', id);
 	}
 
 	removeFileDependant(id: string) {

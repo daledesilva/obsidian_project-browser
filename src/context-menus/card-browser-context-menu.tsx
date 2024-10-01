@@ -1,19 +1,19 @@
 import { useAtomValue } from "jotai";
 import { Menu, TFolder } from "obsidian";
 import { EventHandler } from "react";
-import { deviceMemoryStore, getShowHiddenFolders, hideHiddenFolders, unhideHiddenFolders } from "src/logic/device-memory";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
-import ProjectBrowserPlugin from "src/main";
+import { getGlobals, getShowHiddenFolders, hideHiddenFolders, unhideHiddenFolders } from "src/logic/stores";
 import { NewFolderModal } from "src/modals/new-folder-modal/new-folder-modal";
 import { createProject } from "src/utils/file-manipulation";
 
 ////////
 ////////
 
-export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el: HTMLElement, baseFolder: TFolder, commands: {
+export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFolder, commands: {
     openFile: Function,
     getCurFolder: () => TFolder,
 }) {
+    const {plugin} = getGlobals();
     el.addEventListener('contextmenu', contextMenuHandler);
     
     function contextMenuHandler(e) {
@@ -61,7 +61,6 @@ export function registerCardBrowserContextMenu(plugin: ProjectBrowserPlugin, el:
             item.setTitle("New folder")
                 .onClick(() => {
                     new NewFolderModal({
-                        plugin,
                         baseFolder: commands.getCurFolder(),
                     }).showModal()
                 })

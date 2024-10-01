@@ -1,4 +1,3 @@
-import ProjectBrowserPlugin from "src/main";
 import { FileView, ItemView, MarkdownView, Notice, TFile, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
@@ -9,7 +8,7 @@ import { CurrentFolderMenu } from "src/components/current-folder-menu/current-fo
 import { isEmpty } from "src/utils/misc";
 import { PLUGIN_ICON } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';
-import { deviceMemoryStore } from "src/logic/device-memory";
+import { deviceMemoryStore, getGlobals } from "src/logic/stores";
 
 //////////
 //////////
@@ -30,7 +29,9 @@ export type PartialCardBrowserViewEState = Partial<CardBrowserViewEState>;
 
 
 
-export function setCardBrowserViewStateDefaults(plugin: ProjectBrowserPlugin): CardBrowserViewState {
+export function setCardBrowserViewStateDefaults(): CardBrowserViewState {
+    const {plugin} = getGlobals();
+
     let launchPath = plugin.settings.access.launchFolder
     if(!plugin.app.vault.getFolderByPath(launchPath)) {
         new Notice('Launch folder not found. Launching in root of vault instead. Update your launch folder in the Project Browser plugin settings.', 10000)
@@ -41,39 +42,47 @@ export function setCardBrowserViewStateDefaults(plugin: ProjectBrowserPlugin): C
     }
 }
 
-export function registerCardBrowserView (plugin: ProjectBrowserPlugin) {
+export function registerCardBrowserView () {
+    const {plugin} = getGlobals();
+
     plugin.registerView(
         CARD_BROWSER_VIEW_TYPE,
-        (leaf) => new ProjectCardsView(leaf, plugin)
+        (leaf) => new ProjectCardsView(leaf)
     );
 }
 
-export function loadCardBrowserOnNewTab(plugin: ProjectBrowserPlugin) {
+export function loadCardBrowserOnNewTab() {
+    const {plugin} = getGlobals();
+
 	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
         if(!leaf) return;
         
 		const viewType = leaf.view.getViewType();
 		if(viewType === 'empty') {
-            replaceLeaf(leaf, plugin);
+            replaceLeaf(leaf);
         }
 	}));
 }
 
-export function newProjectBrowserLeaf(plugin: ProjectBrowserPlugin) {
+export function newProjectBrowserLeaf() {
+    const {plugin} = getGlobals();
+
     const leaf = plugin.app.workspace.getLeaf(true);
-    new ProjectCardsView(leaf, plugin);
+    new ProjectCardsView(leaf);
     plugin.app.workspace.setActiveLeaf(leaf)
 }
 
 // This works but you can't click back.
-export function replaceLeaf(leaf: WorkspaceLeaf, plugin: ProjectBrowserPlugin) {
-    new ProjectCardsView(leaf, plugin);
+export function replaceLeaf(leaf: WorkspaceLeaf) {
+    const {plugin} = getGlobals();
+    new ProjectCardsView(leaf);
 }
 
-export function replaceMostRecentLeaf(plugin: ProjectBrowserPlugin) {
+export function replaceMostRecentLeaf() {
+    const {plugin} = getGlobals();
     const leaf = plugin.app.workspace.getMostRecentLeaf();
     if(leaf) {
-        leaf.open(new ProjectCardsView(leaf, plugin));
+        leaf.open(new ProjectCardsView(leaf));
     }
 }
 
@@ -81,7 +90,6 @@ export function replaceMostRecentLeaf(plugin: ProjectBrowserPlugin) {
 
 export class ProjectCardsView extends ItemView {
     root: Root;
-    plugin: ProjectBrowserPlugin;
     internalClick: boolean = false;
     
     // CardBrowserViewState properties
@@ -89,9 +97,8 @@ export class ProjectCardsView extends ItemView {
     eState: CardBrowserViewEState;
     cardBrowserHandlers: CardBrowserHandlers;
     
-    constructor(leaf: WorkspaceLeaf, plugin: ProjectBrowserPlugin) {
+    constructor(leaf: WorkspaceLeaf) {
         super(leaf);
-        this.plugin = plugin;
         this.navigation = true;
         this.icon = PLUGIN_ICON;
         
@@ -112,7 +119,7 @@ export class ProjectCardsView extends ItemView {
         contentEl.setAttr('style', 'padding: 0;');
 
         if(!this.state || isEmpty(this.state)) {
-            this.state = setCardBrowserViewStateDefaults(this.plugin);
+            this.state = setCardBrowserViewStateDefaults();
         }
 
         if(!this.root) this.root = createRoot(contentEl);
@@ -163,24 +170,21 @@ export class ProjectCardsView extends ItemView {
 
     renderView() {
         this.root.render(
-            <PluginContext.Provider value={this.plugin}>
-                <JotaiProvider store={deviceMemoryStore}>
-                    <CardBrowser
-                        plugin = {this.plugin}
-                        path = {this.state.path}
-                        setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
-                        rememberLastTouchedFilepath = {this.rememberLastTouchedFilepath}
-                        resetLastTouchedFilepath = {this.resetLastTouchedFilepath}
-                        getViewStates = {() => {
-                            return {
-                                eState: this.eState,
-                                state: this.state,
-                            }
-                        }}
-                        passBackHandlers = {this.setCardBrowserHandlers}
-                    />
-                </JotaiProvider>
-            </PluginContext.Provider>
+            <JotaiProvider store={deviceMemoryStore}>
+                <CardBrowser
+                    path = {this.state.path}
+                    setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
+                    rememberLastTouchedFilepath = {this.rememberLastTouchedFilepath}
+                    resetLastTouchedFilepath = {this.resetLastTouchedFilepath}
+                    getViewStates = {() => {
+                        return {
+                            eState: this.eState,
+                            state: this.state,
+                        }
+                    }}
+                    passBackHandlers = {this.setCardBrowserHandlers}
+                />
+            </JotaiProvider>
         );
     }
 

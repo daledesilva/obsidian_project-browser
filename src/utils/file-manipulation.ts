@@ -4,9 +4,9 @@
 import { App, DataWriteOptions, FileManager, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
 import { folderPathSanitize, parseFilepath, sanitizeFileFolderName } from "./string-processes";
 import { setFileState } from "src/logic/frontmatter-processes";
-import ProjectBrowserPlugin from "src/main";
 import { DEFAULT_FOLDER_SETTINGS_0_1_2, FolderSettings } from "src/types/folder-settings0_1_2";
 import { FOLDER_SETTINGS_FILENAME } from "src/constants";
+import { getGlobals } from "src/logic/stores";
 
 // //////////
 // //////////
@@ -36,7 +36,6 @@ import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 
 
 interface ProjectDefaults {
-    plugin: ProjectBrowserPlugin,
     state?: string
 }
 export async function createProject(parentFolder: TFolder, projectName: string, defaults?: ProjectDefaults ): Promise<TFile> {
@@ -49,14 +48,15 @@ export async function createProject(parentFolder: TFolder, projectName: string, 
     const primaryProjectFile = await createDefaultMarkdownFile(v, parentFolder, projectName);
 
     if(defaults) {
-        if(defaults.state) setFileState(defaults.plugin, primaryProjectFile, defaults.state);
+        if(defaults.state) setFileState(primaryProjectFile, defaults.state);
     }
 
     return primaryProjectFile;
 }
 
 
-export async function createFolder(plugin: ProjectBrowserPlugin, folderPath: string): Promise<TFolder> {
+export async function createFolder(folderPath: string): Promise<TFolder> {
+    const {plugin} = getGlobals();
     const safeFolderPath = folderPathSanitize(folderPath);
     const folder = await plugin.app.vault.createFolder(safeFolderPath);
     return folder
@@ -219,13 +219,15 @@ export async function saveFolderSettings(vault: Vault, folder: TFolder, settings
 }
 
 
-export async function hideFolder(plugin: ProjectBrowserPlugin, folder: TFolder): Promise<void> {
+export async function hideFolder(folder: TFolder): Promise<void> {
+    const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     folderSettings.isHidden = true;
     saveFolderSettings(plugin.app.vault, folder, folderSettings);
 }
 
-export async function unhideFolder(plugin: ProjectBrowserPlugin, folder: TFolder): Promise<void> {
+export async function unhideFolder(folder: TFolder): Promise<void> {
+    const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     delete folderSettings.isHidden;
     saveFolderSettings(plugin.app.vault, folder, folderSettings);

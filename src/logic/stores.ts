@@ -1,14 +1,31 @@
 import { LOCAL_STORAGE_PREFIX } from "src/constants";
 import { WritableAtom, atom, createStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
+import ProjectBrowserPlugin from "src/main";
 
 /////////
 /////////
+
+interface Globals {
+	plugin: ProjectBrowserPlugin,
+}
+export const globalsAtom = atom<Globals>()
+export const globalsStore = createStore();
+export function setGlobals(globals: Globals): void {
+	globalsStore.set(globalsAtom, globals);
+}
+export function getGlobals(): Globals {
+	const globals = globalsStore.get(globalsAtom);
+	if(!globals) {
+		throw new Error(`Project Browser plugin globals isn't available yet`);
+	}
+	return globals;
+}
+
+//////////
+//////////
 
 export const deviceMemoryStore = createStore();
-
-/////////
-
 export const showHiddenFoldersAtom = atomWithStorage(LOCAL_STORAGE_PREFIX + 'show-hidden-folders', false)
 
 export function hideHiddenFolders() {
@@ -24,3 +41,4 @@ export function unhideHiddenFolders() {
 export function getShowHiddenFolders(): boolean {
     return deviceMemoryStore.get(showHiddenFoldersAtom);
 }
+

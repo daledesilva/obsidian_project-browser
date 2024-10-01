@@ -1,7 +1,6 @@
 import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
-import { singleOrPlural } from "src/logic/string-processes";
-import ProjectBrowserPlugin from "src/main";
+import { getGlobals } from "src/logic/stores";
 import MyPlugin from "src/main";
 import { createFolder, createProject } from "src/utils/file-manipulation";
 import { folderPathSanitize, sanitizeFileFolderName } from "src/utils/string-processes";
@@ -10,20 +9,18 @@ import { folderPathSanitize, sanitizeFileFolderName } from "src/utils/string-pro
 /////////
 
 interface NewFolderModalProps {
-    plugin: ProjectBrowserPlugin,
     baseFolder: TFolder,
 }
 
 export class NewFolderModal extends Modal {
-    plugin: ProjectBrowserPlugin;
     baseFolder: TFolder;
     name: string;
     resolveModal: (file: TFolder) => void;
 	rejectModal: (reason: string) => void;
 
 	constructor(props: NewFolderModalProps) {
-		super(props.plugin.app);
-		this.plugin = props.plugin;
+		const {plugin} = getGlobals();
+		super(plugin.app);
 		this.baseFolder = props.baseFolder;
 	}
 
@@ -60,7 +57,7 @@ export class NewFolderModal extends Modal {
 						if(this.name.trim() ==='') this.name = 'Unnamed';
 						text.setValue(this.name);
 						let folderPath = `${this.baseFolder.path}/${this.name}`;
-						const newFolder = await createFolder(this.plugin, folderPath);
+						const newFolder = await createFolder(folderPath);
 						this.resolveModal(newFolder);
 						this.close();
                     }
@@ -81,7 +78,7 @@ export class NewFolderModal extends Modal {
 			confirmBtn.setButtonText('Create folder');
 			confirmBtn.onClick( async () => {
 				let folderPath = `${this.baseFolder.path}/${this.name}`;
-				const newFolder = await createFolder(this.plugin, folderPath);
+				const newFolder = await createFolder(folderPath);
 				this.resolveModal(newFolder);
 				this.close();
 			} )

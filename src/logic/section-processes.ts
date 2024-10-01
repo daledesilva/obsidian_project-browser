@@ -1,6 +1,6 @@
 import { TFile, TFolder } from "obsidian";
-import ProjectBrowserPlugin from "src/main";
 import { PluginFolderSettings, PluginStateSettings_0_0_5 } from "src/types/plugin-settings0_0_5";
+import { getGlobals } from "./stores";
 
 /////////
 /////////
@@ -12,7 +12,8 @@ export interface Section {
     settings: PluginFolderSettings | PluginStateSettings_0_0_5,
 }
 
-export const orderSections = (unorderedSections: Section[], plugin: ProjectBrowserPlugin): Section[] => {
+export const orderSections = (unorderedSections: Section[]): Section[] => {
+    const {plugin} = getGlobals();
     const hiddenStatesNames = plugin.settings.states.hidden.map( stateSettings => stateSettings.name );
     const orderReference = plugin.settings.states.visible.map( stateSettings => stateSettings.name );
     orderReference.reverse();
@@ -49,7 +50,8 @@ export const orderSections = (unorderedSections: Section[], plugin: ProjectBrows
 
 
 
-export function getStateSettings(plugin: ProjectBrowserPlugin, name: string): PluginStateSettings_0_0_5 {
+export function getStateSettings(name: string): PluginStateSettings_0_0_5 {
+    const {plugin} = getGlobals();
     const allSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
     for(let i=0; i<=allSettings.length; i++) {
         if(!allSettings[i]) continue;

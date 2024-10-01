@@ -1,38 +1,40 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
-import ProjectBrowserPlugin from "src/main";
 import { Section, getStateSettings, orderSections } from "./section-processes";
 import { getFileFrontmatter } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
+import { getGlobals } from "./stores";
 
 ///////////
 ///////////
 
 
-export const isProjectFolder = async (plugin: ProjectBrowserPlugin, folder: TFolder): Promise<boolean> => {
+export const isProjectFolder = async (folder: TFolder): Promise<boolean> => {
+    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder)  return false;
 
     // TODO:
-    // if(markedAsProjectFolder(plugin, folder)) {
+    // if(markedAsProjectFolder(folder)) {
         // return true
-    // } else if(markedAsCategoryFolder(plugin, folder)) {
+    // } else if(markedAsCategoryFolder(folder)) {
         // return false
     // } else
-    if(contentsIndicatesProject(plugin, folder)) {
+    if(contentsIndicatesProject(folder)) {
         return true
     }
 
     return false;
 }
 
-function contentsIndicatesProject(plugin: ProjectBrowserPlugin, folder: TFolder): boolean {
+function contentsIndicatesProject(folder: TFolder): boolean {
+    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     const fileStatesFound: string[] = [];
     
     itemsInFolder?.forEach( (item) => {
 
         if(item instanceof TFile) {
-            const frontmatter = getFileFrontmatter(plugin, item);
+            const frontmatter = getFileFrontmatter(item);
             if(frontmatter['state']) {
                 fileStatesFound.push(frontmatter['state']);
             }
@@ -48,14 +50,15 @@ function contentsIndicatesProject(plugin: ProjectBrowserPlugin, folder: TFolder)
 
 // Returns first state found in folder
 // use isProjectFolder to ensure it's a project first
-function getProjectState(plugin: ProjectBrowserPlugin, folder: TFolder): null | string {
+function getProjectState(folder: TFolder): null | string {
+    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder) return null;
     
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const frontmatter = getFileFrontmatter(plugin, item);
+            const frontmatter = getFileFrontmatter(item);
             if(frontmatter['state']) {
                 return frontmatter['state'];
             }
@@ -65,14 +68,15 @@ function getProjectState(plugin: ProjectBrowserPlugin, folder: TFolder): null | 
     return null;
 }
 
-export const getProjectExcerpt = async (plugin: ProjectBrowserPlugin, folder: TFolder): Promise<null|string> => {
+export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> => {
+    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder)  return null;
     
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const frontmatter = getFileFrontmatter(plugin, item);
+            const frontmatter = getFileFrontmatter(item);
             if(frontmatter['state']) {
                 return await getFileExcerpt(item);
             }
@@ -82,7 +86,8 @@ export const getProjectExcerpt = async (plugin: ProjectBrowserPlugin, folder: TF
     return null;
 }
 
-export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFolder): Section[] => {
+export const getSortedItemsInFolder = (folder: TFolder): Section[] => {
+    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     
     interface ItemsBySectionMap {
@@ -101,9 +106,9 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
             // TODO: If it's in the "treat as project" list
 
             // TODO: If it contains multiple files with states or it's subfolders contain multiple files with states
-            // if(contentsIndicatesProject(plugin, item)) {
+            // if(contentsIndicatesProject(item)) {
             //     // Visually treat as a file/project
-            //     const state = getProjectState(plugin, item);
+            //     const state = getProjectState(item);
             //     if(state) {
             //         if(!itemsBySection[state]) itemsBySection[state] = [];
             //         itemsBySection[state].push(item);
@@ -122,7 +127,7 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
             // DOn't show Project Browser settings files
             if(item.extension.toLowerCase() === 'pbs') return;
 
-            const frontmatter = getFileFrontmatter(plugin, item);
+            const frontmatter = getFileFrontmatter(item);
             // if(frontmatter['tags']) {
             //     frontmatter['tags'].forEach( (tag) => {
             //         if(!itemsByTags[tag]) itemsByTags[tag] = [];
@@ -161,7 +166,7 @@ export const getSortedItemsInFolder = (plugin: ProjectBrowserPlugin, folder: TFo
                 title: key,
                 type: 'state',
                 items: value,
-                settings: getStateSettings(plugin, key),
+                settings: getStateSettings(key),
             })
         }
     }

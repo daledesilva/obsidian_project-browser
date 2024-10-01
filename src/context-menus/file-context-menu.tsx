@@ -3,7 +3,7 @@ import * as React from "react";
 import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic/file-processes";
 import { refreshFolderReference } from "src/logic/folder-processes";
 import { getFileState, setFileState } from "src/logic/frontmatter-processes";
-import ProjectBrowserPlugin from "src/main";
+import { getGlobals } from "src/logic/stores";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PluginContext } from "src/utils/plugin-context";
@@ -13,19 +13,19 @@ import { CARD_BROWSER_VIEW_TYPE, newProjectBrowserLeaf } from "src/views/card-br
 ////////
 
 interface registerFileContextMenuProps {
-    plugin: ProjectBrowserPlugin,
     fileButtonEl: HTMLElement,
     file: TFile,
     onFileChange: Function,
 }
 
 export function registerFileContextMenu(props: registerFileContextMenuProps) {
-    const fileState = getFileState(props.plugin, props.file);
+    const {plugin} = getGlobals();
+    const fileState = getFileState(props.file);
     const folder = props.file.parent;
 
-    const visibleStates = JSON.parse(JSON.stringify(props.plugin.settings.states.visible));
+    const visibleStates = JSON.parse(JSON.stringify(plugin.settings.states.visible));
     visibleStates.reverse();
-    const hiddenStates = JSON.parse(JSON.stringify(props.plugin.settings.states.hidden));
+    const hiddenStates = JSON.parse(JSON.stringify(plugin.settings.states.hidden));
     hiddenStates.reverse();
 
     props.fileButtonEl.addEventListener('contextmenu', function(event) {
@@ -42,7 +42,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(props.plugin, props.file, state.name);
+                    setFileState(props.file, state.name);
                     props.onFileChange();
                 });
             });
@@ -53,7 +53,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                 item.setTitle(state.name);
                 if(state.name === fileState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(props.plugin, props.file, state.name);
+                    setFileState(props.file, state.name);
                     props.onFileChange();
                 })
             });
@@ -64,7 +64,6 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             .onClick(() => {
                 // renameFileOrFolderInPlace(props.file, props.noteEl);
                 new RenameFileModal({
-                    plugin: props.plugin,
                     file: props.file,
                 }).showModal()
                 props.onFileChange();
@@ -73,7 +72,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         menu.addItem((item) =>
             item.setTitle("Delete")
             .onClick(() => {
-                deleteFileWithConfirmation(props.plugin, props.file);
+                deleteFileWithConfirmation(props.file);
                 props.onFileChange();
             })
         );

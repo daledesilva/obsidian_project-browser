@@ -1,7 +1,6 @@
 import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
-import { singleOrPlural } from "src/logic/string-processes";
-import ProjectBrowserPlugin from "src/main";
+import { getGlobals } from "src/logic/stores";
 import MyPlugin from "src/main";
 import { createProject } from "src/utils/file-manipulation";
 import { sanitizeFileFolderName } from "src/utils/string-processes";
@@ -10,20 +9,18 @@ import { sanitizeFileFolderName } from "src/utils/string-processes";
 /////////
 
 interface NewProjectModalProps {
-    plugin: ProjectBrowserPlugin,
     folder: TFolder,
 }
 
 export class NewProjectModal extends Modal {
-    plugin: ProjectBrowserPlugin;
     folder: TFolder;
     name: string;
     resolveModal: (file: TFile) => void;
 	rejectModal: (reason: string) => void;
 
 	constructor(props: NewProjectModalProps) {
-		super(props.plugin.app);
-		this.plugin = props.plugin;
+		const {plugin} = getGlobals();
+		super(plugin.app);
 		this.folder = props.folder;
 	}
 

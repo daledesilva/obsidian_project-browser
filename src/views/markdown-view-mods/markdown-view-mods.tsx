@@ -1,10 +1,9 @@
 import './markdown-view-mods.scss';
-import ProjectBrowserPlugin from "src/main";
 import { ItemView } from "obsidian";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { PluginContext } from "src/utils/plugin-context";
 import { StateMenu } from 'src/components/state-menu/state-menu';
+import { getGlobals } from 'src/logic/stores';
 
 //////////
 //////////
@@ -13,19 +12,22 @@ const stateMenuContainerClassName = 'ddc_pb_state-menu-container';
 
 //////////
 
-export function registerMarkdownViewMods(plugin: ProjectBrowserPlugin) {
+export function registerMarkdownViewMods() {
+    const {plugin} = getGlobals();
+
     // NOTE: Opening a different file in the same leaf counts as an active-leaf-change, but the header gets replaced, it updates.
     plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
         if(!leaf) return;
 
 		const viewType = leaf.view.getViewType();
 		if(viewType === 'markdown') {
-            if(plugin.settings.showStateMenu) addStateHeader(plugin);
+            if(plugin.settings.showStateMenu) addStateHeader();
         }
 	}));
 }
 
-function addStateHeader(plugin: ProjectBrowserPlugin) {
+function addStateHeader() {
+    const {plugin} = getGlobals();
     let { workspace } = plugin.app;
     let leaf = workspace.getActiveViewOfType(ItemView)?.leaf;
     if(!leaf) return;
@@ -41,9 +43,7 @@ function addStateHeader(plugin: ProjectBrowserPlugin) {
         headerEl.after(stateMenuContainerEl);
         let stateMenuRoot = createRoot(stateMenuContainerEl);
         stateMenuRoot.render(
-            <PluginContext.Provider value={plugin}>
-                <StateMenu file={activeFile} plugin={plugin}/>
-            </PluginContext.Provider>
+            <StateMenu file={activeFile}/>
         )
     }
 

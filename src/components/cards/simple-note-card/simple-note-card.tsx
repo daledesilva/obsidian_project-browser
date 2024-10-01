@@ -4,9 +4,9 @@ import { TFile } from "obsidian";
 import * as React from "react";
 import { getFileExcerpt } from "src/logic/file-processes";
 import { trimFilenameExt } from 'src/logic/string-processes';
-import { PluginContext } from 'src/utils/plugin-context';
 import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { CardBrowserContext } from 'src/components/card-browser/card-browser';
+import { getGlobals } from 'src/logic/stores';
 
 /////////
 /////////
@@ -16,7 +16,7 @@ interface SimpleNoteCardProps {
 }
 
 export const SimpleNoteCard = (props: SimpleNoteCardProps) => {
-    const plugin = React.useContext(PluginContext);
+    const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext)
     const noteRef = React.useRef(null);
 
@@ -31,7 +31,6 @@ export const SimpleNoteCard = (props: SimpleNoteCardProps) => {
     React.useEffect( () => {
         if(!plugin) return;
         if(noteRef.current) registerFileContextMenu({
-            plugin,
             fileButtonEl: noteRef.current,
             file: props.file,
             onFileChange: () => {

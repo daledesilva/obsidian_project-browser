@@ -1,4 +1,3 @@
-import ProjectBrowserPlugin from "src/main";
 import { DEFAULT_SETTINGS_0_0_5, PluginSettings_0_0_5, StateViewMode_0_0_5 } from "./plugin-settings0_0_5";
 import { PluginSettings_0_0_4 } from "./plugin-settings0_0_4";
 import { DEFAULT_SETTINGS_0_1_0, PluginSettings_0_1_0 } from "./plugin-settings0_1_0";

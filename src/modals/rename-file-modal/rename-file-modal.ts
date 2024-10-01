@@ -1,8 +1,6 @@
 import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TFile } from "obsidian";
-import { singleOrPlural } from "src/logic/string-processes";
-import ProjectBrowserPlugin from "src/main";
-import MyPlugin from "src/main";
+import { getGlobals } from "src/logic/stores";
 import { createFolder, createProject, renameTFile } from "src/utils/file-manipulation";
 import { folderPathSanitize, sanitizeFileFolderName } from "src/utils/string-processes";
 
@@ -10,20 +8,18 @@ import { folderPathSanitize, sanitizeFileFolderName } from "src/utils/string-pro
 /////////
 
 interface RenameFileModalProps {
-    plugin: ProjectBrowserPlugin,
     file: TFile,
 }
 
 export class RenameFileModal extends Modal {
-    plugin: ProjectBrowserPlugin;
     file: TFile;
     name: string;
     resolveModal: (file: TFile) => void;
 	rejectModal: (reason: string) => void;
 
 	constructor(props: RenameFileModalProps) {
-		super(props.plugin.app);
-		this.plugin = props.plugin;
+		const {plugin} = getGlobals();
+		super(plugin.app);
 		this.file = props.file;
 		this.name = props.file.basename;
 	}

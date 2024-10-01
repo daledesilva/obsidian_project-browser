@@ -1,25 +1,22 @@
 import './state-menu.scss';
 import { MarkdownView, TFile } from 'obsidian';
 import * as React from "react";
-import { PluginContext } from 'src/utils/plugin-context';
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
-import ProjectBrowserPlugin from 'src/main';
+import { getGlobals } from 'src/logic/stores';
 
 //////////
 //////////
 
 interface StateMenuProps {
     file: TFile,
-    plugin: ProjectBrowserPlugin
 }
 
 export const StateMenu = (props: StateMenuProps) => {
-    const plugin = React.useContext(PluginContext);
-    if(!plugin) return <></>;
+    const {plugin} = getGlobals();
 
     const [file, setFile] = React.useState( props.file );
-    const [state, setState] = React.useState( getFileState(plugin, file) );
+    const [state, setState] = React.useState( getFileState(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const firstRunRef = React.useRef<boolean>(true);
     const stateMenuRef = React.useRef<HTMLDivElement>(null)
@@ -113,7 +110,7 @@ export const StateMenu = (props: StateMenuProps) => {
             let leaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
             if(!leaf) return;
 
-            setState( getFileState(plugin, newFile) );
+            setState( getFileState(newFile) );
             setFile(newFile);
         }));
     }
@@ -123,11 +120,11 @@ export const StateMenu = (props: StateMenuProps) => {
 
         if(newState !== state) {
             // set the new state
-            setFileState(plugin, file, newState)
+            setFileState(file, newState)
             setState(newState)
         } else {
             // erase the existing state
-            setFileState(plugin, file, null)
+            setFileState(file, null)
             setState(null)
         }
         setMenuIsActive(false);

@@ -11,8 +11,8 @@ import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
 import { StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
 import { sortItemsAlphabetically } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
-import { PluginContext } from 'src/utils/plugin-context';
 import { CardBrowserContext } from '../card-browser/card-browser';
+import { getGlobals } from 'src/logic/stores';
 
 //////////
 //////////
@@ -39,7 +39,7 @@ interface StateSectionProps {
     section: Section,
 }
 export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) => {
-    const plugin = React.useContext(PluginContext);
+    const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const sectionRef = React.useRef(null);
 
@@ -48,7 +48,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
         if(!cardBrowserContext.folder) return;
         
         if(sectionRef.current) {
-            registerStateSectionContextMenu(plugin, sectionRef.current, cardBrowserContext.folder, props.section.title, {openFile: cardBrowserContext.openFile});
+            registerStateSectionContextMenu(sectionRef.current, cardBrowserContext.folder, props.section.title, {openFile: cardBrowserContext.openFile});
         }
     })
 

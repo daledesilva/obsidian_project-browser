@@ -2,11 +2,9 @@ import classNames from 'classnames';
 import './list-note-card.scss';
 import { TFile } from "obsidian";
 import * as React from "react";
-import { getFileExcerpt } from "src/logic/file-processes";
-import { trimFilenameExt } from 'src/logic/string-processes';
-import { PluginContext } from 'src/utils/plugin-context';
 import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { CardBrowserContext } from 'src/components/card-browser/card-browser';
+import { getGlobals } from 'src/logic/stores';
 
 /////////
 /////////
@@ -16,7 +14,7 @@ interface ListNoteCardProps {
 }
 
 export const ListNoteCard = (props: ListNoteCardProps) => {
-    const plugin = React.useContext(PluginContext);
+    const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const noteRef = React.useRef(null);
 
@@ -26,7 +24,6 @@ export const ListNoteCard = (props: ListNoteCardProps) => {
     React.useEffect( () => {
         if(!plugin) return;
         if(noteRef.current) registerFileContextMenu({
-            plugin,
             fileButtonEl: noteRef.current,
             file: props.file,
             onFileChange: () => {

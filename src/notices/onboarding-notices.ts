@@ -1,20 +1,22 @@
 import { createNoticeTemplate, createNoticeCtaBar, launchPersistentNotice } from 'src/components/dom-components/notice-components';
-import ProjectBrowserPlugin from 'src/main';
+import { getGlobals } from 'src/logic/stores';
 
 ///////////
 ///////////
 
-export function showOnboardingNotices_maybe(plugin: ProjectBrowserPlugin): boolean {
+export function showOnboardingNotices_maybe(): boolean {
+    const {plugin} = getGlobals();
     // Bail if it's already been shown enough times
     if(plugin.settings.onboardingNotices.welcomeNoticeRead) return false;
-    showOnboardingNotices(plugin);
+    showOnboardingNotices();
     return true;
 }
 
 //////////
 
 let noticeShowingOrDismissed: boolean = false;
-export async function showOnboardingNotices(plugin: ProjectBrowserPlugin) {
+export async function showOnboardingNotices() {
+    const {plugin} = getGlobals();
     if(noticeShowingOrDismissed) return;
     noticeShowingOrDismissed = true;
 
@@ -41,13 +43,14 @@ export async function showOnboardingNotices(plugin: ProjectBrowserPlugin) {
     if(primaryBtnEl) {
         primaryBtnEl.addEventListener('click', () => {
             notice.hide();
-            showBrowserViewNotice(plugin);
+            showBrowserViewNotice();
         });
     }
 
 }
 
-function showBrowserViewNotice(plugin: ProjectBrowserPlugin) {
+function showBrowserViewNotice() {
+    const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`The Browse view...`);
     noticeBody.createEl('p').setText(`By default, the Browse view appears when you create a new tab, but you can alter this in the settings.`);
@@ -67,13 +70,14 @@ function showBrowserViewNotice(plugin: ProjectBrowserPlugin) {
     if(primaryBtnEl) {
         primaryBtnEl.addEventListener('click', () => {
             notice.hide();
-            showNotesNotice(plugin);
+            showNotesNotice();
         });
     }
     
 }
 
-function showNotesNotice(plugin: ProjectBrowserPlugin) {
+function showNotesNotice() {
+    const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`Note statuses...`);
     noticeBody.createEl('p').setText(`The status for a note can be assigned through a status button at the top of the note.`);
@@ -92,13 +96,14 @@ function showNotesNotice(plugin: ProjectBrowserPlugin) {
     if(primaryBtnEl) {
         primaryBtnEl.addEventListener('click', () => {
             notice.hide();
-            showCustomisationNotice(plugin);
+            showCustomisationNotice();
         });
     }
     
 }
 
-function showCustomisationNotice(plugin: ProjectBrowserPlugin) {
+function showCustomisationNotice() {
+    const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`Customisation...`);
     noticeBody.createEl('p').setText(`The set of statuses, their order, and the view mode they display their notes in can all be customised in the settings.`);
@@ -116,14 +121,15 @@ function showCustomisationNotice(plugin: ProjectBrowserPlugin) {
     if(primaryBtnEl) {
         primaryBtnEl.addEventListener('click', () => {
             notice.hide();
-            showDevelopmentWelcomeNotice(plugin);
+            showDevelopmentWelcomeNotice();
         });
     }
     
 }
 
 
-function showDevelopmentWelcomeNotice(plugin: ProjectBrowserPlugin) {
+function showDevelopmentWelcomeNotice() {
+    const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`Help improve Project Browser...`);
     noticeBody.createEl('p').setText(`Project Browser is under construction. This means it has features missing and sometimes has bugs.`);

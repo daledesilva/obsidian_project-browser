@@ -1,8 +1,5 @@
-import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TFile, TFolder } from "obsidian";
-import { singleOrPlural } from "src/logic/string-processes";
-import ProjectBrowserPlugin from "src/main";
-import MyPlugin from "src/main";
+import { getGlobals } from "src/logic/stores";
 import { PluginStateSettings_0_0_5, StateViewMode_0_0_5 } from "src/types/plugin-settings0_0_5";
 import { createProject } from "src/utils/file-manipulation";
 
@@ -10,14 +7,12 @@ import { createProject } from "src/utils/file-manipulation";
 /////////
 
 interface EditStateModalProps {
-    plugin: ProjectBrowserPlugin,
 	stateSettings: PluginStateSettings_0_0_5,
 	onSuccess: (modifiedStateSettings: PluginStateSettings_0_0_5) => {},
 	onReject?: (reason: string) => {},
 }
 
 export class EditStateModal extends Modal {
-    plugin: ProjectBrowserPlugin;
 	onSuccess: (modifiedStateSettings: PluginStateSettings_0_0_5) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
@@ -26,8 +21,8 @@ export class EditStateModal extends Modal {
 	state: PluginStateSettings_0_0_5;
 
 	constructor(props: EditStateModalProps) {
-		super(props.plugin.app);
-		this.plugin = props.plugin;
+		const {plugin} = getGlobals();
+		super(plugin.app);
 		this.state = props.stateSettings;
 		this.onSuccess = props.onSuccess;
 		this.onReject = props.onReject;

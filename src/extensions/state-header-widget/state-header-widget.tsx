@@ -2,7 +2,6 @@ import { Extension, StateField } from "@codemirror/state";
 import { Decoration, DecorationSet, EditorView, WidgetType } from "@codemirror/view";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import ProjectBrowserPlugin from 'src/main';
 
 /////////
 /////////

@@ -1,6 +1,5 @@
 import { Root, createRoot } from 'react-dom/client';
 import * as React from "react";
-import ProjectBrowserPlugin from 'src/main';
 import { ItemInterface, ReactSortable } from "react-sortablejs";
 import './state-editor.scss';
 import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
@@ -9,11 +8,13 @@ import classNames from 'classnames';
 import { Setting } from 'obsidian';
 import { PluginStateSettings_0_0_5, StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
 import { EditStateModal } from 'src/modals/edit-state-modal/edit-state-modal';
+import { getGlobals } from 'src/logic/stores';
 
 //////////
 //////////
 
-export function insertStateEditor(containerEl: HTMLElement, plugin: ProjectBrowserPlugin) {
+export function insertStateEditor(containerEl: HTMLElement) {
+    const {plugin} = getGlobals();
     let root: Root;
 
     const sectionEl = containerEl.createDiv('ddc_pb_section');
@@ -26,7 +27,7 @@ export function insertStateEditor(containerEl: HTMLElement, plugin: ProjectBrows
     function renderView() {
         this.root.render(
             // <PluginContext.Provider value={this.plugin}>
-            <StateEditor plugin={plugin}/>
+            <StateEditor/>
             // </PluginContext.Provider>
         );
     }
@@ -48,13 +49,12 @@ export function insertStateEditor(containerEl: HTMLElement, plugin: ProjectBrows
 	// });
 }
 
-interface StateEditorProps {
-    plugin: ProjectBrowserPlugin
-}
+interface StateEditorProps {}
 
 export const StateEditor = (props: StateEditorProps) => {
-    const [visibleStates, setVisibleStates] = React.useState<StateItem[]>( convertToStateItems(props.plugin.settings.states.visible) );
-    const [hiddenStates, setHiddenStates] = React.useState<StateItem[]>( convertToStateItems(props.plugin.settings.states.hidden) );
+    const {plugin} = getGlobals();
+    const [visibleStates, setVisibleStates] = React.useState<StateItem[]>( convertToStateItems(plugin.settings.states.visible) );
+    const [hiddenStates, setHiddenStates] = React.useState<StateItem[]>( convertToStateItems(plugin.settings.states.hidden) );
     const [isDragging, setIsDragging] = React.useState<boolean>( false );
     const deletedStates: StateItem[] = [];
 
@@ -68,8 +68,8 @@ export const StateEditor = (props: StateEditorProps) => {
                 <ReactSortable
                     list = {visibleStates}
                     setList = { async (stateItems) => {
-                        props.plugin.settings.states.visible = convertToStates(stateItems);
-                        await props.plugin.saveSettings();
+                        plugin.settings.states.visible = convertToStates(stateItems);
+                        await plugin.saveSettings();
                         setVisibleStates(stateItems);
                     }}
                     group = 'states'
@@ -98,16 +98,15 @@ export const StateEditor = (props: StateEditorProps) => {
                                 className = 'ddc_pb_icon ddc_pb_settings-icon'
                                 onClick = { async () => {
                                     new EditStateModal({
-                                        plugin: props.plugin,
                                         stateSettings: stateItem.stateSettings,
                                         onSuccess: async (modifiedState) => {
-                                            const newStates = props.plugin.settings.states.visible.map((stateInArray) => {
+                                            const newStates = plugin.settings.states.visible.map((stateInArray) => {
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
                                                     stateInArray.name = modifiedState.name;
                                                 }
                                                 return stateInArray;
                                             })
-                                            await props.plugin.saveSettings();
+                                            await plugin.saveSettings();
                                             setVisibleStates( convertToStateItems(newStates) );
                                         }
                                     }).open();
@@ -121,12 +120,11 @@ export const StateEditor = (props: StateEditorProps) => {
                         className = "ddc_pb_add-button"
                         onClick = { async () => {
                             new NewStateModal({
-                                plugin: props.plugin,
                                 title: ' Create new visible state',
                                 onSuccess: async (newState) => {
-                                    const newStates = props.plugin.settings.states.visible;
+                                    const newStates = plugin.settings.states.visible;
                                     newStates.push(newState);
-                                    await props.plugin.saveSettings();
+                                    await plugin.saveSettings();
                                     setVisibleStates( convertToStateItems(newStates) );
                                 }
                             }).open();
@@ -142,8 +140,8 @@ export const StateEditor = (props: StateEditorProps) => {
                 <ReactSortable
                     list = {hiddenStates}
                     setList = { async (stateItems) => {
-                        props.plugin.settings.states.hidden = convertToStates(stateItems);
-                        await props.plugin.saveSettings();
+                        plugin.settings.states.hidden = convertToStates(stateItems);
+                        await plugin.saveSettings();
                         setHiddenStates(stateItems);
                     }}
                     onStart = {() => {
@@ -172,16 +170,15 @@ export const StateEditor = (props: StateEditorProps) => {
                                 className = 'ddc_pb_icon ddc_pb_settings-icon'
                                 onClick = { async () => {
                                     new EditStateModal({
-                                        plugin: props.plugin,
                                         stateSettings: stateItem.stateSettings,
                                         onSuccess: async (modifiedState) => {
-                                            const newStates = props.plugin.settings.states.hidden.map((stateInArray) => {
+                                            const newStates = plugin.settings.states.hidden.map((stateInArray) => {
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
                                                     stateInArray.name = modifiedState.name;
                                                 }
                                                 return stateInArray;
                                             })
-                                            await props.plugin.saveSettings();
+                                            await plugin.saveSettings();
                                             setHiddenStates( convertToStateItems(newStates) );
                                         }
                                     }).open();
@@ -195,12 +192,11 @@ export const StateEditor = (props: StateEditorProps) => {
                         className = "ddc_pb_add-button"
                         onClick = { async () => {
                             new NewStateModal({
-                                plugin: props.plugin,
                                 title: ' Create new hidden state',
                                 onSuccess: async (newState) => {
-                                    const newStates = props.plugin.settings.states.hidden;
+                                    const newStates = plugin.settings.states.hidden;
                                     newStates.push(newState);
-                                    await props.plugin.saveSettings();
+                                    await plugin.saveSettings();
                                     setHiddenStates( convertToStateItems(newStates) );
                                 }
                             }).open();

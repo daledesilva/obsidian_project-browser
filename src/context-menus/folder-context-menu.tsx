@@ -1,6 +1,6 @@
 import { Menu, TFolder } from "obsidian";
-import { deleteFolderWithConfirmation, renameFileOrFolderInPlace, renameFolderInPlace } from "src/logic/file-processes";
-import ProjectBrowserPlugin from "src/main";
+import { deleteFolderWithConfirmation } from "src/logic/file-processes";
+import { getGlobals } from "src/logic/stores";
 import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
 import { getFolderSettings, hideFolder, unhideFolder } from "src/utils/file-manipulation";
 
@@ -8,7 +8,6 @@ import { getFolderSettings, hideFolder, unhideFolder } from "src/utils/file-mani
 ////////
 
 interface registerFolderContextMenuProps {
-    plugin: ProjectBrowserPlugin,
     folderBtnEl: HTMLElement,
     folder: TFolder
     onFolderChange: Function,
@@ -17,10 +16,12 @@ interface registerFolderContextMenuProps {
 export function registerFolderContextMenu(props: registerFolderContextMenuProps) {
 
     props.folderBtnEl.addEventListener('contextmenu', async (event) => {
+        const {plugin} = getGlobals();
+
         // Prevent container divs opening their context menus
         event.stopPropagation();
         
-        const folderSettings = await getFolderSettings(props.plugin.app.vault, props.folder)
+        const folderSettings = await getFolderSettings(plugin.app.vault, props.folder)
 
         // Close other menus (Only works on iOS for some reason, but also only needed there)
         document.body.click();
@@ -29,15 +30,15 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
         menu.addItem((item) =>
             item.setTitle("Set as launch folder")
                 .onClick(() => {
-                    props.plugin.settings.access.launchFolder = props.folder.path;
-                    props.plugin.saveSettings();
+                    plugin.settings.access.launchFolder = props.folder.path;
+                    plugin.saveSettings();
                 })
         );
         if(folderSettings.isHidden) {
             menu.addItem((item) =>
                 item.setTitle("Unhide folder")
                     .onClick(async () => {
-                        await unhideFolder(props.plugin, props.folder);
+                        await unhideFolder(props.folder);
                         props.onFolderChange();
                     })
             );
@@ -45,7 +46,7 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
             menu.addItem((item) =>
                 item.setTitle("Hide folder")
                     .onClick(async () => {
-                        await hideFolder(props.plugin, props.folder);
+                        await hideFolder(props.folder);
                         props.onFolderChange();
                     })
             );
@@ -56,7 +57,6 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
                 .onClick(() => {
                     // renameFileOrFolderInPlace(folder, folderBtnEl)
                     new RenameFolderModal({
-                        plugin: props.plugin,
                         folder: props.folder,
                     }).showModal()
                 })
@@ -64,7 +64,7 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
         menu.addItem((item) =>
             item.setTitle("Delete folder")
                 .onClick(() => {
-                    deleteFolderWithConfirmation(props.plugin, props.folder)
+                    deleteFolderWithConfirmation(props.folder)
                 })
         );
         menu.showAtMouseEvent(event);

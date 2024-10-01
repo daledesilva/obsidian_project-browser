@@ -1,6 +1,5 @@
 import './card-browser.scss';
 import * as React from "react";
-import ProjectBrowserPlugin from "src/main";
 import { FolderSection, StateSection, StatelessSection } from "../section/section";
 import { TFile, TFolder } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
@@ -11,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { PluginContext } from 'src/utils/plugin-context';
 import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
 import { atom, useSetAtom } from 'jotai';
+import { getGlobals } from 'src/logic/stores';
 
 //////////
 //////////
@@ -38,7 +38,6 @@ export interface CardBrowserHandlers {
 
 interface CardBrowserProps {
     path: string,
-    plugin: ProjectBrowserPlugin,
     setViewStateWithHistory: (viewState: PartialCardBrowserViewState) => void,
     rememberLastTouchedFilepath: (filepath: string) => {},
     resetLastTouchedFilepath: Function,
@@ -47,19 +46,19 @@ interface CardBrowserProps {
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
+    const {plugin} = getGlobals();
     const [viewInstanceId] = React.useState<string>(uuidv4());
     const [refreshId, setRefreshId] = React.useState<number>(uuidv4());
     const {state, eState} = props.getViewStates();
-    const plugin = React.useContext(PluginContext);
     const browserRef = React.useRef(null);
 
     // const setCardBrowserHandlers = useSetAtom(cardBrowserHandlers);
 
     // const [files, setFiles] = useState
-    const v = props.plugin.app.vault;
+    const v = plugin.app.vault;
     // const [path, setPath] = React.useState(props.path);
     const initialFolder = v.getFolderByPath(state.path) || v.getRoot(); // TODO: Check this is valid?
-    let sectionsOfItems = getSortedItemsInFolder(props.plugin, initialFolder);
+    let sectionsOfItems = getSortedItemsInFolder(initialFolder);
     
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
 
@@ -70,14 +69,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
         props.passBackHandlers({
             rerender,
         })
-        props.plugin.addGlobalFileDependant(`card-browser_${viewInstanceId}`, rerender);
+        plugin.addGlobalFileDependant(`card-browser_${viewInstanceId}`, rerender);
 
         // NOTE: When the view is changed to something else, this is never given the chance to unmount.
         // Must removeDependant from elsewhere?
         // return;
 
         if(plugin && browserRef.current) {
-            registerCardBrowserContextMenu(plugin, browserRef.current, initialFolder, {
+            registerCardBrowserContextMenu(browserRef.current, initialFolder, {
                 openFile,
                 getCurFolder,
             });
@@ -141,7 +140,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
     }
 
     function openFolder(nextFolder: TFolder) {
-        let { workspace } = props.plugin.app;
+        const {plugin} = getGlobals();
+        let { workspace } = plugin.app;
         let leaf = workspace.getMostRecentLeaf();
         
         // TODO: Unwrap this (remove if)??
@@ -155,7 +155,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     }
     
     function openFile(file: TFile) {
-        let { workspace } = props.plugin.app;
+        let { workspace } = plugin.app;
         let leaf = workspace.getMostRecentLeaf();
 
         if(leaf) {

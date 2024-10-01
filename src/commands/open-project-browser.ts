@@ -1,19 +1,23 @@
 import { PLUGIN_ICON } from "src/constants";
-import ProjectBrowserPlugin from "src/main";
+import { getGlobals } from "src/logic/stores";
 import { newProjectBrowserLeaf, replaceMostRecentLeaf } from "src/views/card-browser-view/card-browser-view";
 
 ////////
 ////////
 
-export async function registerOpenProjectBrowserCommand(plugin: ProjectBrowserPlugin) {
+export async function registerOpenProjectBrowserCommand() {
+    const {plugin} = getGlobals();
+
     plugin.addCommand({
 		id: 'open-project-browser',
 		name: 'Open',
-        callback: () => newProjectBrowserLeaf(plugin)
+        callback: () => newProjectBrowserLeaf()
 	});
 }
 
-export async function registerOpenProjectBrowserRibbonIcon(plugin: ProjectBrowserPlugin) {
+export async function registerOpenProjectBrowserRibbonIcon() {
+    const {plugin} = getGlobals();
+
     // 'align-vertical-justify-start'
     // 'align-vertical-justify-center'
     // 'layout-list'
@@ -26,6 +30,6 @@ export async function registerOpenProjectBrowserRibbonIcon(plugin: ProjectBrowse
     // 'book-text'
     // 'wallet-cards'
     plugin.addRibbonIcon(PLUGIN_ICON, 'Open project browser', () => {
-        newProjectBrowserLeaf(plugin)
+        newProjectBrowserLeaf()
     });
 }

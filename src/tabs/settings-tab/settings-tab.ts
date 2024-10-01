@@ -5,11 +5,13 @@ import InkPlugin from "src/main";
 import MyPlugin from "src/main";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { folderPathSanitize } from 'src/utils/string-processes';
+import { getGlobals } from 'src/logic/stores';
 
 /////////
 /////////
 
-export function registerSettingsTab(plugin: InkPlugin) {
+export function registerSettingsTab() {
+	const {plugin} = getGlobals();
 	plugin.addSettingTab(new MySettingsTab(plugin.app, plugin));
 }
 
