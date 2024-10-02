@@ -21,7 +21,7 @@ export const CardBrowserContext = React.createContext<{
     rememberLastTouchedFile: (file: TFile) => void,
     openFileInSameLeaf: (file: TFile) => void,
     openFileInBackgroundTab: (file: TFile) => void,
-    openFolder: (folder: TFolder) => void,
+    openFolderInSameLeaf: (folder: TFolder) => void,
     rerender: () => void,
 }>({
     folder: null,
@@ -29,7 +29,7 @@ export const CardBrowserContext = React.createContext<{
     rememberLastTouchedFile: () => {},
     openFileInSameLeaf: () => {},
     openFileInBackgroundTab: () => {},
-    openFolder: () => {},
+    openFolderInSameLeaf: () => {},
     rerender: () => {},
 });
 
@@ -102,7 +102,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             rememberLastTouchedFile,
             openFileInSameLeaf,
             openFileInBackgroundTab: openFileInBackgroundTab,
-            openFolder,
+            openFolderInSameLeaf: openFolderInSameLeaf,
         }}>
             <div
                 ref = {browserRef}
@@ -111,7 +111,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 <BackButtonAndPath
                     folder = {initialFolder}
                     onBackClick = {openParentFolder}
-                    onFolderClick = { (folder: TFolder) => openFolder(folder)}
+                    onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                 />
                 <div>
                     {sectionsOfItems.map( (section) => (
@@ -142,7 +142,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         props.rememberLastTouchedFilepath(file.path);
     }
 
-    function openFolder(nextFolder: TFolder) {
+    function openFolderInSameLeaf(nextFolder: TFolder) {
         const {plugin} = getGlobals();
         let { workspace } = plugin.app;
         let leaf = workspace.getMostRecentLeaf();
@@ -184,7 +184,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     function openParentFolder() {
         const nextFolder = initialFolder.parent;
         if(!nextFolder) return;
-        openFolder(nextFolder);
+        openFolderInSameLeaf(nextFolder);
     }
 
 

@@ -55,7 +55,7 @@ export const FolderButton = (props: FolderButtonProps) => {
                 isHidden && showHidden && 'ddc_pb_visible-hidden-folder',
             ])}
             onClick = { () => {
-                cardBrowserContext.openFolder(props.folder)
+                cardBrowserContext.openFolderInSameLeaf(props.folder)
             }}
             >
             {name}
