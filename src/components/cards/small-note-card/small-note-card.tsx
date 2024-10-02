@@ -43,8 +43,12 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
                 'ddc_pb_small-note-card',
                 showSettleTransition && 'ddc_pb_closing'
             ])}
-            onClick = { () => {
-                cardBrowserContext.openFile(props.file)
+            onClick = { (event) => {
+                if (event.ctrlKey || event.metaKey) {
+                    cardBrowserContext.openFileInBackgroundTab(props.file)
+                } else {
+                    cardBrowserContext.openFileInSameLeaf(props.file)
+                }
             }}
             style = {{
                 rotate: articleRotation + 'deg',
