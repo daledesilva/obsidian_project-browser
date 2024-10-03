@@ -19,17 +19,11 @@ export const CardBrowserContext = React.createContext<{
     folder: null | TFolder,
     lastTouchedFilePath: string,
     rememberLastTouchedFile: (file: TFile) => void,
-    openFileInSameLeaf: (file: TFile) => void,
-    openFileInBackgroundTab: (file: TFile) => void,
-    openFolderInSameLeaf: (folder: TFolder) => void,
     rerender: () => void,
 }>({
     folder: null,
     lastTouchedFilePath: '',
     rememberLastTouchedFile: () => {},
-    openFileInSameLeaf: () => {},
-    openFileInBackgroundTab: () => {},
-    openFolderInSameLeaf: () => {},
     rerender: () => {},
 });
 
@@ -79,7 +73,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
         if(plugin && browserRef.current) {
             registerCardBrowserContextMenu(browserRef.current, initialFolder, {
-                openFile: openFileInSameLeaf,
+                openFile: () => {}, // TODO: maybe remove this... it used to be a function
                 getCurFolder,
             });
         }
@@ -100,9 +94,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
             folder: initialFolder,
             lastTouchedFilePath,
             rememberLastTouchedFile,
-            openFileInSameLeaf,
-            openFileInBackgroundTab: openFileInBackgroundTab,
-            openFolderInSameLeaf: openFolderInSameLeaf,
         }}>
             <div
                 ref = {browserRef}
@@ -131,7 +122,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             </div>
             <CurrentFolderMenu
                 folder = {initialFolder}
-                openFile = {openFileInSameLeaf}
+                openFile = {() => {}}
             />
         </CardBrowserContext.Provider>
     );
@@ -157,30 +148,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
         });
     }
     
-    function openFileInSameLeaf(file: TFile) {
-        let { workspace } = plugin.app;
-        let leaf = workspace.getMostRecentLeaf();
-
-        if(leaf) {
-            props.rememberLastTouchedFilepath(file.path);
-        } else {
-            leaf = workspace.getLeaf();
-        }
-
-        leaf.openFile(file);
-    }
-    async function openFileInBackgroundTab(file: TFile) {
-        let { workspace } = plugin.app;
-        let curLeaf = workspace.getMostRecentLeaf();
-        let newLeaf = workspace.getLeaf(true);
-
-        // Open new tab
-        await newLeaf.openFile(file);
-
-        // switch immediately back to previous tab
-        if(curLeaf) workspace.setActiveLeaf(curLeaf);
-    }
-
     function openParentFolder() {
         const nextFolder = initialFolder.parent;
         if(!nextFolder) return;

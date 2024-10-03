@@ -5,6 +5,7 @@ import * as React from "react";
 import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
+import { openFileInBackgroundTab, openFileInSameLeaf } from 'src/logic/file-access-processes';
 
 /////////
 /////////
@@ -41,9 +42,9 @@ export const ListNoteCard = (props: ListNoteCardProps) => {
             ])}
             onClick = { (event) => {
                 if (event.ctrlKey || event.metaKey) {
-                    cardBrowserContext.openFileInBackgroundTab(props.file)
+                    openFileInBackgroundTab(props.file)
                 } else {
-                    cardBrowserContext.openFileInSameLeaf(props.file)
+                    openFileInSameLeaf(props.file)
                 }
             }}
             // style = {{

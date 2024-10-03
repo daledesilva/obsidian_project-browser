@@ -1,5 +1,7 @@
 import { Menu, Notice, TFile } from "obsidian";
 import * as React from "react";
+import { CardBrowserContext } from "src/components/card-browser/card-browser";
+import { openFileInBackgroundTab, openFileInSameLeaf } from "src/logic/file-access-processes";
 import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic/file-processes";
 import { refreshFolderReference } from "src/logic/folder-processes";
 import { getFileState, setFileState } from "src/logic/frontmatter-processes";
@@ -37,6 +39,13 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         document.body.click();
         
         const menu = new Menu();
+        menu.addItem((item) => {
+            item.setTitle('Open in new tab');
+            item.onClick(() => {
+                openFileInBackgroundTab(props.file)
+            });
+        });
+        menu.addSeparator();
         visibleStates.forEach( (state) => {
             menu.addItem((item) => {
                 item.setTitle(state.name);
