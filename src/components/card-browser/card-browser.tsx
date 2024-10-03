@@ -11,6 +11,7 @@ import { PluginContext } from 'src/utils/plugin-context';
 import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
 import { atom, useSetAtom } from 'jotai';
 import { getGlobals } from 'src/logic/stores';
+import { SearchInput } from '../search-input/search-input';
 
 //////////
 //////////
@@ -104,6 +105,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                     onBackClick = {openParentFolder}
                     onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                 />
+                <SearchInput onChange={filterItemsByString}/>
                 <div>
                     {sectionsOfItems.map( (section) => (
                         <div  key={section.title}>
@@ -152,6 +154,11 @@ export const CardBrowser = (props: CardBrowserProps) => {
         const nextFolder = initialFolder.parent;
         if(!nextFolder) return;
         openFolderInSameLeaf(nextFolder);
+    }
+
+    function filterItemsByString(searchStr: string) {
+        console.log('searching for:', searchStr);
+        // sectionsOfItem
     }
 
 
