@@ -20,11 +20,13 @@ export const CardBrowserContext = React.createContext<{
     folder: null | TFolder,
     lastTouchedFilePath: string,
     rememberLastTouchedFile: (file: TFile) => void,
+    openFolderInSameLeaf: (folder: TFolder) => void,
     rerender: () => void,
 }>({
     folder: null,
     lastTouchedFilePath: '',
     rememberLastTouchedFile: () => {},
+    openFolderInSameLeaf: () => {},
     rerender: () => {},
 });
 
@@ -94,6 +96,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         <CardBrowserContext.Provider value={{
             folder: initialFolder,
             lastTouchedFilePath,
+            openFolderInSameLeaf,
             rememberLastTouchedFile,
         }}>
             <div
