@@ -132,14 +132,16 @@ export const CardBrowser = (props: CardBrowserProps) => {
                             </div>
                         </>)}
                         {section.type !== "folders" && (<>
-                            <div  key={section.title}>
-                                {section.type === "state" && (
-                                    <StateSection section={section}/>
-                                )}
-                                {section.type === "stateless" && (
-                                    <StatelessSection section={section}/>
-                                )}
-                            </div>
+                            {(!searchActive || (searchActive && section.items.length > 0)) && (
+                                <div  key={section.title}>
+                                    {section.type === "state" && (
+                                        <StateSection section={section}/>
+                                    )}
+                                    {section.type === "stateless" && (
+                                        <StatelessSection section={section}/>
+                                    )}
+                                </div>
+                            )}
                         </>)}
                     </>))}
                 </div>
