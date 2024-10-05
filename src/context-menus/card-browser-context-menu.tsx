@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai";
 import { Menu, TFolder } from "obsidian";
 import { EventHandler } from "react";
+import { openFileInSameLeaf } from "src/logic/file-access-processes";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
 import { getGlobals, getShowHiddenFolders, hideHiddenFolders, unhideHiddenFolders } from "src/logic/stores";
 import { NewFolderModal } from "src/modals/new-folder-modal/new-folder-modal";
@@ -54,7 +55,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
             item.setTitle("New note")
                 .onClick(async () => {
                     const newFile = await createProject(commands.getCurFolder(), 'Untitled');
-                    setTimeout( () => commands.openFile(newFile), 500);
+                    setTimeout( () => openFileInSameLeaf(newFile), 500);
                 })
         );
         menu.addItem((item) =>
