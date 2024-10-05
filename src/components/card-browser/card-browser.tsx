@@ -3,7 +3,7 @@ import * as React from "react";
 import { FolderSection, StateSection, StatelessSection } from "../section/section";
 import { TFile, TFolder } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
-import { getSortedItemsInFolder } from 'src/logic/folder-processes';
+import { filterSectionByString, filterSectionsByString, getSortedItemsInFolder } from 'src/logic/folder-processes';
 import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
 import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
 import { v4 as uuidv4 } from 'uuid';
@@ -48,6 +48,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const {plugin} = getGlobals();
     const [viewInstanceId] = React.useState<string>(uuidv4());
     const [refreshId, setRefreshId] = React.useState<number>(uuidv4());
+    const [searchStr, setSearchStr] = React.useState<string>('');
     const {state, eState} = props.getViewStates();
     const browserRef = React.useRef(null);
 
@@ -58,6 +59,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     // const [path, setPath] = React.useState(props.path);
     const initialFolder = v.getFolderByPath(state.path) || v.getRoot(); // TODO: Check this is valid?
     let sectionsOfItems = getSortedItemsInFolder(initialFolder);
+    filterSectionsByString(sectionsOfItems, searchStr);
     
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
 
@@ -98,6 +100,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             lastTouchedFilePath,
             openFolderInSameLeaf,
             rememberLastTouchedFile,
+            rerender,
         }}>
             <div
                 ref = {browserRef}
@@ -108,7 +111,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                     onBackClick = {openParentFolder}
                     onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                 />
-                <SearchInput onChange={filterItemsByString}/>
+                <SearchInput onChange={(str) => setSearchStr(str)}/>
                 <div>
                     {sectionsOfItems.map( (section) => (
                         <div  key={section.title}>
@@ -157,11 +160,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
         const nextFolder = initialFolder.parent;
         if(!nextFolder) return;
         openFolderInSameLeaf(nextFolder);
-    }
-
-    function filterItemsByString(searchStr: string) {
-        console.log('searching for:', searchStr);
-        // sectionsOfItem
     }
 
 

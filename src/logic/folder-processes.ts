@@ -171,9 +171,21 @@ export const getSortedItemsInFolder = (folder: TFolder): Section[] => {
         }
     }
     
-    itemsBySectionArr = orderSections(itemsBySectionArr, plugin);
+    itemsBySectionArr = orderSections(itemsBySectionArr);
 
     return itemsBySectionArr;
+}
+
+export function filterSectionsByString(sections: Section[], searchStr: string) {
+    sections.forEach( (section) => {
+        if(section.type !== 'folders') filterSectionByString(section, searchStr);
+    })
+}
+
+export function filterSectionByString(section: Section, searchStr: string) {
+    section.items = section.items.filter( (item) => {
+        return item.name.toLowerCase().contains(searchStr.toLowerCase())
+    })
 }
 
 export const getItemsInFolder = (folder: TFolder): null | TAbstractFile[] => {
