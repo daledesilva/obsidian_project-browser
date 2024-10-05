@@ -3,6 +3,7 @@ import './search-input.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
 import classNames from 'classnames';
+import { StateViewMode_0_1_0 } from 'src/types/plugin-settings0_1_0';
 
 
 /////////
@@ -18,7 +19,7 @@ interface SearchInputProps {
 
 export const SearchInput = (props: SearchInputProps) => {
     const searchInputElRef = React.useRef<HTMLInputElement>(null);
-    const cardBrowserActiveRef = React.useRef<boolean>(true);
+    const lastClickedInCardBrowserRef = React.useRef<boolean>(true);
     
     React.useEffect( () => {    
 
@@ -26,9 +27,9 @@ export const SearchInput = (props: SearchInputProps) => {
         document.addEventListener('pointerdown', (event) => {
             const cardBrowserEl = (event.target as HTMLElement)?.closest('.ddc_pb_browser');
             if(cardBrowserEl) {
-                cardBrowserActiveRef.current = true;
+                lastClickedInCardBrowserRef.current = true;
             } else {
-                cardBrowserActiveRef.current = false;
+                lastClickedInCardBrowserRef.current = false;
             }
         });
 
@@ -46,10 +47,21 @@ export const SearchInput = (props: SearchInputProps) => {
     }, [props.searchActive])
 
     const handleKeyPress = (event: KeyboardEvent) => {
-        if(!cardBrowserActiveRef.current) return;
-        if(document.activeElement === searchInputElRef.current) return; // bail if search box is already active
+        
+        if(!lastClickedInCardBrowserRef.current) return;
+        
+        const cardBrowserEl = (event.target as HTMLElement)?.closest('.ddc_pb_browser');
+        const activeDomElName = document.activeElement?.tagName;
+        if(!cardBrowserEl?.contains(document.activeElement) && activeDomElName === 'INPUT') return; // Bail if there's an active input outside of the card browser view
 
-        if (event.key.match(/[a-zA-Z0-9]/)) {
+        if(event.key === 'Escape') {
+            clearSearch();
+            return;
+        }
+
+        if(document.activeElement === searchInputElRef.current) return; // Bail if search box is already active
+
+        if (event.key.length === 1 && event.key.match(/[a-zA-Z0-9]/)) {
             // Focus the search box so it can handle the rest.
             // Seams to also pass first typed letter as well
             searchInputElRef.current?.focus();
@@ -72,19 +84,31 @@ export const SearchInput = (props: SearchInputProps) => {
                 ref = {searchInputElRef}
                 className = 'ddc_pb_search-input'
                 onChange = {(e) => props.onChange(e.currentTarget.value)}
+                onBlur = {() => {
+                    if(searchInputElRef.current) {
+                        if(searchInputElRef.current.value.trim() === '') {
+                            clearSearch();
+                        }
+                    }
+                }}
             />
             <button
                 className = 'ddc_pb_search-clear-btn'
-                onClick = {() => {
-                    props.hideSearchInput();
-                    if(searchInputElRef.current) {
-                        searchInputElRef.current.value = '';
-                        props.onChange('');
-                    }
-                }}
+                onClick = {clearSearch}
             >
                 <X size={20} />
             </button>
         </div>
     </>
+
+    /////////
+    /////////
+
+    function clearSearch() {
+        props.hideSearchInput();
+        if(searchInputElRef.current) {
+            searchInputElRef.current.value = '';
+        }
+        props.onChange('');
+    }
 }
