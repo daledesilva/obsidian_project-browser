@@ -1,4 +1,4 @@
-import { CornerLeftUp } from 'lucide-react';
+import { CornerLeftUp, X } from 'lucide-react';
 import './search-input.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
@@ -10,13 +10,15 @@ import classNames from 'classnames';
 
 
 interface SearchInputProps {
+    searchActive: boolean,
     onChange: (input: string) => void,
+    showSearchInput: () => void,
+    hideSearchInput: () => void,
 }
 
 export const SearchInput = (props: SearchInputProps) => {
     const searchInputElRef = React.useRef<HTMLInputElement>(null);
     const cardBrowserActiveRef = React.useRef<boolean>(true);
-
     
     React.useEffect( () => {    
 
@@ -35,7 +37,13 @@ export const SearchInput = (props: SearchInputProps) => {
         return () => {
             document.removeEventListener('keydown', handleKeyPress);
         };
-    })
+    });
+
+    React.useEffect( () => {
+        if(props.searchActive) {
+            searchInputElRef.current?.focus();
+        }
+    }, [props.searchActive])
 
     const handleKeyPress = (event: KeyboardEvent) => {
         if(!cardBrowserActiveRef.current) return;
@@ -45,6 +53,7 @@ export const SearchInput = (props: SearchInputProps) => {
             // Focus the search box so it can handle the rest.
             // Seams to also pass first typed letter as well
             searchInputElRef.current?.focus();
+            props.showSearchInput();
         };
 
     };
@@ -55,12 +64,27 @@ export const SearchInput = (props: SearchInputProps) => {
     return <>
         <div
             className = 'ddc_pb_search-input-container'
+            style = {{
+                display: props.searchActive ? 'flex' : 'none',
+            }}
         >
             <input
                 ref = {searchInputElRef}
                 className = 'ddc_pb_search-input'
                 onChange = {(e) => props.onChange(e.currentTarget.value)}
             />
+            <button
+                className = 'ddc_pb_search-clear-btn'
+                onClick = {() => {
+                    props.hideSearchInput();
+                    if(searchInputElRef.current) {
+                        searchInputElRef.current.value = '';
+                        props.onChange('');
+                    }
+                }}
+            >
+                <X size={20} />
+            </button>
         </div>
     </>
 }

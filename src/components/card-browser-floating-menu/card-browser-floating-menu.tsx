@@ -1,30 +1,49 @@
-import './current-folder-menu.scss';
+import './card-browser-floating-menu.scss';
 import { TFile, TFolder } from 'obsidian';
 import * as React from "react";
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { NewProjectModal } from 'src/modals/new-project-modal/new-project-modal';
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { createProject } from 'src/utils/file-manipulation';
 import { getGlobals } from 'src/logic/stores';
+import { openFileInSameLeaf } from 'src/logic/file-access-processes';
+import classNames from 'classnames';
 
 //////////
 //////////
 
-interface CurrentFolderMenuProps {
+interface CardBrowserFloatingMenuProps {
     folder: TFolder,
-    openFile: (file: TFile) => void,
+    searchActive: boolean,
+    activateSearch: () => void,
+    deactivateSearch: () => void,
 }
 
-export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
+export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => {
     
     return <>
-        <div className='project-browser_current-folder-menu'>
+        <div className='ddc_pb_card-browser-floating-menu'>
             <button
-                className = 'project-browser_new-button'
+                className = {classNames([
+                    'ddc_pb_search-button',
+                    props.searchActive && 'ddc_pb_active',
+                ])}
+                onClick = {() => {
+                    if(props.searchActive) {
+                        props.deactivateSearch();
+                    } else {
+                        props.activateSearch();
+                    }
+                }}    
+            >
+                <Search size={20} />
+            </button>
+            <button
+                className = 'ddc_pb_new-button'
                 onClick = {() => newProject(props.folder)}    
             >
-                <Plus size={40} />
+                <Plus size={33} />
             </button>
         </div>
     </>
@@ -43,7 +62,7 @@ export const CurrentFolderMenu = (props: CurrentFolderMenuProps) => {
             //     cardBrowserContext.rerender();
                 // Additional delay for notcing refresh before opening file
                 // setTimeout( () => { 
-                    props.openFile(newFile);
+                    openFileInSameLeaf(newFile);
                 // }, 500);
             // }, 300)
 

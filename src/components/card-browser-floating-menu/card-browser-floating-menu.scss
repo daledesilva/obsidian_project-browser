@@ -1,0 +1,32 @@
+.ddc_pb_card-browser-floating-menu {
+    position: absolute;
+    bottom: 100px;
+    right: min(100px, 5vw);
+
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 10px;
+    
+    .ddc_pb_search-button {
+        cursor: pointer;
+        --size: min(50px, 10vw);
+        width: var(--size);
+        height: var(--size);
+        border-radius: 50%;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+
+        &.ddc_pb_active {
+            background-color: var(--interactive-accent);
+        }
+    }
+
+    .ddc_pb_new-button {
+        cursor: pointer;
+        width: min(80px, 15vw);
+        height: min(80px, 15vw);
+        border-radius: 50%;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    }
+
+}

@@ -1,0 +1,29 @@
+.ddc_pb_search-input-container {
+    background-color: var(--interactive-accent);
+    border-radius: var(--input-radius);
+    padding: 0.5em 0.5em 0.5em 0.9em;
+    
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    
+    .ddc_pb_search-input {
+        flex-grow: 1;
+        color: var(--text-on-accent);
+        background-color: unset;
+        font-size: var(--font-text-size);
+        border: none;
+    }
+
+    .ddc_pb_search-clear-btn {
+        cursor: pointer;
+        border: none;
+        background: none;
+        box-shadow: none;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+}

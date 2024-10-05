@@ -4,14 +4,14 @@ import { FolderSection, StateSection, StatelessSection } from "../section/sectio
 import { TFile, TFolder } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { filterSectionByString, filterSectionsByString, getSortedItemsInFolder } from 'src/logic/folder-processes';
-import { CurrentFolderMenu } from '../current-folder-menu/current-folder-menu';
 import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
 import { v4 as uuidv4 } from 'uuid';
-import { PluginContext } from 'src/utils/plugin-context';
 import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
 import { atom, useSetAtom } from 'jotai';
 import { getGlobals } from 'src/logic/stores';
 import { SearchInput } from '../search-input/search-input';
+import classNames from 'classnames';
+import { CardBrowserFloatingMenu } from '../card-browser-floating-menu/card-browser-floating-menu';
 
 //////////
 //////////
@@ -48,6 +48,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const {plugin} = getGlobals();
     const [viewInstanceId] = React.useState<string>(uuidv4());
     const [refreshId, setRefreshId] = React.useState<number>(uuidv4());
+    const [searchActive, setSearchActive] = React.useState<boolean>(false);
     const [searchStr, setSearchStr] = React.useState<string>('');
     const {state, eState} = props.getViewStates();
     const browserRef = React.useRef(null);
@@ -111,26 +112,43 @@ export const CardBrowser = (props: CardBrowserProps) => {
                     onBackClick = {openParentFolder}
                     onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                 />
-                <SearchInput onChange={(str) => setSearchStr(str)}/>
                 <div>
-                    {sectionsOfItems.map( (section) => (
-                        <div  key={section.title}>
-                            {section.type === "folders" && (
+                    {sectionsOfItems.map( (section) => (<>
+                        {section.type === "folders" && (<>
+                            <div
+                                key = {'nav-and-filter-section'}
+                                className = {classNames([
+                                    'ddc_pb_section',
+                                    'ddc_pb_nav-and-filter-section'
+                                ])}
+                            >
                                 <FolderSection section={section}/>
-                            )}
-                            {section.type === "state" && (
-                                <StateSection section={section}/>
-                            )}
-                            {section.type === "stateless" && (
-                                <StatelessSection section={section}/>
-                            )}
-                        </div>
-                    ))}
+                                <SearchInput
+                                    searchActive = {searchActive}
+                                    onChange = {setSearchStr}
+                                    hideSearchInput = {() => setSearchActive(false)}
+                                    showSearchInput = {() => setSearchActive(true)}
+                                />
+                            </div>
+                        </>)}
+                        {section.type !== "folders" && (<>
+                            <div  key={section.title}>
+                                {section.type === "state" && (
+                                    <StateSection section={section}/>
+                                )}
+                                {section.type === "stateless" && (
+                                    <StatelessSection section={section}/>
+                                )}
+                            </div>
+                        </>)}
+                    </>))}
                 </div>
             </div>
-            <CurrentFolderMenu
+            <CardBrowserFloatingMenu
                 folder = {initialFolder}
-                openFile = {() => {}}
+                searchActive = {searchActive}
+                activateSearch = {() => setSearchActive(true)}
+                deactivateSearch = {() => setSearchActive(false)}
             />
         </CardBrowserContext.Provider>
     );

@@ -3,8 +3,6 @@ import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser, { CardBrowserHandlers } from "src/components/card-browser/card-browser";
 import { createContext } from 'react';
-import { PluginContext } from "src/utils/plugin-context";
-import { CurrentFolderMenu } from "src/components/current-folder-menu/current-folder-menu";
 import { isEmpty } from "src/utils/misc";
 import { PLUGIN_ICON } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';

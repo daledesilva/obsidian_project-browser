@@ -13,6 +13,7 @@ import { sortItemsAlphabetically } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
+import { SearchInput } from '../search-input/search-input';
 
 //////////
 //////////
@@ -25,7 +26,10 @@ export const FolderSection = (props: FolderSectionProps) => {
     const sortedFolders = sortItemsAlphabetically(props.section.items, 'ascending');
 
     return <>
-        <BaseSection key={props.section.title} className="ddc_pb_folder-section">
+        <BaseSection
+            key = {props.section.title}
+            className = "ddc_pb_folder-section"
+        >
             <FolderButtonSet
                 folders = {sortedFolders}
             />

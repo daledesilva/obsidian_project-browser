@@ -1,8 +1,17 @@
 .ddc_pb_section {
     margin-bottom: 2em;
 }
+.ddc_pb_nav-and-filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2em;
+}
 .ddc_pb_folder-section {
-
+    display: flex;
+    column-gap: 1em;
+    // align-items: flex-start;
+    justify-content: stretch;
+    margin-bottom: 0;
 }
 .ddc_pb_state-section {
     background-color: var(--color-base-10);
