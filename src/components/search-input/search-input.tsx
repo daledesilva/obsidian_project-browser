@@ -41,6 +41,7 @@ export const SearchInput = (props: SearchInputProps) => {
     });
 
     React.useEffect( () => {
+        clearSearchStr();
         if(props.searchActive) {
             searchInputElRef.current?.focus();
         }
@@ -55,7 +56,8 @@ export const SearchInput = (props: SearchInputProps) => {
         if(!cardBrowserEl?.contains(document.activeElement) && activeDomElName === 'INPUT') return; // Bail if there's an active input outside of the card browser view
 
         if(event.key === 'Escape') {
-            clearSearch();
+            clearSearchStr();
+            props.hideSearchInput();
             return;
         }
 
@@ -87,14 +89,17 @@ export const SearchInput = (props: SearchInputProps) => {
                 onBlur = {() => {
                     if(searchInputElRef.current) {
                         if(searchInputElRef.current.value.trim() === '') {
-                            clearSearch();
+                            clearSearchStr();
                         }
                     }
                 }}
             />
             <button
                 className = 'ddc_pb_search-clear-btn'
-                onClick = {clearSearch}
+                onClick = {() => {
+                    clearSearchStr();
+                    props.hideSearchInput();
+                }}
             >
                 <X size={20} />
             </button>
@@ -104,8 +109,7 @@ export const SearchInput = (props: SearchInputProps) => {
     /////////
     /////////
 
-    function clearSearch() {
-        props.hideSearchInput();
+    function clearSearchStr() {
         if(searchInputElRef.current) {
             searchInputElRef.current.value = '';
         }
