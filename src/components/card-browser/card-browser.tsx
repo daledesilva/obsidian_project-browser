@@ -112,25 +112,27 @@ export const CardBrowser = (props: CardBrowserProps) => {
                     onBackClick = {openParentFolder}
                     onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                 />
-                <div>
+                <div
+                    key = {'nav-and-filter-section'}
+                    className = {classNames([
+                        'ddc_pb_section',
+                        'ddc_pb_nav-and-filter-section'
+                    ])}
+                >
                     {sectionsOfItems.map( (section) => (<>
                         {section.type === "folders" && (<>
-                            <div
-                                key = {'nav-and-filter-section'}
-                                className = {classNames([
-                                    'ddc_pb_section',
-                                    'ddc_pb_nav-and-filter-section'
-                                ])}
-                            >
-                                <FolderSection section={section}/>
-                                <SearchInput
-                                    searchActive = {searchActive}
-                                    onChange = {setSearchStr}
-                                    hideSearchInput = {() => setSearchActive(false)}
-                                    showSearchInput = {() => setSearchActive(true)}
-                                />
-                            </div>
+                            <FolderSection section={section}/>
                         </>)}
+                    </>))}
+                    <SearchInput
+                        searchActive = {searchActive}
+                        onChange = {setSearchStr}
+                        hideSearchInput = {() => setSearchActive(false)}
+                        showSearchInput = {() => setSearchActive(true)}
+                    />
+                </div>
+                <div>
+                    {sectionsOfItems.map( (section) => (<>
                         {section.type !== "folders" && (<>
                             {(!searchActive || (searchActive && section.items.length > 0)) && (
                                 <div  key={section.title}>
