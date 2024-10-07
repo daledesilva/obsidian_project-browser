@@ -48,9 +48,9 @@ jobs:
       with:
         #${{ github.ref }}
         tag_name: 0.1.4
-        release_name: 0.1.5
+        release_name: 0.1.4
         draft: true
-        prerelease: false
+        prerelease: true
 
     # Upload the packaged release file
     - name: Upload zip file
