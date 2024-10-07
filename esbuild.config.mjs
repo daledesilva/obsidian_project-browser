@@ -27,7 +27,7 @@ const copyManifestPlugin = () => ({
 	setup(build) {
 		build.onEnd(async () => {
 			try {
-				fs.copyFileSync('./manifest.json', './dist/manifest.json');
+				fs.cpSync('./manifest.json', './dist/manifest.json');
 				console.log('COPIED: ./manifest.json to ./dist/manifest.json');
 			} catch (e) {
 				console.error('Failed to copy manifest.json to dist:', e);
@@ -35,7 +35,7 @@ const copyManifestPlugin = () => ({
 		});
 		try {
 			console.log('COPIED: ./manifest-beta.json to ./dist/manifest-beta.json');
-			fs.copyFileSync('./manifest-beta.json', './dist/manifest-beta.json');
+			fs.cpSync('./manifest-beta.json', './dist/manifest-beta.json');
 		} catch (e) {
 			console.error('Failed to copy manifest-beta.json to dist:', e);
 		}
@@ -95,6 +95,8 @@ esbuild.build({
 		
 		// Enables manifest.json to live in root as that's the Obsidian expects in a repository, and this copies it to dist on build
 		copyManifestPlugin(),
+
+		
 		// Renames main.css to styles.css as that's what obsidian expects
 		renamePlugin(),
 
