@@ -1,6 +1,8 @@
 name: Draft latest release
 
 # To Run:
+# Update manifest version
+# push change
 # git tag <version number>
 # git push origin --tags
 
@@ -53,10 +55,10 @@ jobs:
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VERSION: ${{ github.ref }}
+        VERSION: ${{ github.ref_name }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
+        tag_name: ${{ github.ref_name }}
+        release_name: ${{ github.ref_name }}
         draft: true
         prerelease: false
 
