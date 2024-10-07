@@ -53,7 +53,7 @@ jobs:
     - name: Upload zip file
       id: upload-zip
       uses: actions/upload-release-asset@v1
-      env:
+      # env:
         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -65,7 +65,7 @@ jobs:
     - name: Upload main.js
       id: upload-main
       uses: actions/upload-release-asset@v1
-      env:
+      # env:
         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
@@ -77,7 +77,7 @@ jobs:
     - name: Upload manifest.json
       id: upload-manifest
       uses: actions/upload-release-asset@v1
-      env:
+      # env:
         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
@@ -89,12 +89,12 @@ jobs:
     - name: Upload styles.css
       id: upload-css
       uses: actions/upload-release-asset@v1
-      env:
+      # env:
         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./styles.css
         asset_name: styles.css
         asset_content_type: text/css
-        
+
     # TODO: release notes???
