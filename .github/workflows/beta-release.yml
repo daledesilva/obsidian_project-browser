@@ -43,7 +43,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VERSION: ${{ github.ref }}
       with:
         tag_name: test_${{ github.ref }}
@@ -55,8 +55,8 @@ jobs:
     - name: Upload zip file
       id: upload-zip
       uses: actions/upload-release-asset@v1
-      # env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./${{ github.event.repository.name }}.zip
@@ -67,8 +67,8 @@ jobs:
     - name: Upload main.js
       id: upload-main
       uses: actions/upload-release-asset@v1
-      # env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ${{ github.event.repository.name }}/main.js
@@ -79,8 +79,8 @@ jobs:
     - name: Upload manifest.json
       id: upload-manifest
       uses: actions/upload-release-asset@v1
-      # env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ${{ github.event.repository.name }}/manifest.json
@@ -91,8 +91,8 @@ jobs:
     - name: Upload styles.css
       id: upload-css
       uses: actions/upload-release-asset@v1
-      # env:
-        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ${{ github.event.repository.name }}/styles.css
