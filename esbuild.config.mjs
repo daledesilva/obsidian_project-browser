@@ -14,6 +14,7 @@ const renamePlugin = () => ({
 		build.onEnd(async () => {
 			try {
 				fs.renameSync('./dist/main.css', './dist/styles.css');
+				console.log('RENAMED: main.css to styles.css');
 			} catch (e) {
 				console.log('WARNING: Failed to main.css to styles.css file. If you have no external CSS or SCSS files, then this can be ignored.');
 			}
@@ -27,11 +28,13 @@ const copyManifestPlugin = () => ({
 		build.onEnd(async () => {
 			try {
 				fs.copyFileSync('./manifest.json', './dist/manifest.json');
+				console.log('COPIED: ./manifest.json to ./dist/manifest.json');
 			} catch (e) {
 				console.error('Failed to copy manifest.json to dist:', e);
 			}
 		});
 		try {
+			console.log('COPIED: ./manifest-beta.json to ./dist/manifest-beta.json');
 			fs.copyFileSync('./manifest-beta.json', './dist/manifest-beta.json');
 		} catch (e) {
 			console.error('Failed to copy manifest-beta.json to dist:', e);
