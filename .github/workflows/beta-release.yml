@@ -7,11 +7,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: '20.x' # You might need to adjust this value to your own version
 
@@ -19,7 +19,7 @@ jobs:
     - name: Get Version
       id: version
       run: |
-        echo "::set-output name=tag::$(git describe --abbrev=0)"
+        echo "{name}={tag::$(git describe --abbrev=0)}" >> $GITHUB_OUTPUT
 
     # Build the plugin
     - name: Build
