@@ -32,8 +32,8 @@ jobs:
     - name: Package
       run: |
         mkdir ${{ github.event.repository.name }}
-        cp manifest-beta.json ${{ github.event.repository.name }}/manifest.json
-        cp main.js styles.css README.md ${{ github.event.repository.name }}
+        cp ./manifest-beta.json ${{ github.event.repository.name }}/manifest.json
+        cp ./main.js ./styles.css README.md ${{ github.event.repository.name }}
         zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
 
     # Create the release on github
@@ -41,7 +41,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VERSION: ${{ github.ref }}
       with:
         tag_name: test_${{ github.ref }}
@@ -54,7 +54,7 @@ jobs:
       id: upload-zip
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./${{ github.event.repository.name }}.zip
@@ -66,7 +66,7 @@ jobs:
       id: upload-main
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./main.js
@@ -78,7 +78,7 @@ jobs:
       id: upload-manifest
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./manifest.json
@@ -90,10 +90,11 @@ jobs:
       id: upload-css
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} 
         asset_path: ./styles.css
         asset_name: styles.css
         asset_content_type: text/css
+        
     # TODO: release notes???
