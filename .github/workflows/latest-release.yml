@@ -7,8 +7,8 @@ name: Draft latest release
 on:
   push:
     # Sequence of patterns matched against refs/tags
-    branches:
-      - main
+    # branches:
+    #   - main
     tags:
     - '*' # Push events to matching any tag format, i.e. 1.0, 20.15.10
 
@@ -25,10 +25,10 @@ jobs:
         node-version: '20.x' # You might need to adjust this value to your own version
 
     # Get the version number and put it in a variable
-    - name: Get Version
-      id: version
-      run: |
-        echo "{name}={tag::$(git describe --abbrev=0)}" >> $GITHUB_OUTPUT
+    # - name: Get Version
+    #   id: version
+    #   run: |
+    #     echo "{name}={tag::$(git describe --abbrev=0)}" >> $GITHUB_OUTPUT
 
     # Build the plugin
     - name: Build
