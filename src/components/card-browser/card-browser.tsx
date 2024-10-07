@@ -147,13 +147,13 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         </>)}
                     </>))}
                 </div>
+                <CardBrowserFloatingMenu
+                    folder = {initialFolder}
+                    searchActive = {searchActive}
+                    activateSearch = {() => setSearchActive(true)}
+                    deactivateSearch = {() => setSearchActive(false)}
+                />
             </div>
-            <CardBrowserFloatingMenu
-                folder = {initialFolder}
-                searchActive = {searchActive}
-                activateSearch = {() => setSearchActive(true)}
-                deactivateSearch = {() => setSearchActive(false)}
-            />
         </CardBrowserContext.Provider>
     );
 

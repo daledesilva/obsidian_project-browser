@@ -48,7 +48,6 @@ export const SearchInput = (props: SearchInputProps) => {
     }, [props.searchActive])
 
     const handleKeyPress = (event: KeyboardEvent) => {
-        
         if(!lastClickedInCardBrowserRef.current) return;
         
         const cardBrowserEl = (event.target as HTMLElement)?.closest('.ddc_pb_browser');
