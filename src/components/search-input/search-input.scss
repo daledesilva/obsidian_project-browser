@@ -13,6 +13,12 @@
         background-color: unset;
         font-size: var(--font-text-size);
         border: none;
+
+        caret-color: var(--text-on-accent);
+        &::selection {
+            color: var(--interactive-accent);
+            background: var(--text-on-accent);
+        }
     }
 
     .ddc_pb_search-clear-btn {
