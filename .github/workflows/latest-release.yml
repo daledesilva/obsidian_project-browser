@@ -1,7 +1,16 @@
 name: Draft latest release
+
+# To Run:
+# git tag <version number>
+# git push origin --tags
+
 on:
   push:
-    branches: [main]
+    # Sequence of patterns matched against refs/tags
+    branches:
+      - main
+    tags:
+    - '*' # Push events to matching any tag format, i.e. 1.0, 20.15.10
 
 jobs:
   build:
@@ -46,9 +55,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VERSION: ${{ github.ref }}
       with:
-        #${{ github.ref }}
-        tag_name: 0.1.4
-        release_name: 0.1.4
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
         draft: true
         prerelease: false
 
