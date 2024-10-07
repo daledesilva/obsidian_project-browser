@@ -46,7 +46,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         VERSION: ${{ github.ref }}
       with:
-        # tag_name: test_${{ github.ref }}
+        #${{ github.ref }}
+        tag_name: 0.1.4
         release_name: test_${{ github.ref }}
         draft: true
         prerelease: false
