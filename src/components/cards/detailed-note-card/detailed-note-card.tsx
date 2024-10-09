@@ -56,6 +56,7 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
                 if (event.ctrlKey || event.metaKey) {
                     openFileInBackgroundTab(props.file)
                 } else {
+                    cardBrowserContext.rememberLastTouchedFile(props.file);
                     openFileInSameLeaf(props.file)
                 }
             }}

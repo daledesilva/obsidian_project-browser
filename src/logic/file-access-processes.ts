@@ -9,9 +9,7 @@ export function openFileInSameLeaf(file: TFile) {
     let { workspace } = plugin.app;
     let leaf = workspace.getMostRecentLeaf();
 
-    if(leaf) {
-        // props.rememberLastTouchedFilepath(file.path);
-    } else {
+    if(!leaf) {
         leaf = workspace.getLeaf();
     }
 
