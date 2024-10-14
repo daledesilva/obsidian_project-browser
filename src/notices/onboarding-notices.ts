@@ -29,8 +29,8 @@ export async function showOnboardingNotices() {
         primaryBtnEl,
         tertiaryBtnEl
     } = createNoticeCtaBar(noticeBody, {
-        primaryLabel: `Let's go!`,
-        tertiaryLabel: 'Dismiss for now',
+        primaryLabel: `Read now`,
+        tertiaryLabel: 'Remind me later',
     })
     
     const notice = launchPersistentNotice(noticeBody);
