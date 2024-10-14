@@ -1,11 +1,7 @@
 # Obsidian Project Browser
-A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a browseable layout of the files and folders in your vault.
+A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a card layout of the files in each folder organised by state. The view is filterable with an inbuilt search field (just start typing!), and files can be assigned a state from a prominent menu within the note.
 
->**Please note that this plugin is in an *ALPHA* state.**<br/>
-This means that it has been released before all of it's features have been developed or properly tested.<br/>
-You can learn about what's done and what's on the roadmap below.
-
-<img src="docs/media/preview.png" alt="Screenshot of Project Browser plugin">
+<img src="docs/media/readme_hero-shot.png" alt="Screenshot of Project Browser plugin">
 
 ## 📓 Development Diaries
 I record regular development diaries. [Subscribe and follow along](https://www.youtube.com/@designdebtclub) to see features in development.
@@ -33,49 +29,40 @@ I record regular development diaries. [Subscribe and follow along](https://www.y
 </p>
 
 ## 🗺️ Rough roadmap
+I've been building this plugin since March 2023 and I'm regulaly developing it further and using it daily myself.<br/>
 Below are the high level features in my current development plan along with when they'll likely get implemented.
 
-### February 2024 (Core functionality)
-- Show files & folders as cards. ✅
-- Navigation between folders. ✅
-- Sectioning by states. ✅
-- Easy state menu. ✅
+<details>
+<summary>Historical</summary>
 
-### March 2024 (Basic functionality)
-- Adapt to light/dark modes. ✅
-- Add new file button. ✅
-- Remember last folder & consistent navigation. ✅
+- ✅ Show files as cards.
+- ✅ Folder navigation.
+- ✅ Organisation by states.
+- ✅ Easy note state menu.
+- ✅ Back/forward navigation with memory.
+- ✅ Adapt to light/dark modes.
+- ✅ Enable customising states.
+- ✅ Right click actions.
+- ✅ Hide individual folders.
+- ✅ Customise launch folder.
+</details>
 
-### April 2024 (Customisation & styling)
-- Show non markdown files without excerpt. ✅
-- Custom folder hiding.
-- Enable customising states. ✅
-- Enable customising visible file types.
-- Access via action or new tab setting. ✅
-- Custom view modes per section.
+<details open>
+<summary>Current feature focus</summary>
 
-### May 2024 (Styling & accessibility)
-- Refine styling and responsivity.
-- Transition animations.
-- Accessibility refinement.
+- [ ] Folders as projects.
+- [ ] Multi-page project support.
+- [ ] Reordering notes.
+- [ ] Prioritisation of notes.
+</details>
 
-### June 2024 (New functionality)
-- Add quick delete button.
-- Card actions from in browser view (set state, delete, etc).
-- Rework multi-page project setup.
-
-### Future possibilities
-- Set card priorities.
-- Live filtering of cards.
-- Scale settings.
-- Card colours.
-- Custom sectioning (ie. by date, by tags).
-- Multi-select / Batch edits.
+## ⚠️ Be careful
+>As with most Obsidian plugins, this is a free gift to the community, provided 'as is' to help you out. While I'm doing my best to make it awesome (And I love feedback), there are always chances things might not work quite right. To be safe, **please always back up your files**.
 
 ## 🪳 Report a bug
 Found something that's not quite working right or do you have a feature request? Don't be shy, feel free to make some noise over on the [GitHub Issues](https://github.com/daledesilva/obsidian_project-browser/issues) page. But be sure to check if someone has already posted the same issue and comment on theirs if they have.
 
-## Installation
+## 💾 Installation
 You can find this plugin in the plugin directory within Obsidian.
 <details>
 <summary>Click for help installing plugins</summary>
@@ -86,7 +73,29 @@ You can find this plugin in the plugin directory within Obsidian.
 
 3. If you haven't already, you will need to turn on community plugins.
 
-4. Search and install **Project Browser**.
+4. Search 'Dale de Silva' and install **Project Browser**.
+</details>
+
+If you would like to install new versions of the plugin that are still being tested, you can install this plugin through BRAT instead.
+BRAT is another community plugin that allows you to install a Beta version. New features are released as a Beta version first and can take from a few days to a month before landing in the standard version.
+<details>
+<summary>Click for Beta version installation instructions</summary>
+
+1. Open your Obsidian vault and go to **Settings**.
+2. Click on **Community Plugins** in the side bar.
+3. Turn on community plugins and click **Browse**.
+4. Search and install **BRAT**.
+5. Scroll down and **activate** BRAT.
+6. In the BRAT menu in the side pane, select **Add Beta Plugin**.
+7. Follow the instructions presented.
+8. When a URL is requested, use: `https://github.com/daledesilva/obsidian_project-browser/`
+
+</details>
+<details>
+<summary>Click for Beta version update instructions</summary>
+
+- BRAT is set to update Beta plugins by default on startup, however, this can sometimes take some time.
+- To force an update, run BRAT's Obsidian commnd `Choose a single plugin to update` and choose Project Browser.
 </details>
 
 ## ❤️ Support
