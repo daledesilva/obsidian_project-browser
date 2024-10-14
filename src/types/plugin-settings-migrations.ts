@@ -66,15 +66,21 @@ function getStateDefaultView0_0_5(name: string): StateViewMode_0_0_5 {
 
 ///////////
 
-function migrate0_0_5to0_1_0(oldSettings: PluginSettings_0_0_5): PluginSettings_0_1_0 {
+export function migrate0_0_5to0_1_0(oldSettings: PluginSettings_0_0_5): PluginSettings_0_1_0 {
     
     const newSettings = {
 
         // Apply default settings as backup
         ...DEFAULT_SETTINGS_0_1_0,
 
-        // All other settings are the same as 0.0.5
+        // Most other settings are the same as 0.0.5
         ...oldSettings,
+
+        // Transfer exceptions
+        access: {
+            ...oldSettings.access,
+            launchFolder: '/',
+        },
 
         // Re overwrite settingsVersion
         settingsVersion: DEFAULT_SETTINGS_0_1_0.settingsVersion,
