@@ -9,9 +9,8 @@ import * as semVer from 'semver';
 export function migrateOutdatedSettings(settings: {settingsVersion: string}): PluginSettings_0_1_0 {
     let updatedSettings = settings;
     
-    if(!settings.settingsVersion)               updatedSettings = migrate0_0_4to0_0_5(settings as unknown as PluginSettings_0_0_4);
-    // TODO:
-    if(settings.settingsVersion < '0.0.1')      updatedSettings = migrate0_0_5to0_1_0(settings as unknown as PluginSettings_0_0_5);
+    if(!settings.settingsVersion)                         updatedSettings = migrate0_0_4to0_0_5(settings as unknown as PluginSettings_0_0_4);
+    if(semVer.lt(settings.settingsVersion, '0.1.0'))      updatedSettings = migrate0_0_5to0_1_0(settings as unknown as PluginSettings_0_0_5);
     
     if(JSON.stringify(updatedSettings) != JSON.stringify(settings)) {
         console.log('Project Browser: Migrated outdated settings');

@@ -4,11 +4,12 @@ import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-vi
 import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
 import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon } from './commands/open-project-browser';
 import { migrateOutdatedSettings } from './types/plugin-settings-migrations';
-import { showOnboardingNotices_maybe } from './notices/onboarding-notices';
+import { showOnboardingNotices, showOnboardingNotices_maybe } from './notices/onboarding-notices';
 import { DEFAULT_SETTINGS_0_1_0, PluginSettings_0_1_0 } from './types/plugin-settings0_1_0';
 import { atom, createStore, useSetAtom } from 'jotai';
 import { error } from 'console';
-import { globalsAtom, globalsStore, setGlobals } from './logic/stores';
+import { getGlobals, globalsAtom, globalsStore, setGlobals } from './logic/stores';
+import { showVersionNotice } from './notices/version-notices';
 
 /////////
 /////////
@@ -44,7 +45,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 		// 	console.log('click', evt);
 		// });
 
-		showOnboardingNotices_maybe();
+		showNotices();
 
 		this.app.vault.on('create', () => this.refreshFileDependants())
 		this.app.vault.on('delete', () => this.refreshFileDependants())
@@ -110,4 +111,13 @@ export default class ProjectBrowserPlugin extends Plugin {
 		}, 100)
 	}
 
+}
+
+
+
+export function showNotices() {
+    const newInstall = showOnboardingNotices_maybe();
+	if(!newInstall) {
+		showVersionNotice();
+	}
 }

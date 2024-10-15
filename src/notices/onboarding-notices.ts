@@ -6,13 +6,10 @@ import { getGlobals } from 'src/logic/stores';
 
 export function showOnboardingNotices_maybe(): boolean {
     const {plugin} = getGlobals();
-    // Bail if it's already been shown enough times
     if(plugin.settings.onboardingNotices.welcomeNoticeRead) return false;
     showOnboardingNotices();
     return true;
 }
-
-//////////
 
 let noticeShowingOrDismissed: boolean = false;
 export async function showOnboardingNotices() {
@@ -53,8 +50,7 @@ function showBrowserViewNotice() {
     const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`The Browse view...`);
-    noticeBody.createEl('p').setText(`By default, the Browse view appears when you create a new tab, but you can alter this in the settings.`);
-    noticeBody.createEl('p').setText(`You can also open it from the button in the ribbon menu.`);
+    noticeBody.createEl('p').setText(`By default, the Browse view appears when you create a new tab. You can also open it from the button in the ribbon menu.`);
     // noticeBody.createEl('icon');
     
     const {
@@ -62,7 +58,7 @@ function showBrowserViewNotice() {
         tertiaryBtnEl
     } = createNoticeCtaBar(noticeBody, {
         primaryLabel: 'Continue',
-        tertiaryLabel: 'Dismiss for now',
+        tertiaryLabel: 'Remind me later',
     })
 
     const notice = launchPersistentNotice(noticeBody);
@@ -79,16 +75,16 @@ function showBrowserViewNotice() {
 function showNotesNotice() {
     const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
-    noticeBody.createEl('h1').setText(`Note statuses...`);
-    noticeBody.createEl('p').setText(`The status for a note can be assigned through a status button at the top of the note.`);
-    noticeBody.createEl('p').setText(`Notes in each folder are organised in the browse view by status.`);
+    noticeBody.createEl('h1').setText(`Note states...`);
+    noticeBody.createEl('p').setText(`The state of each note can be assigned through a button at the top of the note.`);
+    noticeBody.createEl('p').setText(`Notes in each folder are organised in the browse view by their state.`);
 
     const {
         primaryBtnEl,
         tertiaryBtnEl
     } = createNoticeCtaBar(noticeBody, {
         primaryLabel: 'Continue',
-        tertiaryLabel: 'Dismiss for now',
+        tertiaryLabel: 'Remind me later',
     })
 
     const notice = launchPersistentNotice(noticeBody);
@@ -106,14 +102,14 @@ function showCustomisationNotice() {
     const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`Customisation...`);
-    noticeBody.createEl('p').setText(`The set of statuses, their order, and the view mode they display their notes in can all be customised in the settings.`);
+    noticeBody.createEl('p').setText(`The states and their order can be customised in the settings. As well as when the browse view opens and a growing set of other features.`);
 
     const {
         primaryBtnEl,
         tertiaryBtnEl
     } = createNoticeCtaBar(noticeBody, {
         primaryLabel: 'Continue',
-        tertiaryLabel: 'Dismiss for now',
+        tertiaryLabel: 'Remind me later',
     })
 
     const notice = launchPersistentNotice(noticeBody);
@@ -131,9 +127,16 @@ function showCustomisationNotice() {
 function showDevelopmentWelcomeNotice() {
     const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
-    noticeBody.createEl('h1').setText(`Help improve Project Browser...`);
-    noticeBody.createEl('p').setText(`Project Browser is under construction. This means it has features missing and sometimes has bugs.`);
-    noticeBody.createEl('p').setText(`If you notice any, please report them through the link in the settings.`);
+    noticeBody.createEl('h1').setText(`Get involved...`);
+    noticeBody.createEl('p').setText(`If you notice any bugs, please report them through the link in the settings.`);
+    noticeBody.createEl('p').setText(`You can also follow along with development and let me know which features are important to you at the link below.`);
+
+    const link = noticeBody.createEl('a');
+    link.setAttribute('href', 'https://www.youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ')
+    link.setText(`Project Browser development diaries`);
+    // Prevent clicking link from closing notice
+    link.onClickEvent( e => e.stopPropagation())
+    
     
     const {
         tertiaryBtnEl

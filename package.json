@@ -1,6 +1,6 @@
 {
-	"name": "obsidian_ink",
-	"version": "0.0.1",
+	"name": "obsidian_project-browser",
+	"version": "0.1.0",
 	"description": "",
 	"main": "main.js",
 	"scripts": {
@@ -19,6 +19,7 @@
 		"@types/node": "^16.11.6",
 		"@types/react": "^18.0.28",
 		"@types/react-dom": "^18.0.11",
+		"@types/semver": "^7.5.8",
 		"@types/sortablejs": "^1.15.8",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
@@ -42,7 +43,7 @@
 		"react-dom": "^18.2.0",
 		"react-redux": "^9.1.0",
 		"react-sortablejs": "^6.1.4",
-		"semver": "^7.6.2",
+		"semver": "^7.6.3",
 		"sortablejs": "^1.15.2",
 		"uuid": "^10.0.0"
 	}

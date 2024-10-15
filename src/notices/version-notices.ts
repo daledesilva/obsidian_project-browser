@@ -1,44 +1,41 @@
 import * as semVer from 'semver';
-import { createNoticeTemplate, createNoticeCtaBar, launchPersistentInkNotice } from 'src/components/dom-components/notice-components';
-import InkPlugin from "src/main";
+import { createNoticeTemplate, createNoticeCtaBar, launchPersistentNotice } from 'src/components/dom-components/notice-components';
+import { getGlobals } from 'src/logic/stores';
 
 ///////////
 ///////////
 
-export function showVersionNotice(plugin: InkPlugin) {
+export function showVersionNotice() {
+    const {plugin} = getGlobals()
     const curVersion = plugin.manifest.version;
 
-    const lastVersionTipRead = plugin.settings.onboardingTips.lastVersionTipRead;
+    const lastVersionTipRead = plugin.settings.onboardingNotices.lastVersionNoticeRead;
     const noLastVersionTipRead = !semVer.valid(lastVersionTipRead)
-    const updatedToNewerVersion = noLastVersionTipRead || semVer.gt(curVersion, lastVersionTipRead);
+    const updatedToNewerVersion = semVer.gt(curVersion, lastVersionTipRead);
 
-    if(!updatedToNewerVersion) return;
-
-    switch(curVersion) {
-        case '0.2.4':   show_0_2_4_changes(plugin); break;
+    if(noLastVersionTipRead || updatedToNewerVersion) {
+        showLatestChanges();
     }
 }
 
 //////////
 
-function show_0_2_4_changes_maybe(plugin: InkPlugin) {
-    // Bail if it's already been shown enough times
-    if(plugin.settings.onboardingTips.welcomeTipRead) return;
-    show_0_2_4_changes(plugin);
-}
-
-function show_0_2_4_changes(plugin: InkPlugin) {
+function showLatestChanges() {
+    const {plugin} = getGlobals()
 
     const noticeBody = createNoticeTemplate(1,3);
-    noticeBody.createEl('h1').setText(`Changes in Ink v0.2.4`);
+    noticeBody.createEl('h1').setText(`Changes in Ink v0.1`);
+    noticeBody.createEl('p').setText(`Added:`);
     const listEl = noticeBody.createEl('ul');
-    listEl.createEl('li').setText(`Customise the attachment folder in Ink's settings.`);
-    listEl.createEl('li').setText(`Remove an embed section through the menu next to the lock button.`);
-    listEl.createEl('li').setText(`Additional problem solving tips added to Ink's settings.`);
-    listEl.createEl('li').setText(`Drawing embeds enabled by default.`);
+    listEl.createEl('li').setText(`Search directly in the browser view.`);
+    listEl.createEl('li').setText(`Change notes states on right click.`);
+    listEl.createEl('li').setText(`Hide/Unhide folders.`);
+    listEl.createEl('li').setText(`Open notes in a background tab.`);
+    listEl.createEl('li').setText(`Rename files and folders.`);
+    listEl.createEl('li').setText(`Set a launch folder other than root.`);
     
     const link = noticeBody.createEl('a');
-    link.setAttribute('href', 'https://youtube.com/live/nRAABxAG62o')
+    link.setAttribute('href', 'https://youtube.com/live/Rxfr4nK4FjY?feature=share')
     link.setText(`View release video`);
     // Prevent clicking link from closing notice
     link.onClickEvent( e => e.stopPropagation())
@@ -49,12 +46,12 @@ function show_0_2_4_changes(plugin: InkPlugin) {
         tertiaryLabel: 'Dismiss',
     })
 
-    const notice = launchPersistentInkNotice(noticeBody);
+    const notice = launchPersistentNotice(noticeBody);
 
     if(tertiaryBtnEl) {
         tertiaryBtnEl.addEventListener('click', () => {
             notice.hide();
-            plugin.settings.onboardingTips.lastVersionTipRead = plugin.manifest.version;
+            plugin.settings.onboardingNotices.lastVersionNoticeRead = plugin.manifest.version;
             plugin.saveSettings();
         });
     }
