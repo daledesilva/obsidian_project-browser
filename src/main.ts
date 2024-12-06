@@ -10,6 +10,7 @@ import { atom, createStore, useSetAtom } from 'jotai';
 import { error } from 'console';
 import { getGlobals, globalsAtom, globalsStore, setGlobals } from './logic/stores';
 import { showVersionNotice } from './notices/version-notices';
+import { debug } from './utils/log-to-console';
 
 /////////
 /////////
@@ -42,7 +43,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
 		// this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-		// 	console.log('click', evt);
+			// debug(['click', evt]);
 		// });
 
 		showNotices();

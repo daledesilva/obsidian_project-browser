@@ -7,6 +7,7 @@ import { isEmpty } from "src/utils/misc";
 import { PLUGIN_ICON } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';
 import { deviceMemoryStore, getGlobals } from "src/logic/stores";
+import { info } from "src/utils/log-to-console";
 
 //////////
 //////////

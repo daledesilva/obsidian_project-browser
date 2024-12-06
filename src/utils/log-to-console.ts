@@ -16,45 +16,96 @@ interface LogOptions {
     stringify?: boolean, // Stringify an object and pretty print it
 }
 
-export function info(_data: any, _options: LogOptions = {}) {
+export function info(_data: any|any[], _options: LogOptions = {}) {
     // TODO: check production environment?
-    print(chalk.blue.bold('Inkinfo:'), _data, _options);
+    print(chalk.blue.bold('Ink info:'), _data, _options);
 }
-export function warn(_data: any, _options: LogOptions = {}) {
+export function warn(_data: any|any[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.yellow.bold('Ink warn:'), _data, _options);
 }
-export function error(_data: any, _options: LogOptions = {}) {
+export function error(_data: any|any[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.red.bold('Ink error:'), _data, _options);
 }
-export function debug(_data: any, _options: LogOptions = {}) {
+export function debug(_data: any|any[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.green.bold('Ink debug:'), _data, _options);
 }
-export function http(_data: any, _options: LogOptions = {}) {
+export function http(_data: any|any[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.magenta.bold('Ink http:'), _data, _options);
 }
-export function verbose(_data: any, _options: LogOptions = {}) {
+export function verbose(_data: any|any[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.cyan.bold('Ink verbose:'), _data, _options);
 }
 
-function print(_label: string, _data: any, _options: LogOptions = {}) {
-    if(_data instanceof Object) {
-        printObject(_label, _data, _options);
+function print(_label: string, _data: any|any[], _options: LogOptions = {}) {
+    if(_data instanceof Array) {
+        console.log('printArray');
+        printArray(_label, _data, _options);
+    } else if(_data instanceof Object) {
+        console.log('printObj');
+        printTimestampAndLabel(_label);
+        printObj(_data, _options);
+        printEmptyLine();
     } else {
-        printPrimitive(_label, _data);
+        console.log('printStr');
+        printStr(`${getTimestampAndLabel(_label)} ${_data}`);
     }
 }
 
-function printPrimitive(_label: string, _data: any) {
-    console.log(`${chalk.grey(getTimestamp())} ${_label} ${_data}`);
+function printArray(_label: string, _data: any[], _options: LogOptions = {}) {
+    let accString = '';
+
+    // If an object is first, print a timestamp and label on line before it
+    if(_data[0] instanceof Object) {
+        printTimestampAndLabel(_label);
+    }
+    for(let i=0; i<_data.length; i++) {
+
+        if(_data[i] instanceof Object) {
+            // Print accumulated strings so far and reset
+            if(accString.length) {
+                printStr(accString);
+                accString = '';
+            }
+            // Print object on next line
+            printObj(_data[i], _options);
+
+        } else {
+            // Collect strings to print on the same line
+            if(i===0) {
+                accString = `${getTimestampAndLabel(_label)} ${_data[i]}`;
+            } else {
+                if(accString.length) {
+                    // It's already started accumulating, so just add the next item
+                    accString = `${accString} ${_data[i]}`;
+                } else {
+                    // It's after an object, so just don't reshow timestamp
+                    accString = `${_label} ${_data[i]}`;
+                }
+            }
+
+            // If there's no more data, print the accumulated string
+            if(i===_data.length-1) {
+                printStr(accString);
+            }
+        }
+    }
+    // If an object was last, put an empty line after it
+    if(_data[_data.length-1] instanceof Object) {
+        printEmptyLine();
+    }
+    
 }
 
-function printObject(_label: string, _data: any, _options: LogOptions) {
-    console.log(`${chalk.grey(getTimestamp())} ${_label}`);
+function printStr(_str: string) {
+    console.log(`${_str}`);
+}
+
+function printObj(_data: any, _options: LogOptions) {
     let data: any;
     if(_options.freeze) {
         data = JSON.parse(JSON.stringify(_data));
@@ -65,5 +116,18 @@ function printObject(_label: string, _data: any, _options: LogOptions) {
         data = JSON.stringify(data, null, 2);
     }
     console.log(data);
+}
+
+function printTimestampAndLabel(_label: string) {
+    console.log(getTimestampAndLabel(_label));
+}
+
+function printEmptyLine() {
     console.log('');
 }
+
+function getTimestampAndLabel(_label: string): string {
+    return `${chalk.grey(getTimestamp())} ${_label}`;
+}
+
+
