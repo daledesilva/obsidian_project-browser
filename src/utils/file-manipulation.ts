@@ -7,6 +7,7 @@ import { setFileState } from "src/logic/frontmatter-processes";
 import { DEFAULT_FOLDER_SETTINGS_0_1_2, FolderSettings } from "src/types/folder-settings0_1_2";
 import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 import { getGlobals } from "src/logic/stores";
+import { debug, error, http, info, silly, verbose, warn } from "./log-to-console";
 
 // //////////
 // //////////
