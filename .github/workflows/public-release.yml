@@ -12,18 +12,46 @@ name: Draft public release
 # 1. Refine release body text
 # 2. Publishing the draft release
 
+# Notes:
+# Solution to checking current branch when initialised via tag taken from here:
+# https://stackoverflow.com/questions/63745613/how-to-get-a-branch-name-on-github-action-when-push-on-a-tag
+
 on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
       - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
       - '!*-beta'  # Excludes any tags ending in -beta
-    branches-ignore:
-      - '!*main'  # tag and branch filters are additive, so this is a workaround to ignore all branches except main
 
 jobs:
+  check-current-branch:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.check_step.outputs.branch }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get current branch
+        id: check_step
+        # 1. Get the list of branches ref where this tag exists
+        # 2. Remove 'origin/' from that result
+        # 3. Put that string in output
+        # => We can now use function 'contains(list, item)''
+        run: |
+          raw=$(git branch -r --contains ${{ github.ref }})
+          branch="$(echo ${raw//origin\//} | tr -d '\n')"
+          echo "{name}=branch" >> $GITHUB_OUTPUT
+          echo "Branches where this tag exists : $branch."
+
   build:
     runs-on: ubuntu-latest
+    needs: check-current-branch
+
+    # only run if tag is present on branch 'main'
+    if: contains(${{ needs.check.outputs.branch }}, 'main')`
 
     steps:
     - uses: actions/checkout@v4
