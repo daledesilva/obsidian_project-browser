@@ -52,6 +52,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    needs: branch-check
     
     # only run if the initiating tag is not on the main branch
     if: contains(needs.branch-check.outputs.branch, 'main') == false
