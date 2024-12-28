@@ -2,6 +2,7 @@ import { FrontMatterCache, TFile } from "obsidian";
 import { getGlobals } from "./stores";
 
 ////////////
+
 ////////////
 
 export const getFileFrontmatter = (file: TFile): {} | FrontMatterCache => {
