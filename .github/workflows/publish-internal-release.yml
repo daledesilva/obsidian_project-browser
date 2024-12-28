@@ -52,7 +52,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: internal
-        release_name: Internal Release
+        release_name: internal-test
         body: |
           ### This is an internal release for testing. Do not install.
           This will not install automatically through the plugin directory or through BRAT, and you shouldn't attempt to force it to install.
