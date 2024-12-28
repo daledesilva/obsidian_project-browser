@@ -29,7 +29,6 @@ jobs:
 
   draft-beta-release:
     runs-on: ubuntu-latest
-    needs: branch-check
     
 
     steps:
