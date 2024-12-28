@@ -1,24 +1,11 @@
 name: Draft external release
 
-# TO CREATE BETA RELEASE (In Draft state):
-# In NON-MAIN branch (ie. release_*)
-# 1. Update manifest-beta.json version
-# 2. npm run int-release
-
-# PUBLISH PUBLIC RELEASE:
-# 1. Refine release body text
-# 2. Publish release
-# 3. Switch to main branch and merge in release
-# 4. git push origin HEAD
-
-# ---
-
 # TO CREATE PUBLIC RELEASE (In Draft state):
 # In RELEVANT branch:
 # 1. Update manifest.json version
 # In MAIN branch:
 # 2. merge release branch into main
-# 2. npm run ext-release <new-version-tag> (From any non-main branch)
+# 2. npm run public-release <new-version-tag>
 
 # PUBLISH PUBLIC RELEASE:
 # 1. Refine release body text
@@ -53,10 +40,7 @@ jobs:
 
       - name: Get current branch
         id: check_step
-        # 1. Get the list of branches ref where this tag exists
-        # 2. Remove 'origin/' from that result
-        # 3. Put that string in output
-        # => We can now use function 'contains(list, item)''
+
         run: |
           if git branch -r --contains ${{ github.ref }} | grep -q "origin/main"; then
             echo "branch=main" >> $GITHUB_OUTPUT
