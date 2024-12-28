@@ -20,8 +20,8 @@ name: Draft beta release
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+_beta'  # Matches semantic versions like 1.2.3_beta
-      - '[0-9]+.[0-9]+.[0-9]+.[0-9]+_beta'  # Matches semantic versions like 1.2.3.4_beta
+      - '[0-9]+.[0-9]+.[0-9]+-beta'  # Matches semantic versions like 1.2.3-beta
+      - '[0-9]+.[0-9]+.[0-9]+.[0-9]+-beta'  # Matches semantic versions like 1.2.3.4-beta
 
 jobs:
 
