@@ -18,6 +18,8 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
       - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
       - '!*-beta'  # Excludes any tags ending in -beta
+    branches:
+      - main
 
 jobs:
   build:
@@ -31,18 +33,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20.x' # You might need to adjust this value to your own version
-
-    - name: Get Branch Name
-      id: branch_name
-      run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-
-    # Don't run if being called from a branch other than main
-    - name: Branch check
-      run: |
-        if [[ "${{ env.branch_name }}" != "main" ]]; then
-          echo "Error: Public releases must be deployed from main branch"
-          exit 1
-        fi
 
     # Build the plugin
     - name: Build
