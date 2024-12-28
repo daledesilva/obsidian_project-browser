@@ -55,11 +55,9 @@ jobs:
         tag_name: internal-release
         release_name: Internal Release
         body: |
-          ### Added this update:
-          
-          ### Broken this update:
-          
-          Watch the [release video]().
+          ### This is an internal release for testing. Do not install.
+          This will not install automatically through the plugin directory or through BRAT, and you shouldn't attempt to force it to install.
+          It is for internal testing only and may negatively impact your files.
         draft: false
         prerelease: true
 
