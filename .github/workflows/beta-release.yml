@@ -3,8 +3,9 @@ name: Draft beta release
 # To Run:
 # Run from any NON_MAIN branch (ie. release_*)
 # 1. Update manifest-beta version in release branch
-# 2. git tag <version number>
-# 3. git push origin --tags
+# 2. git push origin HEAD
+# 3. git tag <version number>
+# 4. git push origin --tags
 # This will create a draft beta release
 
 # To publish:

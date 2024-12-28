@@ -2,13 +2,15 @@ name: Publish internal release
 
 # To Run:
 # Run from any non-main branch (ie. release_*)
-# 1. push branch
+# 1. git push origin HEAD
+# 2. git tag internal-release
+# 3. git push origin --tags
 # It will auto-publish the release as a prerelease
 
 on:
   push:
-    branches-ignore:
-      - main
+    tags:
+      - 'internal-release'
 
 jobs:
   build:
