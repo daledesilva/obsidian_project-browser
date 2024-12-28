@@ -1,4 +1,4 @@
-name: Draft public release
+name: Draft external release
 
 # TO CREATE BETA RELEASE (In Draft state):
 # In NON-MAIN branch (ie. release_*)
@@ -18,7 +18,7 @@ name: Draft public release
 # 1. Update manifest.json version
 # In MAIN branch:
 # 2. merge release branch into main
-# 2. npm run ext-release  (From any non-main branch)
+# 2. npm run ext-release <new-version-tag> (From any non-main branch)
 
 # PUBLISH PUBLIC RELEASE:
 # 1. Refine release body text
