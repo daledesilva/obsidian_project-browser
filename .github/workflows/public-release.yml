@@ -18,8 +18,8 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
       - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
       - '!*-beta'  # Excludes any tags ending in -beta
-    branches:
-      - main
+    branches-ignore:
+      - '!*main'  # tag and branch filters are additive, so this is a workaround to ignore all branches except main
 
 jobs:
   build:
