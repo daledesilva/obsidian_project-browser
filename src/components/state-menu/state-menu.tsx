@@ -4,6 +4,7 @@ import * as React from "react";
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { getGlobals } from 'src/logic/stores';
+import { debug } from 'src/utils/log-to-console';
 
 //////////
 //////////
@@ -24,11 +25,15 @@ export const StateMenu = (props: StateMenuProps) => {
     listenForFileChanges();
 
     let displayState = state;
+    debug(['file', file])
+    debug(['state', state])
+    debug(['displayState', displayState])
     if(!displayState) displayState = 'Set State';
 
     const visibleStates = plugin.settings.states.visible;
     const hiddenStates = plugin.settings.states.hidden;
 
+    // On first run
     React.useEffect( () => {
         firstRunRef.current = false;
 
@@ -42,6 +47,7 @@ export const StateMenu = (props: StateMenuProps) => {
         return () => {
             document.removeEventListener('pointerdown', handleClickOutside);
         };
+
 
     }, [])
 
