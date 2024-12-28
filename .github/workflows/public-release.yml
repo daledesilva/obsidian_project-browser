@@ -78,7 +78,7 @@ jobs:
     needs: check-current-branch
 
     # only run if initiating tag is not on the main branch
-    if: contains(${{ needs.check.outputs.branch }}, 'main')
+    if: contains(needs.check.outputs.branch, 'main')
 
     steps:
       - uses: actions/checkout@v4

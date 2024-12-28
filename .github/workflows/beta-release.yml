@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     
     # only run if the initiating tag is not on the main branch
-    if: contains(${{ needs.check.outputs.branch }}, 'main') == false
+    if: contains(needs.check.outputs.branch, 'main') == false
 
     steps:
       - uses: actions/checkout@v4
