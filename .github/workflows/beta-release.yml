@@ -20,10 +20,12 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
       - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
 
+
+
 jobs:
 
 
-  check-current-branch:
+  branch-check:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.check_step.outputs.branch }}
@@ -43,7 +45,7 @@ jobs:
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch="$(echo ${raw//origin\//} | tr -d '\n')"
-          echo "{name}=branch" >> $GITHUB_OUTPUT
+          echo "branch=$branch" >> $GITHUB_OUTPUT
           echo "Branches where this tag exists : $branch."
 
 
@@ -52,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     
     # only run if the initiating tag is not on the main branch
-    if: contains(needs.check.outputs.branch, 'main') == false
+    if: contains(needs.branch-check.outputs.branch, 'main') == false
 
     steps:
       - uses: actions/checkout@v4

@@ -28,7 +28,7 @@ jobs:
 
 
 
-  check-current-branch:
+  branch-check:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.check_step.outputs.branch }}
@@ -48,7 +48,7 @@ jobs:
         run: |
           raw=$(git branch -r --contains ${{ github.ref }})
           branch="$(echo ${raw//origin\//} | tr -d '\n')"
-          echo "{name}=branch" >> $GITHUB_OUTPUT
+          echo `branch=${branch}` >> $GITHUB_OUTPUT
           echo "Branches where this tag exists : $branch."
 
 
@@ -78,7 +78,7 @@ jobs:
     needs: check-current-branch
 
     # only run if initiating tag is not on the main branch
-    if: contains(needs.check.outputs.branch, 'main')
+    if: contains(needs.branch-check.outputs.branch, 'main')
 
     steps:
       - uses: actions/checkout@v4
