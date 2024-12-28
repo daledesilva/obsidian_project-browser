@@ -24,6 +24,9 @@ on:
       - '!*-beta'  # Excludes any tags ending in -beta
 
 jobs:
+
+
+
   check-current-branch:
     runs-on: ubuntu-latest
     outputs:
@@ -45,6 +48,28 @@ jobs:
           branch="$(echo ${raw//origin\//} | tr -d '\n')"
           echo "{name}=branch" >> $GITHUB_OUTPUT
           echo "Branches where this tag exists : $branch."
+
+
+
+  get-release-notes:
+    runs-on: ubuntu-latest
+    needs: check-current-branch
+    if: contains(${{ needs.check.outputs.branch }}, 'main')
+    steps:
+          # Get get commit logs since last release
+          - name: Get previous release tag
+            id: prev_tag
+            run: echo "tag=$(git describe --tags --abbrev=0 HEAD^)" >> $GITHUB_ENV
+
+          - name: Get commit logs since last release
+            id: commit_logs
+            run: echo "logs=$(git log ${{ env.tag }}..HEAD --pretty=format:'%h - %s (%an)')" >> $GITHUB_ENV
+
+          - name: Set release notes
+            id: set_release_notes
+            run: echo "release_notes=## Changes since ${{ env.tag }}%0A${{ env.logs }}" >> $GITHUB_ENV
+
+
 
   build:
     runs-on: ubuntu-latest
@@ -88,6 +113,7 @@ jobs:
       with:
         tag_name: ${{ github.ref_name }}
         release_name: ${{ github.ref_name }}
+        body: ${{ env.release_notes }}
         draft: true
         prerelease: false
 
