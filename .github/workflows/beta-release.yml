@@ -43,10 +43,13 @@ jobs:
         # 3. Put that string in output
         # => We can now use function 'contains(list, item)''
         run: |
-          raw=$(git branch -r --contains ${{ github.ref }})
-          branch="$(echo ${raw//origin\//} | tr -d '\n')"
-          echo "branch=$branch" >> $GITHUB_OUTPUT
-          echo "Branches where this tag exists : $branch."
+          if git branch -r --contains ${{ github.ref }} | grep -q "origin/main"; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+            echo "Tag foudn on main branch"
+          else
+            echo "branch=other" >> $GITHUB_OUTPUT
+            echo "Tag found on a non-main branch"
+          fi
 
 
 
@@ -55,7 +58,7 @@ jobs:
     needs: branch-check
     
     # only run if the initiating tag is not on the main branch
-    if: contains(needs.branch-check.outputs.branch, 'main') == false
+    if: needs.branch-check.outputs.branch == 'other'
 
     steps:
       - uses: actions/checkout@v4
