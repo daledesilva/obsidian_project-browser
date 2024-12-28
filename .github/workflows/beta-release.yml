@@ -107,6 +107,9 @@ jobs:
           tag_name: ${{ env.version }}
           release_name: ${{ env.version }}
           body: |
+            This is a **beta pre-release** and can only be installed manually or through the BRAT plugin.
+            [See beta installations here](https://github.com/daledesilva/obsidian_project-browser?tab=readme-ov-file#-installation).
+
             ### Added this update:
             
             ### Broken this update:
