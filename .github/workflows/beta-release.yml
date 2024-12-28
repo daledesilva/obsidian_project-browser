@@ -1,9 +1,9 @@
 name: Draft beta release
 
 # To Run:
-# Run from any non-main branch (ie. release_*)
+# Run from any NON_MAIN branch (ie. release_*)
 # 1. Update manifest-beta version in release branch
-# 2. git tag <version number> (beta)
+# 2. git tag <version number>
 # 3. git push origin --tags
 # This will create a draft beta release
 
@@ -16,9 +16,8 @@ name: Draft beta release
 on:
   push:
     tags:
-      - '*-beta'  # Will only run on tags ending in beta
-    branches-ignore:
-      - main
+      - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
+      - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
 
 jobs:
 
@@ -90,18 +89,6 @@ jobs:
           cp README.md ${{ github.event.repository.name }}
           zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
 
-      # # Get get commit logs since last release
-      # - name: Get previous release tag
-      #   id: prev_tag
-      #   run: echo "tag=$(git describe --tags --abbrev=0 HEAD^)" >> $GITHUB_ENV
-
-      # - name: Get commit logs since last release
-      #   id: commit_logs
-      #   run: echo "logs=$(git log ${{ env.tag }}..HEAD --pretty=format:'%h - %s (%an)')" >> $GITHUB_ENV
-
-      # - name: Set release notes
-      #   id: set_release_notes
-      #   run: echo "release_notes=## Changes since ${{ env.tag }}%0A${{ env.logs }}" >> $GITHUB_ENV
 
       # Create the release on github
       - name: Create Release

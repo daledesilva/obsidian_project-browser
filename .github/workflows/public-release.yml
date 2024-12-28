@@ -1,7 +1,9 @@
 name: Draft public release
 
 # To Run:
-# 1. Update manifest.json version in release branch
+# In RELEASE branch:
+# 1. Update manifest.json version
+# In MAIN branch:
 # 2. merge release branch into main
 # 1. git push origin HEAD
 # 2. git tag <version number>
@@ -21,7 +23,6 @@ on:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
       - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
-      - '!*-beta'  # Excludes any tags ending in -beta
 
 jobs:
 
