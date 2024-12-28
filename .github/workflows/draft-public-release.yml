@@ -24,13 +24,8 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
 
 jobs:
-
-
-
   draft-public-release:
     runs-on: ubuntu-latest
-
-
     steps:
       - uses: actions/checkout@v4
         with:
