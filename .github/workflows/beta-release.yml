@@ -20,10 +20,12 @@ on:
       - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
       - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
 
+
+
 jobs:
 
 
-  check-current-branch:
+  branch-check:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.check_step.outputs.branch }}
@@ -41,18 +43,22 @@ jobs:
         # 3. Put that string in output
         # => We can now use function 'contains(list, item)''
         run: |
-          raw=$(git branch -r --contains ${{ github.ref }})
-          branch="$(echo ${raw//origin\//} | tr -d '\n')"
-          echo "{name}=branch" >> $GITHUB_OUTPUT
-          echo "Branches where this tag exists : $branch."
+          if git branch -r --contains ${{ github.ref }} | grep -q "origin/main"; then
+            echo "branch=main" >> $GITHUB_OUTPUT
+            echo "Tag foudn on main branch"
+          else
+            echo "branch=other" >> $GITHUB_OUTPUT
+            echo "Tag found on a non-main branch"
+          fi
 
 
 
   build:
     runs-on: ubuntu-latest
+    needs: branch-check
     
     # only run if the initiating tag is not on the main branch
-    if: contains(needs.check.outputs.branch, 'main') == false
+    if: needs.branch-check.outputs.branch == 'other'
 
     steps:
       - uses: actions/checkout@v4
@@ -101,6 +107,9 @@ jobs:
           tag_name: ${{ env.version }}
           release_name: ${{ env.version }}
           body: |
+            This is a **beta pre-release** and can only be installed manually or through the BRAT plugin.
+            [See beta installations here](https://github.com/daledesilva/obsidian_project-browser?tab=readme-ov-file#-installation).
+
             ### Added this update:
             
             ### Broken this update:
