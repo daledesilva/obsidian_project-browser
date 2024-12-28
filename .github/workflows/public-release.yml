@@ -1,4 +1,4 @@
-name: Draft latest release
+name: Draft public release
 
 # To Run:
 # 1. Update manifest.json version in release branch
