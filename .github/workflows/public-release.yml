@@ -113,7 +113,7 @@ jobs:
       with:
         tag_name: ${{ github.ref_name }}
         release_name: ${{ github.ref_name }}
-        body: ${{ env.release_notes }}
+        body: Added this update\n\nBroken this update\n\nWatch the [release video]().${{ env.release_notes }}
         draft: true
         prerelease: false
 
