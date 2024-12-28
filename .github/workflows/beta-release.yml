@@ -9,13 +9,14 @@ name: Draft beta release
 
 # To publish:
 # 1. Refine release body text
-# 2. Switch to main branch and merge in release
+# 2. Publish release
+# 3. Switch to main branch and merge in release
 # 4. git push origin HEAD
 
 on:
   push:
     tags:
-      - '* (beta)'  # Will only run on tags ending in beta
+      - '*-beta'  # Will only run on tags ending in beta
     branches-ignore:
       - main
 
@@ -35,7 +36,7 @@ jobs:
     - name: Get Version
       id: version
       run: |
-        echo "{name}={tag::$(git describe --abbrev=0 | sed 's/ (beta)//')}" >> $GITHUB_OUTPUT
+        echo "version=$(git describe --abbrev=0 | sed 's/-beta//')" >> $GITHUB_OUTPUT
 
     # Build the plugin
     - name: Build
@@ -74,10 +75,9 @@ jobs:
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VERSION: ${{ github.ref_name }}
       with:
-        tag_name: ${{ github.ref_name }}
-        release_name: ${{ github.ref_name }}
+        tag_name: ${{ env.version }}
+        release_name: ${{ env.version }}
         body: ${{ env.release_notes }}
         draft: true
         prerelease: true

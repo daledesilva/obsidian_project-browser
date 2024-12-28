@@ -15,7 +15,9 @@ name: Draft latest release
 on:
   push:
     tags:
-      - '!(beta)'  # Will only run on tags not ending in beta
+      - '[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3
+      - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'  # Matches semantic versions like 1.2.3.4
+      - '!*-beta'  # Excludes any tags ending in -beta
     branches:
       - main
 
@@ -60,7 +62,6 @@ jobs:
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        VERSION: ${{ github.ref_name }}
       with:
         tag_name: ${{ github.ref_name }}
         release_name: ${{ github.ref_name }}

@@ -70,8 +70,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: Internal Release
-        release_name: ${{ github.ref_name }}
+        tag_name: internal-release
+        release_name: Internal Release
         body: ${{ env.release_notes }}
         draft: false
         prerelease: true
