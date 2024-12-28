@@ -118,7 +118,7 @@ jobs:
           
           ### Broken this update:
           
-          ### Watch the [release video](https://youtube.com/live/KbQpnr7c-KQ).This is a${{ env.release_notes }}
+          Watch the [release video]().
         draft: true
         prerelease: false
 
@@ -169,3 +169,4 @@ jobs:
         asset_path: ${{ github.event.repository.name }}/styles.css
         asset_name: styles.css
         asset_content_type: text/css
+
