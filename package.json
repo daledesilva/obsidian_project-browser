@@ -8,8 +8,8 @@
 		"test": "jest",
 		"build": "node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
-		"ext-release": "git tag $1 && git push origin --tags",
-		"int-release": "git tag -d internal && git push origin --delete internal && git tag internal && git push origin --tags"
+		"ext-release": "sh ./scripts/external-release.sh",
+		"int-release": "sh ./scripts/internal-release.sh"
 	},
 	"keywords": [],
 	"author": "",

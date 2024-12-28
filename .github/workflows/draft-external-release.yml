@@ -3,9 +3,7 @@ name: Draft public release
 # TO CREATE BETA RELEASE (In Draft state):
 # In NON-MAIN branch (ie. release_*)
 # 1. Update manifest-beta.json version
-# 2. git push origin HEAD
-# 3. git tag <version number>
-# 4. git push origin --tags
+# 2. npm run int-release
 
 # PUBLISH PUBLIC RELEASE:
 # 1. Refine release body text
@@ -20,9 +18,7 @@ name: Draft public release
 # 1. Update manifest.json version
 # In MAIN branch:
 # 2. merge release branch into main
-# 1. git push origin HEAD
-# 2. git tag <version number>
-# 3. git push origin --tags
+# 2. npm run ext-release  (From any non-main branch)
 
 # PUBLISH PUBLIC RELEASE:
 # 1. Refine release body text

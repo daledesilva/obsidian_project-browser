@@ -1,16 +1,13 @@
 name: Publish internal release
 
-# To Run:
-# Run from any non-main branch (ie. release_*)
-# 1. git push origin HEAD
-# 2. git tag internal-release
-# 3. git push origin --tags
-# It will auto-publish the release as a prerelease
+# TO AUTO_PUBLISH THE RELEASE AS A PRERELEASE
+# 1. Update manifest-beta.json version if necessary
+# 2. npm run int-release
 
 on:
   push:
     tags:
-      - 'internal-release'
+      - 'internal'
 
 jobs:
   build:
@@ -54,7 +51,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: internal-release
+        tag_name: internal
         release_name: Internal Release
         body: |
           ### This is an internal release for testing. Do not install.
