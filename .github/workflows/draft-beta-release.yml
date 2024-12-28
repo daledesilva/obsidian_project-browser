@@ -64,16 +64,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: ${{ env.ref_name }}
+          release_name: ${{ github.ref_name }}
           body: |
-            This is a **beta pre-release** and can only be installed manually or through the BRAT plugin.
-            [See beta installations here](https://github.com/daledesilva/obsidian_project-browser?tab=readme-ov-file#-installation).
+            This is a **beta pre-release** and can only be installed manually or through the BRAT plugin. [See beta installations here](https://github.com/daledesilva/obsidian_project-browser?tab=readme-ov-file#-installation).
 
             ### Added this update:
             
             ### Broken this update:
             
-            Watch the [release video]().
+            ▶️ **Watch the [release video]().**
           draft: true
           prerelease: true
 
