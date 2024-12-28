@@ -22,6 +22,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -30,6 +31,14 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20.x' # You might need to adjust this value to your own version
+
+    # Don't run if being called from a branch other than main
+    - name: Branch check
+      run: |
+        if [[ $(git branch --contains ${{ github.ref }}) != *"main"* ]]; then
+          echo "Error: Public releases must be deployed from main branch"
+          exit 1
+        fi
 
     # Build the plugin
     - name: Build
