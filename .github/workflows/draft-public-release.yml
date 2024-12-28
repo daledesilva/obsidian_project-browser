@@ -1,4 +1,4 @@
-name: Draft external release
+name: Draft public release
 
 # TO CREATE PUBLIC RELEASE (In Draft state):
 # In RELEVANT branch:
@@ -27,57 +27,10 @@ jobs:
 
 
 
-  branch-check:
-    runs-on: ubuntu-latest
-    outputs:
-      branch: ${{ steps.check_step.outputs.branch }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-
-      - name: Get current branch
-        id: check_step
-
-        run: |
-          if git branch -r --contains ${{ github.ref }} | grep -q "origin/main"; then
-            echo "branch=main" >> $GITHUB_OUTPUT
-            echo "Tag found on main branch"
-          else
-            echo "branch=other" >> $GITHUB_OUTPUT
-            echo "Tag found on a non-main branch"
-          fi
-
-
-
-  # get-release-notes:
-  #   runs-on: ubuntu-latest
-  #   needs: check-current-branch
-  #   if: contains(${{ needs.check.outputs.branch }}, 'main')
-  #   steps:
-  #         # Get get commit logs since last release
-  #         - name: Get previous release tag
-  #           id: prev_tag
-  #           run: echo "tag=$(git describe --tags --abbrev=0 HEAD^)" >> $GITHUB_ENV
-
-  #         - name: Get commit logs since last release
-  #           id: commit_logs
-  #           run: echo "logs=$(git log ${{ env.tag }}..HEAD --pretty=format:'%h - %s (%an)')" >> $GITHUB_ENV
-
-  #         - name: Set release notes
-  #           id: set_release_notes
-  #           run: echo "release_notes=## Changes since ${{ env.tag }}%0A${{ env.logs }}" >> $GITHUB_ENV
-
-
-
   draft-public-release:
     runs-on: ubuntu-latest
     needs: branch-check
 
-    # only run if initiating tag is not on the main branch
-    if: needs.branch-check.outputs.branch == 'main'
 
     steps:
       - uses: actions/checkout@v4
@@ -88,12 +41,14 @@ jobs:
         with:
           node-version: '20.x' # You might need to adjust this value to your own version
 
+
       # Build the plugin
       - name: Build
         id: build
         run: |
           npm install
           npm run build --if-present
+
 
       # Package the required files into a zip
       - name: Package
@@ -171,120 +126,3 @@ jobs:
           asset_name: styles.css
           asset_content_type: text/css
 
-
-
-
-  draft-beta-release:
-    runs-on: ubuntu-latest
-    needs: branch-check
-    
-    # only run if the initiating tag is not on the main branch
-    if: needs.branch-check.outputs.branch == 'other'
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x' # You might need to adjust this value to your own version
-
-
-      # Get the version number and put it in a variable
-      - name: Get Version
-        id: version
-        run: |
-          echo "version=$(git describe --abbrev=0 | sed 's/-beta//')" >> $GITHUB_OUTPUT
-
-
-      # Build the plugin
-      - name: Build
-        id: build
-        run: |
-          npm install
-          npm run build --if-present
-
-
-      # Package the required files into a zip
-      # Using manifest-beta.json in place of manifest.json
-      - name: Package
-        run: |
-          mkdir ${{ github.event.repository.name }}
-          cp ./dist/manifest-beta.json ${{ github.event.repository.name }}/manifest.json
-          cp ./dist/main.js ${{ github.event.repository.name }}
-          cp ./dist/styles.css ${{ github.event.repository.name }}
-          cp README.md ${{ github.event.repository.name }}
-          zip -r ${{ github.event.repository.name }}.zip ${{ github.event.repository.name }}
-
-
-      # Create the release on github
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: ${{ env.ref_name }}
-          body: |
-            This is a **beta pre-release** and can only be installed manually or through the BRAT plugin.
-            [See beta installations here](https://github.com/daledesilva/obsidian_project-browser?tab=readme-ov-file#-installation).
-
-            ### Added this update:
-            
-            ### Broken this update:
-            
-            Watch the [release video]().
-          draft: true
-          prerelease: true
-
-          
-
-      # Upload the packaged release file
-      - name: Upload zip file
-        id: upload-zip
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{ github.event.repository.name }}.zip
-          asset_name: ${{ github.event.repository.name }}.zip
-          asset_content_type: application/zip
-      
-      # Upload the main.js
-      - name: Upload main.js
-        id: upload-main
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ${{ github.event.repository.name }}/main.js
-          asset_name: main.js
-          asset_content_type: text/javascript
-      
-      # Upload the manifest.json
-      - name: Upload manifest.json
-        id: upload-manifest
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ${{ github.event.repository.name }}/manifest.json
-          asset_name: manifest.json
-          asset_content_type: application/json
-      
-      # Upload the style.css
-      - name: Upload styles.css
-        id: upload-css
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          asset_path: ${{ github.event.repository.name }}/styles.css
-          asset_name: styles.css
-          asset_content_type: text/css
