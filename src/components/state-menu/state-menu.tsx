@@ -3,8 +3,10 @@ import { MarkdownView, TFile } from 'obsidian';
 import * as React from "react";
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
-import { getGlobals } from 'src/logic/stores';
+import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { debug } from 'src/utils/log-to-console';
+import classNames from 'classnames';
+import { useAtomValue } from 'jotai';
 
 //////////
 //////////
@@ -15,19 +17,19 @@ interface StateMenuProps {
 
 export const StateMenu = (props: StateMenuProps) => {
     const {plugin} = getGlobals();
-
+    
+    const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [file, setFile] = React.useState( props.file );
     const [state, setState] = React.useState( getFileState(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const firstRunRef = React.useRef<boolean>(true);
-    const stateMenuRef = React.useRef<HTMLDivElement>(null)
+    const stateMenuRef = React.useRef<HTMLDivElement>(null);
+    const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
+    const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
 
     listenForFileChanges();
 
     let displayState = state;
-    debug(['file', file])
-    debug(['state', state])
-    debug(['displayState', displayState])
     if(!displayState) displayState = 'Set State';
 
     const visibleStates = plugin.settings.states.visible;
@@ -44,65 +46,80 @@ export const StateMenu = (props: StateMenuProps) => {
         }
         
         document.addEventListener('pointerdown', handleClickOutside);
+        monitorWorkspaceResizes();
+        
         return () => {
+            unmonitorWorkspaceResizes();
             document.removeEventListener('pointerdown', handleClickOutside);
         };
-
-
     }, [])
+    
+
+    // Whenever stateMenuSettings has updated
+    React.useEffect( () => {
+        setHeight();
+    }, [stateMenuSettings])
+
 
     return (
         <div
-            className = "ddc_pb_state-menu"
+            className = 'ddc_pb_state-menu'
             ref = {stateMenuRef}
             >
-            {!menuIsActive && (
-                <button
-                    className = {classnames([
-                        'ddc_pb_state-btn',
-                        'ddc_pb_in-closed-menu',
-                        !firstRunRef.current && 'ddc_pb_has-return-transition'
-                    ])}
-                    onClick = {() => {
-                        setMenuIsActive(true);
-                    }}    
-                >
-                    {displayState}
-                </button>
-            )}
-            {menuIsActive && (<>
-                <div className='ddc_pb_visible-state-btns'>
-                    {visibleStates.map( (thisStatesSettings, index) => (
-                        <button
-                            key = {index}
-                            className = {classnames([
-                                'ddc_pb_state-btn',
-                                'ddc_pb_visible-state',
-                                thisStatesSettings.name === state && 'is-set',
-                            ])}
-                            onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
-                        >
-                            {thisStatesSettings.name}
-                        </button>
-                    ))}
-                </div>
-                <div className='ddc_pb_hidden-state-btns'>
-                    {hiddenStates.map( (thisStatesSettings, index) => (
-                        <button
-                            key = {index}
-                            className = {classnames([
-                                'ddc_pb_state-btn',
-                                'ddc_pb_hidden-state',
-                                thisStatesSettings.name === state && 'is-set',
-                            ])}
-                            onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
-                        >
-                            {thisStatesSettings.name}
-                        </button>
-                    ))}
-                </div>
-                
-            </>)}
+            <div
+                className = 'ddc_pb_state-menu-content'
+                ref={stateMenuContentRef}
+            >
+
+                {!menuIsActive && (
+                    <button
+                        className = {classnames([
+                            'ddc_pb_state-btn',
+                            'ddc_pb_in-closed-menu',
+                            !firstRunRef.current && 'ddc_pb_has-return-transition'
+                        ])}
+                        onClick = {() => {
+                            setMenuIsActive(true);
+                        }}    
+                    >
+                        {displayState}
+                    </button>
+                )}
+            
+                {menuIsActive && (<>
+                    <div className='ddc_pb_visible-state-btns'>
+                        {visibleStates.map( (thisStatesSettings, index) => (
+                            <button
+                                key = {index}
+                                className = {classnames([
+                                    'ddc_pb_state-btn',
+                                    'ddc_pb_visible-state',
+                                    thisStatesSettings.name === state && 'is-set',
+                                ])}
+                                onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
+                            >
+                                {thisStatesSettings.name}
+                            </button>
+                        ))}
+                    </div>
+                    <div className='ddc_pb_hidden-state-btns'>
+                        {hiddenStates.map( (thisStatesSettings, index) => (
+                            <button
+                                key = {index}
+                                className = {classnames([
+                                    'ddc_pb_state-btn',
+                                    'ddc_pb_hidden-state',
+                                    thisStatesSettings.name === state && 'is-set',
+                                ])}
+                                onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
+                            >
+                                {thisStatesSettings.name}
+                            </button>
+                        ))}
+                    </div>
+                </>)}
+
+            </div>
         </div>
     )
 
@@ -136,5 +153,39 @@ export const StateMenu = (props: StateMenuProps) => {
         setMenuIsActive(false);
     }
 
+    function setHeight() {
+        if(stateMenuSettings.visible) {
+            setOpenHeight();
+        } else {
+            setClosedHeight();
+        }
+    }
+    function setOpenHeight() {
+        if(!stateMenuContentRef.current) return;
+        if(!stateMenuRef.current) return;
+        const contentHeight = stateMenuContentRef.current.getBoundingClientRect().height;
+        stateMenuRef.current.style.height = `${contentHeight}px`;
+    }
+    function setClosedHeight() {
+        if(!stateMenuRef.current) return;
+        stateMenuRef.current.style.height = '0';
+    }
+
+    function monitorWorkspaceResizes() {
+        const surroundingWorkspaceSplit = stateMenuRef.current?.closest('.workspace-split');
+        resizeObserverRef.current = new ResizeObserver(() => {
+            setHeight();
+        });
+        if (surroundingWorkspaceSplit) {
+            resizeObserverRef.current?.observe(surroundingWorkspaceSplit);
+        }
+    }
+    function unmonitorWorkspaceResizes() {
+        const surroundingWorkspaceSplit = stateMenuRef.current?.closest('.workspace-split');
+        if (surroundingWorkspaceSplit) {
+            resizeObserverRef.current?.unobserve(surroundingWorkspaceSplit);
+        }
+        resizeObserverRef.current?.disconnect();
+    }
 }
 

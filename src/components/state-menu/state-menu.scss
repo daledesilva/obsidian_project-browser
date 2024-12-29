@@ -1,12 +1,21 @@
 
 
 .ddc_pb_state-menu {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.3s ease-in-out;
+}   
+
+.ddc_pb_state-menu-content {
     display: flex;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
     gap: 1em;
-    padding: 1px;   // So the outline on the buttons doesn't get clipped
+    // So the outline on the buttons doesn't get clipped
+    box-sizing: border-box;
+    padding-top: 1px;
+    padding-bottom: 1em;
 }
 
 .ddc_pb_visible-state-btns,

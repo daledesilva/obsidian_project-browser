@@ -1,25 +1,47 @@
 import { LOCAL_STORAGE_PREFIX } from "src/constants";
-import { WritableAtom, atom, createStore } from 'jotai'
+import { WritableAtom, atom, createStore, getDefaultStore } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import ProjectBrowserPlugin from "src/main";
+import { debug } from "src/utils/log-to-console";
 
 /////////
 /////////
 
-interface Globals {
+interface StaticGlobals {
 	plugin: ProjectBrowserPlugin,
 }
-export const globalsAtom = atom<Globals>()
-export const globalsStore = createStore();
-export function setGlobals(globals: Globals): void {
-	globalsStore.set(globalsAtom, globals);
+export const globalsAtom = atom<StaticGlobals>()
+export function setGlobals(globals: StaticGlobals): void {
+	const store = getDefaultStore();
+	store.set(globalsAtom, globals);
 }
-export function getGlobals(): Globals {
-	const globals = globalsStore.get(globalsAtom);
+export function getGlobals(): StaticGlobals {
+	const store = getDefaultStore();
+	const globals = store.get(globalsAtom);
 	if(!globals) {
 		throw new Error(`Project Browser plugin globals isn't available yet`);
 	}
 	return globals;
+}
+
+//////////
+//////////
+
+interface StateMenuSettings {
+	visible: boolean,
+};
+const defaultStateMenuSettings: StateMenuSettings = {
+	visible: true,
+};
+export const stateMenuAtom = atom<StateMenuSettings>(defaultStateMenuSettings)
+// const stateMenuStore = createStore();
+export function setStateMenuSettings(stateMenuSettings: StateMenuSettings): void {
+	const store = getDefaultStore();
+	store.set(stateMenuAtom, stateMenuSettings);
+}
+export function getStateMenuSettings(): StateMenuSettings {
+	const store = getDefaultStore();
+	return store.get(stateMenuAtom);
 }
 
 //////////

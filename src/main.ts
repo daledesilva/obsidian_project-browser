@@ -10,6 +10,7 @@ import { atom, createStore, useSetAtom } from 'jotai';
 import { error } from 'console';
 import { getGlobals, globalsAtom, globalsStore, setGlobals } from './logic/stores';
 import { showVersionNotice } from './notices/version-notices';
+import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
 
 /////////
 /////////
@@ -32,6 +33,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 
 		registerCardBrowserView()
 		registerMarkdownViewMods()
+		registerToggleStateMenuCommand();
 
 		if(this.settings.access.replaceNewTab)		loadCardBrowserOnNewTab();
 		if(this.settings.access.enableRibbonIcon)	registerOpenProjectBrowserRibbonIcon();
