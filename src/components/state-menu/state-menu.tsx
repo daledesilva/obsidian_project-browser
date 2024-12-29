@@ -1,10 +1,11 @@
 import './state-menu.scss';
-import { MarkdownView, TFile } from 'obsidian';
+import { CachedMetadata, MarkdownView, TFile } from 'obsidian';
 import * as React from "react";
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
+import { debug } from 'src/utils/log-to-console';
 
 //////////
 //////////
@@ -20,12 +21,10 @@ export const StateMenu = (props: StateMenuProps) => {
     const [file, setFile] = React.useState( props.file );
     const [state, setState] = React.useState( getFileState(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
-    const firstRunRef = React.useRef<boolean>(true);
+    const showHighlightRef = React.useRef<boolean>(false);
     const stateMenuRef = React.useRef<HTMLDivElement>(null);
     const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
     const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
-
-    listenForFileChanges();
 
     let displayState = state;
     if(!displayState) displayState = 'Set State';
@@ -35,8 +34,6 @@ export const StateMenu = (props: StateMenuProps) => {
 
     // On first run
     React.useEffect( () => {
-        firstRunRef.current = false;
-
         function handleClickOutside(event: any) {
             if (stateMenuRef.current && !stateMenuRef.current.contains(event.target)) {
                 setMenuIsActive(false);
@@ -45,6 +42,7 @@ export const StateMenu = (props: StateMenuProps) => {
         
         document.addEventListener('pointerdown', handleClickOutside);
         monitorWorkspaceResizes();
+        listenForFileChanges();
 
         return () => {
             unmonitorWorkspaceResizes();
@@ -57,6 +55,11 @@ export const StateMenu = (props: StateMenuProps) => {
     React.useEffect( () => {
         setHeight();
     }, [stateMenuSettings])
+
+    // Just after every render
+    React.useEffect(() => {
+        showHighlightRef.current = false;
+    });
 
 
     return (
@@ -74,7 +77,7 @@ export const StateMenu = (props: StateMenuProps) => {
                         className = {classnames([
                             'ddc_pb_state-btn',
                             'ddc_pb_in-closed-menu',
-                            !firstRunRef.current && 'ddc_pb_has-return-transition'
+                            showHighlightRef.current && 'ddc_pb_has-return-transition'
                         ])}
                         onClick = {() => {
                             setMenuIsActive(true);
@@ -134,6 +137,16 @@ export const StateMenu = (props: StateMenuProps) => {
             setState( getFileState(newFile) );
             setFile(newFile);
         }));
+
+        let fileChangeTimeout: NodeJS.Timeout | null = null;
+        plugin.registerEvent(plugin.app.metadataCache.on('changed', (file: TFile, data: string, cache: CachedMetadata) => {
+            if(file.path !== props.file.path) return;
+            if(fileChangeTimeout) clearTimeout(fileChangeTimeout);
+            fileChangeTimeout = setTimeout(() => {
+                showHighlightRef.current = true;
+                setState( getFileState(props.file) );
+            }, 500);
+        }));
     }
 
     function setStateAndCloseMenu(newState: string) {
@@ -141,12 +154,12 @@ export const StateMenu = (props: StateMenuProps) => {
 
         if(newState !== state) {
             // set the new state
-            setFileState(file, newState)
-            setState(newState)
+            showHighlightRef.current = true;
+            if(setFileState(file, newState)) setState(newState)
         } else {
             // erase the existing state
-            setFileState(file, null)
-            setState(null)
+            showHighlightRef.current = true;
+            if(setFileState(file, null)) setState(null)
         }
         setMenuIsActive(false);
     }

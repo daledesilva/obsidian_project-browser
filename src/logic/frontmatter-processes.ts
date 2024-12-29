@@ -1,5 +1,6 @@
 import { FrontMatterCache, TFile } from "obsidian";
 import { getGlobals } from "./stores";
+import { error } from "src/utils/log-to-console";
 
 ////////////
 
@@ -45,15 +46,21 @@ export const getFileState = (file: TFile): null | string => {
     return null;
 }
 
-export const setFileState = (file: TFile, state: null | string) => {
-    const {plugin} = getGlobals();
-    plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
-        if(state) {
-            frontmatter['state'] = state;
-        } else {
-            frontmatter['state'] = undefined;
-            // delete frontmatter['state']; // This doesn't work
-        }
-    });
-    plugin.refreshFileDependants();
+export const setFileState = (file: TFile, state: null | string): boolean => {
+    try {
+        const {plugin} = getGlobals();
+        plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+            if(state) {
+                frontmatter['state'] = state;
+            } else {
+                frontmatter['state'] = undefined;
+                // delete frontmatter['state']; // This doesn't work
+            }
+        });
+        plugin.refreshFileDependants();
+        return true;
+    } catch(e) {
+        error(e);
+        return false;
+    }
 }
