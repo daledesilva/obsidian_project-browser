@@ -145,7 +145,7 @@ export const StateMenu = (props: StateMenuProps) => {
             fileChangeTimeout = setTimeout(() => {
                 showHighlightRef.current = true;
                 setState( getFileState(props.file) );
-            }, 500);
+            }, 100);
         }));
     }
 
