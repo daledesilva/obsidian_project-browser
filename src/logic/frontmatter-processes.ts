@@ -35,7 +35,6 @@ export const setFileFrontmatter = (file: TFile, newFrontmatter: FrontMatterCache
 }
 
 export const getFileState = (file: TFile): null | string => {
-    const {plugin} = getGlobals();
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
 

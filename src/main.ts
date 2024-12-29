@@ -11,6 +11,7 @@ import { error } from 'console';
 import { getGlobals, globalsAtom, globalsStore, setGlobals } from './logic/stores';
 import { showVersionNotice } from './notices/version-notices';
 import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
+import { registerCycleStateCommands } from './commands/cycle-state';
 
 /////////
 /////////
@@ -34,6 +35,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 		registerCardBrowserView()
 		registerMarkdownViewMods()
 		registerToggleStateMenuCommand();
+		registerCycleStateCommands();
 
 		if(this.settings.access.replaceNewTab)		loadCardBrowserOnNewTab();
 		if(this.settings.access.enableRibbonIcon)	registerOpenProjectBrowserRibbonIcon();

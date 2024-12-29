@@ -13,8 +13,8 @@ export async function registerToggleStateMenuCommand() {
         icon: 'file-check',
         hotkeys: [
             {
-                modifiers: ['Shift'],
-                key: 'space',
+                modifiers: ['Meta', 'Shift'],
+                key: 's',
             }
         ],
         callback: () => {
