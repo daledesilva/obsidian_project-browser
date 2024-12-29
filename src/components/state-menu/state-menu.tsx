@@ -4,8 +4,6 @@ import * as React from "react";
 import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
-import { debug } from 'src/utils/log-to-console';
-import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
 
 //////////
@@ -47,7 +45,7 @@ export const StateMenu = (props: StateMenuProps) => {
         
         document.addEventListener('pointerdown', handleClickOutside);
         monitorWorkspaceResizes();
-        
+
         return () => {
             unmonitorWorkspaceResizes();
             document.removeEventListener('pointerdown', handleClickOutside);
