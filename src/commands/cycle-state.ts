@@ -24,7 +24,7 @@ export async function registerCycleStateCommands() {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
             openStateMenuIfClosed();
-            const newState = offsetState(file, 1, true);
+            const newState = offsetState(file, 1, plugin.settings.loopStatesWhenCycling);
             setFileState(file, newState.name);
             returnStateMenuAfterDelay();
         }
@@ -44,7 +44,7 @@ export async function registerCycleStateCommands() {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
             openStateMenuIfClosed();
-            const newState = offsetState(file, -1, true);
+            const newState = offsetState(file, -1, plugin.settings.loopStatesWhenCycling);
             setFileState(file, newState.name);
             returnStateMenuAfterDelay();
         }

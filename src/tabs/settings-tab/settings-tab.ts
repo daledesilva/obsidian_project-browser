@@ -151,7 +151,21 @@ function insertStateSettings(containerEl: HTMLElement, plugin: InkPlugin, refres
 	sectionEl.createEl('h2', { text: 'States' });
 	sectionEl.createEl('p', { text: `This is the list of categories that Project Browser will help assign notes and group by in the Browser view. Add new states and drag them to reorder or delete.` });
 	// sectionEl.createEl('p', { text: `Notes states will appear in reverse order in the Browser view so that more progressed notes are shown higher. Hidden states will not show.` });
-	insertStateEditor(sectionEl, plugin);
+
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Loop states')
+		.setDesc('When pressing the hotkeys to step states forward or backward, should it cycle back to the first or last state when the end is reached?')
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.loopStatesWhenCycling);
+			toggle.onChange(async (value) => {
+				plugin.settings.loopStatesWhenCycling = value;
+				await plugin.saveSettings();
+				refresh();
+			});
+		});
+
+	insertStateEditor(sectionEl);
 }
 
 function insertNoteSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {

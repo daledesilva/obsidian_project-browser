@@ -4,11 +4,9 @@ import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-vi
 import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
 import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon } from './commands/open-project-browser';
 import { migrateOutdatedSettings } from './types/plugin-settings-migrations';
-import { showOnboardingNotices, showOnboardingNotices_maybe } from './notices/onboarding-notices';
+import { showOnboardingNotices_maybe } from './notices/onboarding-notices';
 import { DEFAULT_SETTINGS_0_1_0, PluginSettings_0_1_0 } from './types/plugin-settings0_1_0';
-import { atom, createStore, useSetAtom } from 'jotai';
-import { error } from 'console';
-import { getGlobals, globalsAtom, globalsStore, setGlobals } from './logic/stores';
+import { setGlobals } from './logic/stores';
 import { showVersionNotice } from './notices/version-notices';
 import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
 import { registerCycleStateCommands } from './commands/cycle-state';

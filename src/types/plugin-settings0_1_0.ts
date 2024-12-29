@@ -35,6 +35,7 @@ export interface PluginSettings_0_1_0 {
 		launchFolder: string,
 	}
 	showStateMenu: boolean,
+	loopStatesWhenCycling: boolean,
 	folders: PluginFolderSettings,
 	states: {
 		visible: PluginStateSettings_0_1_0[],
@@ -60,6 +61,7 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 		launchFolder: '/',
 	},
 	showStateMenu: true,
+	loopStatesWhenCycling: true,
 	folders: {
 		defaultView: FolderViewMode_0_1_0.Small,
 	},
