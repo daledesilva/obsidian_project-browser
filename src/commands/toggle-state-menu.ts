@@ -10,7 +10,13 @@ export async function registerToggleStateMenuCommand() {
     plugin.addCommand({
 		id: 'toggle-state-menu',
 		name: 'Toggle state menu',
-        icon: 'menu',
+        icon: 'file-check',
+        hotkeys: [
+            {
+                modifiers: ['Shift'],
+                key: 'space',
+            }
+        ],
         callback: () => {
             const stateMenuSettings = getStateMenuSettings();
             const newStateMenuSettings = JSON.parse(JSON.stringify(stateMenuSettings));
