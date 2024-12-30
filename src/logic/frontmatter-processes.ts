@@ -1,6 +1,7 @@
 import { FrontMatterCache, TFile } from "obsidian";
 import { getGlobals } from "./stores";
 import { error } from "src/utils/log-to-console";
+import { trimLinkBrackets } from "./trim-link-brackets";
 
 ////////////
 
@@ -35,7 +36,7 @@ export const setFileFrontmatter = (file: TFile, newFrontmatter: FrontMatterCache
     });
 }
 
-export const getFileState = (file: TFile): null | string => {
+export const getFileRawState = (file: TFile): null | string => {
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
 
@@ -46,7 +47,18 @@ export const getFileState = (file: TFile): null | string => {
     return null;
 }
 
-export const setFileState = (file: TFile, state: null | string): boolean => {
+export const getFileStateDisplayText = (file: TFile): null | string => {
+    const rawState = getFileRawState(file);
+    if(!rawState) return null;
+
+    if(rawState) {
+        return trimLinkBrackets(rawState);
+    } else {
+        return null;
+    }
+}
+
+export const setFileRawState = (file: TFile, state: null | string): boolean => {
     try {
         const {plugin} = getGlobals();
         plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {

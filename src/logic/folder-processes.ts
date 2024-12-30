@@ -1,6 +1,6 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { Section, getStateSettings, orderSections } from "./section-processes";
-import { getFileFrontmatter, getFileState } from "./frontmatter-processes";
+import { getFileFrontmatter, getFileRawState, getFileStateDisplayText } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 import { getGlobals } from "./stores";
 
@@ -33,9 +33,9 @@ function contentsIndicatesProject(folder: TFolder): boolean {
     itemsInFolder?.forEach( (item) => {
 
         if(item instanceof TFile) {
-            const state = getFileState(item);
-            if(state) {
-                fileStatesFound.push(state);
+            const rawState = getFileRawState(item);
+            if(rawState) {
+                fileStatesFound.push(rawState);
             }
         }
 
@@ -56,9 +56,9 @@ function getProjectState(folder: TFolder): null | string {
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const state = getFileState(item);
-            if(state) {
-                return state;
+            const rawState = getFileRawState(item);
+            if(rawState) {
+                return rawState;
             }
         }
     }
@@ -73,8 +73,8 @@ export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> =
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const state = getFileState(item);
-            if(state) {
+            const rawState = getFileRawState(item);
+            if(rawState) {
                 return await getFileExcerpt(item);
             }
         }
@@ -121,13 +121,13 @@ export const getSortedItemsInFolder = (folder: TFolder): Section[] => {
             // }
 
         } else if(item instanceof TFile) {
-            // DOn't show Project Browser settings files
+            // Don't show Project Browser settings files
             if(item.extension.toLowerCase() === 'pbs') return;
 
-            const state = getFileState(item);
-            if(state) {
-                if(!itemsBySection[state]) itemsBySection[state] = [];
-                itemsBySection[state].push(item);
+            const displayState = getFileStateDisplayText(item);
+            if(displayState) {
+                if(!itemsBySection[displayState]) itemsBySection[displayState] = [];
+                itemsBySection[displayState].push(item);
             } else {
                 if(!itemsBySection[' ']) itemsBySection[' '] = [];
                 itemsBySection[' '].push(item);

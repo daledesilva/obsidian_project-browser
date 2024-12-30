@@ -3,7 +3,7 @@
 
 import { App, DataWriteOptions, FileManager, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
 import { folderPathSanitize, parseFilepath, sanitizeFileFolderName } from "./string-processes";
-import { setFileState } from "src/logic/frontmatter-processes";
+import { setFileRawState } from "src/logic/frontmatter-processes";
 import { DEFAULT_FOLDER_SETTINGS_0_1_2, FolderSettings } from "src/types/folder-settings0_1_2";
 import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 import { getGlobals } from "src/logic/stores";
@@ -48,7 +48,7 @@ export async function createProject(parentFolder: TFolder, projectName: string, 
     const primaryProjectFile = await createDefaultMarkdownFile(v, parentFolder, projectName);
 
     if(defaults) {
-        if(defaults.state) setFileState(primaryProjectFile, defaults.state);
+        if(defaults.state) setFileRawState(primaryProjectFile, defaults.state);
     }
 
     return primaryProjectFile;

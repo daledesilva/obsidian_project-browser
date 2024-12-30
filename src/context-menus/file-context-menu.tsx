@@ -4,7 +4,7 @@ import { CardBrowserContext } from "src/components/card-browser/card-browser";
 import { openFileInBackgroundTab, openFileInSameLeaf } from "src/logic/file-access-processes";
 import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic/file-processes";
 import { refreshFolderReference } from "src/logic/folder-processes";
-import { getFileState, setFileState } from "src/logic/frontmatter-processes";
+import { getFileRawState, setFileRawState } from "src/logic/frontmatter-processes";
 import { getGlobals } from "src/logic/stores";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
@@ -22,7 +22,7 @@ interface registerFileContextMenuProps {
 
 export function registerFileContextMenu(props: registerFileContextMenuProps) {
     const {plugin} = getGlobals();
-    const fileState = getFileState(props.file);
+    const fileRawState = getFileRawState(props.file);
     const folder = props.file.parent;
 
     const visibleStates = JSON.parse(JSON.stringify(plugin.settings.states.visible));
@@ -46,23 +46,23 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             });
         });
         menu.addSeparator();
-        visibleStates.forEach( (state) => {
+        visibleStates.forEach( (rawState) => {
             menu.addItem((item) => {
-                item.setTitle(state.name);
-                if(state.name === fileState) item.setChecked(true);
+                item.setTitle(rawState.name);
+                if(rawState.name === fileRawState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(props.file, state.name);
+                    setFileRawState(props.file, rawState.name);
                     props.onFileChange();
                 });
             });
         })
         menu.addSeparator();
-        hiddenStates.forEach( (state) => {
+        hiddenStates.forEach( (rawState) => {
             menu.addItem((item) => {
-                item.setTitle(state.name);
-                if(state.name === fileState) item.setChecked(true);
+                item.setTitle(rawState.name);
+                if(rawState.name === fileRawState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileState(props.file, state.name);
+                    setFileRawState(props.file, rawState.name);
                     props.onFileChange();
                 })
             });

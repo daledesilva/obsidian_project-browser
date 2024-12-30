@@ -1,5 +1,5 @@
 import { Editor } from "obsidian";
-import { setFileState } from "src/logic/frontmatter-processes";
+import { setFileRawState } from "src/logic/frontmatter-processes";
 import { offsetState } from "src/logic/offset-state";
 import { getGlobals } from "src/logic/stores";
 import { openStateMenuIfClosed, returnStateMenuAfterDelay } from "src/logic/toggle-state-menu";
@@ -25,7 +25,7 @@ export async function registerCycleStateCommands() {
             if(!file) return;
             openStateMenuIfClosed();
             const newState = offsetState(file, 1, plugin.settings.loopStatesWhenCycling);
-            setFileState(file, newState.name);
+            setFileRawState(file, newState.name);
             returnStateMenuAfterDelay();
         }
 	});
@@ -45,7 +45,7 @@ export async function registerCycleStateCommands() {
             if(!file) return;
             openStateMenuIfClosed();
             const newState = offsetState(file, -1, plugin.settings.loopStatesWhenCycling);
-            setFileState(file, newState.name);
+            setFileRawState(file, newState.name);
             returnStateMenuAfterDelay();
         }
 	});

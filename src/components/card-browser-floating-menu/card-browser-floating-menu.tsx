@@ -2,7 +2,7 @@ import './card-browser-floating-menu.scss';
 import { TFile, TFolder } from 'obsidian';
 import * as React from "react";
 import classnames from 'classnames';
-import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
+import { getFileRawState, setFileRawState } from 'src/logic/frontmatter-processes';
 import { NewProjectModal } from 'src/modals/new-project-modal/new-project-modal';
 import { Plus, Search } from 'lucide-react';
 import { createProject } from 'src/utils/file-manipulation';

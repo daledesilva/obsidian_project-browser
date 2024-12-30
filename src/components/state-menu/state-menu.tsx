@@ -2,9 +2,10 @@ import './state-menu.scss';
 import { CachedMetadata, MarkdownView, TFile } from 'obsidian';
 import * as React from "react";
 import classnames from 'classnames';
-import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
+import { getFileRawState, getFileStateDisplayText, setFileRawState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
+import { trimLinkBrackets } from 'src/logic/trim-link-brackets';
 
 //////////
 //////////
@@ -18,14 +19,14 @@ export const StateMenu = (props: StateMenuProps) => {
     
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [file, setFile] = React.useState( props.file );
-    const [state, setState] = React.useState( getFileState(file) );
+    const [rawState, setRawState] = React.useState( getFileRawState(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const showHighlightRef = React.useRef<boolean>(false);
     const stateMenuRef = React.useRef<HTMLDivElement>(null);
     const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
     const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
 
-    let displayState = state;
+    let displayState = getFileStateDisplayText(file);
     if(!displayState) displayState = 'Set State';
 
     const visibleStates = plugin.settings.states.visible;
@@ -94,11 +95,11 @@ export const StateMenu = (props: StateMenuProps) => {
                                 className = {classnames([
                                     'ddc_pb_state-btn',
                                     'ddc_pb_visible-state',
-                                    thisStatesSettings.name === state && 'is-set',
+                                    thisStatesSettings.name === rawState && 'is-set',
                                 ])}
                                 onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
                             >
-                                {thisStatesSettings.name}
+                                {trimLinkBrackets(thisStatesSettings.name)}
                             </button>
                         ))}
                     </div>
@@ -109,11 +110,11 @@ export const StateMenu = (props: StateMenuProps) => {
                                 className = {classnames([
                                     'ddc_pb_state-btn',
                                     'ddc_pb_hidden-state',
-                                    thisStatesSettings.name === state && 'is-set',
+                                    thisStatesSettings.name === rawState && 'is-set',
                                 ])}
                                 onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
                             >
-                                {thisStatesSettings.name}
+                                {trimLinkBrackets(thisStatesSettings.name)}
                             </button>
                         ))}
                     </div>
@@ -133,7 +134,7 @@ export const StateMenu = (props: StateMenuProps) => {
             let leaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
             if(!leaf) return;
 
-            setState( getFileState(newFile) );
+            setRawState( getFileRawState(newFile) );
             setFile(newFile);
         }));
 
@@ -144,7 +145,7 @@ export const StateMenu = (props: StateMenuProps) => {
             if(fileChangeTimeout) clearTimeout(fileChangeTimeout);
             fileChangeTimeout = setTimeout(() => {
                 showHighlightRef.current = true;
-                setState( getFileState(props.file) );
+                setRawState( getFileRawState(props.file) );
             }, 100);
         }));
     }
@@ -152,14 +153,14 @@ export const StateMenu = (props: StateMenuProps) => {
     function setStateAndCloseMenu(newState: string) {
         if(!plugin) return;
 
-        if(newState !== state) {
+        if(newState !== rawState) {
             // set the new state
             showHighlightRef.current = true;
-            if(setFileState(file, newState)) setState(newState)
+            if(setFileRawState(file, newState)) setRawState(newState)
         } else {
             // erase the existing state
             showHighlightRef.current = true;
-            if(setFileState(file, null)) setState(null)
+            if(setFileRawState(file, null)) setRawState(null)
         }
         setMenuIsActive(false);
     }
