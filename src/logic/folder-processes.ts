@@ -1,6 +1,6 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { Section, getStateSettings, orderSections } from "./section-processes";
-import { getFileFrontmatter, getFileStateSettings, getFileStateDisplayText } from "./frontmatter-processes";
+import { getFileFrontmatter, getFileStateSettings, getFileStateName } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 import { getGlobals } from "./stores";
 
@@ -124,7 +124,7 @@ export const getSortedItemsInFolder = (folder: TFolder): Section[] => {
             // Don't show Project Browser settings files
             if(item.extension.toLowerCase() === 'pbs') return;
 
-            const displayState = getFileStateDisplayText(item);
+            const displayState = getFileStateName(item);
             if(displayState) {
                 if(!itemsBySection[displayState]) itemsBySection[displayState] = [];
                 itemsBySection[displayState].push(item);

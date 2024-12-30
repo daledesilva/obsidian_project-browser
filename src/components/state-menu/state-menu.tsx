@@ -2,7 +2,7 @@ import './state-menu.scss';
 import { CachedMetadata, MarkdownView, TFile } from 'obsidian';
 import * as React from "react";
 import classnames from 'classnames';
-import { getFileStateSettings, getFileStateDisplayText, setFileRawState } from 'src/logic/frontmatter-processes';
+import { getFileStateSettings, getFileStateName, setFileState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
 import { trimLinkBrackets } from 'src/logic/trim-link-brackets';
@@ -27,7 +27,7 @@ export const StateMenu = (props: StateMenuProps) => {
     const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
     const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
 
-    let displayState = getFileStateDisplayText(file);
+    let displayState = getFileStateName(file);
     if(!displayState) displayState = 'Set State';
 
     const visibleStates = plugin.settings.states.visible;
@@ -157,11 +157,11 @@ export const StateMenu = (props: StateMenuProps) => {
         if(newState !== rawState) {
             // set the new state
             showHighlightRef.current = true;
-            if(setFileRawState(file, newState)) setRawState(newState)
+            if(setFileState(file, newState)) setRawState(newState)
         } else {
             // erase the existing state
             showHighlightRef.current = true;
-            if(setFileRawState(file, null)) setRawState(null)
+            if(setFileState(file, null)) setRawState(null)
         }
         setMenuIsActive(false);
     }

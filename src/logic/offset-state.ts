@@ -10,13 +10,24 @@ export function offsetState(file: TFile, offset: number, cycle: boolean = false)
     const {plugin} = getGlobals();
     const curStateSettings = getFileStateSettings(file);
     const allStateSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
-    const curStateIndex = allStateSettings.findIndex(state => state.name === curStateSettings?.name);
-    let newStateIndex = (curStateIndex + offset);
-    if(cycle) {
-        if(newStateIndex < 0) newStateIndex = allStateSettings.length-1;
-        if(newStateIndex >= allStateSettings.length) newStateIndex = 0;
+
+    if(curStateSettings) {
+        const curStateIndex = allStateSettings.findIndex(state => state.name === curStateSettings?.name);
+        let newStateIndex = (curStateIndex + offset);
+        if(cycle) {
+            if(newStateIndex < 0) newStateIndex = allStateSettings.length-1;
+            if(newStateIndex >= allStateSettings.length) newStateIndex = 0;
+        }
+        newStateIndex = Math.max(0, newStateIndex);
+        newStateIndex = Math.min(allStateSettings.length-1, newStateIndex);
+        return allStateSettings[newStateIndex];
+
+    } else {
+        if(offset > 0) {
+            return allStateSettings[1];
+        } else {
+            return allStateSettings[allStateSettings.length-1];
+        }
     }
-    newStateIndex = Math.max(0, newStateIndex);
-    newStateIndex = Math.min(allStateSettings.length-1, newStateIndex);
-    return allStateSettings[newStateIndex];
+
 }

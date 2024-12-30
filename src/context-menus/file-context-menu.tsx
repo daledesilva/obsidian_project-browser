@@ -1,7 +1,7 @@
 import { Menu, Notice, TFile } from "obsidian";
 import { openFileInBackgroundTab, openFileInSameLeaf } from "src/logic/file-access-processes";
 import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic/file-processes";
-import { getFileStateSettings, setFileRawState } from "src/logic/frontmatter-processes";
+import { getFileStateSettings, setFileState } from "src/logic/frontmatter-processes";
 import { getGlobals } from "src/logic/stores";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
@@ -46,7 +46,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                 item.setTitle(stateSettings.name);
                 if(stateSettings.name === fileRawState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileRawState(props.file, stateSettings);
+                    setFileState(props.file, stateSettings);
                     props.onFileChange();
                 });
             });
@@ -57,7 +57,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                 item.setTitle(stateSettings.name);
                 if(stateSettings.name === fileRawState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileRawState(props.file, stateSettings);
+                    setFileState(props.file, stateSettings);
                     props.onFileChange();
                 })
             });

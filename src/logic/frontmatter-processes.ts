@@ -3,6 +3,7 @@ import { getGlobals } from "./stores";
 import { error } from "src/utils/log-to-console";
 import { trimLinkBrackets } from "./trim-link-brackets";
 import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
+import { getStateByName } from "./get-state-by-name";
 
 ////////////
 
@@ -42,29 +43,32 @@ export const getFileStateSettings = (file: TFile): null | PluginStateSettings_0_
     if(!frontmatter) return null;
 
     if((frontmatter as FrontMatterCache).state) {
-        const state = (frontmatter as FrontMatterCache).state;
-        return state;
+        const stateName = (frontmatter as FrontMatterCache).state;
+        if(stateName) {
+            return getStateByName(stateName);
+        } else {
+            return null;
+        }
     }
     return null;
 }
 
-export const getFileStateDisplayText = (file: TFile): null | string => {
-    const rawState = getFileStateSettings(file);
-    if(!rawState) return null;
-
-    if(rawState) {
-        return trimLinkBrackets(rawState);
-    } else {
-        return null;
-    }
+export const getFileStateName = (file: TFile): null | string => {
+    const stateSettings = getFileStateSettings(file);
+    if(!stateSettings) return null;
+    return stateSettings.name;
 }
 
-export const setFileRawState = (file: TFile, stateSettings: null | PluginStateSettings_0_1_0): boolean => {
+export const setFileState = (file: TFile, stateSettings: null | PluginStateSettings_0_1_0): boolean => {
     try {
         const {plugin} = getGlobals();
         plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
             if(stateSettings) {
-                frontmatter['state'] = stateSettings;
+                if(stateSettings.link) {
+                    frontmatter['state'] = `[[${stateSettings.name}]]`;
+                } else {
+                    frontmatter['state'] = stateSettings.name;
+                }
             } else {
                 frontmatter['state'] = undefined;
                 // NOTE: delete frontmatter['state']; // This doesn't work
