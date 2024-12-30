@@ -141,6 +141,7 @@ export const getSortedItemsInFolder = (folder: TFolder): Section[] => {
                 if(!itemsBySection[' ']) itemsBySection[' '] = [];
                 itemsBySection[' '].push(item);
             }
+
         }
         
     })

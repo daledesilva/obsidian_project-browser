@@ -144,6 +144,18 @@ function insertAccessSettings(containerEl: HTMLElement, plugin: InkPlugin, refre
 			})
 		})
 
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Use Aliases')
+		.setDesc(`Display the first alias of a file as it's name in the Project Browser if available.`)
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.useAliases);
+			toggle.onChange(async (value) => {
+				plugin.settings.useAliases = value;
+				await plugin.saveSettings();
+				refresh();
+			});
+		})
 }
 
 function insertStateSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {

@@ -34,6 +34,7 @@ export interface PluginSettings_0_1_0 {
 		enableCommand: boolean,
 		launchFolder: string,
 	}
+	useAliases: boolean,
 	showStateMenu: boolean,
 	loopStatesWhenCycling: boolean,
 	folders: PluginFolderSettings,
@@ -60,6 +61,7 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 		enableCommand: true,
 		launchFolder: '/',
 	},
+	useAliases: true,
 	showStateMenu: true,
 	loopStatesWhenCycling: true,
 	folders: {

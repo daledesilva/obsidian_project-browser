@@ -64,3 +64,14 @@ export const setFileState = (file: TFile, state: null | string): boolean => {
         return false;
     }
 }
+
+export const getFileAliases = (file: TFile): null | string => {
+    const frontmatter = getFileFrontmatter(file);
+    if(!frontmatter) return null;
+
+    if((frontmatter as FrontMatterCache).aliases) {
+        const aliases = (frontmatter as FrontMatterCache).aliases;
+        return aliases;
+    }
+    return null;
+}

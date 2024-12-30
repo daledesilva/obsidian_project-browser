@@ -8,6 +8,7 @@ import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
 import { openFileInBackgroundTab, openFileInSameLeaf } from 'src/logic/file-access-processes';
+import { getFileDisplayName } from 'src/logic/get-file-display-name';
 
 /////////
 /////////
@@ -21,7 +22,7 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const noteRef = React.useRef(null);
 
-    const name = props.file.basename; //trimFilenameExt(props.file.name);
+    const name = getFileDisplayName(props.file);
     const [excerpt, setExcerpt] = React.useState('');
     const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
 
