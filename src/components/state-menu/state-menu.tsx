@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { getFileState, setFileState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
-import { debug } from 'src/utils/log-to-console';
 
 //////////
 //////////

@@ -1,4 +1,5 @@
 import { getGlobals, getStateMenuSettings, setStateMenuSettings } from "src/logic/stores";
+import { toggleStateMenu } from "src/logic/toggle-state-menu";
 import { debug } from "src/utils/log-to-console";
 
 ////////
@@ -17,11 +18,6 @@ export async function registerToggleStateMenuCommand() {
                 key: 's',
             }
         ],
-        callback: () => {
-            const stateMenuSettings = getStateMenuSettings();
-            const newStateMenuSettings = JSON.parse(JSON.stringify(stateMenuSettings));
-            newStateMenuSettings.visible = !newStateMenuSettings.visible;
-            setStateMenuSettings(newStateMenuSettings);
-        }
+        callback: toggleStateMenu
 	});
 }

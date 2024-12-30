@@ -3,6 +3,15 @@ import { getStateMenuSettings, setStateMenuSettings } from "./stores";
 //////////////////
 //////////////////
 
+export function toggleStateMenu() {
+    const stateMenuSettings = getStateMenuSettings();
+    const newStateMenuSettings = JSON.parse(JSON.stringify(stateMenuSettings));
+    newStateMenuSettings.visible = !newStateMenuSettings.visible;
+    setStateMenuSettings(newStateMenuSettings);
+}
+
+//////////////////
+
 let cycleStateTimeout: NodeJS.Timeout | null = null;
 let openedByFunction = false;
 
