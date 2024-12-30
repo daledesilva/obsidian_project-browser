@@ -6,7 +6,7 @@ import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon
 import { migrateOutdatedSettings } from './types/plugin-settings-migrations';
 import { showOnboardingNotices_maybe } from './notices/onboarding-notices';
 import { DEFAULT_SETTINGS_0_1_0, PluginSettings_0_1_0 } from './types/plugin-settings0_1_0';
-import { setGlobals } from './logic/stores';
+import { initStateMenuSettings, setGlobals } from './logic/stores';
 import { showVersionNotice } from './notices/version-notices';
 import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
 import { registerCycleStateCommands } from './commands/cycle-state';
@@ -30,6 +30,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 			plugin: this,
 		})
 
+		initStateMenuSettings();
 		registerCardBrowserView()
 		registerMarkdownViewMods()
 		registerToggleStateMenuCommand();

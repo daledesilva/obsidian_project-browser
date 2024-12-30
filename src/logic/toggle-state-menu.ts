@@ -1,13 +1,17 @@
-import { getStateMenuSettings, setStateMenuSettings } from "./stores";
+import { getGlobals, getStateMenuSettings, setStateMenuSettings } from "./stores";
 
 //////////////////
 //////////////////
 
 export function toggleStateMenu() {
+    const {plugin} = getGlobals();
     const stateMenuSettings = getStateMenuSettings();
     const newStateMenuSettings = JSON.parse(JSON.stringify(stateMenuSettings));
     newStateMenuSettings.visible = !newStateMenuSettings.visible;
     setStateMenuSettings(newStateMenuSettings);
+    
+    plugin.settings.showStateMenu = newStateMenuSettings.visible;
+    plugin.saveSettings();
 }
 
 //////////////////

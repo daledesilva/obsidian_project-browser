@@ -137,6 +137,7 @@ export const StateMenu = (props: StateMenuProps) => {
             setFile(newFile);
         }));
 
+        // NOTE: This won't work if the plugin has been reloaded - you must restart Obsidian while developing.
         let fileChangeTimeout: NodeJS.Timeout | null = null;
         plugin.registerEvent(plugin.app.metadataCache.on('changed', (file: TFile, data: string, cache: CachedMetadata) => {
             if(file.path !== props.file.path) return;

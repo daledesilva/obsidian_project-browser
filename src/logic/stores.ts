@@ -34,7 +34,14 @@ const defaultStateMenuSettings: StateMenuSettings = {
 	visible: true,
 };
 export const stateMenuAtom = atom<StateMenuSettings>(defaultStateMenuSettings)
-// const stateMenuStore = createStore();
+export function initStateMenuSettings() {
+	const {plugin} = getGlobals();
+	const store = getDefaultStore();
+	const curStateMenuSettings = store.get(stateMenuAtom);
+	const newStateMenuSettings = JSON.parse(JSON.stringify(curStateMenuSettings));
+	newStateMenuSettings.visible = plugin.settings.showStateMenu;
+	store.set(stateMenuAtom, newStateMenuSettings);
+}
 export function setStateMenuSettings(stateMenuSettings: StateMenuSettings): void {
 	const store = getDefaultStore();
 	store.set(stateMenuAtom, stateMenuSettings);

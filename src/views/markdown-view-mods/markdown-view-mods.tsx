@@ -25,9 +25,7 @@ export function registerMarkdownViewMods() {
 
 		const viewType = leaf.view.getViewType();
 		if(viewType === 'markdown') {
-            // addEditorMenuOptions();
-            // addActionButtons(leaf.view)
-            if(plugin.settings.showStateMenu) addStateHeader();
+            addStateHeader();
         }
 	}));
 }
@@ -43,7 +41,6 @@ function addViewMenuOptions() {
             item.setSection('pane');
         });
     });
-
 }
 
 function addActionButtons(view: View) {
