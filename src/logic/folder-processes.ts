@@ -1,6 +1,6 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { Section, getStateSettings, orderSections } from "./section-processes";
-import { getFileFrontmatter } from "./frontmatter-processes";
+import { getFileFrontmatter, getFileState } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 import { getGlobals } from "./stores";
 
@@ -27,16 +27,15 @@ export const isProjectFolder = async (folder: TFolder): Promise<boolean> => {
 }
 
 function contentsIndicatesProject(folder: TFolder): boolean {
-    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     const fileStatesFound: string[] = [];
     
     itemsInFolder?.forEach( (item) => {
 
         if(item instanceof TFile) {
-            const frontmatter = getFileFrontmatter(item);
-            if(frontmatter['state']) {
-                fileStatesFound.push(frontmatter['state']);
+            const state = getFileState(item);
+            if(state) {
+                fileStatesFound.push(state);
             }
         }
 
@@ -51,16 +50,15 @@ function contentsIndicatesProject(folder: TFolder): boolean {
 // Returns first state found in folder
 // use isProjectFolder to ensure it's a project first
 function getProjectState(folder: TFolder): null | string {
-    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder) return null;
     
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const frontmatter = getFileFrontmatter(item);
-            if(frontmatter['state']) {
-                return frontmatter['state'];
+            const state = getFileState(item);
+            if(state) {
+                return state;
             }
         }
     }
@@ -69,15 +67,14 @@ function getProjectState(folder: TFolder): null | string {
 }
 
 export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> => {
-    const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     if(!itemsInFolder)  return null;
     
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const frontmatter = getFileFrontmatter(item);
-            if(frontmatter['state']) {
+            const state = getFileState(item);
+            if(state) {
                 return await getFileExcerpt(item);
             }
         }
@@ -127,20 +124,16 @@ export const getSortedItemsInFolder = (folder: TFolder): Section[] => {
             // DOn't show Project Browser settings files
             if(item.extension.toLowerCase() === 'pbs') return;
 
-            const frontmatter = getFileFrontmatter(item);
-            // if(frontmatter['tags']) {
-            //     frontmatter['tags'].forEach( (tag) => {
-            //         if(!itemsByTags[tag]) itemsByTags[tag] = [];
-            //         itemsByTags[tag].push(item);
-            //     })
-            if(frontmatter['state']) {
-                const state = frontmatter['state'];
+            const state = getFileState(item);
+            if(state) {
                 if(!itemsBySection[state]) itemsBySection[state] = [];
                 itemsBySection[state].push(item);
             } else {
                 if(!itemsBySection[' ']) itemsBySection[' '] = [];
                 itemsBySection[' '].push(item);
             }
+
+            
 
         }
         
