@@ -12,6 +12,7 @@ export enum FolderViewMode_0_1_0 {
 export interface PluginStateSettings_0_1_0 {
 	name: string,
 	defaultView: StateViewMode_0_1_0,
+	link: boolean,
 }
 export interface PluginFolderSettings {
 	defaultView: FolderViewMode_0_1_0,

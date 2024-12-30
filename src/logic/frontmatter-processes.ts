@@ -2,6 +2,7 @@ import { FrontMatterCache, TFile } from "obsidian";
 import { getGlobals } from "./stores";
 import { error } from "src/utils/log-to-console";
 import { trimLinkBrackets } from "./trim-link-brackets";
+import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
 
 ////////////
 
@@ -36,7 +37,7 @@ export const setFileFrontmatter = (file: TFile, newFrontmatter: FrontMatterCache
     });
 }
 
-export const getFileRawState = (file: TFile): null | string => {
+export const getFileStateSettings = (file: TFile): null | PluginStateSettings_0_1_0 => {
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
 
@@ -48,7 +49,7 @@ export const getFileRawState = (file: TFile): null | string => {
 }
 
 export const getFileStateDisplayText = (file: TFile): null | string => {
-    const rawState = getFileRawState(file);
+    const rawState = getFileStateSettings(file);
     if(!rawState) return null;
 
     if(rawState) {
@@ -58,15 +59,15 @@ export const getFileStateDisplayText = (file: TFile): null | string => {
     }
 }
 
-export const setFileRawState = (file: TFile, state: null | string): boolean => {
+export const setFileRawState = (file: TFile, stateSettings: null | PluginStateSettings_0_1_0): boolean => {
     try {
         const {plugin} = getGlobals();
         plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
-            if(state) {
-                frontmatter['state'] = state;
+            if(stateSettings) {
+                frontmatter['state'] = stateSettings;
             } else {
                 frontmatter['state'] = undefined;
-                // delete frontmatter['state']; // This doesn't work
+                // NOTE: delete frontmatter['state']; // This doesn't work
             }
         });
         plugin.refreshFileDependants();

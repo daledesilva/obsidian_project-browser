@@ -7,6 +7,7 @@ import { setFileRawState } from "src/logic/frontmatter-processes";
 import { DEFAULT_FOLDER_SETTINGS_0_1_2, FolderSettings } from "src/types/folder-settings0_1_2";
 import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 import { getGlobals } from "src/logic/stores";
+import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
 
 // //////////
 // //////////
@@ -36,7 +37,7 @@ import { getGlobals } from "src/logic/stores";
 
 
 interface ProjectDefaults {
-    state?: string
+    stateSettings?: PluginStateSettings_0_1_0
 }
 export async function createProject(parentFolder: TFolder, projectName: string, defaults?: ProjectDefaults ): Promise<TFile> {
     const v = parentFolder.vault;
@@ -48,7 +49,7 @@ export async function createProject(parentFolder: TFolder, projectName: string, 
     const primaryProjectFile = await createDefaultMarkdownFile(v, parentFolder, projectName);
 
     if(defaults) {
-        if(defaults.state) setFileRawState(primaryProjectFile, defaults.state);
+        if(defaults.stateSettings) setFileRawState(primaryProjectFile, defaults.stateSettings);
     }
 
     return primaryProjectFile;

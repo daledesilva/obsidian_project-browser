@@ -6,7 +6,7 @@ import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
 import { Cog, Ellipsis, GripVertical, Plus, Settings, Trash, X } from 'lucide-react';
 import classNames from 'classnames';
 import { Setting } from 'obsidian';
-import { PluginStateSettings_0_0_5, StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
+import { PluginStateSettings_0_1_0 } from 'src/types/plugin-settings0_1_0';
 import { EditStateModal } from 'src/modals/edit-state-modal/edit-state-modal';
 import { getGlobals } from 'src/logic/stores';
 
@@ -101,8 +101,11 @@ export const StateEditor = (props: StateEditorProps) => {
                                         stateSettings: stateItem.stateSettings,
                                         onSuccess: async (modifiedState) => {
                                             const newStates = plugin.settings.states.visible.map((stateInArray) => {
+                                                // Cycle through all states in the settings and update the one that matches this stateItem's name
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
                                                     stateInArray.name = modifiedState.name;
+                                                    stateInArray.defaultView = modifiedState.defaultView;
+                                                    stateInArray.link = modifiedState.link;
                                                 }
                                                 return stateInArray;
                                             })
@@ -173,8 +176,11 @@ export const StateEditor = (props: StateEditorProps) => {
                                         stateSettings: stateItem.stateSettings,
                                         onSuccess: async (modifiedState) => {
                                             const newStates = plugin.settings.states.hidden.map((stateInArray) => {
+                                                // Cycle through all states in the settings and update the one that matches this stateItem's name
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
                                                     stateInArray.name = modifiedState.name;
+                                                    stateInArray.defaultView = modifiedState.defaultView;
+                                                    stateInArray.link = modifiedState.link;
                                                 }
                                                 return stateInArray;
                                             })
@@ -241,10 +247,10 @@ export const StateEditor = (props: StateEditorProps) => {
 
 interface StateItem extends ItemInterface {
     id: string,
-    stateSettings: PluginStateSettings_0_0_5
+    stateSettings: PluginStateSettings_0_1_0
 }
 
-function convertToStateItems(stateSettings: PluginStateSettings_0_0_5[]): StateItem[] {
+function convertToStateItems(stateSettings: PluginStateSettings_0_1_0[]): StateItem[] {
     const stateItems: StateItem[] = [];
     stateSettings.forEach( (thisStateSettings) => {
         stateItems.push({
@@ -255,8 +261,8 @@ function convertToStateItems(stateSettings: PluginStateSettings_0_0_5[]): StateI
     return stateItems;
 }
 
-function convertToStates(stateItems: StateItem[]): PluginStateSettings_0_0_5[] {
-    const states: PluginStateSettings_0_0_5[] = [];
+function convertToStates(stateItems: StateItem[]): PluginStateSettings_0_1_0[] {
+    const states: PluginStateSettings_0_1_0[] = [];
     stateItems.forEach( (stateItem) => {
         states.push(stateItem.stateSettings)
     })

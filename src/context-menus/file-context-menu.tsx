@@ -1,15 +1,10 @@
 import { Menu, Notice, TFile } from "obsidian";
-import * as React from "react";
-import { CardBrowserContext } from "src/components/card-browser/card-browser";
 import { openFileInBackgroundTab, openFileInSameLeaf } from "src/logic/file-access-processes";
 import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic/file-processes";
-import { refreshFolderReference } from "src/logic/folder-processes";
-import { getFileRawState, setFileRawState } from "src/logic/frontmatter-processes";
+import { getFileStateSettings, setFileRawState } from "src/logic/frontmatter-processes";
 import { getGlobals } from "src/logic/stores";
-import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
-import { PluginContext } from "src/utils/plugin-context";
-import { CARD_BROWSER_VIEW_TYPE, newProjectBrowserLeaf } from "src/views/card-browser-view/card-browser-view";
+import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
 
 ////////
 ////////
@@ -22,7 +17,7 @@ interface registerFileContextMenuProps {
 
 export function registerFileContextMenu(props: registerFileContextMenuProps) {
     const {plugin} = getGlobals();
-    const fileRawState = getFileRawState(props.file);
+    const fileRawState = getFileStateSettings(props.file);
     const folder = props.file.parent;
 
     const visibleStates = JSON.parse(JSON.stringify(plugin.settings.states.visible));
@@ -46,23 +41,23 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             });
         });
         menu.addSeparator();
-        visibleStates.forEach( (rawState) => {
+        visibleStates.forEach( (stateSettings: PluginStateSettings_0_1_0) => {
             menu.addItem((item) => {
-                item.setTitle(rawState.name);
-                if(rawState.name === fileRawState) item.setChecked(true);
+                item.setTitle(stateSettings.name);
+                if(stateSettings.name === fileRawState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileRawState(props.file, rawState.name);
+                    setFileRawState(props.file, stateSettings);
                     props.onFileChange();
                 });
             });
         })
         menu.addSeparator();
-        hiddenStates.forEach( (rawState) => {
+        hiddenStates.forEach( (stateSettings: PluginStateSettings_0_1_0) => {
             menu.addItem((item) => {
-                item.setTitle(rawState.name);
-                if(rawState.name === fileRawState) item.setChecked(true);
+                item.setTitle(stateSettings.name);
+                if(stateSettings.name === fileRawState) item.setChecked(true);
                 item.onClick(() => {
-                    setFileRawState(props.file, rawState.name);
+                    setFileRawState(props.file, stateSettings);
                     props.onFileChange();
                 })
             });

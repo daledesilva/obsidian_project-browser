@@ -1,6 +1,6 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { Section, getStateSettings, orderSections } from "./section-processes";
-import { getFileFrontmatter, getFileRawState, getFileStateDisplayText } from "./frontmatter-processes";
+import { getFileFrontmatter, getFileStateSettings, getFileStateDisplayText } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 import { getGlobals } from "./stores";
 
@@ -33,7 +33,7 @@ function contentsIndicatesProject(folder: TFolder): boolean {
     itemsInFolder?.forEach( (item) => {
 
         if(item instanceof TFile) {
-            const rawState = getFileRawState(item);
+            const rawState = getFileStateSettings(item);
             if(rawState) {
                 fileStatesFound.push(rawState);
             }
@@ -56,7 +56,7 @@ function getProjectState(folder: TFolder): null | string {
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const rawState = getFileRawState(item);
+            const rawState = getFileStateSettings(item);
             if(rawState) {
                 return rawState;
             }
@@ -73,7 +73,7 @@ export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> =
     for(let i=0; i<itemsInFolder.length; i++) {
         const item = itemsInFolder[i];
         if(item instanceof TFile) {
-            const rawState = getFileRawState(item);
+            const rawState = getFileStateSettings(item);
             if(rawState) {
                 return await getFileExcerpt(item);
             }

@@ -1,21 +1,22 @@
 import { TFile } from "obsidian";
-import { getFileRawState } from "./frontmatter-processes";
+import { getFileStateSettings } from "./frontmatter-processes";
 import { getGlobals } from "./stores";
+import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
 
 //////////////////
 //////////////////
 
-export function offsetState(file: TFile, offset: number, cycle: boolean = false): {name: string} {
+export function offsetState(file: TFile, offset: number, cycle: boolean = false): PluginStateSettings_0_1_0 {
     const {plugin} = getGlobals();
-    const curRawState = getFileRawState(file);
-    const allRawStates = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
-    const curRawStateIndex = allRawStates.findIndex(state => state.name === curRawState);
-    let newRawStateIndex = (curRawStateIndex + offset);
+    const curStateSettings = getFileStateSettings(file);
+    const allStateSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
+    const curStateIndex = allStateSettings.findIndex(state => state.name === curStateSettings?.name);
+    let newStateIndex = (curStateIndex + offset);
     if(cycle) {
-        if(newRawStateIndex < 0) newRawStateIndex = allRawStates.length-1;
-        if(newRawStateIndex >= allRawStates.length) newRawStateIndex = 0;
+        if(newStateIndex < 0) newStateIndex = allStateSettings.length-1;
+        if(newStateIndex >= allStateSettings.length) newStateIndex = 0;
     }
-    newRawStateIndex = Math.max(0, newRawStateIndex);
-    newRawStateIndex = Math.min(allRawStates.length-1, newRawStateIndex);
-    return allRawStates[newRawStateIndex];
+    newStateIndex = Math.max(0, newStateIndex);
+    newStateIndex = Math.min(allStateSettings.length-1, newStateIndex);
+    return allStateSettings[newStateIndex];
 }

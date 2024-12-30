@@ -2,10 +2,11 @@ import './state-menu.scss';
 import { CachedMetadata, MarkdownView, TFile } from 'obsidian';
 import * as React from "react";
 import classnames from 'classnames';
-import { getFileRawState, getFileStateDisplayText, setFileRawState } from 'src/logic/frontmatter-processes';
+import { getFileStateSettings, getFileStateDisplayText, setFileRawState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
 import { trimLinkBrackets } from 'src/logic/trim-link-brackets';
+import { PluginStateSettings_0_1_0 } from 'src/types/plugin-settings0_1_0';
 
 //////////
 //////////
@@ -19,7 +20,7 @@ export const StateMenu = (props: StateMenuProps) => {
     
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [file, setFile] = React.useState( props.file );
-    const [rawState, setRawState] = React.useState( getFileRawState(file) );
+    const [rawState, setRawState] = React.useState<PluginStateSettings_0_1_0 | null>( getFileStateSettings(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const showHighlightRef = React.useRef<boolean>(false);
     const stateMenuRef = React.useRef<HTMLDivElement>(null);
@@ -97,7 +98,7 @@ export const StateMenu = (props: StateMenuProps) => {
                                     'ddc_pb_visible-state',
                                     thisStatesSettings.name === rawState && 'is-set',
                                 ])}
-                                onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
+                                onClick = {() => setStateAndCloseMenu(thisStatesSettings)}    
                             >
                                 {trimLinkBrackets(thisStatesSettings.name)}
                             </button>
@@ -134,7 +135,7 @@ export const StateMenu = (props: StateMenuProps) => {
             let leaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
             if(!leaf) return;
 
-            setRawState( getFileRawState(newFile) );
+            setRawState( getFileStateSettings(newFile) );
             setFile(newFile);
         }));
 
@@ -145,12 +146,12 @@ export const StateMenu = (props: StateMenuProps) => {
             if(fileChangeTimeout) clearTimeout(fileChangeTimeout);
             fileChangeTimeout = setTimeout(() => {
                 showHighlightRef.current = true;
-                setRawState( getFileRawState(props.file) );
+                setRawState( getFileStateSettings(props.file) );
             }, 100);
         }));
     }
 
-    function setStateAndCloseMenu(newState: string) {
+    function setStateAndCloseMenu(newState: PluginStateSettings_0_1_0) {
         if(!plugin) return;
 
         if(newState !== rawState) {
