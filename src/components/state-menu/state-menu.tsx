@@ -20,12 +20,20 @@ export const StateMenu = (props: StateMenuProps) => {
     
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [file, setFile] = React.useState( props.file );
-    const [stateSettings, setRawState] = React.useState<PluginStateSettings_0_1_0 | null>( getFileStateSettings(file) );
+    const [stateSettings, setStateSettings] = React.useState<PluginStateSettings_0_1_0 | null>( getFileStateSettings(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const showHighlightRef = React.useRef<boolean>(false);
     const stateMenuRef = React.useRef<HTMLDivElement>(null);
     const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
     const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
+
+    // NOTE: This is to allow any listening events to use the updated value when it changes.
+    // Because the useState value is captured by the listener's closure and will not update.
+    const curFileRef = React.useRef(file);
+    React.useEffect(() => {
+        curFileRef.current = file;
+    }, [file]);
+
 
     let displayState = getFileStateName(file);
     if(!displayState) displayState = 'Set State';
@@ -135,18 +143,18 @@ export const StateMenu = (props: StateMenuProps) => {
             let leaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
             if(!leaf) return;
 
-            setRawState( getFileStateSettings(newFile) );
             setFile(newFile);
+            const newStateSettings = getFileStateSettings(newFile);
+            setStateSettings(newStateSettings);
         }));
 
-        // NOTE: This won't work if the plugin has been reloaded - you must restart Obsidian while developing.
         let fileChangeTimeout: NodeJS.Timeout | null = null;
-        plugin.registerEvent(plugin.app.metadataCache.on('changed', (file: TFile, data: string, cache: CachedMetadata) => {
-            if(file.path !== props.file.path) return;
+        plugin.registerEvent(plugin.app.metadataCache.on('changed', (modifiedFile: TFile, data: string, cache: CachedMetadata) => {
+            if(modifiedFile.path !== curFileRef.current.path) return;
             if(fileChangeTimeout) clearTimeout(fileChangeTimeout);
             fileChangeTimeout = setTimeout(() => {
                 showHighlightRef.current = true;
-                setRawState( getFileStateSettings(props.file) );
+                setStateSettings(getFileStateSettings(curFileRef.current));
             }, 100);
         }));
     }
@@ -157,11 +165,11 @@ export const StateMenu = (props: StateMenuProps) => {
         if(newState !== stateSettings) {
             // set the new state
             showHighlightRef.current = true;
-            if(setFileState(file, newState)) setRawState(newState)
+            if(setFileState(file, newState)) setStateSettings(newState)
         } else {
             // erase the existing state
             showHighlightRef.current = true;
-            if(setFileState(file, null)) setRawState(null)
+            if(setFileState(file, null)) setStateSettings(null)
         }
         setMenuIsActive(false);
     }
