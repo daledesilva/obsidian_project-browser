@@ -1,7 +1,6 @@
 import { FrontMatterCache, TFile } from "obsidian";
 import { getGlobals } from "./stores";
 import { error } from "src/utils/log-to-console";
-import { trimLinkBrackets } from "./trim-link-brackets";
 import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
 import { getStateByName } from "./get-state-by-name";
 

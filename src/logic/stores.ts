@@ -10,6 +10,9 @@ import { debug } from "src/utils/log-to-console";
 interface StaticGlobals {
 	plugin: ProjectBrowserPlugin,
 }
+
+// TODO: When the plugin reloads this causes an error because the Jotai store is not properly cleaned up and then it is created again.
+// It causes state transitions to not work when the plugin is reloaded.
 export const globalsAtom = atom<StaticGlobals>()
 export function setGlobals(globals: StaticGlobals): void {
 	const store = getDefaultStore();

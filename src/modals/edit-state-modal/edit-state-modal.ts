@@ -1,7 +1,7 @@
 import { App, Modal, Notice, Setting, TextComponent, TFile, TFolder, ToggleComponent } from "obsidian";
 import { getGlobals } from "src/logic/stores";
-import { trimLinkBrackets } from "src/logic/trim-link-brackets";
 import { PluginStateSettings_0_1_0, StateViewMode_0_1_0 } from "src/types/plugin-settings0_1_0";
+import { sanitizeInternalLinkName } from "src/utils/string-processes";
 import { createProject } from "src/utils/file-manipulation";
 
 /////////
@@ -85,7 +85,7 @@ export class EditStateModal extends Modal {
 		.setDesc(`This will input states as internal Obsidian links so that they can be opened and will appear in the graph view as nodes.`)
 		.addToggle((toggle) => {
 			this.linkInputEl = toggle;
-			toggle.setValue(this.stateSettings.link);
+			toggle.setValue(this.stateSettings.link ?? false);
 			toggle.onChange(async (value) => {
 				this.stateSettings.link = value;
 			});
@@ -123,7 +123,7 @@ export class EditStateModal extends Modal {
 
 	sanitizeStateNameAndLink(rawInput: string) {
 		const trimmedName = rawInput.trim();
-		const delinkedName = trimLinkBrackets(trimmedName);
+		const delinkedName = sanitizeInternalLinkName(trimmedName);
 		this.nameInputEl.setValue(delinkedName);
 		this.stateSettings.name = delinkedName;
 

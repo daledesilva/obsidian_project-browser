@@ -12,8 +12,9 @@ export enum FolderViewMode_0_1_0 {
 export interface PluginStateSettings_0_1_0 {
 	name: string,
 	defaultView: StateViewMode_0_1_0,
-	link: boolean,
+	link?: boolean,
 }
+
 export interface PluginFolderSettings {
 	defaultView: FolderViewMode_0_1_0,
 }
@@ -73,32 +74,39 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 			{
 				name: 'Idea',
 				defaultView: StateViewMode_0_1_0.SmallCards,
+				link: true,
 			},
 			{
 				name: 'Shortlisted',
 				defaultView: StateViewMode_0_1_0.SmallCards,
+				link: true,
 			},
 			{
 				name: 'Drafting',
 				defaultView: StateViewMode_0_1_0.DetailedCards,
+				link: true,
 			},
 			{
 				name: 'Focus',
 				defaultView: StateViewMode_0_1_0.SimpleCards,
+				link: true,
 			},
 			{
 				name: 'Final',
 				defaultView: StateViewMode_0_1_0.SmallCards,
+				link: true,
 			},
 		],
 		hidden: [
 			{
 				name: 'Archived',
 				defaultView: StateViewMode_0_1_0.SmallCards,
-			},
+				link: true,
+				},
 			{
 				name: 'Cancelled',
 				defaultView: StateViewMode_0_1_0.DetailedCards,
+				link: true,
 			},
 		],
 	},

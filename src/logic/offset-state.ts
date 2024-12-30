@@ -24,7 +24,7 @@ export function offsetState(file: TFile, offset: number, cycle: boolean = false)
 
     } else {
         if(offset > 0) {
-            return allStateSettings[1];
+            return allStateSettings[0];
         } else {
             return allStateSettings[allStateSettings.length-1];
         }

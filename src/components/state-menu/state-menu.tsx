@@ -5,8 +5,8 @@ import classnames from 'classnames';
 import { getFileStateSettings, getFileStateName, setFileState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
-import { trimLinkBrackets } from 'src/logic/trim-link-brackets';
 import { PluginStateSettings_0_1_0 } from 'src/types/plugin-settings0_1_0';
+import { sanitizeInternalLinkName } from 'src/utils/string-processes';
 
 //////////
 //////////
@@ -20,7 +20,7 @@ export const StateMenu = (props: StateMenuProps) => {
     
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [file, setFile] = React.useState( props.file );
-    const [rawState, setRawState] = React.useState<PluginStateSettings_0_1_0 | null>( getFileStateSettings(file) );
+    const [stateSettings, setRawState] = React.useState<PluginStateSettings_0_1_0 | null>( getFileStateSettings(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const showHighlightRef = React.useRef<boolean>(false);
     const stateMenuRef = React.useRef<HTMLDivElement>(null);
@@ -96,11 +96,11 @@ export const StateMenu = (props: StateMenuProps) => {
                                 className = {classnames([
                                     'ddc_pb_state-btn',
                                     'ddc_pb_visible-state',
-                                    thisStatesSettings.name === rawState && 'is-set',
+                                    thisStatesSettings.name === stateSettings?.name && 'is-set',
                                 ])}
                                 onClick = {() => setStateAndCloseMenu(thisStatesSettings)}    
                             >
-                                {trimLinkBrackets(thisStatesSettings.name)}
+                                {sanitizeInternalLinkName(thisStatesSettings.name)}
                             </button>
                         ))}
                     </div>
@@ -111,11 +111,11 @@ export const StateMenu = (props: StateMenuProps) => {
                                 className = {classnames([
                                     'ddc_pb_state-btn',
                                     'ddc_pb_hidden-state',
-                                    thisStatesSettings.name === rawState && 'is-set',
+                                    thisStatesSettings.name === stateSettings?.name && 'is-set',
                                 ])}
-                                onClick = {() => setStateAndCloseMenu(thisStatesSettings.name)}    
+                                onClick = {() => setStateAndCloseMenu(thisStatesSettings)}    
                             >
-                                {trimLinkBrackets(thisStatesSettings.name)}
+                                {sanitizeInternalLinkName(thisStatesSettings.name)}
                             </button>
                         ))}
                     </div>
@@ -154,7 +154,7 @@ export const StateMenu = (props: StateMenuProps) => {
     function setStateAndCloseMenu(newState: PluginStateSettings_0_1_0) {
         if(!plugin) return;
 
-        if(newState !== rawState) {
+        if(newState !== stateSettings) {
             // set the new state
             showHighlightRef.current = true;
             if(setFileState(file, newState)) setRawState(newState)

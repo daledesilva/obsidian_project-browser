@@ -29,6 +29,8 @@ let controlRe = /[\x00-\x1f\x80-\x9f]/g;
 let reservedRe = /^\.+$/;
 let windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 let windowsTrailingRe = /[\. ]+$/;
+let linkRe = /[\[\]]/g;
+
 
 export function sanitizeFileFolderName(name: string) {
 	return name
@@ -37,6 +39,13 @@ export function sanitizeFileFolderName(name: string) {
 		.replace(reservedRe, '')
 		.replace(windowsReservedRe, '')
 		.replace(windowsTrailingRe, '');
+}
+export function sanitizeInternalLinkName(name: string) {
+	// Sanitise as filename first, because any internal link can become a file
+	const validFilename = sanitizeFileFolderName(name);
+	// Remove any link brackets so they don't interfere witht he outter link brackets
+	const validInternalLink = validFilename.replace(linkRe, '');
+	return validInternalLink;
 }
 
 /**
@@ -134,4 +143,12 @@ export function parseFilepath(filepath: string): { folderpath: string; basename:
     folderpath = segments.join('/');
 
     return { folderpath, basename, ext: ext.startsWith('.') ? ext.slice(1) : ext };
+}
+
+
+
+export const trimFilenameExt = (filename: string): string => {
+    const str = filename.split('.')
+    str.pop();
+    return str.join('.');
 }
