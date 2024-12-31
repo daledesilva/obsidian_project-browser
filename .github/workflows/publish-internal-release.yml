@@ -1,9 +1,9 @@
 name: Publish internal release
 run-name: Internal Release by @${{ github.actor }} - ${{ github.event.head_commit.message }}
 
-# TO AUTO_PUBLISH THE RELEASE AS A PRERELEASE
+# TO AUTO PUBLISH THE RELEASE AS A PRERELEASE
 # 1. Update manifest-beta.json version if necessary
-# 2. npm run int-release
+# 2. npm run internal-release
 
 on:
   push:
@@ -52,7 +52,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: internal
+        tag_name: internal-test
         release_name: internal-test
         body: |
           ### This is an internal release for testing. Do not install.

@@ -1,16 +1,9 @@
 name: Draft public release
 run-name: Public Release by @${{ github.actor }} - ${{ github.event.head_commit.message }}
 
-# TO CREATE PUBLIC RELEASE (In Draft state):
-# In RELEVANT branch:
-# 1. Update manifest.json version
-# In MAIN branch:
-# 2. merge release branch into main
-# 2. npm run public-release <new-version-tag>
-
-# PUBLISH PUBLIC RELEASE:
-# 1. Refine release body text
-# 2. Publishing the draft release
+# TO DRAFT THIS RELEASE
+# 1. Update manifest.json version if necessary
+# 2. npm run public-release <version-tag>
 
 # ---
 

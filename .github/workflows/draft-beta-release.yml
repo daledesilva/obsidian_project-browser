@@ -1,16 +1,9 @@
 name: Draft beta release
 run-name: Beta Release by @${{ github.actor }} - ${{ github.event.head_commit.message }}
 
-# TO CREATE BETA RELEASE (In Draft state):
-# In NON-MAIN branch (ie. release_*)
-# 1. Update manifest-beta.json version
-# 2. npm run beta-release <new-version-tag>
-
-# PUBLISH PUBLIC RELEASE:
-# 1. Refine release body text
-# 2. Publish release
-# 3. Switch to main branch and merge in release
-# 4. git push origin HEAD
+# TO DRAFT THIS RELEASE
+# 1. Update manifest-beta.json version if necessary
+# 2. npm run beta-release <version-tag>
 
 # ---
 

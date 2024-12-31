@@ -8,7 +8,7 @@
 		"test": "jest",
 		"build": "node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
-		"int-release": "sh ./scripts/internal-release.sh",
+		"internal-release": "sh ./scripts/internal-release.sh",
 		"beta-release": "sh ./scripts/beta-release.sh",
 		"public-release": "sh ./scripts/public-release.sh"
 	},
