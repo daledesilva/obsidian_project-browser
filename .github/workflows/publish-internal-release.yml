@@ -1,5 +1,5 @@
 name: Publish internal release
-run-name: Internal Release (${{ github.ref_name }}) by @${{ github.actor }} - ${{ github.event.head_commit.message }}
+run-name: Internal Release by @${{ github.actor }} - ${{ github.event.head_commit.message }}
 
 # TO AUTO_PUBLISH THE RELEASE AS A PRERELEASE
 # 1. Update manifest-beta.json version if necessary
@@ -8,7 +8,7 @@ run-name: Internal Release (${{ github.ref_name }}) by @${{ github.actor }} - ${
 on:
   push:
     tags:
-      - 'internal'
+      - 'internal-test'
 
 jobs:
   build:
