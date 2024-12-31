@@ -19,13 +19,14 @@ export function toggleStateMenu() {
 let cycleStateTimeout: NodeJS.Timeout | null = null;
 let openedByFunction = false;
 
-export function openStateMenuIfClosed() {
+export function openStateMenuIfClosed(): boolean {
     const curStateMenuSettings = getStateMenuSettings();
-    if(curStateMenuSettings.visible) return;
+    if(curStateMenuSettings.visible) return true;
     const newStateMenuSettings = JSON.parse(JSON.stringify(curStateMenuSettings));
     newStateMenuSettings.visible = true;
     setStateMenuSettings(newStateMenuSettings);
     openedByFunction = true;
+    return false;
 }
 
 export function returnStateMenuAfterDelay() {

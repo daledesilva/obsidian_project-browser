@@ -23,9 +23,12 @@ export async function registerCycleStateCommands() {
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
-            openStateMenuIfClosed();
-            const newStateSettings = offsetState(file, 1, plugin.settings.loopStatesWhenCycling);
-            setFileState(file, newStateSettings);
+            const wasOpen = openStateMenuIfClosed();
+            const delayMs = wasOpen ? 0 : 300; // This timing should match the open time of the menu
+            setTimeout(() => {
+                const newStateSettings = offsetState(file, 1, plugin.settings.loopStatesWhenCycling);
+                setFileState(file, newStateSettings);
+            }, delayMs);
             returnStateMenuAfterDelay();
         }
 	});
@@ -43,9 +46,12 @@ export async function registerCycleStateCommands() {
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
-            openStateMenuIfClosed();
-            const newStateSettings = offsetState(file, -1, plugin.settings.loopStatesWhenCycling);
-            setFileState(file, newStateSettings);
+            const wasOpen = openStateMenuIfClosed();
+            const delayMs = wasOpen ? 0 : 300; // This timing should match the open time of the menu
+            setTimeout(() => {
+                const newStateSettings = offsetState(file, -1, plugin.settings.loopStatesWhenCycling);
+                setFileState(file, newStateSettings);
+            }, delayMs);
             returnStateMenuAfterDelay();
         }
 	});

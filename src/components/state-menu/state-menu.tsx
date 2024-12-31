@@ -7,6 +7,7 @@ import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
 import { PluginStateSettings_0_1_0 } from 'src/types/plugin-settings0_1_0';
 import { sanitizeInternalLinkName } from 'src/utils/string-processes';
+import { debug } from 'src/utils/log-to-console';
 
 //////////
 //////////
@@ -18,6 +19,7 @@ interface StateMenuProps {
 export const StateMenu = (props: StateMenuProps) => {
     const {plugin} = getGlobals();
     
+    const parentLeafRef = React.useRef(plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf);
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [file, setFile] = React.useState( props.file );
     const [stateSettings, setStateSettings] = React.useState<PluginStateSettings_0_1_0 | null>( getFileStateSettings(file) );
@@ -27,8 +29,13 @@ export const StateMenu = (props: StateMenuProps) => {
     const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
     const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
 
-    // NOTE: This is to allow any listening events to use the updated value when it changes.
+    // NOTE: These allow any listening events to use the updated value when it changes.
     // Because the useState value is captured by the listener's closure and will not update.
+    const stateMenuSettingsRef = React.useRef(stateMenuSettings);
+    React.useEffect(() => {
+        stateMenuSettingsRef.current = stateMenuSettings;
+    }, [stateMenuSettings]);
+    //
     const curFileRef = React.useRef(file);
     React.useEffect(() => {
         curFileRef.current = file;
@@ -43,6 +50,7 @@ export const StateMenu = (props: StateMenuProps) => {
 
     // On first run
     React.useEffect( () => {
+
         function handleClickOutside(event: any) {
             if (stateMenuRef.current && !stateMenuRef.current.contains(event.target)) {
                 setMenuIsActive(false);
@@ -64,6 +72,10 @@ export const StateMenu = (props: StateMenuProps) => {
     React.useEffect( () => {
         setHeight();
     }, [stateMenuSettings])
+
+    React.useEffect(() => {
+        setHeight();
+    }, [menuIsActive])
 
     // Just after every render
     React.useEffect(() => {
@@ -140,8 +152,9 @@ export const StateMenu = (props: StateMenuProps) => {
 
         plugin.registerEvent(plugin.app.workspace.on('file-open', (newFile) => {
             if(!newFile) return;
-            let leaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
-            if(!leaf) return;
+            let activeLeaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
+            if(!activeLeaf) return;
+            if(activeLeaf.view != parentLeafRef.current?.view) return;
 
             setFile(newFile);
             const newStateSettings = getFileStateSettings(newFile);
@@ -175,27 +188,32 @@ export const StateMenu = (props: StateMenuProps) => {
     }
 
     function setHeight() {
-        if(stateMenuSettings.visible) {
-            setOpenHeight();
+        if(stateMenuSettingsRef.current.visible) {
+            setVisibleHeight();
         } else {
-            setClosedHeight();
+            setHiddenHeight();
         }
     }
-    function setOpenHeight() {
+    function setVisibleHeight() {
         if(!stateMenuContentRef.current) return;
         if(!stateMenuRef.current) return;
         const contentHeight = stateMenuContentRef.current.getBoundingClientRect().height;
         stateMenuRef.current.style.height = `${contentHeight}px`;
     }
-    function setClosedHeight() {
+    function setHiddenHeight() {
         if(!stateMenuRef.current) return;
         stateMenuRef.current.style.height = '0';
     }
 
     function monitorWorkspaceResizes() {
         const surroundingWorkspaceSplit = stateMenuRef.current?.closest('.workspace-split');
+
+        let resizeTimeout: NodeJS.Timeout | null = null;
         resizeObserverRef.current = new ResizeObserver(() => {
-            setHeight();
+            if(resizeTimeout) clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                setHeight();
+            }, 50);
         });
         if (surroundingWorkspaceSplit) {
             resizeObserverRef.current?.observe(surroundingWorkspaceSplit);

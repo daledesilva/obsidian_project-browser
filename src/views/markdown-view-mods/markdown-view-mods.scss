@@ -3,4 +3,5 @@
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
+    z-index: 1000;  // So when it overflows during resize, it's on top of the note content
 }
