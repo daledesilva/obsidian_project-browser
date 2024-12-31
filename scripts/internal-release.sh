@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Remove any existing local tags not on the remote
+git fetch --prune origin "+refs/tags/*:refs/tags/*"
+
 # Delete local tag if it exists
 git tag -d internal
 
