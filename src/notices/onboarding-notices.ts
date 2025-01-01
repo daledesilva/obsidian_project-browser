@@ -76,7 +76,7 @@ function showNotesNotice() {
     const {plugin} = getGlobals();
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`Note states...`);
-    noticeBody.createEl('p').setText(`The state of each note can be assigned through a button at the top of the note.`);
+    noticeBody.createEl('p').setText(`The state of each note can be assigned through a button at the top of the note or through the command shortcuts (Cmd+Shift+D and Cmd+Shift+A).`);
     noticeBody.createEl('p').setText(`Notes in each folder are organised in the browse view by their state.`);
 
     const {
@@ -103,6 +103,7 @@ function showCustomisationNotice() {
     const noticeBody = createNoticeTemplate();
     noticeBody.createEl('h1').setText(`Customisation...`);
     noticeBody.createEl('p').setText(`The states and their order can be customised in the settings. As well as when the browse view opens and a growing set of other features.`);
+    noticeBody.createEl('p').setText(`The state menu in each note can also be hidden with Cmd+Shift+S.`);
 
     const {
         primaryBtnEl,
