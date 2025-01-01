@@ -1,4 +1,4 @@
-import { PLUGIN_ICON } from "src/constants";
+import { ICON_PROJECT_BROWSER, ICON_PLUGIN } from "src/constants";
 import { getGlobals } from "src/logic/stores";
 import { newProjectBrowserLeaf, replaceMostRecentLeaf } from "src/views/card-browser-view/card-browser-view";
 
@@ -11,6 +11,7 @@ export async function registerOpenProjectBrowserCommand() {
     plugin.addCommand({
 		id: 'open-project-browser',
 		name: 'Open',
+        icon: ICON_PROJECT_BROWSER,
         callback: () => newProjectBrowserLeaf()
 	});
 }
@@ -29,7 +30,7 @@ export async function registerOpenProjectBrowserRibbonIcon() {
     // 'archive'
     // 'book-text'
     // 'wallet-cards'
-    plugin.addRibbonIcon(PLUGIN_ICON, 'Open project browser', () => {
+    plugin.addRibbonIcon(ICON_PROJECT_BROWSER, 'Open project browser', () => {
         newProjectBrowserLeaf()
     });
 }

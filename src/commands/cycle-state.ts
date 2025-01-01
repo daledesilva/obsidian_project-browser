@@ -1,4 +1,5 @@
 import { Editor } from "obsidian";
+import { ICON_STEP_STATE_BACKWARD, ICON_STEP_STATE_FORWARD } from "src/constants";
 import { setFileState } from "src/logic/frontmatter-processes";
 import { offsetState } from "src/logic/offset-state";
 import { getGlobals } from "src/logic/stores";
@@ -12,8 +13,8 @@ export async function registerCycleStateCommands() {
 
     plugin.addCommand({
         id: 'cycle-state-forward',
-		name: `Cycle document's state forward`,
-        icon: 'file-input',
+		name: `Step note's state forward`,
+        icon: ICON_STEP_STATE_FORWARD,
         hotkeys: [
             {
                 modifiers: ['Meta', 'Shift'],
@@ -35,8 +36,8 @@ export async function registerCycleStateCommands() {
 
     plugin.addCommand({
         id: 'cycle-state-backward',
-		name: `Cycle document's state backward`,
-        icon: 'file-output',
+		name: `Step note's state backward`,
+        icon: ICON_STEP_STATE_BACKWARD,
         hotkeys: [
             {
                 modifiers: ['Meta', 'Shift'],

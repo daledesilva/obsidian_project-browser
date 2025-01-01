@@ -4,7 +4,7 @@ import { Root, createRoot } from "react-dom/client";
 import CardBrowser, { CardBrowserHandlers } from "src/components/card-browser/card-browser";
 import { createContext } from 'react';
 import { isEmpty } from "src/utils/misc";
-import { PLUGIN_ICON } from "src/constants";
+import { ICON_PLUGIN } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';
 import { deviceMemoryStore, getGlobals } from "src/logic/stores";
 
@@ -98,7 +98,7 @@ export class ProjectCardsView extends ItemView {
     constructor(leaf: WorkspaceLeaf) {
         super(leaf);
         this.navigation = true;
-        this.icon = PLUGIN_ICON;
+        this.icon = ICON_PLUGIN;
         
         leaf.open(this);
     }

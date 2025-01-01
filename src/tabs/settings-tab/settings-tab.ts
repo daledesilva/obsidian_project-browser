@@ -187,6 +187,7 @@ function insertNoteSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh
 	new Setting(sectionEl)
 		.setClass('ddc_pb_setting')
 		.setName('Show state menu in notes')
+		.setDesc('This can be toggled any time through a command (Default shortcut: Cmd+Shift+S).')
 		.addToggle((toggle) => {
 			toggle.setValue(plugin.settings.showStateMenu);
 			toggle.onChange(async (value) => {

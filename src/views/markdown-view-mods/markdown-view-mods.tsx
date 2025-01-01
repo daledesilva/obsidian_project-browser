@@ -39,6 +39,7 @@ function addViewMenuOptions() {
             item.setChecked(getStateMenuSettings().visible);
             item.onClick(toggleStateMenu);
             item.setSection('pane');
+            item.setIcon('file-check');
         });
     });
 }
