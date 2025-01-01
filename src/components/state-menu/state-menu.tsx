@@ -7,7 +7,6 @@ import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
 import { PluginStateSettings_0_1_0 } from 'src/types/plugin-settings0_1_0';
 import { sanitizeInternalLinkName } from 'src/utils/string-processes';
-import { debug } from 'src/utils/log-to-console';
 
 //////////
 //////////
@@ -41,8 +40,7 @@ export const StateMenu = (props: StateMenuProps) => {
         curFileRef.current = file;
     }, [file]);
 
-
-    let displayState = getFileStateName(file);
+    let displayState = stateSettings?.name;
     if(!displayState) displayState = 'Set State';
 
     const visibleStates = plugin.settings.states.visible;
@@ -178,11 +176,13 @@ export const StateMenu = (props: StateMenuProps) => {
         if(newState !== stateSettings) {
             // set the new state
             showHighlightRef.current = true;
-            if(setFileState(file, newState)) setStateSettings(newState)
+            const successInSettingState = setFileState(file, newState);
+            if(successInSettingState) setStateSettings(newState)
         } else {
             // erase the existing state
             showHighlightRef.current = true;
-            if(setFileState(file, null)) setStateSettings(null)
+            const successInErasingState = setFileState(file, null);
+            if(successInErasingState) setStateSettings(null)
         }
         setMenuIsActive(false);
     }
