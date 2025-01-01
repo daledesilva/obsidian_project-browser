@@ -13,6 +13,7 @@
         --size: min(50px, 10vw);
         width: var(--size);
         height: var(--size);
+        padding: 15%;
         border-radius: 50%;
         box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 
@@ -24,8 +25,10 @@
 
     .ddc_pb_new-button {
         cursor: pointer;
-        width: min(80px, 15vw);
-        height: min(80px, 15vw);
+        --size: min(80px, 15vw);
+        width: var(--size);
+        height: var(--size);
+        padding: 25%;
         border-radius: 50%;
         box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
