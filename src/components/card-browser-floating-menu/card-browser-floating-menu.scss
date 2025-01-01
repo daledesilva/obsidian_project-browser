@@ -13,7 +13,7 @@
         --size: min(50px, 10vw);
         width: var(--size);
         height: var(--size);
-        padding: 15%;
+        padding: 15% !important; // Important to override Obsidian padding at all media sizes
         border-radius: 50%;
         box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 
@@ -28,7 +28,7 @@
         --size: min(80px, 15vw);
         width: var(--size);
         height: var(--size);
-        padding: 25%;
+        padding: 25% !important; // Important to override Obsidian padding at all media sizes
         border-radius: 50%;
         box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     }
