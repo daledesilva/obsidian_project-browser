@@ -42,7 +42,7 @@ interface ProjectDefaults {
 interface CreateProjectProps {
     parentFolder: TFolder,
     projectName: string,
-    state: string,
+    state?: string,
     defaults?: ProjectDefaults,
 }
 export async function createProject(props: CreateProjectProps): Promise<TFile> {

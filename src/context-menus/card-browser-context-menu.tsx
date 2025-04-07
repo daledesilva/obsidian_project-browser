@@ -54,7 +54,10 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
         menu.addItem((item) =>
             item.setTitle("New note")
                 .onClick(async () => {
-                    const newFile = await createProject(commands.getCurFolder(), 'Untitled');
+                    const newFile = await createProject({
+                        parentFolder: commands.getCurFolder(),
+                        projectName: 'Untitled'
+                    });
                     setTimeout( () => openFileInSameLeaf(newFile), 500);
                 })
         );

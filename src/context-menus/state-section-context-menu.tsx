@@ -22,7 +22,11 @@ export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFo
         menu.addItem((item) =>
             item.setTitle("New note")
                 .onClick(async () => {
-                    const newFile = await createProject(baseFolder, 'Untitled', state);
+                    const newFile = await createProject({
+                        parentFolder: baseFolder,
+                        projectName: 'Untitled',
+                        state: state
+                    });
                     // TODO: This delay should be set as a constant globally to guarantee it's longer than other delay of file appear
                     setTimeout( () => openFileInSameLeaf(newFile), 500);
                 })

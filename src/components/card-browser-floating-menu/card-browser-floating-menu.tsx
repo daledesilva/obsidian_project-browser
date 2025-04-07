@@ -53,7 +53,10 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
         })
         try {
             // const newFile = await modal.showModal();
-            const newFile = await createProject(folder, 'Untitled');
+            const newFile = await createProject({
+                parentFolder: folder,
+                projectName: 'Untitled'
+            });
             // Slight delay for better feedback of view refreshing
             // setTimeout( () => { 
             //     cardBrowserContext.rerender();

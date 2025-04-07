@@ -88,7 +88,10 @@ export class NewProjectModal extends Modal {
     ////////
 
     private async initCreateProject() {
-        const file = await createProject(this.folder, this.name)
+        const file = await createProject({
+            parentFolder: this.folder,
+            projectName: this.name
+        });
         this.resolveModal(file);
         this.close();
     }
