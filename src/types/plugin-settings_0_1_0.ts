@@ -45,6 +45,7 @@ export interface PluginSettings_0_1_0 {
 		hidden: PluginStateSettings_0_1_0[],
 	},
 	stateless: PluginStateSettings_0_1_0,
+	defaultState?: string,
 }
 
 /////////////
@@ -114,4 +115,5 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 		name: '',
 		defaultView: 'List',
 	},
+	defaultState: 'Idea',
 }

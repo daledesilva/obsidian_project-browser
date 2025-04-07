@@ -6,6 +6,7 @@ import MyPlugin from "src/main";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { folderPathSanitize } from 'src/utils/string-processes';
 import { getGlobals } from 'src/logic/stores';
+import { PluginStateSettings, StateViewMode } from 'src/types/types-map';
 
 /////////
 /////////
@@ -178,6 +179,32 @@ function insertStateSettings(containerEl: HTMLElement, plugin: InkPlugin, refres
 		});
 
 	insertStateEditor(sectionEl);
+
+	new Setting(sectionEl)
+		.setClass('ddc_pb_setting')
+		.setName('Default state')
+		.addDropdown((dropdown) => {
+			function updateDropdownOptions() {
+				const options: Record<string, string> = {};
+				Object.values(plugin.settings.states.visible).map((stateSettings: PluginStateSettings) => {
+					options[stateSettings.name] = stateSettings.name;
+				});
+				Object.values(plugin.settings.states.hidden).map((stateSettings: PluginStateSettings) => {
+					options[stateSettings.name] = stateSettings.name;
+				});
+				options['(None)'] = '(None)';
+				dropdown.selectEl.empty();
+				dropdown.addOptions(options)
+			}
+			updateDropdownOptions();
+			dropdown.selectEl.addEventListener('focus', (event) => {
+				updateDropdownOptions();
+			});
+			dropdown.selectEl.addEventListener('change', (event) => {
+				plugin.settings.defaultState = dropdown.getValue() == '(None)' ? undefined : dropdown.getValue() as string;
+				plugin.saveSettings();
+			});
+		})
 }
 
 function insertNoteSettings(containerEl: HTMLElement, plugin: InkPlugin, refresh: Function) {

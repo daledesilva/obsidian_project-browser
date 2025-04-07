@@ -42,6 +42,7 @@ interface CreateProjectProps {
 }
 export async function createProject(props: CreateProjectProps): Promise<TFile> {
     const v = props.parentFolder.vault;
+    const globals = getGlobals();
         
     // Creating a project folder
     // const projectFolder = await createFolders(v, projectPath);
@@ -54,8 +55,11 @@ export async function createProject(props: CreateProjectProps): Promise<TFile> {
         if(stateSettings) {
             await setFileState(primaryProjectFile, stateSettings);
         }
-    } else {
-        setFileState(primaryProjectFile, DEFAULT_SETTINGS.states.visible[0]); // TODO: Using a custom default setting
+    } else if(globals.plugin.settings.defaultState) {
+        const stateSettings = getStateByName(globals.plugin.settings.defaultState);
+        if(stateSettings) {
+            await setFileState(primaryProjectFile, stateSettings);
+        }
     }
 
     return primaryProjectFile;

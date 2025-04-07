@@ -16,7 +16,7 @@ export function insertStateEditor(containerEl: HTMLElement) {
     const {plugin} = getGlobals();
     let root: Root;
 
-    const sectionEl = containerEl.createDiv('ddc_pb_section');
+    const sectionEl = containerEl.createDiv('ddc_pb_settings-sub-section');
     const contentEl = sectionEl.createDiv();
     this.root = createRoot(contentEl);
     renderView();
