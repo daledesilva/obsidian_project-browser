@@ -7,7 +7,7 @@ import { createProject } from "src/utils/file-manipulation";
 ////////
 ////////
 
-export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFolder, state: string, commands: {openFile: Function}) {
+export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFolder, stateName: string, commands: {openFile: Function}) {
     const {plugin} = getGlobals();
     
     el.addEventListener('contextmenu', function(event) {
@@ -25,7 +25,7 @@ export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFo
                     const newFile = await createProject({
                         parentFolder: baseFolder,
                         projectName: 'Untitled',
-                        state: state
+                        stateName: stateName
                     });
                     // TODO: This delay should be set as a constant globally to guarantee it's longer than other delay of file appear
                     setTimeout( () => openFileInSameLeaf(newFile), 500);

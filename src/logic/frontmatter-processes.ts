@@ -58,10 +58,10 @@ export const getFileStateName = (file: TFile): null | string => {
     return stateSettings.name;
 }
 
-export const setFileState = (file: TFile, stateSettings: null | PluginStateSettings): boolean => {
+export const setFileState = async (file: TFile, stateSettings: null | PluginStateSettings): Promise<boolean> => {
     try {
         const {plugin} = getGlobals();
-        plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+        await plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
             if(stateSettings) {
                 if(stateSettings.link) {
                     frontmatter['state'] = `[[${stateSettings.name}]]`;

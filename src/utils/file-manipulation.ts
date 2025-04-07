@@ -6,8 +6,8 @@ import { folderPathSanitize, parseFilepath, sanitizeFileFolderName } from "./str
 import { setFileState } from "src/logic/frontmatter-processes";
 import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 import { getGlobals } from "src/logic/stores";
-import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings_0_1_0";
-import { DEFAULT_FOLDER_SETTINGS, FolderSettings, PluginStateSettings } from "src/types/types-map";
+import { DEFAULT_FOLDER_SETTINGS, DEFAULT_SETTINGS, FolderSettings } from "src/types/types-map";
+import { getStateByName } from "src/logic/get-state-by-name";
 
 // //////////
 // //////////
@@ -35,15 +35,10 @@ import { DEFAULT_FOLDER_SETTINGS, FolderSettings, PluginStateSettings } from "sr
 //     return pathAndVersionedBasename + '.' + ext;
 // }
 
-
-interface ProjectDefaults {
-    stateSettings?: PluginStateSettings
-}
 interface CreateProjectProps {
     parentFolder: TFolder,
     projectName: string,
-    state?: string,
-    defaults?: ProjectDefaults,
+    stateName?: string,
 }
 export async function createProject(props: CreateProjectProps): Promise<TFile> {
     const v = props.parentFolder.vault;
@@ -54,8 +49,13 @@ export async function createProject(props: CreateProjectProps): Promise<TFile> {
     
     const primaryProjectFile = await createDefaultMarkdownFile(v, props.parentFolder, props.projectName);
 
-    if(props.defaults) {
-        if(props.defaults.stateSettings) setFileState(primaryProjectFile, props.defaults.stateSettings);
+    if(props.stateName) {
+        const stateSettings = getStateByName(props.stateName);
+        if(stateSettings) {
+            await setFileState(primaryProjectFile, stateSettings);
+        }
+    } else {
+        setFileState(primaryProjectFile, DEFAULT_SETTINGS.states.visible[0]); // TODO: Using a custom default setting
     }
 
     return primaryProjectFile;
