@@ -1,5 +1,5 @@
 import { TFile, TFolder } from "obsidian";
-import { PluginFolderSettings, PluginStateSettings_0_0_5 } from "src/types/plugin-settings0_0_5";
+import { PluginFolderSettings, PluginStateSettings_0_0_5 } from "src/types/plugin-settings_0_0_5";
 import { getGlobals } from "./stores";
 
 /////////

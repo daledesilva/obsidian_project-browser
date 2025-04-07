@@ -1,8 +1,8 @@
 import { FrontMatterCache, TFile } from "obsidian";
 import { getGlobals } from "./stores";
 import { error } from "src/utils/log-to-console";
-import { PluginStateSettings_0_1_0 } from "src/types/plugin-settings0_1_0";
 import { getStateByName } from "./get-state-by-name";
+import { PluginStateSettings } from "src/types/types-map";
 
 ////////////
 
@@ -37,7 +37,7 @@ export const setFileFrontmatter = (file: TFile, newFrontmatter: FrontMatterCache
     });
 }
 
-export const getFileStateSettings = (file: TFile): null | PluginStateSettings_0_1_0 => {
+export const getFileStateSettings = (file: TFile): null | PluginStateSettings => {
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
 
@@ -58,7 +58,7 @@ export const getFileStateName = (file: TFile): null | string => {
     return stateSettings.name;
 }
 
-export const setFileState = (file: TFile, stateSettings: null | PluginStateSettings_0_1_0): boolean => {
+export const setFileState = (file: TFile, stateSettings: null | PluginStateSettings): boolean => {
     try {
         const {plugin} = getGlobals();
         plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {

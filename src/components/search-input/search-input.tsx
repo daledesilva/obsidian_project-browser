@@ -1,9 +1,6 @@
-import { CornerLeftUp, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import './search-input.scss';
-import { TFolder } from "obsidian";
 import * as React from "react";
-import classNames from 'classnames';
-import { StateViewMode_0_1_0 } from 'src/types/plugin-settings0_1_0';
 
 
 /////////

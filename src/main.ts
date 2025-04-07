@@ -5,7 +5,7 @@ import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
 import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon } from './commands/open-project-browser';
 import { migrateOutdatedSettings } from './types/plugin-settings-migrations';
 import { showOnboardingNotices_maybe } from './notices/onboarding-notices';
-import { DEFAULT_SETTINGS_0_1_0, PluginSettings_0_1_0 } from './types/plugin-settings0_1_0';
+import { DEFAULT_SETTINGS, PluginSettings } from './types/types-map';
 import { initStateMenuSettings, setGlobals } from './logic/stores';
 import { showVersionNotice } from './notices/version-notices';
 import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
@@ -15,7 +15,7 @@ import { registerCycleStateCommands } from './commands/cycle-state';
 /////////
 
 export default class ProjectBrowserPlugin extends Plugin {
-	settings: PluginSettings_0_1_0;
+	settings: PluginSettings;
 	refreshFileDependantsTimeout: NodeJS.Timer;
 	fileDependants: {
 		[key: string]: Function;
@@ -67,7 +67,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 		this.settings = await this.loadData();
 
 		if(Object.isEmpty(this.settings)) {
-			this.settings = Object.assign({}, DEFAULT_SETTINGS_0_1_0, this.settings);
+			this.settings = Object.assign({}, DEFAULT_SETTINGS, this.settings);
 		} else {
 			this.settings = migrateOutdatedSettings(this.settings);
 			this.saveSettings();
@@ -79,7 +79,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 	}
 
 	async resetSettings() {
-		this.settings = JSON.parse( JSON.stringify(DEFAULT_SETTINGS_0_1_0) );
+		this.settings = JSON.parse( JSON.stringify(DEFAULT_SETTINGS) );
 		this.saveSettings();
 		new Notice('Project Browser plugin settings reset');
 	}

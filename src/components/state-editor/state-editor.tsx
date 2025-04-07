@@ -3,12 +3,11 @@ import * as React from "react";
 import { ItemInterface, ReactSortable } from "react-sortablejs";
 import './state-editor.scss';
 import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
-import { Cog, Ellipsis, GripVertical, Plus, Settings, Trash, X } from 'lucide-react';
+import { GripVertical, Plus, Settings, Trash } from 'lucide-react';
 import classNames from 'classnames';
-import { Setting } from 'obsidian';
-import { PluginStateSettings_0_1_0 } from 'src/types/plugin-settings0_1_0';
 import { EditStateModal } from 'src/modals/edit-state-modal/edit-state-modal';
 import { getGlobals } from 'src/logic/stores';
+import { PluginStateSettings } from 'src/types/types-map';
 
 //////////
 //////////
@@ -247,10 +246,10 @@ export const StateEditor = (props: StateEditorProps) => {
 
 interface StateItem extends ItemInterface {
     id: string,
-    stateSettings: PluginStateSettings_0_1_0
+    stateSettings: PluginStateSettings
 }
 
-function convertToStateItems(stateSettings: PluginStateSettings_0_1_0[]): StateItem[] {
+function convertToStateItems(stateSettings: PluginStateSettings[]): StateItem[] {
     const stateItems: StateItem[] = [];
     stateSettings.forEach( (thisStateSettings) => {
         stateItems.push({
@@ -261,8 +260,8 @@ function convertToStateItems(stateSettings: PluginStateSettings_0_1_0[]): StateI
     return stateItems;
 }
 
-function convertToStates(stateItems: StateItem[]): PluginStateSettings_0_1_0[] {
-    const states: PluginStateSettings_0_1_0[] = [];
+function convertToStates(stateItems: StateItem[]): PluginStateSettings[] {
+    const states: PluginStateSettings[] = [];
     stateItems.forEach( (stateItem) => {
         states.push(stateItem.stateSettings)
     })

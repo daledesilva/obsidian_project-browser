@@ -1,13 +1,14 @@
-export enum StateViewMode_0_0_5 {
-	DetailedCards = 'Detailed Cards',
-	SimpleCards = 'Simple Cards',
-	SmallCards = 'Small Cards',
-	List = 'List',
-}
 
-export enum FolderViewMode_0_0_5 {
-	Small = 'Small',
-}
+// So it's accessible as a const and a type
+export const StateViewMode_0_0_5 = {
+    DetailedCards: 'Detailed Cards',
+    SimpleCards: 'Simple Cards',
+    SmallCards: 'Small Cards',
+    List: 'List'
+} as const;
+export type StateViewMode_0_0_5 = typeof StateViewMode_0_0_5[keyof typeof StateViewMode_0_0_5];
+
+export type FolderViewMode_0_0_5 = 'Small';
 
 export interface PluginStateSettings_0_0_5 {
 	name: string,
@@ -48,44 +49,44 @@ export const DEFAULT_SETTINGS_0_0_5: PluginSettings_0_0_5 = {
 	},
 	showStateMenu: true,
 	folders: {
-		defaultView: FolderViewMode_0_0_5.Small,
+		defaultView: 'Small',
 	},
 	states: {
 		visible: [
 			{
 				name: 'Idea',
-				defaultView: StateViewMode_0_0_5.SmallCards,
+				defaultView: 'Small Cards',
 			},
 			{
 				name: 'Shortlisted',
-				defaultView: StateViewMode_0_0_5.SmallCards,
+				defaultView: 'Small Cards',
 			},
 			{
 				name: 'Drafting',
-				defaultView: StateViewMode_0_0_5.DetailedCards,
+				defaultView: 'Detailed Cards',
 			},
 			{
 				name: 'Focus',
-				defaultView: StateViewMode_0_0_5.SimpleCards,
+				defaultView: 'Simple Cards',
 			},
 			{
 				name: 'Final',
-				defaultView: StateViewMode_0_0_5.SmallCards,
+				defaultView: 'Small Cards',
 			},
 		],
 		hidden: [
 			{
 				name: 'Archived',
-				defaultView: StateViewMode_0_0_5.SmallCards,
+				defaultView: 'Small Cards',
 			},
 			{
 				name: 'Cancelled',
-				defaultView: StateViewMode_0_0_5.DetailedCards,
+				defaultView: 'Detailed Cards',
 			},
 		],
 	},
 	stateless: {
 		name: '',
-		defaultView: StateViewMode_0_0_5.List,
+		defaultView: 'List',
 	},
 }

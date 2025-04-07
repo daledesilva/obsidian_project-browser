@@ -8,7 +8,7 @@ import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-car
 import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
-import { StateViewMode_0_0_5 } from 'src/types/plugin-settings0_0_5';
+import { StateViewMode_0_0_5 } from 'src/types/plugin-settings_0_0_5';
 import { sortItemsAlphabetically } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';

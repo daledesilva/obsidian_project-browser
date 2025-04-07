@@ -5,8 +5,8 @@ import classnames from 'classnames';
 import { getFileStateSettings, getFileStateName, setFileState } from 'src/logic/frontmatter-processes';
 import { getGlobals, stateMenuAtom } from 'src/logic/stores';
 import { useAtomValue } from 'jotai';
-import { PluginStateSettings_0_1_0 } from 'src/types/plugin-settings0_1_0';
 import { sanitizeInternalLinkName } from 'src/utils/string-processes';
+import { PluginStateSettings } from 'src/types/types-map';
 
 //////////
 //////////
@@ -21,7 +21,7 @@ export const StateMenu = (props: StateMenuProps) => {
     const parentLeafRef = React.useRef(plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf);
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [file, setFile] = React.useState( props.file );
-    const [stateSettings, setStateSettings] = React.useState<PluginStateSettings_0_1_0 | null>( getFileStateSettings(file) );
+    const [stateSettings, setStateSettings] = React.useState<PluginStateSettings | null>( getFileStateSettings(file) );
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const showHighlightRef = React.useRef<boolean>(false);
     const stateMenuRef = React.useRef<HTMLDivElement>(null);
@@ -170,7 +170,7 @@ export const StateMenu = (props: StateMenuProps) => {
         }));
     }
 
-    function setStateAndCloseMenu(newState: PluginStateSettings_0_1_0) {
+    function setStateAndCloseMenu(newState: PluginStateSettings) {
         if(!plugin) return;
 
         if(newState !== stateSettings) {

@@ -1,25 +1,24 @@
 import { App, Modal, Notice, Setting, TextComponent, TFile, TFolder, ToggleComponent } from "obsidian";
 import { getGlobals } from "src/logic/stores";
-import { PluginStateSettings_0_1_0, StateViewMode_0_1_0 } from "src/types/plugin-settings0_1_0";
+import { StateViewMode, PluginStateSettings } from "src/types/types-map";
 import { sanitizeInternalLinkName } from "src/utils/string-processes";
-import { createProject } from "src/utils/file-manipulation";
 
 /////////
 /////////
 
 interface EditStateModalProps {
-	stateSettings: PluginStateSettings_0_1_0,
-	onSuccess: (modifiedStateSettings: PluginStateSettings_0_1_0) => {},
+	stateSettings: PluginStateSettings,
+	onSuccess: (modifiedStateSettings: PluginStateSettings) => {},
 	onReject?: (reason: string) => {},
 }
 
 export class EditStateModal extends Modal {
-	onSuccess: (modifiedStateSettings: PluginStateSettings_0_1_0) => {};
+	onSuccess: (modifiedStateSettings: PluginStateSettings) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
-    resolveModal: (modifiedStateSettings: PluginStateSettings_0_1_0) => void;
+    resolveModal: (modifiedStateSettings: PluginStateSettings) => void;
 	rejectModal: (reason: string) => void;
-	stateSettings: PluginStateSettings_0_1_0;
+	stateSettings: PluginStateSettings;
 	//
 	nameInputEl: TextComponent;
 	linkInputEl: ToggleComponent;
@@ -35,7 +34,7 @@ export class EditStateModal extends Modal {
     /**
 	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<PluginStateSettings_0_1_0 | string> {
+	public showModal(): Promise<PluginStateSettings | string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;
@@ -70,12 +69,12 @@ export class EditStateModal extends Modal {
 			.setClass('ddc_pb_setting')
 			.setName('Default view')
 			.addDropdown((dropdown) => {
-				Object.values(StateViewMode_0_1_0).map((viewModeStr) => {
+				Object.values(StateViewMode).map((viewModeStr: StateViewMode) => {
 					dropdown.addOption(viewModeStr, viewModeStr);
 				});
 				dropdown.setValue(this.stateSettings.defaultView.toString());
 				dropdown.selectEl.addEventListener('change', (event) => {
-					this.stateSettings.defaultView = dropdown.getValue() as StateViewMode_0_1_0;
+					this.stateSettings.defaultView = dropdown.getValue() as StateViewMode;
 				});
 			})
 

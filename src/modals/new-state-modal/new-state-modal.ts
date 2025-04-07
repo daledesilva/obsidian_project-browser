@@ -1,7 +1,7 @@
 import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TextComponent, TFile, TFolder, ToggleComponent } from "obsidian";
 import { getGlobals } from "src/logic/stores";
-import { PluginStateSettings_0_1_0, StateViewMode_0_1_0 } from "src/types/plugin-settings0_1_0";
+import { PluginStateSettings, StateViewMode } from "src/types/types-map";
 import { createProject } from "src/utils/file-manipulation";
 import { sanitizeInternalLinkName } from "src/utils/string-processes";
 
@@ -10,20 +10,20 @@ import { sanitizeInternalLinkName } from "src/utils/string-processes";
 
 interface NewStateModalProps {
 	title?: string,
-	onSuccess: (newState: PluginStateSettings_0_1_0) => {},
+	onSuccess: (newState: PluginStateSettings) => {},
 	onReject?: (reason: string) => {},
 }
 
 export class NewStateModal extends Modal {
 	title: string;
-	onSuccess: (newState: PluginStateSettings_0_1_0) => {};
+	onSuccess: (newState: PluginStateSettings) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
-    resolveModal: (state: PluginStateSettings_0_1_0) => void;
+    resolveModal: (state: PluginStateSettings) => void;
 	rejectModal: (reason: string) => void;
-	stateSettings: PluginStateSettings_0_1_0 = {
+	stateSettings: PluginStateSettings = {
 		name: '',
-		defaultView: StateViewMode_0_1_0.DetailedCards,
+		defaultView: StateViewMode.DetailedCards,
 		link: true,
 	}
 	//
@@ -41,7 +41,7 @@ export class NewStateModal extends Modal {
     /**
 	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<PluginStateSettings_0_1_0 | string> {
+	public showModal(): Promise<PluginStateSettings | string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;
@@ -74,12 +74,12 @@ export class NewStateModal extends Modal {
             .setClass('ddc_pb_setting')
             .setName('Default view')
 			.addDropdown((dropdown) => {
-				Object.values(StateViewMode_0_1_0).map((viewModeStr) => {
+				Object.values(StateViewMode).map((viewModeStr: StateViewMode) => {
 					dropdown.addOption(viewModeStr, viewModeStr);
 				});
 				dropdown.setValue(this.stateSettings.defaultView.toString());
 				dropdown.selectEl.addEventListener('change', (event) => {
-                    this.stateSettings.defaultView = dropdown.getValue() as StateViewMode_0_1_0;
+                    this.stateSettings.defaultView = dropdown.getValue() as StateViewMode;
                 });
 			})
 
