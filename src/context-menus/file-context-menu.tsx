@@ -4,7 +4,7 @@ import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic
 import { getFileStateSettings, setFileState } from "src/logic/frontmatter-processes";
 import { getGlobals } from "src/logic/stores";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
-import { PluginPrioritySettings, PluginStateSettings } from "src/types/types-map";
+import { PluginPrioritySettings, StateSettings } from "src/types/types-map";
 
 ////////
 ////////
@@ -53,7 +53,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             });
         })
         menu.addSeparator();
-        visibleStates.forEach( (stateSettings: PluginStateSettings) => {
+        visibleStates.forEach( (stateSettings: StateSettings) => {
             menu.addItem((item) => {
                 item.setTitle(stateSettings.name);
                 if(stateSettings.name === fileRawState?.name) item.setChecked(true);
@@ -64,7 +64,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             });
         })
         menu.addSeparator();
-        hiddenStates.forEach( (stateSettings: PluginStateSettings) => {
+        hiddenStates.forEach( (stateSettings: StateSettings) => {
             menu.addItem((item) => {
                 item.setTitle(stateSettings.name);
                 if(stateSettings.name === fileRawState?.name) item.setChecked(true);

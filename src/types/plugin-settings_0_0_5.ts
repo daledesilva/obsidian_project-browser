@@ -10,11 +10,11 @@ export type StateViewMode_0_0_5 = typeof StateViewMode_0_0_5[keyof typeof StateV
 
 export type FolderViewMode_0_0_5 = 'Small';
 
-export interface PluginStateSettings_0_0_5 {
+export interface StateSettings_0_0_5 {
 	name: string,
 	defaultView: StateViewMode_0_0_5,
 }
-export interface PluginFolderSettings_0_0_5 {
+export interface FolderSettings_0_0_5 {
 	defaultView: FolderViewMode_0_0_5,
 }
 
@@ -29,18 +29,18 @@ export interface PluginSettings_0_0_5 {
 		enableCommand: boolean,
 	}
 	showStateMenu: boolean,
-	folders: PluginFolderSettings_0_0_5,
+	folders: FolderSettings_0_0_5,
 	states: {
-		visible: PluginStateSettings_0_0_5[],
-		hidden: PluginStateSettings_0_0_5[],
+		visible: StateSettings_0_0_5[],
+		hidden: StateSettings_0_0_5[],
 	},
-	stateless: PluginStateSettings_0_0_5,
+	stateless: StateSettings_0_0_5,
 }
 
 /////////////
 /////////////
 
-export const DEFAULT_SETTINGS_0_0_5: PluginSettings_0_0_5 = {
+export const DEFAULT_PLUGIN_SETTINGS_0_0_5: PluginSettings_0_0_5 = {
 	settingsVersion: '0.0.5',	// Settings version aligns with the version number of the plugin it was updated in
 	access: {
 		replaceNewTab: true,

@@ -1,65 +1,51 @@
-import { PluginFolderSettings_0_0_5 } from "./plugin-settings_0_0_5";
+import { FolderSettings_0_0_5, StateViewMode_0_0_5 } from "./plugin-settings_0_0_5";
 
 ////////////////////
 ////////////////////
-
-// So it's accessible as a const and a type
-export const StateViewMode_0_1_0 = {
-    DetailedCards: 'Detailed Cards',
-    SimpleCards: 'Simple Cards',
-    SmallCards: 'Small Cards',
-    List: 'List'
-};
-export type StateViewMode_0_1_0 = typeof StateViewMode_0_1_0[keyof typeof StateViewMode_0_1_0];
-
-export type FolderViewMode_0_1_0 = 'Small';
 
 export interface PluginStateSettings_0_1_0 {
 	name: string,
-	defaultView: StateViewMode_0_1_0,
-	link?: boolean,
+	defaultView: StateViewMode_0_0_5,
+	link?: boolean,	// new
 }
 
-export interface PluginPrioritySettings_0_1_0 {
-	name: string,
-	link?: boolean,
+export const DEFAULT_STATE_SETTINGS_0_1_0: PluginStateSettings_0_1_0 = {
+	name: '',
+	defaultView: 'Simple Cards',
+	link: true,
 }
 
 /////////////
 
 export interface PluginSettings_0_1_0 {
+	settingsVersion: string,
 	// Helpers
-    onboardingNotices: {
+    onboardingNotices: { // new
 		welcomeNoticeRead: boolean,
 		lastVersionNoticeRead: string,
 	},
-	////
-	settingsVersion: string,
+	//
 	access: {
 		replaceNewTab: boolean,
 		enableRibbonIcon: boolean,
 		enableCommand: boolean,
-		launchFolder: string,
+		launchFolder: string, // new
 	}
-	useAliases: boolean,
+	useAliases: boolean, // new
 	showStateMenu: boolean,
-	loopStatesWhenCycling: boolean,
-	folders: PluginFolderSettings_0_0_5,
+	loopStatesWhenCycling: boolean, // new
+	folders: FolderSettings_0_0_5,
 	states: {
 		visible: PluginStateSettings_0_1_0[],
 		hidden: PluginStateSettings_0_1_0[],
 	},
 	stateless: PluginStateSettings_0_1_0,
-	defaultState?: string,
-
-	// Tracked but not exposed in settings
-	priorities: PluginPrioritySettings_0_1_0[],
-	defaultPriority: string,
+	defaultState?: string, // new
 }
 
 /////////////
 
-export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
+export const DEFAULT_PLUGIN_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 	// Helpers
     onboardingNotices: {
 		welcomeNoticeRead: false,
@@ -125,19 +111,5 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 	},
 	defaultState: 'Idea',
 
-	priorities: [
-		{
-			name: 'High',
-			link: true,
-		},
-		{
-			name: 'Medium',
-			link: true,
-		},
-		{
-			name: 'Low',
-			link: true,
-		},
-	],
-	defaultPriority: 'Medium',
+	entryToBreak: true,
 }

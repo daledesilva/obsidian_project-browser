@@ -7,7 +7,7 @@ import { GripVertical, Plus, Settings, Trash } from 'lucide-react';
 import classNames from 'classnames';
 import { EditStateModal } from 'src/modals/edit-state-modal/edit-state-modal';
 import { getGlobals } from 'src/logic/stores';
-import { PluginStateSettings } from 'src/types/types-map';
+import { StateSettings } from 'src/types/types-map';
 
 //////////
 //////////
@@ -246,10 +246,10 @@ export const StateEditor = (props: StateEditorProps) => {
 
 interface StateItem extends ItemInterface {
     id: string,
-    stateSettings: PluginStateSettings
+    stateSettings: StateSettings
 }
 
-function convertToStateItems(stateSettings: PluginStateSettings[]): StateItem[] {
+function convertToStateItems(stateSettings: StateSettings[]): StateItem[] {
     const stateItems: StateItem[] = [];
     stateSettings.forEach( (thisStateSettings) => {
         stateItems.push({
@@ -260,8 +260,8 @@ function convertToStateItems(stateSettings: PluginStateSettings[]): StateItem[] 
     return stateItems;
 }
 
-function convertToStates(stateItems: StateItem[]): PluginStateSettings[] {
-    const states: PluginStateSettings[] = [];
+function convertToStates(stateItems: StateItem[]): StateSettings[] {
+    const states: StateSettings[] = [];
     stateItems.forEach( (stateItem) => {
         states.push(stateItem.stateSettings)
     })

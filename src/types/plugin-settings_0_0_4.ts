@@ -13,7 +13,7 @@ export interface PluginSettings_0_0_4 {
     }
 }
 
-export const DEFAULT_SETTINGS_PRE_0_0_5: PluginSettings_0_0_4 = {
+export const DEFAULT_PLUGIN_SETTINGS_PRE_0_0_5: PluginSettings_0_0_4 = {
 	access: {
 		replaceNewTab: true,
 		enableRibbonIcon: true,

@@ -1,5 +1,4 @@
-import { PluginFolderSettings_0_0_5 } from "./plugin-settings_0_0_5";
-import { FolderViewMode_0_1_0, PluginPrioritySettings_0_1_0, StateViewMode_0_1_0 } from "./plugin-settings_0_1_0"
+import { FolderSettings_0_0_5, StateViewMode_0_0_5 } from "./plugin-settings_0_0_5";
 
 ////////////////
 ////////////////
@@ -12,25 +11,43 @@ export const StateViewOrder_0_3_0 = {
 };
 export type StateViewOrder_0_3_0 = typeof StateViewOrder_0_3_0[keyof typeof StateViewOrder_0_3_0];
 
-export interface PluginStateSettings_0_3_0 {
+export interface StateSettings_0_3_0 {
 	name: string,
 	link?: boolean,
-	defaultViewMode: StateViewMode_0_1_0,
+	defaultViewMode: StateViewMode_0_0_5,
 	defaultViewOrder: StateViewOrder_0_3_0,
 	defaultViewPriorityVisibility: boolean,
 	defaultViewPriorityGrouping: boolean,
 }
 
+export const DEFAULT_STATE_SETTINGS_0_3_0: StateSettings_0_3_0 = {
+	name: '',
+	defaultViewMode: 'Simple Cards',
+	defaultViewOrder: 'AliasOrFilename',
+	defaultViewPriorityVisibility: true,
+	defaultViewPriorityGrouping: true,
+}
+
+export interface PluginPrioritySettings_0_3_0 {
+	name: string,
+	link?: boolean,
+}
+
+export const DEFAULT_PRIORITY_SETTINGS_0_3_0: PluginPrioritySettings_0_3_0 = {
+	name: '',
+	link: true,
+}
+
 /////////////
 
 export interface PluginSettings_0_3_0 {
+	settingsVersion: string,
 	// Helpers
     onboardingNotices: {
 		welcomeNoticeRead: boolean,
 		lastVersionNoticeRead: string,
 	},
-	////
-	settingsVersion: string,
+	//
 	access: {
 		replaceNewTab: boolean,
 		enableRibbonIcon: boolean,
@@ -40,23 +57,22 @@ export interface PluginSettings_0_3_0 {
 	useAliases: boolean,
 	showStateMenu: boolean,
 	loopStatesWhenCycling: boolean,
-	folders: PluginFolderSettings_0_0_5,
+	folders: FolderSettings_0_0_5,
 	states: {
-		visible: PluginStateSettings_0_3_0[],
-		hidden: PluginStateSettings_0_3_0[],
+		visible: StateSettings_0_3_0[],	// changed
+		hidden: StateSettings_0_3_0[],	// changed
 	},
-	stateless: PluginStateSettings_0_3_0,
+	stateless: StateSettings_0_3_0,	// changed
 	defaultState?: string,
 
 	// Tracked but not exposed in settings
-	priorities: PluginPrioritySettings_0_1_0[],
-	defaultPriority: string,
+	priorities: PluginPrioritySettings_0_3_0[],	// new
+	defaultPriority: string,	// new
 }
 
 /////////////
-/////////////
 
-export const DEFAULT_SETTINGS_0_3_0: PluginSettings_0_3_0 = {
+export const DEFAULT_PLUGIN_SETTINGS_0_3_0: PluginSettings_0_3_0 = {
 	// Helpers
     onboardingNotices: {
 		welcomeNoticeRead: false,
@@ -161,4 +177,6 @@ export const DEFAULT_SETTINGS_0_3_0: PluginSettings_0_3_0 = {
 		},
 	],
 	defaultPriority: 'Medium',
+
+	entryToBreak: true,
 }

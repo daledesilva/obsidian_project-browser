@@ -1,5 +1,5 @@
 import { TFile, TFolder } from "obsidian";
-import { PluginFolderSettings, PluginStateSettings_0_0_5 } from "src/types/plugin-settings_0_0_5";
+import { PluginFolderSettings, StateSettings_0_0_5 } from "src/types/plugin-settings_0_0_5";
 import { getGlobals } from "./stores";
 
 /////////
@@ -9,7 +9,7 @@ export interface Section {
     type: "folders" | "state" | "stateless"
     title: string,
     items: Array<TFile | TFolder>
-    settings: PluginFolderSettings | PluginStateSettings_0_0_5,
+    settings: PluginFolderSettings | StateSettings_0_0_5,
 }
 
 export const orderSections = (unorderedSections: Section[]): Section[] => {
@@ -50,7 +50,7 @@ export const orderSections = (unorderedSections: Section[]): Section[] => {
 
 
 
-export function getStateSettings(name: string): PluginStateSettings_0_0_5 {
+export function getStateSettings(name: string): StateSettings_0_0_5 {
     const {plugin} = getGlobals();
     const allSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
     for(let i=0; i<=allSettings.length; i++) {

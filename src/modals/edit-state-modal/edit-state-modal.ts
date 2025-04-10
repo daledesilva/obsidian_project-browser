@@ -1,24 +1,24 @@
 import { App, Modal, Notice, Setting, TextComponent, TFile, TFolder, ToggleComponent } from "obsidian";
 import { getGlobals } from "src/logic/stores";
-import { StateViewMode, PluginStateSettings } from "src/types/types-map";
+import { StateViewMode, StateSettings } from "src/types/types-map";
 import { sanitizeInternalLinkName } from "src/utils/string-processes";
 
 /////////
 /////////
 
 interface EditStateModalProps {
-	stateSettings: PluginStateSettings,
-	onSuccess: (modifiedStateSettings: PluginStateSettings) => {},
+	stateSettings: StateSettings,
+	onSuccess: (modifiedStateSettings: StateSettings) => {},
 	onReject?: (reason: string) => {},
 }
 
 export class EditStateModal extends Modal {
-	onSuccess: (modifiedStateSettings: PluginStateSettings) => {};
+	onSuccess: (modifiedStateSettings: StateSettings) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
-    resolveModal: (modifiedStateSettings: PluginStateSettings) => void;
+    resolveModal: (modifiedStateSettings: StateSettings) => void;
 	rejectModal: (reason: string) => void;
-	stateSettings: PluginStateSettings;
+	stateSettings: StateSettings;
 	//
 	nameInputEl: TextComponent;
 	linkInputEl: ToggleComponent;
@@ -34,7 +34,7 @@ export class EditStateModal extends Modal {
     /**
 	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<PluginStateSettings | string> {
+	public showModal(): Promise<StateSettings | string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;

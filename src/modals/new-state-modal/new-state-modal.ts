@@ -1,7 +1,7 @@
 import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TextComponent, TFile, TFolder, ToggleComponent } from "obsidian";
 import { getGlobals } from "src/logic/stores";
-import { PluginStateSettings, StateViewMode } from "src/types/types-map";
+import { StateSettings, StateViewMode } from "src/types/types-map";
 import { createProject } from "src/utils/file-manipulation";
 import { sanitizeInternalLinkName } from "src/utils/string-processes";
 
@@ -10,18 +10,18 @@ import { sanitizeInternalLinkName } from "src/utils/string-processes";
 
 interface NewStateModalProps {
 	title?: string,
-	onSuccess: (newState: PluginStateSettings) => {},
+	onSuccess: (newState: StateSettings) => {},
 	onReject?: (reason: string) => {},
 }
 
 export class NewStateModal extends Modal {
 	title: string;
-	onSuccess: (newState: PluginStateSettings) => {};
+	onSuccess: (newState: StateSettings) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
-    resolveModal: (state: PluginStateSettings) => void;
+    resolveModal: (state: StateSettings) => void;
 	rejectModal: (reason: string) => void;
-	stateSettings: PluginStateSettings = {
+	stateSettings: StateSettings = {
 		name: '',
 		defaultView: StateViewMode.DetailedCards,
 		link: true,
@@ -41,7 +41,7 @@ export class NewStateModal extends Modal {
     /**
 	 * Opens the modal and returns a promise
 	 */
-	public showModal(): Promise<PluginStateSettings | string> {
+	public showModal(): Promise<StateSettings | string> {
 		return new Promise((resolve, reject) => {
 			this.open();
 			this.resolveModal = resolve;
