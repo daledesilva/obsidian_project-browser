@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.46% </span>
+                <span class="strong">71.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>116/167</span>
+                <span class='fraction'>126/177</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.46% </span>
+                <span class="strong">71.18% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>116/167</span>
+                <span class='fraction'>126/177</span>
             </div>
         
             
@@ -229,7 +229,17 @@
 <a name='L164'></a><a href='#L164'>164</a>
 <a name='L165'></a><a href='#L165'>165</a>
 <a name='L166'></a><a href='#L166'>166</a>
-<a name='L167'></a><a href='#L167'>167</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -370,8 +380,18 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -529,22 +549,32 @@ export function migrate_0_1_0_to_0_3_0(oldSettings: PluginSettings_0_1_0): Plugi
         /////////////////////////////////
 &nbsp;
         states: {
-            visible: oldSettings.states.visible.map((stateStr, index) =&gt; ({
-                name: oldSettings.states.visible[index].name,
-                link: findItemByProperty(oldSettings.states.visible, 'name', oldSettings.states.visible[index].name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.link,</span>
-                defaultViewMode: findItemByProperty(oldSettings.states.visible, 'name', oldSettings.states.visible[index].name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewMode,</span>
-                defaultViewOrder: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible[index].name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,</span>
-                defaultViewPriorityVisibility: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible[index].name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityVisibility,</span>
-                defaultViewPriorityGrouping: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible[index].name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityGrouping,</span>
-            })),
-            hidden: oldSettings.states.hidden.map((stateStr, index) =&gt; ({
-                name: oldSettings.states.hidden[index].name,
-                link: findItemByProperty(oldSettings.states.hidden, 'name', oldSettings.states.hidden[index].name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.link,</span>
-                defaultViewMode: findItemByProperty(oldSettings.states.hidden, 'name', oldSettings.states.hidden[index].name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewMode,</span>
-                defaultViewOrder: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden[index].name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,</span>
-                defaultViewPriorityVisibility: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden[index].name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityVisibility,</span>
-                defaultViewPriorityGrouping: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden[index].name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityGrouping,</span>
-            })),
+            visible: oldSettings.states.visible.map((state, index) =&gt; {
+                const states = oldSettings.states.visible;
+                const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible;
+                const defaultState = DEFAULT_STATE_SETTINGS_0_3_0
+                return {
+                    name: state.name,
+                    link: findItemByProperty(states, 'name', state.name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.link,</span>
+                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewMode,</span>
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,</span>
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityVisibility,</span>
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityGrouping,</span>
+                }
+            }),
+            hidden: oldSettings.states.hidden.map((state, index) =&gt; {
+                const states = oldSettings.states.hidden;
+                const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden;
+                const defaultState = DEFAULT_STATE_SETTINGS_0_3_0;
+                return {
+                    name: state.name,
+                    link: findItemByProperty(states, 'name', state.name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.link,</span>
+                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewMode,</span>
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewOrder,</span>
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewPriorityVisibility,</span>
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewPriorityGrouping,</span>
+                }
+            }),
         },
 &nbsp;
         stateless: {
@@ -568,7 +598,7 @@ export function migrate_0_1_0_to_0_3_0(oldSettings: PluginSettings_0_1_0): Plugi
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-10T12:50:42.359Z
+                at 2025-04-10T13:02:02.523Z
             </div>
         <script src="../prettify.js"></script>
         <script>

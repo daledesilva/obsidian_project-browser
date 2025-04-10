@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1744289442373" clover="3.2.0">
-  <project timestamp="1744289442373" name="All files">
-    <metrics statements="717" coveredstatements="581" conditionals="23" coveredconditionals="12" methods="16" coveredmethods="4" elements="756" coveredelements="597" complexity="0" loc="717" ncloc="717" packages="2" files="6" classes="6"/>
+<coverage generated="1744290122535" clover="3.2.0">
+  <project timestamp="1744290122535" name="All files">
+    <metrics statements="727" coveredstatements="591" conditionals="23" coveredconditionals="12" methods="16" coveredmethods="4" elements="766" coveredelements="607" complexity="0" loc="727" ncloc="727" packages="2" files="6" classes="6"/>
     <package name="types">
-      <metrics statements="563" coveredstatements="512" conditionals="18" coveredconditionals="8" methods="6" coveredmethods="3"/>
+      <metrics statements="573" coveredstatements="522" conditionals="18" coveredconditionals="8" methods="6" coveredmethods="3"/>
       <file name="migration-helpers.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/migration-helpers.ts">
         <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
@@ -15,7 +15,7 @@
         <line num="7" count="35" type="stmt"/>
       </file>
       <file name="plugin-settings-migrations.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/plugin-settings-migrations.ts">
-        <metrics statements="167" coveredstatements="116" conditionals="16" coveredconditionals="6" methods="5" coveredmethods="2"/>
+        <metrics statements="177" coveredstatements="126" conditionals="16" coveredconditionals="6" methods="5" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -152,29 +152,29 @@
         <line num="134" count="1" type="stmt"/>
         <line num="135" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="136" count="5" type="stmt"/>
-        <line num="137" count="5" type="cond" truecount="0" falsecount="1"/>
-        <line num="138" count="5" type="cond" truecount="0" falsecount="1"/>
-        <line num="139" count="5" type="cond" truecount="0" falsecount="1"/>
-        <line num="140" count="5" type="cond" truecount="0" falsecount="1"/>
+        <line num="137" count="5" type="stmt"/>
+        <line num="138" count="5" type="stmt"/>
+        <line num="139" count="5" type="stmt"/>
+        <line num="140" count="5" type="stmt"/>
         <line num="141" count="5" type="cond" truecount="0" falsecount="1"/>
-        <line num="142" count="1" type="stmt"/>
-        <line num="143" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="144" count="2" type="stmt"/>
-        <line num="145" count="2" type="cond" truecount="0" falsecount="1"/>
-        <line num="146" count="2" type="cond" truecount="0" falsecount="1"/>
-        <line num="147" count="2" type="cond" truecount="0" falsecount="1"/>
-        <line num="148" count="2" type="cond" truecount="0" falsecount="1"/>
-        <line num="149" count="2" type="cond" truecount="0" falsecount="1"/>
-        <line num="150" count="1" type="stmt"/>
-        <line num="151" count="1" type="stmt"/>
-        <line num="152" count="1" type="stmt"/>
-        <line num="153" count="1" type="stmt"/>
-        <line num="154" count="1" type="stmt"/>
-        <line num="155" count="1" type="stmt"/>
-        <line num="156" count="1" type="stmt"/>
-        <line num="157" count="1" type="stmt"/>
-        <line num="158" count="1" type="stmt"/>
-        <line num="159" count="1" type="stmt"/>
+        <line num="142" count="5" type="cond" truecount="0" falsecount="1"/>
+        <line num="143" count="5" type="cond" truecount="0" falsecount="1"/>
+        <line num="144" count="5" type="cond" truecount="0" falsecount="1"/>
+        <line num="145" count="5" type="cond" truecount="0" falsecount="1"/>
+        <line num="146" count="5" type="stmt"/>
+        <line num="147" count="1" type="stmt"/>
+        <line num="148" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="149" count="2" type="stmt"/>
+        <line num="150" count="2" type="stmt"/>
+        <line num="151" count="2" type="stmt"/>
+        <line num="152" count="2" type="stmt"/>
+        <line num="153" count="2" type="stmt"/>
+        <line num="154" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="155" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="156" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="157" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="158" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="159" count="2" type="stmt"/>
         <line num="160" count="1" type="stmt"/>
         <line num="161" count="1" type="stmt"/>
         <line num="162" count="1" type="stmt"/>
@@ -183,6 +183,16 @@
         <line num="165" count="1" type="stmt"/>
         <line num="166" count="1" type="stmt"/>
         <line num="167" count="1" type="stmt"/>
+        <line num="168" count="1" type="stmt"/>
+        <line num="169" count="1" type="stmt"/>
+        <line num="170" count="1" type="stmt"/>
+        <line num="171" count="1" type="stmt"/>
+        <line num="172" count="1" type="stmt"/>
+        <line num="173" count="1" type="stmt"/>
+        <line num="174" count="1" type="stmt"/>
+        <line num="175" count="1" type="stmt"/>
+        <line num="176" count="1" type="stmt"/>
+        <line num="177" count="1" type="stmt"/>
       </file>
       <file name="plugin-settings_0_0_5.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/plugin-settings_0_0_5.ts">
         <metrics statements="92" coveredstatements="92" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>

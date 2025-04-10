@@ -132,22 +132,32 @@ export function migrate_0_1_0_to_0_3_0(oldSettings: PluginSettings_0_1_0): Plugi
         /////////////////////////////////
 
         states: {
-            visible: oldSettings.states.visible.map((stateStr, index) => ({
-                name: oldSettings.states.visible[index].name,
-                link: findItemByProperty(oldSettings.states.visible, 'name', oldSettings.states.visible[index].name)?.link ?? DEFAULT_STATE_SETTINGS_0_3_0.link,
-                defaultViewMode: findItemByProperty(oldSettings.states.visible, 'name', oldSettings.states.visible[index].name)?.defaultView ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewMode,
-                defaultViewOrder: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible[index].name)?.defaultViewOrder ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,
-                defaultViewPriorityVisibility: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible[index].name)?.defaultViewPriorityVisibility ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityVisibility,
-                defaultViewPriorityGrouping: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible[index].name)?.defaultViewPriorityGrouping ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityGrouping,
-            })),
-            hidden: oldSettings.states.hidden.map((stateStr, index) => ({
-                name: oldSettings.states.hidden[index].name,
-                link: findItemByProperty(oldSettings.states.hidden, 'name', oldSettings.states.hidden[index].name)?.link ?? DEFAULT_STATE_SETTINGS_0_3_0.link,
-                defaultViewMode: findItemByProperty(oldSettings.states.hidden, 'name', oldSettings.states.hidden[index].name)?.defaultView ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewMode,
-                defaultViewOrder: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden[index].name)?.defaultViewOrder ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,
-                defaultViewPriorityVisibility: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden[index].name)?.defaultViewPriorityVisibility ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityVisibility,
-                defaultViewPriorityGrouping: findItemByProperty(DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden, 'name', DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden[index].name)?.defaultViewPriorityGrouping ?? DEFAULT_PLUGIN_SETTINGS_0_3_0.stateless.defaultViewPriorityGrouping,
-            })),
+            visible: oldSettings.states.visible.map((state, index) => {
+                const states = oldSettings.states.visible;
+                const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible;
+                const defaultState = DEFAULT_STATE_SETTINGS_0_3_0
+                return {
+                    name: state.name,
+                    link: findItemByProperty(states, 'name', state.name)?.link ?? defaultState.link,
+                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView ?? defaultState.defaultViewMode,
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityVisibility,
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityGrouping,
+                }
+            }),
+            hidden: oldSettings.states.hidden.map((state, index) => {
+                const states = oldSettings.states.hidden;
+                const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden;
+                const defaultState = DEFAULT_STATE_SETTINGS_0_3_0;
+                return {
+                    name: state.name,
+                    link: findItemByProperty(states, 'name', state.name)?.link ?? defaultState.link,
+                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView ?? defaultState.defaultViewMode,
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder ?? defaultState.defaultViewOrder,
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility ?? defaultState.defaultViewPriorityVisibility,
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping ?? defaultState.defaultViewPriorityGrouping,
+                }
+            }),
         },
 
         stateless: {
