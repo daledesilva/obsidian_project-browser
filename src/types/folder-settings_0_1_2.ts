@@ -1,4 +1,4 @@
-
+// The PBS file format
 
 export interface FolderSettings_0_1_2 {
 	_description: string,

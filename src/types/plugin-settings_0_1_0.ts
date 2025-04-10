@@ -1,10 +1,15 @@
+import { PluginFolderSettings_0_0_5 } from "./plugin-settings_0_0_5";
+
+////////////////////
+////////////////////
+
 // So it's accessible as a const and a type
 export const StateViewMode_0_1_0 = {
     DetailedCards: 'Detailed Cards',
     SimpleCards: 'Simple Cards',
     SmallCards: 'Small Cards',
     List: 'List'
-} as const;
+};
 export type StateViewMode_0_1_0 = typeof StateViewMode_0_1_0[keyof typeof StateViewMode_0_1_0];
 
 export type FolderViewMode_0_1_0 = 'Small';
@@ -15,11 +20,11 @@ export interface PluginStateSettings_0_1_0 {
 	link?: boolean,
 }
 
-export interface PluginFolderSettings {
-	defaultView: FolderViewMode_0_1_0,
+export interface PluginPrioritySettings_0_1_0 {
+	name: string,
+	link?: boolean,
 }
 
-/////////////
 /////////////
 
 export interface PluginSettings_0_1_0 {
@@ -39,16 +44,19 @@ export interface PluginSettings_0_1_0 {
 	useAliases: boolean,
 	showStateMenu: boolean,
 	loopStatesWhenCycling: boolean,
-	folders: PluginFolderSettings,
+	folders: PluginFolderSettings_0_0_5,
 	states: {
 		visible: PluginStateSettings_0_1_0[],
 		hidden: PluginStateSettings_0_1_0[],
 	},
 	stateless: PluginStateSettings_0_1_0,
 	defaultState?: string,
+
+	// Tracked but not exposed in settings
+	priorities: PluginPrioritySettings_0_1_0[],
+	defaultPriority: string,
 }
 
-/////////////
 /////////////
 
 export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
@@ -116,4 +124,20 @@ export const DEFAULT_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 		defaultView: 'List',
 	},
 	defaultState: 'Idea',
+
+	priorities: [
+		{
+			name: 'High',
+			link: true,
+		},
+		{
+			name: 'Medium',
+			link: true,
+		},
+		{
+			name: 'Low',
+			link: true,
+		},
+	],
+	defaultPriority: 'Medium',
 }
