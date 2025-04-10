@@ -4,7 +4,7 @@ import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic
 import { getFileStateSettings, setFileState } from "src/logic/frontmatter-processes";
 import { getGlobals } from "src/logic/stores";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
-import { PluginStateSettings } from "src/types/types-map";
+import { PluginPrioritySettings, PluginStateSettings } from "src/types/types-map";
 
 ////////
 ////////
@@ -20,6 +20,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
     const fileRawState = getFileStateSettings(props.file);
     const folder = props.file.parent;
 
+    const priorities = JSON.parse(JSON.stringify(plugin.settings.priorities));
     const visibleStates = JSON.parse(JSON.stringify(plugin.settings.states.visible));
     visibleStates.reverse();
     const hiddenStates = JSON.parse(JSON.stringify(plugin.settings.states.hidden));
@@ -41,10 +42,21 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             });
         });
         menu.addSeparator();
+        priorities.forEach( (prioritySettings: PluginPrioritySettings) => {
+            menu.addItem((item) => {
+                item.setTitle(prioritySettings.name);
+                if(prioritySettings.name === fileRawState?.name) item.setChecked(true);
+                item.onClick(() => {
+                    // setFileState(props.file, prioritySettings);
+                    props.onFileChange();
+                });
+            });
+        })
+        menu.addSeparator();
         visibleStates.forEach( (stateSettings: PluginStateSettings) => {
             menu.addItem((item) => {
                 item.setTitle(stateSettings.name);
-                if(stateSettings.name === fileRawState) item.setChecked(true);
+                if(stateSettings.name === fileRawState?.name) item.setChecked(true);
                 item.onClick(() => {
                     setFileState(props.file, stateSettings);
                     props.onFileChange();
@@ -55,7 +67,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         hiddenStates.forEach( (stateSettings: PluginStateSettings) => {
             menu.addItem((item) => {
                 item.setTitle(stateSettings.name);
-                if(stateSettings.name === fileRawState) item.setChecked(true);
+                if(stateSettings.name === fileRawState?.name) item.setChecked(true);
                 item.onClick(() => {
                     setFileState(props.file, stateSettings);
                     props.onFileChange();
