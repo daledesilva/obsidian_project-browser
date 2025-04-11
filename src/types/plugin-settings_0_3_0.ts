@@ -28,12 +28,12 @@ export const DEFAULT_STATE_SETTINGS_0_3_0: StateSettings_0_3_0 = {
 	defaultViewPriorityGrouping: true,
 }
 
-export interface PluginPrioritySettings_0_3_0 {
+export interface PrioritySettings_0_3_0 {
 	name: string,
 	link?: boolean,
 }
 
-export const DEFAULT_PRIORITY_SETTINGS_0_3_0: PluginPrioritySettings_0_3_0 = {
+export const DEFAULT_PRIORITY_SETTINGS_0_3_0: PrioritySettings_0_3_0 = {
 	name: '',
 	link: true,
 }
@@ -66,8 +66,8 @@ export interface PluginSettings_0_3_0 {
 	defaultState?: string,
 
 	// Tracked but not exposed in settings
-	priorities: PluginPrioritySettings_0_3_0[],	// new
-	defaultPriority: string,	// new
+	priorities: PrioritySettings_0_3_0[],	// new
+	defaultPriority?: string,	// new
 }
 
 /////////////
@@ -168,15 +168,8 @@ export const DEFAULT_PLUGIN_SETTINGS_0_3_0: PluginSettings_0_3_0 = {
 			link: true,
 		},
 		{
-			name: 'Medium',
-			link: true,
-		},
-		{
 			name: 'Low',
 			link: true,
 		},
 	],
-	defaultPriority: 'Medium',
-
-	entryToBreak: true,
 }

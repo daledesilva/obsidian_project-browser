@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1744290122535" clover="3.2.0">
-  <project timestamp="1744290122535" name="All files">
-    <metrics statements="727" coveredstatements="591" conditionals="23" coveredconditionals="12" methods="16" coveredmethods="4" elements="766" coveredelements="607" complexity="0" loc="727" ncloc="727" packages="2" files="6" classes="6"/>
+<coverage generated="1744370579521" clover="3.2.0">
+  <project timestamp="1744370579521" name="All files">
+    <metrics statements="722" coveredstatements="586" conditionals="23" coveredconditionals="12" methods="16" coveredmethods="4" elements="761" coveredelements="602" complexity="0" loc="722" ncloc="722" packages="2" files="6" classes="6"/>
     <package name="types">
-      <metrics statements="573" coveredstatements="522" conditionals="18" coveredconditionals="8" methods="6" coveredmethods="3"/>
+      <metrics statements="568" coveredstatements="517" conditionals="18" coveredconditionals="8" methods="6" coveredmethods="3"/>
       <file name="migration-helpers.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/migration-helpers.ts">
         <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
@@ -290,7 +290,7 @@
         <line num="92" count="1" type="stmt"/>
       </file>
       <file name="plugin-settings_0_1_0.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/plugin-settings_0_1_0.ts">
-        <metrics statements="115" coveredstatements="115" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="113" coveredstatements="113" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -404,11 +404,9 @@
         <line num="111" count="1" type="stmt"/>
         <line num="112" count="1" type="stmt"/>
         <line num="113" count="1" type="stmt"/>
-        <line num="114" count="1" type="stmt"/>
-        <line num="115" count="1" type="stmt"/>
       </file>
       <file name="plugin-settings_0_3_0.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/plugin-settings_0_3_0.ts">
-        <metrics statements="182" coveredstatements="182" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="179" coveredstatements="179" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -588,9 +586,6 @@
         <line num="177" count="1" type="stmt"/>
         <line num="178" count="1" type="stmt"/>
         <line num="179" count="1" type="stmt"/>
-        <line num="180" count="1" type="stmt"/>
-        <line num="181" count="1" type="stmt"/>
-        <line num="182" count="1" type="stmt"/>
       </file>
     </package>
     <package name="utils">

@@ -1,10 +1,10 @@
 import { Menu, Notice, TFile } from "obsidian";
 import { openFileInBackgroundTab, openFileInSameLeaf } from "src/logic/file-access-processes";
 import { deleteFileWithConfirmation, renameFileOrFolderInPlace } from "src/logic/file-processes";
-import { getFileStateSettings, setFileState } from "src/logic/frontmatter-processes";
+import { getFileStateSettings, getFilePrioritySettings, setFilePriority, setFileState } from "src/logic/frontmatter-processes";
 import { getGlobals } from "src/logic/stores";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
-import { PluginPrioritySettings, StateSettings } from "src/types/types-map";
+import { PrioritySettings, StateSettings } from "src/types/types-map";
 
 ////////
 ////////
@@ -18,6 +18,7 @@ interface registerFileContextMenuProps {
 export function registerFileContextMenu(props: registerFileContextMenuProps) {
     const {plugin} = getGlobals();
     const fileRawState = getFileStateSettings(props.file);
+    const fileRawPriority = getFilePrioritySettings(props.file);
     const folder = props.file.parent;
 
     const priorities = JSON.parse(JSON.stringify(plugin.settings.priorities));
@@ -42,12 +43,12 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             });
         });
         menu.addSeparator();
-        priorities.forEach( (prioritySettings: PluginPrioritySettings) => {
+        priorities.forEach( (prioritySettings: PrioritySettings) => {
             menu.addItem((item) => {
                 item.setTitle(prioritySettings.name);
-                if(prioritySettings.name === fileRawState?.name) item.setChecked(true);
+                if(prioritySettings.name === fileRawPriority?.name) item.setChecked(true);
                 item.onClick(() => {
-                    // setFileState(props.file, prioritySettings);
+                    setFilePriority(props.file, prioritySettings);
                     props.onFileChange();
                 });
             });

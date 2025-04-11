@@ -132,30 +132,30 @@ export function migrate_0_1_0_to_0_3_0(oldSettings: PluginSettings_0_1_0): Plugi
         /////////////////////////////////
 
         states: {
-            visible: oldSettings.states.visible.map((state, index) => {
+            visible: oldSettings.states.visible.map((oldState, index) => {
                 const states = oldSettings.states.visible;
                 const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible;
                 const defaultState = DEFAULT_STATE_SETTINGS_0_3_0
                 return {
-                    name: state.name,
-                    link: findItemByProperty(states, 'name', state.name)?.link ?? defaultState.link,
-                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView ?? defaultState.defaultViewMode,
-                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,
-                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityVisibility,
-                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityGrouping,
+                    name: oldState.name,
+                    link: findItemByProperty(states, 'name', oldState.name)?.link ?? defaultState.link,
+                    defaultViewMode: findItemByProperty(states, 'name', oldState.name)?.defaultView ?? defaultState.defaultViewMode,
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewOrder ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityVisibility ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityVisibility,
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityGrouping ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityGrouping,
                 }
             }),
-            hidden: oldSettings.states.hidden.map((state, index) => {
+            hidden: oldSettings.states.hidden.map((oldState, index) => {
                 const states = oldSettings.states.hidden;
                 const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden;
                 const defaultState = DEFAULT_STATE_SETTINGS_0_3_0;
                 return {
-                    name: state.name,
-                    link: findItemByProperty(states, 'name', state.name)?.link ?? defaultState.link,
-                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView ?? defaultState.defaultViewMode,
-                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder ?? defaultState.defaultViewOrder,
-                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility ?? defaultState.defaultViewPriorityVisibility,
-                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping ?? defaultState.defaultViewPriorityGrouping,
+                    name: oldState.name,
+                    link: findItemByProperty(states, 'name', oldState.name)?.link ?? defaultState.link,
+                    defaultViewMode: findItemByProperty(states, 'name', oldState.name)?.defaultView ?? defaultState.defaultViewMode,
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewOrder ?? defaultState.defaultViewOrder,
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityVisibility ?? defaultState.defaultViewPriorityVisibility,
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityGrouping ?? defaultState.defaultViewPriorityGrouping,
                 }
             }),
         },

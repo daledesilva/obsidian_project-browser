@@ -549,30 +549,30 @@ export function migrate_0_1_0_to_0_3_0(oldSettings: PluginSettings_0_1_0): Plugi
         /////////////////////////////////
 &nbsp;
         states: {
-            visible: oldSettings.states.visible.map((state, index) =&gt; {
+            visible: oldSettings.states.visible.map((oldState, index) =&gt; {
                 const states = oldSettings.states.visible;
                 const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.visible;
                 const defaultState = DEFAULT_STATE_SETTINGS_0_3_0
                 return {
-                    name: state.name,
-                    link: findItemByProperty(states, 'name', state.name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.link,</span>
-                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewMode,</span>
-                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,</span>
-                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityVisibility,</span>
-                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityGrouping,</span>
+                    name: oldState.name,
+                    link: findItemByProperty(states, 'name', oldState.name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.link,</span>
+                    defaultViewMode: findItemByProperty(states, 'name', oldState.name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewMode,</span>
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewOrder,</span>
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityVisibility,</span>
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? DEFAULT_STATE_SETTINGS_0_3_0.defaultViewPriorityGrouping,</span>
                 }
             }),
-            hidden: oldSettings.states.hidden.map((state, index) =&gt; {
+            hidden: oldSettings.states.hidden.map((oldState, index) =&gt; {
                 const states = oldSettings.states.hidden;
                 const defaultStates = DEFAULT_PLUGIN_SETTINGS_0_3_0.states.hidden;
                 const defaultState = DEFAULT_STATE_SETTINGS_0_3_0;
                 return {
-                    name: state.name,
-                    link: findItemByProperty(states, 'name', state.name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.link,</span>
-                    defaultViewMode: findItemByProperty(states, 'name', state.name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewMode,</span>
-                    defaultViewOrder: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewOrder,</span>
-                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewPriorityVisibility,</span>
-                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', defaultStates[index].name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewPriorityGrouping,</span>
+                    name: oldState.name,
+                    link: findItemByProperty(states, 'name', oldState.name)?.link<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.link,</span>
+                    defaultViewMode: findItemByProperty(states, 'name', oldState.name)?.defaultView<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewMode,</span>
+                    defaultViewOrder: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewOrder<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewOrder,</span>
+                    defaultViewPriorityVisibility: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityVisibility<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewPriorityVisibility,</span>
+                    defaultViewPriorityGrouping: findItemByProperty(defaultStates, 'name', oldState.name)?.defaultViewPriorityGrouping<span class="branch-0 cbranch-no" title="branch not covered" > ?? defaultState.defaultViewPriorityGrouping,</span>
                 }
             }),
         },
@@ -598,7 +598,7 @@ export function migrate_0_1_0_to_0_3_0(oldSettings: PluginSettings_0_1_0): Plugi
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-10T13:02:02.523Z
+                at 2025-04-11T11:22:59.509Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -110,6 +110,4 @@ export const DEFAULT_PLUGIN_SETTINGS_0_1_0: PluginSettings_0_1_0 = {
 		defaultView: 'List',
 	},
 	defaultState: 'Idea',
-
-	entryToBreak: true,
 }
