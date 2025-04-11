@@ -112,7 +112,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
                     onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                 />
                 <div
-                    key = {'nav-and-filter-section'}
                     className = {classNames([
                         'ddc_pb_section',
                         'ddc_pb_nav-and-filter-section'
