@@ -8,12 +8,12 @@ import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-car
 import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
-import { StateViewMode_0_0_5 } from 'src/types/plugin-settings_0_0_5';
 import { sortItemsAlphabetically } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
 import { SearchInput } from '../search-input/search-input';
+import { StateViewMode } from 'src/types/types-map';
 
 //////////
 //////////
@@ -68,25 +68,25 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
                 {props.section.title}
             </SectionHeader>
 
-            {props.section.settings.defaultView === StateViewMode_0_0_5.DetailedCards && (
+            {props.section.settings.defaultViewMode === StateViewMode.DetailedCards && (
                 <DetailedNoteCardSet
                     files = {sortedFiles}
                 />
             )}
 
-            {props.section.settings.defaultView === StateViewMode_0_0_5.SimpleCards && (
+            {props.section.settings.defaultViewMode === StateViewMode.SimpleCards && (
                 <SimpleNoteCardSet
                     files = {sortedFiles}
                 />
             )}
 
-            {props.section.settings.defaultView === StateViewMode_0_0_5.SmallCards && (
+            {props.section.settings.defaultViewMode === StateViewMode.SmallCards && (
                 <SmallNoteCardSet
                     files = {sortedFiles}
                 />
             )}
 
-            {props.section.settings.defaultView === StateViewMode_0_0_5.List && (
+            {props.section.settings.defaultViewMode === StateViewMode.List && (
                 <ListNoteCardSet
                     files = {sortedFiles}
                 />

@@ -1,7 +1,7 @@
 import { Keyboard } from "lucide-react";
 import { App, Modal, Notice, Setting, TextComponent, TFile, TFolder, ToggleComponent } from "obsidian";
 import { getGlobals } from "src/logic/stores";
-import { StateSettings, StateViewMode } from "src/types/types-map";
+import { DEFAULT_STATE_SETTINGS, StateSettings, StateViewMode } from "src/types/types-map";
 import { createProject } from "src/utils/file-manipulation";
 import { sanitizeInternalLinkName } from "src/utils/string-processes";
 
@@ -22,9 +22,7 @@ export class NewStateModal extends Modal {
     resolveModal: (state: StateSettings) => void;
 	rejectModal: (reason: string) => void;
 	stateSettings: StateSettings = {
-		name: '',
-		defaultView: StateViewMode.DetailedCards,
-		link: true,
+		...DEFAULT_STATE_SETTINGS,
 	}
 	//
 	nameInputEl: TextComponent;
@@ -77,9 +75,9 @@ export class NewStateModal extends Modal {
 				Object.values(StateViewMode).map((viewModeStr: StateViewMode) => {
 					dropdown.addOption(viewModeStr, viewModeStr);
 				});
-				dropdown.setValue(this.stateSettings.defaultView.toString());
+				dropdown.setValue(this.stateSettings.defaultViewMode.toString());
 				dropdown.selectEl.addEventListener('change', (event) => {
-                    this.stateSettings.defaultView = dropdown.getValue() as StateViewMode;
+                    this.stateSettings.defaultViewMode = dropdown.getValue() as StateViewMode;
                 });
 			})
 

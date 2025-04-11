@@ -72,9 +72,9 @@ export class EditStateModal extends Modal {
 				Object.values(StateViewMode).map((viewModeStr: StateViewMode) => {
 					dropdown.addOption(viewModeStr, viewModeStr);
 				});
-				dropdown.setValue(this.stateSettings.defaultView.toString());
+				dropdown.setValue(this.stateSettings.defaultViewMode.toString());
 				dropdown.selectEl.addEventListener('change', (event) => {
-					this.stateSettings.defaultView = dropdown.getValue() as StateViewMode;
+					this.stateSettings.defaultViewMode = dropdown.getValue() as StateViewMode;
 				});
 			})
 

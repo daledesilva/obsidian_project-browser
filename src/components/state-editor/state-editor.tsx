@@ -103,7 +103,7 @@ export const StateEditor = (props: StateEditorProps) => {
                                                 // Cycle through all states in the settings and update the one that matches this stateItem's name
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
                                                     stateInArray.name = modifiedState.name;
-                                                    stateInArray.defaultView = modifiedState.defaultView;
+                                                    stateInArray.defaultViewMode = modifiedState.defaultViewMode;
                                                     stateInArray.link = modifiedState.link;
                                                 }
                                                 return stateInArray;
@@ -178,7 +178,7 @@ export const StateEditor = (props: StateEditorProps) => {
                                                 // Cycle through all states in the settings and update the one that matches this stateItem's name
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
                                                     stateInArray.name = modifiedState.name;
-                                                    stateInArray.defaultView = modifiedState.defaultView;
+                                                    stateInArray.defaultViewMode = modifiedState.defaultViewMode;
                                                     stateInArray.link = modifiedState.link;
                                                 }
                                                 return stateInArray;
