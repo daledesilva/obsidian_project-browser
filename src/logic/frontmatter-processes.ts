@@ -78,12 +78,23 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
     try {
         const {plugin} = getGlobals();
         await plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+            
             if(stateSettings) {
-                if(stateSettings.link) {
-                    frontmatter['state'] = `[[${stateSettings.name}]]`;
+                if(stateSettings.name === frontmatter['state'] || `[[${stateSettings.name}]]` === frontmatter['state']) {
+                    // Clicked on same state, remove it
+                    frontmatter['state'] = undefined;
+                    return;
                 } else {
-                    frontmatter['state'] = stateSettings.name;
+                    // Clicked on different state, set it
+                    if(stateSettings.link) {
+                        frontmatter['state'] = `[[${stateSettings.name}]]`;
+                        return;
+                    } else {
+                        frontmatter['state'] = stateSettings.name;
+                        return;
+                    }
                 }
+
             } else {
                 frontmatter['state'] = undefined;
                 // NOTE: delete frontmatter['state']; // This doesn't work
@@ -101,11 +112,20 @@ export const setFilePriority = async (file: TFile, prioritySettings: null | Prio
     try {
         const {plugin} = getGlobals();
         await plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
-            if(prioritySettings && prioritySettings.name !== 'Medium') {
-                if(prioritySettings.link) {
-                    frontmatter['priority'] = `[[${prioritySettings.name}]]`;
+            if(prioritySettings) {
+                if(prioritySettings.name === frontmatter['priority'] || `[[${prioritySettings.name}]]` === frontmatter['priority']) {
+                    // Clicked on same priority, remove it
+                    frontmatter['priority'] = undefined;
+                    return;
                 } else {
-                    frontmatter['priority'] = prioritySettings.name;
+                    // Clicked on different priority, set it
+                    if(prioritySettings.link) {
+                        frontmatter['priority'] = `[[${prioritySettings.name}]]`;
+                        return;
+                    } else {
+                        frontmatter['priority'] = prioritySettings.name;
+                        return;
+                    }
                 }
             } else {
                 frontmatter['priority'] = undefined;
