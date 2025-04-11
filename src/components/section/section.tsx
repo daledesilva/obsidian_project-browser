@@ -27,7 +27,6 @@ export const FolderSection = (props: FolderSectionProps) => {
 
     return <>
         <BaseSection
-            key = {props.section.title}
             className = "ddc_pb_folder-section"
         >
             <FolderButtonSet

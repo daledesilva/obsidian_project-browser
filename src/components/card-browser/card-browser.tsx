@@ -117,11 +117,13 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         'ddc_pb_nav-and-filter-section'
                     ])}
                 >
-                    {sectionsOfItems.map( (section) => (<>
-                        {section.type === "folders" && (<>
-                            <FolderSection section={section}/>
-                        </>)}
-                    </>))}
+                    {sectionsOfItems.map( (section) => (
+                        <React.Fragment key={section.title}>
+                            {section.type === "folders" && (<>
+                                <FolderSection section={section}/>
+                            </>)}
+                        </React.Fragment>
+                    ))}
                     <SearchInput
                         searchActive = {searchActive}
                         onChange = {setSearchStr}
@@ -130,20 +132,22 @@ export const CardBrowser = (props: CardBrowserProps) => {
                     />
                 </div>
                 <div>
-                    {sectionsOfItems.map( (section) => (<>
-                        {section.type !== "folders" && (<>
-                            {(!searchActive || (searchActive && section.items.length > 0)) && (
-                                <div  key={section.title}>
-                                    {section.type === "state" && (
-                                        <StateSection section={section}/>
-                                    )}
-                                    {section.type === "stateless" && (
-                                        <StatelessSection section={section}/>
-                                    )}
-                                </div>
+                    {sectionsOfItems.map( (section, index) => (
+                        <React.Fragment key={section.title}>
+                            {section.type !== "folders" && (
+                                (!searchActive || (searchActive && section.items.length > 0)) && (
+                                    <div>
+                                        {section.type === "state" && (
+                                            <StateSection section={section}/>
+                                        )}
+                                        {section.type === "stateless" && (
+                                            <StatelessSection section={section}/>
+                                        )}
+                                    </div>
+                                )
                             )}
-                        </>)}
-                    </>))}
+                        </React.Fragment>
+                    ))}
                 </div>
                 <CardBrowserFloatingMenu
                     folder = {initialFolder}
