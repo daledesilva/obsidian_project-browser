@@ -8,7 +8,7 @@ import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-car
 import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
-import { sortItemsAlphabetically } from 'src/utils/sorting';
+import { sortItemsByName, sortItemsByNameAndPriority } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
@@ -23,7 +23,7 @@ interface FolderSectionProps {
 }
 export const FolderSection = (props: FolderSectionProps) => {
 
-    const sortedFolders = sortItemsAlphabetically(props.section.items, 'ascending');
+    const sortedFolders = sortItemsByName(props.section.items, 'ascending');
 
     return <>
         <BaseSection
@@ -55,7 +55,8 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
         }
     })
 
-    const sortedFiles = sortItemsAlphabetically(props.section.items, 'ascending');
+    // const sortedFiles = sortItemsByName(props.section.items, 'ascending');
+    const sortedFiles = sortItemsByNameAndPriority(props.section.items, 'ascending');
 
     return <>
         <BaseSection
@@ -100,7 +101,7 @@ interface StatelessSectionProps {
     section: Section,
 }
 export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
-    const sortedFiles = sortItemsAlphabetically(props.section.items, 'ascending');
+    const sortedFiles = sortItemsByName(props.section.items, 'ascending');
 
     return <>
         <BaseSection

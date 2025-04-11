@@ -1,6 +1,6 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { Section, getStateSettings, orderSections } from "./section-processes";
-import { getFileFrontmatter, getFileStateSettings, getFileStateName } from "./frontmatter-processes";
+import { getFileFrontmatter, getFileStateSettings, getFileStateName, getFilePrioritySettings } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 import { getGlobals } from "./stores";
 

@@ -3,7 +3,7 @@ import * as React from "react";
 import { FolderSection, StateSection, StatelessSection } from "../section/section";
 import { TFile, TFolder } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
-import { filterSectionsByString, getSortedItemsInFolder } from 'src/logic/folder-processes';
+import { filterSectionsByString, getSortedItemsInFolder, orderItemsInSections } from 'src/logic/folder-processes';
 import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
 import { v4 as uuidv4 } from 'uuid';
 import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
@@ -59,6 +59,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     // const [path, setPath] = React.useState(props.path);
     const initialFolder = v.getFolderByPath(state.path) || v.getRoot(); // TODO: Check this is valid?
     let sectionsOfItems = getSortedItemsInFolder(initialFolder);
+    
     filterSectionsByString(sectionsOfItems, searchStr);
     
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';

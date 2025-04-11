@@ -1,14 +1,14 @@
+import * as React from "react";
 import classNames from 'classnames';
 import './detailed-note-card.scss';
 import { TFile } from "obsidian";
-import * as React from "react";
 import { getFileExcerpt } from "src/logic/file-processes";
-import { trimFilenameExt } from 'src/logic/string-processes';
 import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
 import { openFileInBackgroundTab, openFileInSameLeaf } from 'src/logic/file-access-processes';
 import { getFileDisplayName } from 'src/logic/get-file-display-name';
+import { getFilePrioritySettings } from 'src/logic/frontmatter-processes';
 
 /////////
 /////////
@@ -21,8 +21,9 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
     const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const noteRef = React.useRef(null);
-
+    
     const name = getFileDisplayName(props.file);
+    const prioritySettings = getFilePrioritySettings(props.file);
     const [excerpt, setExcerpt] = React.useState('');
     const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
 
@@ -51,6 +52,8 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
             ref = {noteRef}
             className = {classNames([
                 'ddc_pb_detailed-note-card',
+                prioritySettings?.name.includes('High') && 'ddc_pb_high-priority',
+                prioritySettings?.name.includes('Low') && 'ddc_pb_low-priority',
                 showSettleTransition && 'ddc_pb_closing'
             ])}
             onClick = { (event) => {

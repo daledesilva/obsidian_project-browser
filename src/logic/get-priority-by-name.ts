@@ -9,7 +9,9 @@ export function getPriorityByName(priorityName: string): PrioritySettings | null
     const { plugin } = getGlobals();
     const allPrioritySettings = [...plugin.settings.priorities];
 
-    const sanitizedPriorityName = sanitizeInternalLinkName(priorityName);
+    // Remove [[ ]] from priorityName
+    const strippedPriorityName = priorityName.replace('[[', '').replace(']]', '');
+    const sanitizedPriorityName = sanitizeInternalLinkName(strippedPriorityName);
 
     for (const prioritySettings of allPrioritySettings) {
         if (prioritySettings.name === sanitizedPriorityName) {

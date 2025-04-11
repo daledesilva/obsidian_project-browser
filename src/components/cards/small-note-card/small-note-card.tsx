@@ -7,6 +7,7 @@ import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
 import { openFileInBackgroundTab, openFileInSameLeaf } from 'src/logic/file-access-processes';
 import { getFileDisplayName } from 'src/logic/get-file-display-name';
+import { getFilePrioritySettings } from 'src/logic/frontmatter-processes';
 
 /////////
 /////////
@@ -21,6 +22,7 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
     const noteRef = React.useRef(null);
 
     const name = getFileDisplayName(props.file);
+    const prioritySettings = getFilePrioritySettings(props.file);
     const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
 
     const [articleRotation] = React.useState(Math.random() * 4 - 2);
@@ -43,6 +45,8 @@ export const SmallNoteCard = (props: SmallNoteCardProps) => {
             ref = {noteRef}
             className = {classNames([
                 'ddc_pb_small-note-card',
+                prioritySettings?.name.includes('High') && 'ddc_pb_high-priority',
+                prioritySettings?.name.includes('Low') && 'ddc_pb_low-priority',
                 showSettleTransition && 'ddc_pb_closing'
             ])}
             onClick = { (event) => {
