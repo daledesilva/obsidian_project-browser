@@ -24,19 +24,15 @@ function showLatestChanges() {
     const {plugin} = getGlobals()
 
     const noticeBody = createNoticeTemplate(1,3);
-    noticeBody.createEl('h1').setText(`Changes in Project Browser v0.2`);
+    noticeBody.createEl('h1').setText(`Changes in Project Browser v0.3`);
     // noticeBody.createEl('p').setText(`Added:`);
     const listEl = noticeBody.createEl('ul');
-    listEl.createEl('li').setText(`Project Browser can now show note aliases (Turn on in settings).`);
-    listEl.createEl('li').setText(`States can now be links (Turn on in each state's settings).`);
-    listEl.createEl('li').setText(`Toggle the state menu on/off in settings or with Cmd+Shift+S.`);
-    listEl.createEl('li').setText(`Cycle the active note's state forward with Cmd+Shift+D.`);
-    listEl.createEl('li').setText(`Cycle the active note's state backward with Cmd+Shift+A.`);
-    
-    noticeBody.createEl('p').setText(`Note: State changes in settings won't update existing notes yet.`);
+    listEl.createEl('li').setText(`Added priority context menu in browse view (Right click or hold on a note).`);
+    listEl.createEl('li').setText(`Fixed initial state not being applied when new file is created within a state section.`);
+    listEl.createEl('li').setText(`Fixed errors in styling of notices.`);
     
     const link = noticeBody.createEl('a');
-    link.setAttribute('href', 'https://youtube.com/live/_Sv6foasgyg')
+    link.setAttribute('href', 'https://youtube.com/live/RkCLDY7WYrc?feature=share')
     link.setText(`View release video`);
     // Prevent clicking link from closing notice
     link.onClickEvent( e => e.stopPropagation())
