@@ -38,10 +38,18 @@
     @media (hover: hover) and (pointer: fine) {
         &:active {
             background: var(--color-base-20);
+            outline-offset: -1px;
             outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
+            &.ddc_pb_high-priority {
+                outline: 1px solid var(--text-accent);
+            }
         }
         &:hover {
             outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
+            outline-offset: -1px;
+            &.ddc_pb_high-priority {
+                outline: 1px solid var(--text-accent);
+            }
         }
     }
 
