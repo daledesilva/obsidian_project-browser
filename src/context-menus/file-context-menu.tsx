@@ -16,9 +16,7 @@ interface registerFileContextMenuProps {
 }
 
 export function registerFileContextMenu(props: registerFileContextMenuProps) {
-    const {plugin} = getGlobals();
-    const fileRawState = getFileStateSettings(props.file);
-    const fileRawPriority = getFilePrioritySettings(props.file);
+    const {plugin} = getGlobals();    
     const folder = props.file.parent;
 
     const priorities = JSON.parse(JSON.stringify(plugin.settings.priorities));
@@ -45,6 +43,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         menu.addSeparator();
         priorities.forEach( (prioritySettings: PrioritySettings) => {
             menu.addItem((item) => {
+                const fileRawPriority = getFilePrioritySettings(props.file);
                 item.setTitle(prioritySettings.name);
                 if(prioritySettings.name === fileRawPriority?.name) item.setChecked(true);
                 item.onClick(() => {
@@ -56,6 +55,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         menu.addSeparator();
         visibleStates.forEach( (stateSettings: StateSettings) => {
             menu.addItem((item) => {
+                const fileRawState = getFileStateSettings(props.file);
                 item.setTitle(stateSettings.name);
                 if(stateSettings.name === fileRawState?.name) item.setChecked(true);
                 item.onClick(() => {
@@ -67,6 +67,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         menu.addSeparator();
         hiddenStates.forEach( (stateSettings: StateSettings) => {
             menu.addItem((item) => {
+                const fileRawState = getFileStateSettings(props.file);
                 item.setTitle(stateSettings.name);
                 if(stateSettings.name === fileRawState?.name) item.setChecked(true);
                 item.onClick(() => {

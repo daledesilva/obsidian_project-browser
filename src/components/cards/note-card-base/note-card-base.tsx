@@ -26,7 +26,6 @@ export const NoteCardBase = (props: NoteCardBaseProps) => {
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const noteRef = React.useRef(null);
 
-    const name = getFileDisplayName(props.file);
     const prioritySettings = getFilePrioritySettings(props.file);
     const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
 
