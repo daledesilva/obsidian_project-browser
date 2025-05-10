@@ -170,18 +170,18 @@ export const StateMenu = (props: StateMenuProps) => {
         }));
     }
 
-    function setStateAndCloseMenu(newState: StateSettings) {
+    async function setStateAndCloseMenu(newStateSettings: StateSettings) {
         if(!plugin) return;
 
-        if(newState !== stateSettings) {
+        if(newStateSettings !== stateSettings) {
             // set the new state
             showHighlightRef.current = true;
-            const successInSettingState = setFileState(file, newState);
-            if(successInSettingState) setStateSettings(newState)
+            const successInSettingState = await setFileState(file, newStateSettings);
+            if(successInSettingState) setStateSettings(newStateSettings)
         } else {
             // erase the existing state
             showHighlightRef.current = true;
-            const successInErasingState = setFileState(file, null);
+            const successInErasingState = await setFileState(file, null);
             if(successInErasingState) setStateSettings(null)
         }
         setMenuIsActive(false);

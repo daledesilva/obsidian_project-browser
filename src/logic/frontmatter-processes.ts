@@ -80,7 +80,7 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
         await plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
             
             if(stateSettings) {
-                if(stateSettings.name === frontmatter['state'] || `[[${stateSettings.name}]]` === frontmatter['state']) {
+                if(frontmatter['state'] === stateSettings.name || frontmatter['state'] === `[[${stateSettings.name}]]`) {
                     // Clicked on same state, remove it
                     frontmatter['state'] = undefined;
                     return;
@@ -113,7 +113,7 @@ export const setFilePriority = async (file: TFile, prioritySettings: null | Prio
         const {plugin} = getGlobals();
         await plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
             if(prioritySettings) {
-                if(prioritySettings.name === frontmatter['priority'] || `[[${prioritySettings.name}]]` === frontmatter['priority']) {
+                if(frontmatter['priority'] === prioritySettings.name || frontmatter['priority'] === `[[${prioritySettings.name}]]`) {
                     // Clicked on same priority, remove it
                     frontmatter['priority'] = undefined;
                     return;
