@@ -1,75 +1,15 @@
-.ddc_pb_state-section .ddc_pb_list-note-card {
-    background: var(--color-base-00);
-}
-
-.ddc_pb_stateless-section .ddc_pb_list-note-card {
-    background: var(--color-base-10);
-}
 
 .ddc_pb_list-note-card {
-    // width: fit-content;
-
     padding: 1em;
-    border-radius: 8px;
-    overflow: hidden;
-    // outline: 1px solid var(--color-base-30, rgba(255,255,255,0.5));
-
-    cursor: pointer;
-
-    &.ddc_pb_high-priority {
-        position: relative;
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 20px;
-            height: 20px;
-            background: var(--text-accent);
-            clip-path: polygon(100% 0, 0 0, 100% 100%);
-        }
-    }
-
-    &.ddc_pb_low-priority {
-        opacity: 0.6;
-    }
 
     h3 {
         padding: 0;
         margin: 0;
         text-wrap: balance;
-
         font-size: var(--font-small);
         font-weight: var(--font-extralight);
-        // font-weight: var(--font-medium);
-
-        // Truncate long text
-        // display: -webkit-box;
-        // -webkit-line-clamp: 3;
-        // -webkit-box-orient: vertical;
         overflow: hidden;
     }
 
-    outline: 0 solid rgba(0,0,0,0);
-    
-    @media (hover: hover) and (pointer: fine) {
-        &:active {
-            background: var(--color-base-20);
-            outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
-        }
-        &:hover {
-            // background: var(--color-base-10);
-            outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
-        }
-    }
-
-
-    &.ddc_pb_closing {
-        animation-name: closing-anim;
-        animation-delay: 0.1s;
-        animation-duration: 3s;
-        animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-        animation-fill-mode: backwards;
-    }
 }
 

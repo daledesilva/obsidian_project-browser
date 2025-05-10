@@ -1,10 +1,4 @@
-.ddc_pb_state-section .ddc_pb_detailed-note-card {
-    background: var(--color-base-00);
-}
 
-.ddc_pb_stateless-section .ddc_pb_detailed-note-card {
-    background: var(--color-base-10);
-}
 
 .ddc_pb_detailed-note-card {
     padding: 1em 1.2em;
@@ -14,31 +8,11 @@
 
     cursor: pointer;
 
-    &.ddc_pb_high-priority {
-        position: relative;
-        &::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 20px;
-            height: 20px;
-            background: var(--text-accent);
-            clip-path: polygon(100% 0, 0 0, 100% 100%);
-        }
-    }
-
-    &.ddc_pb_low-priority {
-        opacity: 0.6;
-    }
-
     h3 {
         padding: 0;
         margin: 0;
-
         font-size: calc(var(--font-text-size) * 1.2);
         font-weight: var(--font-extralight);
-
         overflow: hidden;
     }
     p {
@@ -58,25 +32,5 @@
         overflow-wrap: anywhere;
     }
 
-    outline: 0 solid rgba(0,0,0,0);
-
-    @media (hover: hover) and (pointer: fine) {
-        &:active {
-            background: var(--color-base-20);
-            outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
-        }
-        &:hover {
-            // background: var(--color-base-10);
-            outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
-        }
-    }
-
-    &.ddc_pb_closing {
-        animation-name: closing-anim;
-        animation-delay: 0.1s;
-        animation-duration: 3s;
-        animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-        animation-fill-mode: backwards;
-    }
 }
 

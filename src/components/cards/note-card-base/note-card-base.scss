@@ -1,0 +1,64 @@
+.ddc_pb_state-section .ddc_pb_note-card-base {
+    background: var(--color-base-00);
+}
+
+.ddc_pb_stateless-section .ddc_pb_note-card-base {
+    background: var(--color-base-10);
+}
+
+.ddc_pb_note-card-base {
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+
+    &.ddc_pb_high-priority {
+        box-shadow: 0 0 10px hsla(var(--accent-h), calc(var(--accent-s) * 0.8), var(--accent-l), 0.4);
+        position: relative;
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 13px;
+            border-top: 1px solid var(--text-accent);
+            border-right: 1px solid var(--text-accent);
+            border-radius: 0 8px 0 0;
+        }
+    }
+
+    &.ddc_pb_low-priority {
+        opacity: 0.5;
+        background: transparent;
+        box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    }
+
+    outline: 0 solid rgba(0,0,0,0);
+    
+    @media (hover: hover) and (pointer: fine) {
+        &:active {
+            background: var(--color-base-20);
+            outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
+        }
+        &:hover {
+            outline: 1px solid var(--color-base-50, rgba(255,255,255,0.5));
+        }
+    }
+
+    &.ddc_pb_closing {
+        animation-name: closing-anim;
+        animation-delay: 0.1s;
+        animation-duration: 3s;
+        animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+        animation-fill-mode: backwards;
+    }
+}
+
+@keyframes closing-anim {
+    from {
+        outline: 5px solid var(--text-accent-hover, rgba(255,255,255,0.5));
+        scale: 1.1;
+        z-index: 100;
+        box-shadow: 0px 10px 15px rgba(0,0,0,0.5);
+    }
+} 
