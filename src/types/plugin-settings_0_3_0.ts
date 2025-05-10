@@ -165,11 +165,11 @@ export const DEFAULT_PLUGIN_SETTINGS_0_3_0: PluginSettings_0_3_0 = {
 	priorities: [
 		{
 			name: 'High',
-			link: true,
+			link: false,
 		},
 		{
 			name: 'Low',
-			link: true,
+			link: false,
 		},
 	],
 }
