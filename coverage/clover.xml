@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1744370579521" clover="3.2.0">
-  <project timestamp="1744370579521" name="All files">
-    <metrics statements="722" coveredstatements="586" conditionals="23" coveredconditionals="12" methods="16" coveredmethods="4" elements="761" coveredelements="602" complexity="0" loc="722" ncloc="722" packages="2" files="6" classes="6"/>
+<coverage generated="1744378676068" clover="3.2.0">
+  <project timestamp="1744378676068" name="All files">
+    <metrics statements="718" coveredstatements="582" conditionals="23" coveredconditionals="12" methods="16" coveredmethods="4" elements="757" coveredelements="598" complexity="0" loc="718" ncloc="718" packages="2" files="6" classes="6"/>
     <package name="types">
-      <metrics statements="568" coveredstatements="517" conditionals="18" coveredconditionals="8" methods="6" coveredmethods="3"/>
+      <metrics statements="564" coveredstatements="513" conditionals="18" coveredconditionals="8" methods="6" coveredmethods="3"/>
       <file name="migration-helpers.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/migration-helpers.ts">
         <metrics statements="7" coveredstatements="7" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
@@ -406,7 +406,7 @@
         <line num="113" count="1" type="stmt"/>
       </file>
       <file name="plugin-settings_0_3_0.ts" path="/Users/daledesilva/Library/CloudStorage/Dropbox/Projects/Obsidian Plugins/Project Browser/Development/obsidian_project-browser/src/types/plugin-settings_0_3_0.ts">
-        <metrics statements="179" coveredstatements="179" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="175" coveredstatements="175" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -582,10 +582,6 @@
         <line num="173" count="1" type="stmt"/>
         <line num="174" count="1" type="stmt"/>
         <line num="175" count="1" type="stmt"/>
-        <line num="176" count="1" type="stmt"/>
-        <line num="177" count="1" type="stmt"/>
-        <line num="178" count="1" type="stmt"/>
-        <line num="179" count="1" type="stmt"/>
       </file>
     </package>
     <package name="utils">
