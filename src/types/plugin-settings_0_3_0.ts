@@ -22,6 +22,7 @@ export interface StateSettings_0_3_0 {
 
 export const DEFAULT_STATE_SETTINGS_0_3_0: StateSettings_0_3_0 = {
 	name: '',
+	link: true,
 	defaultViewMode: 'Simple Cards',
 	defaultViewOrder: 'AliasOrFilename',
 	defaultViewPriorityVisibility: true,
@@ -35,7 +36,7 @@ export interface PrioritySettings_0_3_0 {
 
 export const DEFAULT_PRIORITY_SETTINGS_0_3_0: PrioritySettings_0_3_0 = {
 	name: '',
-	link: true,
+	link: false,
 }
 
 /////////////

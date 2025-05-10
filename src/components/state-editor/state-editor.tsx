@@ -2,12 +2,14 @@ import { Root, createRoot } from 'react-dom/client';
 import * as React from "react";
 import { ItemInterface, ReactSortable } from "react-sortablejs";
 import './state-editor.scss';
-import { NewStateModal } from 'src/modals/new-state-modal/new-state-modal';
+import { StateSettingsModalBase } from 'src/modals/state-settings-modal-base/state-settings-modal-base';
 import { GripVertical, Plus, Settings, Trash } from 'lucide-react';
 import classNames from 'classnames';
 import { EditStateModal } from 'src/modals/edit-state-modal/edit-state-modal';
 import { getGlobals } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
+import { NewVisibleStateModal } from 'src/modals/new-visible-state-modal/new-visible-state-modal';
+import { NewHiddenStateModal } from 'src/modals/new-hidden-state-modal/new-hidden-state-modal';
 
 //////////
 //////////
@@ -121,8 +123,7 @@ export const StateEditor = (props: StateEditorProps) => {
                 <button
                         className = "ddc_pb_add-button"
                         onClick = { async () => {
-                            new NewStateModal({
-                                title: ' Create new visible state',
+                            new NewVisibleStateModal({
                                 onSuccess: async (newState) => {
                                     const newStates = plugin.settings.states.visible;
                                     newStates.push(newState);
@@ -196,8 +197,7 @@ export const StateEditor = (props: StateEditorProps) => {
                     <button
                         className = "ddc_pb_add-button"
                         onClick = { async () => {
-                            new NewStateModal({
-                                title: ' Create new hidden state',
+                            new NewHiddenStateModal({
                                 onSuccess: async (newState) => {
                                     const newStates = plugin.settings.states.hidden;
                                     newStates.push(newState);
