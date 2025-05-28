@@ -1,0 +1,67 @@
+.ddc_pb_section-quick-menu {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    
+    display: flex;
+    flex-direction: row;
+    gap: 0.25em;
+    
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    
+    .ddc_pb_quick-menu-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        width: 3em;
+        height: 3em;
+        padding: 0.4em;
+        
+        background: var(--background-primary);
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 0.5em;
+        
+        color: var(--text-muted);
+        cursor: pointer;
+        
+        transition: all 0.2s ease;
+        
+        &:hover {
+            color: var(--text-normal);
+            background: var(--background-modifier-hover);
+            border-color: var(--background-modifier-border-hover);
+        }
+        
+        &:active {
+            background: var(--background-modifier-active);
+        }
+        
+        .ddc_pb_icon {
+            width: 1.2em;
+            height: 1.2em;
+        }
+    }
+    
+    .ddc_pb_sort-button {
+        &.ddc_pb_sort-descending {
+            .ddc_pb_icon {
+                transform: rotate(180deg);
+            }
+        }
+    }
+    
+    .ddc_pb_view-button {
+        &.ddc_pb_view-list {
+            .ddc_pb_icon {
+                // Could add different icon styling for list view
+            }
+        }
+    }
+}
+
+// Show the menu when hovering over the parent section
+.ddc_pb_section:hover .ddc_pb_section-quick-menu {
+    opacity: 1;
+} 

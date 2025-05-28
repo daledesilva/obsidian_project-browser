@@ -7,7 +7,7 @@ import { createProject } from "src/utils/file-manipulation";
 ////////
 ////////
 
-export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFolder, stateName: string, commands: {openFile: Function}) {
+export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFolder, stateName: string, commands: {openFile?: Function}) {
     const {plugin} = getGlobals();
     
     el.addEventListener('contextmenu', function(event) {

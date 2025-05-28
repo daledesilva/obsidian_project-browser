@@ -14,6 +14,7 @@ import { CardBrowserContext } from '../card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
 import { SearchInput } from '../search-input/search-input';
 import { StateViewMode } from 'src/types/types-map';
+import { SectionQuickMenu } from '../section-quick-menu/section-quick-menu';
 
 //////////
 //////////
@@ -28,6 +29,7 @@ export const FolderSection = (props: FolderSectionProps) => {
     return <>
         <BaseSection
             className = "ddc_pb_folder-section"
+            showQuickMenu = {false}
         >
             <FolderButtonSet
                 folders = {sortedFolders}
@@ -51,7 +53,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
         if(!cardBrowserContext.folder) return;
         
         if(sectionRef.current) {
-            registerStateSectionContextMenu(sectionRef.current, cardBrowserContext.folder, props.section.title, {openFile: cardBrowserContext.openFile});
+            registerStateSectionContextMenu(sectionRef.current, cardBrowserContext.folder, props.section.title, {});
         }
     })
 
@@ -119,8 +121,13 @@ export const StatelessSection = (props: React.PropsWithChildren<StatelessSection
 
 interface BaseSectionProps extends React.PropsWithChildren {
     className?: string
+    showQuickMenu?: boolean
 }
 const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, ref) => {
+    
+    const {
+        showQuickMenu = true
+    } = props;
 
     return <>
         <div
@@ -131,6 +138,10 @@ const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, r
             ])}
         >
             {props.children}
+
+            {showQuickMenu && (
+                <SectionQuickMenu />
+            )}
         </div>
     </>
 });
