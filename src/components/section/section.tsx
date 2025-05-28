@@ -29,6 +29,7 @@ export const FolderSection = (props: FolderSectionProps) => {
     return <>
         <BaseSection
             className = "ddc_pb_folder-section"
+            section = {props.section}
             showQuickMenu = {false}
         >
             <FolderButtonSet
@@ -65,6 +66,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
             ref = {sectionRef}
             key = {props.section.title}
             className = "ddc_pb_state-section"
+            section = {props.section}
         >
             <SectionHeader>
                 {props.section.title}
@@ -109,6 +111,7 @@ export const StatelessSection = (props: React.PropsWithChildren<StatelessSection
         <BaseSection
             key = {props.section.title}
             className = "ddc_pb_stateless-section"
+            section = {props.section}
         >
             <ListNoteCardSet
                 files = {sortedFiles}
@@ -122,6 +125,7 @@ export const StatelessSection = (props: React.PropsWithChildren<StatelessSection
 interface BaseSectionProps extends React.PropsWithChildren {
     className?: string
     showQuickMenu?: boolean
+    section: Section
 }
 const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, ref) => {
     
@@ -140,7 +144,7 @@ const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, r
             {props.children}
 
             {showQuickMenu && (
-                <SectionQuickMenu />
+                <SectionQuickMenu section = {props.section} />
             )}
         </div>
     </>
