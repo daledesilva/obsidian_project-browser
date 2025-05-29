@@ -32,7 +32,7 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
         const currentIndex = viewOrders.indexOf(curViewOrder);
         const nextIndex = (currentIndex + 1) % viewOrders.length;
         const newViewOrder = viewOrders[nextIndex];
-        // setCurViewOrder(newViewOrder);
+        // setStateSettings({defaultViewOrder: newViewOrder});
         setTooltip("viewOrder")
     };
 
@@ -40,7 +40,7 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
         const currentIndex = viewModes.indexOf(curViewMode);
         const nextIndex = (currentIndex + 1) % viewModes.length;
         const newViewMode = viewModes[nextIndex];
-        // setCurViewMode(newViewMode);
+        // setStateSettings({defaultViewMode: newViewMode});
         setTooltip("viewMode")
     };
 

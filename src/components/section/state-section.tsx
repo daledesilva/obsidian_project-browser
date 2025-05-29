@@ -9,9 +9,10 @@ import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
 import { sortItemsByNameAndPriority } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';
-import { getGlobals } from 'src/logic/stores';
+import { getGlobals, stateSettingsByNameAtom } from 'src/logic/stores';
 import { StateViewMode } from 'src/types/types-map';
 import { StateQuickMenu } from '../section-quick-menu/state-quick-menu';
+import { useAtom } from 'jotai';
 
 //////////
 //////////
@@ -24,13 +25,16 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
     const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const sectionRef = React.useRef(null);
+    const [stateSettings, setStateSettings] = useAtom(stateSettingsByNameAtom(props.section.title));
+
+    const curStateSettings = stateSettings?.state || props.section.settings;
 
     React.useEffect( () => {
         if(!plugin) return;
         if(!cardBrowserContext.folder) return;
         
         if(sectionRef.current) {
-            registerStateSectionContextMenu(sectionRef.current, cardBrowserContext.folder, props.section.title, {});
+            registerStateSectionContextMenu(sectionRef.current, cardBrowserContext.folder, curStateSettings.name, {});
         }
     })
 
@@ -39,33 +43,33 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
     return <>
         <BaseSection
             ref = {sectionRef}
-            key = {props.section.title}
+            key = {curStateSettings.name}
             className = "ddc_pb_state-section"
             section = {props.section}
         >
             <SectionHeader>
-                {props.section.title}
+                {curStateSettings.name}
             </SectionHeader>
 
-            {props.section.settings.defaultViewMode === StateViewMode.DetailedCards && (
+            {curStateSettings.defaultViewMode === StateViewMode.DetailedCards && (
                 <DetailedNoteCardSet
                     files = {sortedFiles}
                 />
             )}
 
-            {props.section.settings.defaultViewMode === StateViewMode.SimpleCards && (
+            {curStateSettings.defaultViewMode === StateViewMode.SimpleCards && (
                 <SimpleNoteCardSet
                     files = {sortedFiles}
                 />
             )}
 
-            {props.section.settings.defaultViewMode === StateViewMode.SmallCards && (
+            {curStateSettings.defaultViewMode === StateViewMode.SmallCards && (
                 <SmallNoteCardSet
                     files = {sortedFiles}
                 />
             )}
 
-            {props.section.settings.defaultViewMode === StateViewMode.List && (
+            {curStateSettings.defaultViewMode === StateViewMode.List && (
                 <ListNoteCardSet
                     files = {sortedFiles}
                 />
@@ -98,7 +102,7 @@ const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, r
             {props.children}
 
             {showQuickMenu && (
-                <StateQuickMenu section = {props.section} />
+                <StateQuickMenu section={props.section} />
             )}
         </div>
     </>
