@@ -1,4 +1,4 @@
-import { FolderSettings_0_0_5, StateViewMode_0_0_5 } from "./plugin-settings_0_0_5";
+import { FolderSectionSettings_0_0_5, StateViewMode_0_0_5 } from "./plugin-settings_0_0_5";
 
 ////////////////////
 ////////////////////
@@ -34,7 +34,7 @@ export interface PluginSettings_0_1_0 {
 	useAliases: boolean, // new
 	showStateMenu: boolean,
 	loopStatesWhenCycling: boolean, // new
-	folders: FolderSettings_0_0_5,
+	folders: FolderSectionSettings_0_0_5,
 	states: {
 		visible: PluginStateSettings_0_1_0[],
 		hidden: PluginStateSettings_0_1_0[],

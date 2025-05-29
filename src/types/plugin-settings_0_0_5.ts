@@ -14,7 +14,7 @@ export interface StateSettings_0_0_5 {
 	name: string,
 	defaultView: StateViewMode_0_0_5,
 }
-export interface FolderSettings_0_0_5 {
+export interface FolderSectionSettings_0_0_5 {
 	defaultView: FolderViewMode_0_0_5,
 }
 
@@ -29,7 +29,7 @@ export interface PluginSettings_0_0_5 {
 		enableCommand: boolean,
 	}
 	showStateMenu: boolean,
-	folders: FolderSettings_0_0_5,
+	folders: FolderSectionSettings_0_0_5,
 	states: {
 		visible: StateSettings_0_0_5[],
 		hidden: StateSettings_0_0_5[],
