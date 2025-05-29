@@ -25,7 +25,14 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
     const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const sectionRef = React.useRef(null);
-    const stateSettings = useAtomValue(stateSettingsByNameAtom(props.section.title));
+    
+    // Memoize the atom to prevent infinite re-renders
+    const stateSettingsAtom = React.useMemo(() => 
+        stateSettingsByNameAtom(props.section.title), 
+        [props.section.title]
+    );
+    
+    const stateSettings = useAtomValue(stateSettingsAtom);
     // console.log('stateSettings', stateSettings);
 
     const curStateSettings = stateSettings || props.section.settings;

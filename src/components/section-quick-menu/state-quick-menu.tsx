@@ -17,7 +17,13 @@ interface StateQuickMenuProps {
 }
 
 export const StateQuickMenu = (props: StateQuickMenuProps) => {
-    const [stateSettings, setStateSettings] = useAtom(stateSettingsByNameAtom(props.section.title));
+    // Memoize the atom to prevent infinite re-renders
+    const stateSettingsAtom = React.useMemo(() => 
+        stateSettingsByNameAtom(props.section.title), 
+        [props.section.title]
+    );
+    
+    const [stateSettings, setStateSettings] = useAtom(stateSettingsAtom);
     const tooltipRef = React.useRef<HTMLDivElement>(null);
 
     const viewModes = Object.values(StateViewMode);
