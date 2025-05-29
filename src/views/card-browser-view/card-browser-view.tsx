@@ -6,7 +6,7 @@ import { createContext } from 'react';
 import { isEmpty } from "src/utils/misc";
 import { ICON_PLUGIN } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';
-import { deviceMemoryStore, getGlobals } from "src/logic/stores";
+import { globalStore, getGlobals } from "src/logic/stores";
 
 //////////
 //////////
@@ -168,7 +168,7 @@ export class ProjectCardsView extends ItemView {
 
     renderView() {
         this.root.render(
-            <JotaiProvider store={deviceMemoryStore}>
+            <JotaiProvider store={globalStore}>
                 <CardBrowser
                     path = {this.state.path}
                     setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}

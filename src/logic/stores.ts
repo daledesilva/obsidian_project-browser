@@ -31,6 +31,8 @@ export function getGlobals(): StaticGlobals {
 //////////
 //////////
 
+export const globalStore = createStore();
+
 interface StateMenuSettings {
 	visible: boolean,
 };
@@ -58,21 +60,20 @@ export function getStateMenuSettings(): StateMenuSettings {
 //////////
 //////////
 
-export const deviceMemoryStore = createStore();
 export const showHiddenFoldersAtom = atomWithStorage(LOCAL_STORAGE_PREFIX + 'show-hidden-folders', false)
 
 export function hideHiddenFolders() {
-    deviceMemoryStore.set(showHiddenFoldersAtom, false);
+    globalStore.set(showHiddenFoldersAtom, false);
 }
 export function unhideHiddenFolders() {
-    deviceMemoryStore.set(showHiddenFoldersAtom, true);
+    globalStore.set(showHiddenFoldersAtom, true);
 }
 /***
  * Fetch the current state of the showHiddenFolders Atom.
  * Use 'useAtomValue(showHiddenFoldersAtom) in React instead.
  */
 export function getShowHiddenFolders(): boolean {
-    return deviceMemoryStore.get(showHiddenFoldersAtom);
+    return globalStore.get(showHiddenFoldersAtom);
 }
 
 //////////
@@ -143,7 +144,7 @@ export const statelessSettingsAtom = atom(
 export function initializeSettingsAtoms(): void {
     try {
         const { plugin } = getGlobals();
-        const store = deviceMemoryStore; // Use deviceMemoryStore instead of getDefaultStore()
+        const store = globalStore; // Use deviceMemoryStore instead of getDefaultStore()
         
         // Initialize each atom with current plugin settings
         store.set(stateSettingsAtom, {
