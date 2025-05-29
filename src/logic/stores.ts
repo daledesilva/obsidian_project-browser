@@ -143,7 +143,8 @@ export const statelessSettingsAtom = atom(
 export function initializeSettingsAtoms(): void {
     try {
         const { plugin } = getGlobals();
-        const store = getDefaultStore();
+        const store = deviceMemoryStore; // Use deviceMemoryStore instead of getDefaultStore()
+        console.log('plugin.settings', JSON.parse(JSON.stringify(plugin.settings)));
         
         // Initialize each atom with current plugin settings
         store.set(stateSettingsAtom, {
@@ -153,6 +154,10 @@ export function initializeSettingsAtoms(): void {
         
         store.set(folderSettingsAtom, plugin.settings.folders);
         store.set(statelessSettingsAtom, plugin.settings.stateless);
+
+        console.log('store.get(stateSettingsAtom)', JSON.parse(JSON.stringify(store.get(stateSettingsAtom))));
+        console.log('store.get(folderSettingsAtom)', JSON.parse(JSON.stringify(store.get(folderSettingsAtom))));
+        console.log('store.get(statelessSettingsAtom)', JSON.parse(JSON.stringify(store.get(statelessSettingsAtom))));
         
     } catch (error) {
         console.error('Error initializing settings atoms:', error);
@@ -166,18 +171,18 @@ export function initializeSettingsAtoms(): void {
 // This allows state sections to subscribe only to their specific state's changes
 export const stateSettingsByNameAtom = (stateName: string) => atom(
     (get) => {
-        const stateSettings = get(stateSettingsAtom);
+        const allStateSettings = get(stateSettingsAtom);
         
         // Check visible states first
-        const visibleState = stateSettings.visible.find(state => state.name === stateName);
+        const visibleState = allStateSettings.visible.find(state => state.name === stateName);
         if (visibleState) {
-            return { state: visibleState, isVisible: true };
+            return visibleState;
         }
         
         // Check hidden states
-        const hiddenState = stateSettings.hidden.find(state => state.name === stateName);
+        const hiddenState = allStateSettings.hidden.find(state => state.name === stateName);
         if (hiddenState) {
-            return { state: hiddenState, isVisible: false };
+            return hiddenState;
         }
         
         // State not found

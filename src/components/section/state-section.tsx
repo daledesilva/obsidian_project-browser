@@ -12,7 +12,7 @@ import { CardBrowserContext } from '../card-browser/card-browser';
 import { getGlobals, stateSettingsByNameAtom } from 'src/logic/stores';
 import { StateViewMode } from 'src/types/types-map';
 import { StateQuickMenu } from '../section-quick-menu/state-quick-menu';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 //////////
 //////////
@@ -25,9 +25,10 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
     const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext);
     const sectionRef = React.useRef(null);
-    const [stateSettings, setStateSettings] = useAtom(stateSettingsByNameAtom(props.section.title));
+    const stateSettings = useAtomValue(stateSettingsByNameAtom(props.section.title));
+    // console.log('stateSettings', stateSettings);
 
-    const curStateSettings = stateSettings?.state || props.section.settings;
+    const curStateSettings = stateSettings || props.section.settings;
 
     React.useEffect( () => {
         if(!plugin) return;
