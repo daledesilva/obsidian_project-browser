@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Section } from 'src/logic/section-processes';
 import { getGlobals } from 'src/logic/stores';
 import { StateViewMode, StateViewOrder } from 'src/types/types-map';
+import { setSectionSettings } from 'src/utils/section-settings';
 
 //////////
 //////////
@@ -31,14 +32,18 @@ export const SectionQuickMenu = (props: SectionQuickMenuProps) => {
     const cycleViewOrder = () => {
         const currentIndex = viewOrders.indexOf(curViewOrder);
         const nextIndex = (currentIndex + 1) % viewOrders.length;
-        setCurViewOrder(viewOrders[nextIndex]);
+        const newViewOrder = viewOrders[nextIndex];
+        setCurViewOrder(newViewOrder);
+        setSectionSettings(props.section, {defaultViewOrder: newViewOrder});
         setTooltip("viewOrder")
     };
 
     const cycleViewMode = () => {
         const currentIndex = viewModes.indexOf(curViewMode);
         const nextIndex = (currentIndex + 1) % viewModes.length;
-        setCurViewMode(viewModes[nextIndex]);
+        const newViewMode = viewModes[nextIndex];
+        setCurViewMode(newViewMode);
+        setSectionSettings(props.section, {defaultViewMode: newViewMode});
         setTooltip("viewMode")
     };
 
