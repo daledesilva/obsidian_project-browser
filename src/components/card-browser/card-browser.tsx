@@ -1,6 +1,8 @@
 import './card-browser.scss';
 import * as React from "react";
-import { FolderSection, StateSection, StatelessSection } from "../section/section";
+import { FolderSection } from "../section/folder-section";
+import { StateSection } from "../section/state-section";
+import { StatelessSection } from "../section/stateless-section";
 import { TFile, TFolder } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
 import { filterSectionsByString, getSortedItemsInFolder, orderItemsInSections } from 'src/logic/folder-processes';

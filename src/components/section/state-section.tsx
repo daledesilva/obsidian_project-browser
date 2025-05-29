@@ -2,48 +2,24 @@ import classNames from 'classnames';
 import './section.scss';
 import * as React from "react";
 import { Section } from 'src/logic/section-processes';
-import { TFile, TFolder } from 'obsidian';
-import { FolderButtonSet } from '../folder-button-set/folder-button-set';
 import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-card-set';
 import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
-import { sortItemsByName, sortItemsByNameAndPriority } from 'src/utils/sorting';
+import { sortItemsByNameAndPriority } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
-import { SearchInput } from '../search-input/search-input';
 import { StateViewMode } from 'src/types/types-map';
-import { SectionQuickMenu } from '../section-quick-menu/section-quick-menu';
+import { StateQuickMenu } from '../section-quick-menu/state-quick-menu';
 
 //////////
 //////////
-
-interface FolderSectionProps {
-    section: Section,
-}
-export const FolderSection = (props: FolderSectionProps) => {
-
-    const sortedFolders = sortItemsByName(props.section.items, 'ascending');
-
-    return <>
-        <BaseSection
-            className = "ddc_pb_folder-section"
-            section = {props.section}
-            showQuickMenu = {false}
-        >
-            <FolderButtonSet
-                folders = {sortedFolders}
-            />
-        </BaseSection>
-    </>
-}
-
-///////
 
 interface StateSectionProps {
     section: Section,
 }
+
 export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) => {
     const {plugin} = getGlobals();
     const cardBrowserContext = React.useContext(CardBrowserContext);
@@ -58,7 +34,6 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
         }
     })
 
-    // const sortedFiles = sortItemsByName(props.section.items, 'ascending');
     const sortedFiles = sortItemsByNameAndPriority(props.section.items, 'ascending');
 
     return <>
@@ -101,34 +76,13 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
 
 ///////
 
-interface StatelessSectionProps {
-    section: Section,
-}
-export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
-    const sortedFiles = sortItemsByName(props.section.items, 'ascending');
-
-    return <>
-        <BaseSection
-            key = {props.section.title}
-            className = "ddc_pb_stateless-section"
-            section = {props.section}
-        >
-            <ListNoteCardSet
-                files = {sortedFiles}
-            />
-        </BaseSection>
-    </>
-}
-
-///////
-
 interface BaseSectionProps extends React.PropsWithChildren {
     className?: string
     showQuickMenu?: boolean
     section: Section
 }
+
 const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, ref) => {
-    
     const {
         showQuickMenu = true
     } = props;
@@ -144,7 +98,7 @@ const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, r
             {props.children}
 
             {showQuickMenu && (
-                <SectionQuickMenu section = {props.section} />
+                <StateQuickMenu section = {props.section} />
             )}
         </div>
     </>
@@ -153,8 +107,8 @@ const BaseSection = React.forwardRef<HTMLDivElement, BaseSectionProps>((props, r
 ///////
 
 interface SectionHeaderProps {}
-const SectionHeader = (props: React.PropsWithChildren<SectionHeaderProps>) => {
 
+const SectionHeader = (props: React.PropsWithChildren<SectionHeaderProps>) => {
     return <>
         <div
             className = 'ddc_pb_section-header'
@@ -164,4 +118,4 @@ const SectionHeader = (props: React.PropsWithChildren<SectionHeaderProps>) => {
             </h2>
         </div>
     </>
-};
+}; 

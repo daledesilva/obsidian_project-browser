@@ -3,7 +3,6 @@ import * as React from "react";
 import { ArrowUpDown, LayoutGrid } from 'lucide-react';
 import classNames from 'classnames';
 import { Section } from 'src/logic/section-processes';
-import { getGlobals } from 'src/logic/stores';
 import { StateViewMode, StateViewOrder } from 'src/types/types-map';
 
 //////////
@@ -11,12 +10,11 @@ import { StateViewMode, StateViewOrder } from 'src/types/types-map';
 
 let tooltipTimeout: NodeJS.Timeout | null = null;
 
-interface SectionQuickMenuProps {
+interface StateQuickMenuProps {
     section: Section
 }
 
-export const SectionQuickMenu = (props: SectionQuickMenuProps) => {
-    const {plugin} = getGlobals();
+export const StateQuickMenu = (props: StateQuickMenuProps) => {
     const [sortOrder, setSortOrder] = React.useState<'ascending' | 'descending'>('ascending');
     const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
     const tooltipRef = React.useRef<HTMLDivElement>(null);
