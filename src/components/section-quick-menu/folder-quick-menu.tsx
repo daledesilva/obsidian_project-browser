@@ -3,6 +3,8 @@ import * as React from "react";
 import { LayoutGrid } from 'lucide-react';
 import classNames from 'classnames';
 import { Section } from 'src/logic/section-processes';
+import { folderSettingsAtom } from 'src/logic/stores';
+import { useAtom } from 'jotai';
 
 //////////
 //////////
@@ -14,12 +16,14 @@ interface FolderQuickMenuProps {
 }
 
 export const FolderQuickMenu = (props: FolderQuickMenuProps) => {
-    const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
+    const [folderSettings, setFolderSettings] = useAtom(folderSettingsAtom);
     const tooltipRef = React.useRef<HTMLDivElement>(null);
     const [tooltip, setTooltip] = React.useState<"viewMode" | null>(null);
 
+    const curViewMode = folderSettings?.defaultView || 'Small';
+
     const cycleViewMode = () => {
-        setTooltip("viewMode")
+        setTooltip("viewMode");
     };
 
     React.useEffect( () => {
@@ -42,17 +46,16 @@ export const FolderQuickMenu = (props: FolderQuickMenuProps) => {
                 className="ddc_pb_tooltip"
                 ref={tooltipRef}
             >
-                {tooltip === "viewMode" && "Small"}
+                {tooltip === "viewMode" && curViewMode}
             </div>
             
             <button
                 className={classNames([
                     'ddc_pb_quick-menu-button',
                     'ddc_pb_view-button',
-                    viewMode === 'list' && 'ddc_pb_view-list'
                 ])}
                 onClick={cycleViewMode}
-                title={`View mode: Small`}
+                title={`View mode: ${curViewMode}`}
             >
                 <LayoutGrid className="ddc_pb_icon" />
             </button>

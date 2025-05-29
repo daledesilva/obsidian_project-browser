@@ -4,6 +4,8 @@ import { ArrowUpDown, LayoutGrid } from 'lucide-react';
 import classNames from 'classnames';
 import { Section } from 'src/logic/section-processes';
 import { StateViewMode, StateViewOrder } from 'src/types/types-map';
+import { statelessSettingsAtom } from 'src/logic/stores';
+import { useAtom } from 'jotai';
 
 //////////
 //////////
@@ -15,31 +17,31 @@ interface StatelessQuickMenuProps {
 }
 
 export const StatelessQuickMenu = (props: StatelessQuickMenuProps) => {
-    const [sortOrder, setSortOrder] = React.useState<'ascending' | 'descending'>('ascending');
-    const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid');
+    // Use statelessSettingsAtom instead of local state
+    const [statelessSettings, setStatelessSettings] = useAtom(statelessSettingsAtom);
     const tooltipRef = React.useRef<HTMLDivElement>(null);
 
     const viewModes = Object.values(StateViewMode);
     const viewOrders = Object.values(StateViewOrder);
 
-    const [curViewMode, setCurViewMode] = React.useState(props.section.settings.defaultViewMode);
-    const [curViewOrder, setCurViewOrder] = React.useState(props.section.settings.defaultViewOrder);
+    const curViewMode = statelessSettings?.defaultViewMode || StateViewMode.List;
+    const curViewOrder = statelessSettings?.defaultViewOrder || StateViewOrder.AliasOrFilename;
     const [tooltip, setTooltip] = React.useState<"viewOrder" | "viewMode" | null>(null);
 
     const cycleViewOrder = () => {
         const currentIndex = viewOrders.indexOf(curViewOrder);
         const nextIndex = (currentIndex + 1) % viewOrders.length;
         const newViewOrder = viewOrders[nextIndex];
-        setCurViewOrder(newViewOrder);
-        setTooltip("viewOrder")
+        setStatelessSettings({...statelessSettings, defaultViewOrder: newViewOrder});
+        setTooltip("viewOrder");
     };
 
     const cycleViewMode = () => {
         const currentIndex = viewModes.indexOf(curViewMode);
         const nextIndex = (currentIndex + 1) % viewModes.length;
         const newViewMode = viewModes[nextIndex];
-        setCurViewMode(newViewMode);
-        setTooltip("viewMode")
+        setStatelessSettings({...statelessSettings, defaultViewMode: newViewMode});
+        setTooltip("viewMode");
     };
 
     React.useEffect( () => {
@@ -69,10 +71,9 @@ export const StatelessQuickMenu = (props: StatelessQuickMenuProps) => {
                 className={classNames([
                     'ddc_pb_quick-menu-button',
                     'ddc_pb_sort-button',
-                    sortOrder === 'descending' && 'ddc_pb_sort-descending'
                 ])}
                 onClick={cycleViewOrder}
-                title={`Sort ${sortOrder === 'ascending' ? 'descending' : 'ascending'}`}
+                title={`Cycle sort order`}
             >
                 <ArrowUpDown className="ddc_pb_icon" />
             </button>
@@ -81,10 +82,9 @@ export const StatelessQuickMenu = (props: StatelessQuickMenuProps) => {
                 className={classNames([
                     'ddc_pb_quick-menu-button',
                     'ddc_pb_view-button',
-                    viewMode === 'list' && 'ddc_pb_view-list'
                 ])}
                 onClick={cycleViewMode}
-                title={`Switch to ${viewMode === 'grid' ? 'list' : 'grid'} view`}
+                title={`Cycle view mode`}
             >
                 <LayoutGrid className="ddc_pb_icon" />
             </button>

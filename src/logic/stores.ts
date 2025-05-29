@@ -144,7 +144,6 @@ export function initializeSettingsAtoms(): void {
     try {
         const { plugin } = getGlobals();
         const store = deviceMemoryStore; // Use deviceMemoryStore instead of getDefaultStore()
-        console.log('plugin.settings', JSON.parse(JSON.stringify(plugin.settings)));
         
         // Initialize each atom with current plugin settings
         store.set(stateSettingsAtom, {
@@ -154,10 +153,6 @@ export function initializeSettingsAtoms(): void {
         
         store.set(folderSettingsAtom, plugin.settings.folders);
         store.set(statelessSettingsAtom, plugin.settings.stateless);
-
-        console.log('store.get(stateSettingsAtom)', JSON.parse(JSON.stringify(store.get(stateSettingsAtom))));
-        console.log('store.get(folderSettingsAtom)', JSON.parse(JSON.stringify(store.get(folderSettingsAtom))));
-        console.log('store.get(statelessSettingsAtom)', JSON.parse(JSON.stringify(store.get(statelessSettingsAtom))));
         
     } catch (error) {
         console.error('Error initializing settings atoms:', error);

@@ -79,7 +79,7 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
                     'ddc_pb_sort-button',
                 ])}
                 onClick={cycleViewOrder}
-                title={`Change sort order`}
+                title={`Cycle sort order`}
             >
                 <ArrowUpDown className="ddc_pb_icon" />
             </button>
@@ -90,7 +90,7 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
                     'ddc_pb_view-button',
                 ])}
                 onClick={cycleViewMode}
-                title={`Switch to view mode`}
+                title={`Cyckle view mode`}
             >
                 <LayoutGrid className="ddc_pb_icon" />
             </button>
