@@ -159,3 +159,61 @@ export function initializeSettingsAtoms(): void {
     }
 }
 
+//////////
+//////////
+
+// Derived atom for individual state settings
+// This allows state sections to subscribe only to their specific state's changes
+export const stateSettingsByNameAtom = (stateName: string) => atom(
+    (get) => {
+        const stateSettings = get(stateSettingsAtom);
+        
+        // Check visible states first
+        const visibleState = stateSettings.visible.find(state => state.name === stateName);
+        if (visibleState) {
+            return { state: visibleState, isVisible: true };
+        }
+        
+        // Check hidden states
+        const hiddenState = stateSettings.hidden.find(state => state.name === stateName);
+        if (hiddenState) {
+            return { state: hiddenState, isVisible: false };
+        }
+        
+        // State not found
+        return null;
+    },
+    // Setter - update the specific state's settings
+    (get, set, newSettings: Partial<StateSettings>) => {
+        const currentStateSettings = get(stateSettingsAtom);
+        
+        // Find the state in visible array
+        const visibleIndex = currentStateSettings.visible.findIndex(state => state.name === stateName);
+        if (visibleIndex !== -1) {
+            const updatedVisible = [...currentStateSettings.visible];
+            updatedVisible[visibleIndex] = { ...updatedVisible[visibleIndex], ...newSettings };
+            
+            set(stateSettingsAtom, {
+                visible: updatedVisible,
+                hidden: currentStateSettings.hidden
+            });
+            return;
+        }
+        
+        // Find the state in hidden array
+        const hiddenIndex = currentStateSettings.hidden.findIndex(state => state.name === stateName);
+        if (hiddenIndex !== -1) {
+            const updatedHidden = [...currentStateSettings.hidden];
+            updatedHidden[hiddenIndex] = { ...updatedHidden[hiddenIndex], ...newSettings };
+            
+            set(stateSettingsAtom, {
+                visible: currentStateSettings.visible,
+                hidden: updatedHidden
+            });
+            return;
+        }
+        
+        console.warn(`State '${stateName}' not found in settings`);
+    }
+);
+
