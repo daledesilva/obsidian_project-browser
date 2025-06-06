@@ -1,8 +1,22 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { getFilePrioritySettings } from "src/logic/frontmatter-processes";
+import { StateSettings, StateViewOrder } from "src/types/types-map";
 
 //////////////////
 //////////////////
+
+export function sortItems(items: Array<TAbstractFile>, stateSettings: StateSettings): TAbstractFile[] {
+    let sortedItems: TAbstractFile[] = [];
+
+    if(stateSettings?.defaultViewOrder === StateViewOrder.AliasOrFilename) {
+        sortedItems = sortItemsByNameAndPriority(items, 'ascending');
+    } else if(stateSettings?.defaultViewOrder === StateViewOrder.CreationDate) {
+        sortedItems = sortItemsByCreationDateAndPriority(items, 'ascending');
+    } else if(stateSettings?.defaultViewOrder === StateViewOrder.ModifiedDate) {
+        sortedItems = sortItemsByModifiedDateAndPriority(items, 'descending');
+    }
+    return sortedItems;
+}
 
 export function sortItemsByName(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
     const sortedItems = [...items];
@@ -47,10 +61,8 @@ export function sortItemsByModifiedDate(items: Array<TAbstractFile>, direction: 
         const bMtime = (b as TFile).stat.mtime;
 
         if(direction === 'ascending') {
-            console.log('ascending', aMtime, bMtime);
             return aMtime - bMtime;
         } else {
-            console.log('descending', aMtime, bMtime);
             return bMtime - aMtime;
         }
     });

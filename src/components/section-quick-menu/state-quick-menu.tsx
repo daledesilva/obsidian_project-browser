@@ -8,6 +8,7 @@ import { stateSettingsByNameAtom } from 'src/logic/stores';
 import { useAtom } from 'jotai';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // optional
+import Tooltip from '../tooltip/tooltip';
 
 //////////
 //////////
@@ -66,11 +67,7 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
 
     return <>
         <div className="ddc_pb_section-quick-menu">
-            <Tippy
-                content={curViewOrder}
-                delay={[500,250]}
-                hideOnClick={false}
-            >
+            <Tooltip content={curViewOrder}>
                 <button
                     className={classNames([
                         'ddc_pb_quick-menu-button',
@@ -80,9 +77,9 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
                 >
                     <ArrowUpDown className="ddc_pb_icon" />
                 </button>
-            </Tippy>
+            </Tooltip>
             
-            <Tippy content={curViewMode} delay={[500,250]} hideOnClick={false}>
+            <Tooltip content={curViewMode}>
                 <button
                     className={classNames([
                         'ddc_pb_quick-menu-button',
@@ -92,7 +89,7 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
                 >
                     <LayoutGrid className="ddc_pb_icon" />
                 </button>
-            </Tippy>
+            </Tooltip>
         </div>
     </>
 } 

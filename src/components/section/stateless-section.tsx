@@ -3,7 +3,7 @@ import './section.scss';
 import * as React from "react";
 import { Section } from 'src/logic/section-processes';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
-import { sortItemsByCreationDateAndPriority, sortItemsByModifiedDateAndPriority, sortItemsByName, sortItemsByNameAndPriority } from 'src/utils/sorting';
+import { sortItems, sortItemsByCreationDateAndPriority, sortItemsByModifiedDateAndPriority, sortItemsByName, sortItemsByNameAndPriority } from 'src/utils/sorting';
 import { statelessSettingsAtom } from 'src/logic/stores';
 import { useAtom } from 'jotai';
 import { StateViewMode, StateViewOrder } from 'src/types/types-map';
@@ -24,15 +24,7 @@ export const StatelessSection = (props: React.PropsWithChildren<StatelessSection
     const [statelessSettings, setStatelessSettings] = useAtom(statelessSettingsAtom);
     const curStatelessSettings = statelessSettings || props.section.settings;
     
-    
-    let sortedFiles: TAbstractFile[] = [];
-    if(curStatelessSettings?.defaultViewOrder === StateViewOrder.AliasOrFilename) {
-        sortedFiles = sortItemsByNameAndPriority(props.section.items, 'ascending');
-    } else if(curStatelessSettings?.defaultViewOrder === StateViewOrder.CreationDate) {
-        sortedFiles = sortItemsByCreationDateAndPriority(props.section.items, 'descending');
-    } else if(curStatelessSettings?.defaultViewOrder === StateViewOrder.ModifiedDate) {
-        sortedFiles = sortItemsByModifiedDateAndPriority(props.section.items, 'descending');
-    }
+    const sortedFiles = sortItems(props.section.items, curStatelessSettings);
 
     return <>
         <BaseSection
