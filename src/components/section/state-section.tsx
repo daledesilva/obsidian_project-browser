@@ -6,13 +6,14 @@ import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-car
 import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
-import { sortItemsByNameAndPriority } from 'src/utils/sorting';
+import { sortItemsByCreationDateAndPriority, sortItemsByModifiedDateAndPriority, sortItemsByNameAndPriority } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';
 import { getGlobals, stateSettingsByNameAtom } from 'src/logic/stores';
-import { StateViewMode } from 'src/types/types-map';
+import { StateViewMode, StateViewOrder } from 'src/types/types-map';
 import { StateQuickMenu } from '../section-quick-menu/state-quick-menu';
 import { useAtom, useAtomValue } from 'jotai';
+import { TAbstractFile } from 'obsidian';
 
 //////////
 //////////
@@ -46,7 +47,14 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
         }
     })
 
-    const sortedFiles = sortItemsByNameAndPriority(props.section.items, 'ascending');
+    let sortedFiles: TAbstractFile[] = [];
+    if(stateSettings?.defaultViewOrder === StateViewOrder.AliasOrFilename) {
+        sortedFiles = sortItemsByNameAndPriority(props.section.items, 'ascending');
+    } else if(stateSettings?.defaultViewOrder === StateViewOrder.CreationDate) {
+        sortedFiles = sortItemsByCreationDateAndPriority(props.section.items, 'descending');
+    } else if(stateSettings?.defaultViewOrder === StateViewOrder.ModifiedDate) {
+        sortedFiles = sortItemsByModifiedDateAndPriority(props.section.items, 'descending');
+    }
 
     return <>
         <BaseSection

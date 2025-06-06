@@ -3,14 +3,15 @@ import './section.scss';
 import * as React from "react";
 import { Section } from 'src/logic/section-processes';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
-import { sortItemsByName, sortItemsByNameAndPriority } from 'src/utils/sorting';
+import { sortItemsByCreationDateAndPriority, sortItemsByModifiedDateAndPriority, sortItemsByName, sortItemsByNameAndPriority } from 'src/utils/sorting';
 import { statelessSettingsAtom } from 'src/logic/stores';
 import { useAtom } from 'jotai';
-import { StateViewMode } from 'src/types/types-map';
+import { StateViewMode, StateViewOrder } from 'src/types/types-map';
 import { StatelessQuickMenu } from '../section-quick-menu/stateless-quick-menu';
 import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
 import { DetailedNoteCardSet } from '../detailed-note-card-set/detailed-note-card-set';
 import { SimpleNoteCardSet } from '../simple-note-card-set/simple-note-card-set';
+import { TAbstractFile } from 'obsidian';
 
 //////////
 //////////
@@ -22,7 +23,16 @@ interface StatelessSectionProps {
 export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
     const [statelessSettings, setStatelessSettings] = useAtom(statelessSettingsAtom);
     const curStatelessSettings = statelessSettings || props.section.settings;
-    const sortedFiles = sortItemsByName(props.section.items, 'ascending');
+    
+    
+    let sortedFiles: TAbstractFile[] = [];
+    if(curStatelessSettings?.defaultViewOrder === StateViewOrder.AliasOrFilename) {
+        sortedFiles = sortItemsByNameAndPriority(props.section.items, 'ascending');
+    } else if(curStatelessSettings?.defaultViewOrder === StateViewOrder.CreationDate) {
+        sortedFiles = sortItemsByCreationDateAndPriority(props.section.items, 'descending');
+    } else if(curStatelessSettings?.defaultViewOrder === StateViewOrder.ModifiedDate) {
+        sortedFiles = sortItemsByModifiedDateAndPriority(props.section.items, 'descending');
+    }
 
     return <>
         <BaseSection

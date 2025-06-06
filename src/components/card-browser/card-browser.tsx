@@ -5,7 +5,7 @@ import { StateSection } from "../section/state-section";
 import { StatelessSection } from "../section/stateless-section";
 import { TFile, TFolder } from 'obsidian';
 import { BackButtonAndPath } from '../back-button-and-path/back-button-and-path';
-import { filterSectionsByString, getSortedItemsInFolder, orderItemsInSections } from 'src/logic/folder-processes';
+import { filterSectionsByString, getSortedSectionsInFolder, orderItemsInSections } from 'src/logic/folder-processes';
 import { CardBrowserViewEState, CardBrowserViewState, PartialCardBrowserViewState } from 'src/views/card-browser-view/card-browser-view';
 import { v4 as uuidv4 } from 'uuid';
 import { registerCardBrowserContextMenu } from 'src/context-menus/card-browser-context-menu';
@@ -60,7 +60,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const v = plugin.app.vault;
     // const [path, setPath] = React.useState(props.path);
     const initialFolder = v.getFolderByPath(state.path) || v.getRoot(); // TODO: Check this is valid?
-    let sectionsOfItems = getSortedItemsInFolder(initialFolder);
+    let sectionsOfItems = getSortedSectionsInFolder(initialFolder);
     
     filterSectionsByString(sectionsOfItems, searchStr);
     

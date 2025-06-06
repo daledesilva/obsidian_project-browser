@@ -4,11 +4,11 @@ import { getFilePrioritySettings } from "src/logic/frontmatter-processes";
 //////////////////
 //////////////////
 
-export function sortItemsByName(items: Array<TAbstractFile>, sortType: 'ascending' | 'descending'): TAbstractFile[] {
+export function sortItemsByName(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
     const sortedItems = [...items];
 
     sortedItems.sort( (a: TAbstractFile, b: TAbstractFile) => {
-        if(sortType === 'ascending') {
+        if(direction === 'ascending') {
             return a.name.localeCompare(b.name);
         } else {
             return a.name.localeCompare(b.name) * -1;
@@ -18,19 +18,49 @@ export function sortItemsByName(items: Array<TAbstractFile>, sortType: 'ascendin
     return sortedItems;
 }
 
-export function sortItemsByNameAndPriority(items: Array<TAbstractFile>, sortType: 'ascending' | 'descending'): TAbstractFile[] {
+export function sortItemsByCreationDate(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
     const sortedItems = [...items];
 
-    // Sort by alias or filename first
     sortedItems.sort( (a: TAbstractFile, b: TAbstractFile) => {
-        if(sortType === 'ascending') {
-            return a.name.localeCompare(b.name);
+        if(!(a instanceof TFile) || !(b instanceof TFile)) return 0;
+
+        const aCtime = (a as TFile).stat.ctime;
+        const bCtime = (b as TFile).stat.ctime;
+
+        if(direction === 'ascending') {
+            return aCtime - bCtime;
         } else {
-            return a.name.localeCompare(b.name) * -1;
+            return bCtime - aCtime;
         }
     });
 
-    // The sort by priority
+    return sortedItems;
+}
+
+export function sortItemsByModifiedDate(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
+    const sortedItems = [...items];
+
+    sortedItems.sort( (a: TAbstractFile, b: TAbstractFile) => {
+        if(!(a instanceof TFile) || !(b instanceof TFile)) return 0;
+
+        const aMtime = (a as TFile).stat.mtime;
+        const bMtime = (b as TFile).stat.mtime;
+
+        if(direction === 'ascending') {
+            console.log('ascending', aMtime, bMtime);
+            return aMtime - bMtime;
+        } else {
+            console.log('descending', aMtime, bMtime);
+            return bMtime - aMtime;
+        }
+    });
+
+    return sortedItems;
+}
+
+export function sortItemsByPriority(items: Array<TAbstractFile>): TAbstractFile[] {
+    const sortedItems = [...items];
+
     sortedItems.sort( (a: TAbstractFile, b: TAbstractFile) => {
         // Don't sort if either aren't files as non-files don't have priorities.
         if(a instanceof TFolder || b instanceof TFolder) return 0;
@@ -66,5 +96,23 @@ export function sortItemsByNameAndPriority(items: Array<TAbstractFile>, sortType
     })
 
     return sortedItems;
+}
+
+export function sortItemsByNameAndPriority(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
+    const itemsSortedByName = sortItemsByName(items, direction);
+    const itemsSortedByNameAndPriority = sortItemsByPriority(itemsSortedByName);
+    return itemsSortedByNameAndPriority;
+}
+
+export function sortItemsByCreationDateAndPriority(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
+    const itemsSortedByCreationDate = sortItemsByCreationDate(items, direction);
+    const itemsSortedByCreationDateAndPriority = sortItemsByPriority(itemsSortedByCreationDate);
+    return itemsSortedByCreationDateAndPriority;
+}
+
+export function sortItemsByModifiedDateAndPriority(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
+    const itemsSortedByModifiedDate = sortItemsByModifiedDate(items, direction);
+    const itemsSortedByModifiedDateAndPriority = sortItemsByPriority(itemsSortedByModifiedDate);
+    return itemsSortedByModifiedDateAndPriority;
 }
 

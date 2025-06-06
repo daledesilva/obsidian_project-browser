@@ -83,7 +83,7 @@ export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> =
     return null;
 }
 
-export const getSortedItemsInFolder = (folder: TFolder): Section[] => {
+export const getSortedSectionsInFolder = (folder: TFolder): Section[] => {
     const {plugin} = getGlobals();
     const itemsInFolder = getItemsInFolder(folder);
     
