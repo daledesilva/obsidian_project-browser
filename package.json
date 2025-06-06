@@ -37,6 +37,7 @@
 	},
 	"dependencies": {
 		"@reduxjs/toolkit": "^2.1.0",
+		"@tippyjs/react": "^4.2.6",
 		"chalk": "^4.1.2",
 		"classnames": "^2.5.1",
 		"esbuild-plugin-copy": "^2.0.1",

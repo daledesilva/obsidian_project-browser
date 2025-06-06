@@ -6,6 +6,8 @@ import { Section } from 'src/logic/section-processes';
 import { StateViewMode, StateViewOrder } from 'src/types/types-map';
 import { stateSettingsByNameAtom } from 'src/logic/stores';
 import { useAtom } from 'jotai';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css'; // optional
 
 //////////
 //////////
@@ -52,13 +54,11 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
 
     React.useEffect( () => {
         if(tooltip) {
-            tooltipRef.current!.style.display = 'block';
             if(tooltipTimeout) {
                 clearTimeout(tooltipTimeout);
                 tooltipTimeout = null;
             }
             tooltipTimeout = setTimeout( () => {
-                tooltipRef.current!.style.display = 'none';
                 setTooltip(null);
             }, 1000);
         }
@@ -66,34 +66,33 @@ export const StateQuickMenu = (props: StateQuickMenuProps) => {
 
     return <>
         <div className="ddc_pb_section-quick-menu">
-            <div
-                className="ddc_pb_tooltip"
-                ref={tooltipRef}
+            <Tippy
+                content={curViewOrder}
+                delay={[500,250]}
+                hideOnClick={false}
             >
-                {tooltip === "viewOrder" && curViewOrder}
-                {tooltip === "viewMode" && curViewMode}
-            </div>
-            <button
-                className={classNames([
-                    'ddc_pb_quick-menu-button',
-                    'ddc_pb_sort-button',
-                ])}
-                onClick={cycleViewOrder}
-                title={`Cycle sort order`}
-            >
-                <ArrowUpDown className="ddc_pb_icon" />
-            </button>
+                <button
+                    className={classNames([
+                        'ddc_pb_quick-menu-button',
+                        'ddc_pb_sort-button',
+                    ])}
+                    onClick={cycleViewOrder}
+                >
+                    <ArrowUpDown className="ddc_pb_icon" />
+                </button>
+            </Tippy>
             
-            <button
-                className={classNames([
-                    'ddc_pb_quick-menu-button',
-                    'ddc_pb_view-button',
-                ])}
-                onClick={cycleViewMode}
-                title={`Cyckle view mode`}
-            >
-                <LayoutGrid className="ddc_pb_icon" />
-            </button>
+            <Tippy content={curViewMode} delay={[500,250]} hideOnClick={false}>
+                <button
+                    className={classNames([
+                        'ddc_pb_quick-menu-button',
+                        'ddc_pb_view-button',
+                    ])}
+                    onClick={cycleViewMode}
+                >
+                    <LayoutGrid className="ddc_pb_icon" />
+                </button>
+            </Tippy>
         </div>
     </>
 } 

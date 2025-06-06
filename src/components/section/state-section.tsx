@@ -51,7 +51,7 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
     if(stateSettings?.defaultViewOrder === StateViewOrder.AliasOrFilename) {
         sortedFiles = sortItemsByNameAndPriority(props.section.items, 'ascending');
     } else if(stateSettings?.defaultViewOrder === StateViewOrder.CreationDate) {
-        sortedFiles = sortItemsByCreationDateAndPriority(props.section.items, 'descending');
+        sortedFiles = sortItemsByCreationDateAndPriority(props.section.items, 'ascending');
     } else if(stateSettings?.defaultViewOrder === StateViewOrder.ModifiedDate) {
         sortedFiles = sortItemsByModifiedDateAndPriority(props.section.items, 'descending');
     }
