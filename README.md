@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=daledesilva&project=obsidian_project-browser&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 # Obsidian Project Browser
 A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a card layout of the files in each folder organised by state. The view is filterable with an inbuilt search field (just start typing!), and files can be assigned a state from a prominent menu within the note.
 
