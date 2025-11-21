@@ -1,292 +1,375 @@
-import { insertStateEditor } from 'src/components/state-editor/state-editor';
-import 'src/shared/settings.scss';
+import { insertStateEditor } from "src/components/state-editor/state-editor";
+import "src/shared/settings.scss";
 import { PluginSettingTab, Setting } from "obsidian";
 import MyPlugin from "src/main";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
-import { folderPathSanitize } from 'src/utils/string-processes';
-import { getGlobals } from 'src/logic/stores';
-import { StateSettings, StateViewMode, PrioritySettings } from 'src/types/types-map';
+import { folderPathSanitize } from "src/utils/string-processes";
+import { getGlobals } from "src/logic/stores";
+import {
+  StateSettings,
+  StateViewMode,
+  PrioritySettings,
+} from "src/types/types-map";
 
 /////////
 /////////
 
 export function registerSettingsTab() {
-	const {plugin} = getGlobals();
-	plugin.addSettingTab(new MySettingsTab());
+  const { plugin } = getGlobals();
+  plugin.addSettingTab(new MySettingsTab());
 }
 
 export class MySettingsTab extends PluginSettingTab {
-    plugin: MyPlugin;
+  plugin: MyPlugin;
 
-    constructor() {
-        const {plugin} = getGlobals();
-        super(plugin.app, plugin);
-        this.plugin = plugin;
-    }
+  constructor() {
+    const { plugin } = getGlobals();
+    super(plugin.app, plugin);
+    this.plugin = plugin;
+  }
 
-	display = (): void => {
-		const {containerEl} = this;
+  display = (): void => {
+    const { containerEl } = this;
 
-		containerEl.empty();
+    containerEl.empty();
 
-		// insertPrereleaseWarning(containerEl);
-		// containerEl.createEl('hr');
-		
-		insertMoreInfoLinks(containerEl);
-		insertAccessSettings(containerEl, this.display);
-		insertStateSettings(containerEl, this.display);
-		insertPrioritySettings(containerEl, this.display);
-		insertNoteSettings(containerEl, this.display);
-			
-		// TODO: Collapsible change log
-		// containerEl.createEl('p', {
-		// 	text: 'Alpha v0.0.359 changes',
-		// 	cls: 'ddc_pb_text-warning',
-		// });		
-		
-		// insertAccessSettings(containerEl, this.plugin, () => this.display());
-	
-		new Setting(containerEl)
-			.addButton( (button) => {
-				button.setButtonText('Reset settings');
-        button.onClick(() => {
-            new ConfirmationModal({
-                title: 'Please confirm',
-                message: 'Revert all Project Browser settings to defaults??',
-                confirmLabel: 'Reset settings',
-                confirmAction: async () => {
-                    await this.plugin.resetSettings();
-                    this.display();
-                }
-            }).open();
-        })
-			})
-		
+    // insertPrereleaseWarning(containerEl);
+    // containerEl.createEl('hr');
 
-	}
+    insertMoreInfoLinks(containerEl);
+    insertAccessSettings(containerEl, this.display);
+    insertStateSettings(containerEl, this.display);
+    insertPrioritySettings(containerEl, this.display);
+    insertNoteSettings(containerEl, this.display);
+
+    // TODO: Collapsible change log
+    // containerEl.createEl('p', {
+    // 	text: 'Alpha v0.0.359 changes',
+    // 	cls: 'ddc_pb_text-warning',
+    // });
+
+    // insertAccessSettings(containerEl, this.plugin, () => this.display());
+
+    new Setting(containerEl).addButton((button) => {
+      button.setButtonText("Reset settings");
+      button.onClick(() => {
+        new ConfirmationModal({
+          title: "Please confirm",
+          message: "Revert all Project Browser settings to defaults??",
+          confirmLabel: "Reset settings",
+          confirmAction: async () => {
+            await this.plugin.resetSettings();
+            this.display();
+          },
+        }).open();
+      });
+    });
+  };
 }
 
 function insertMoreInfoLinks(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section');
-	sectionEl.createEl('p', { text: `For information on this plugin's development, visit the links below. Feel free to leave comments in the development diaries on YouTube.` });
-	const list = sectionEl.createEl('ul');
-	list.createEl('li').createEl('a', {
-		href: 'https://github.com/daledesilva/obsidian_project-browser/releases',
-		text: 'Latest changes'
-	});
-	list.createEl('li').createEl('a', {
-		href: 'https://github.com/daledesilva/obsidian_project-browser',
-		text: 'Roadmap'
-	});
-	list.createEl('li').createEl('a', {
-		href: 'https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=VO6nlt2v0KG224cY',
-		text: 'Development diaries.'
-	});
-	list.createEl('li').createEl('a', {
-		href: 'https://github.com/daledesilva/obsidian_project-browser/issues',
-		text: 'Request feature / Report bug.'
-	});
+  const sectionEl = containerEl.createDiv("ddc_pb_settings-section");
+  sectionEl.createEl("p", {
+    text: `For information on this plugin's development, visit the links below. Feel free to leave comments in the development diaries on YouTube.`,
+  });
+  const list = sectionEl.createEl("ul");
+  list.createEl("li").createEl("a", {
+    href: "https://github.com/daledesilva/obsidian_project-browser/releases",
+    text: "Latest changes",
+  });
+  list.createEl("li").createEl("a", {
+    href: "https://github.com/daledesilva/obsidian_project-browser",
+    text: "Roadmap",
+  });
+  list.createEl("li").createEl("a", {
+    href: "https://youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ&si=VO6nlt2v0KG224cY",
+    text: "Development diaries.",
+  });
+  list.createEl("li").createEl("a", {
+    href: "https://github.com/daledesilva/obsidian_project-browser/issues",
+    text: "Request feature / Report bug.",
+  });
 }
 
 function insertAccessSettings(containerEl: HTMLElement, refresh: Function) {
-	const {plugin} = getGlobals();
+  const { plugin } = getGlobals();
 
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section');
+  const sectionEl = containerEl.createDiv("ddc_pb_settings-section");
 
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Replace empty tab')
-		.setDesc('Create a new, empty tab to access the Project Browser.')
-		.addToggle((toggle) => {
-			toggle.setValue(plugin.settings.access.replaceNewTab);
-			toggle.onChange(async (value) => {
-				plugin.settings.access.replaceNewTab = value;
-				await plugin.saveSettings();
-				refresh();
-			});
-		});
+  // NEW: Browser Mode Setting
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Browser Mode")
+    .setDesc(
+      "Choose between Folder-based or Tag-based navigation. (Requires refresh)",
+    )
+    .addDropdown((dropdown) => {
+      dropdown.addOption("folder", "Folders");
+      dropdown.addOption("tag", "Tags");
+      dropdown.setValue(plugin.settings.browserMode || "folder");
+      dropdown.onChange(async (value) => {
+        plugin.settings.browserMode = value as "folder" | "tag";
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Enable ribbon icon')
-		.setDesc('Click an icon in the Obsidian ribbon menu bar to open the Project Browser in a new tab.')
-		.addToggle((toggle) => {
-			toggle.setValue(plugin.settings.access.enableRibbonIcon);
-			toggle.onChange(async (value) => {
-				plugin.settings.access.enableRibbonIcon = value;
-				await plugin.saveSettings();
-				refresh();
-			});
-		});
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Replace empty tab")
+    .setDesc("Create a new, empty tab to access the Project Browser.")
+    .addToggle((toggle) => {
+      toggle.setValue(plugin.settings.access.replaceNewTab);
+      toggle.onChange(async (value) => {
+        plugin.settings.access.replaceNewTab = value;
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Enable command')
-		.setDesc('Run a command from the Command Palette at any time to open the Project Browser in a new tab.')
-		.addToggle((toggle) => {
-			toggle.setValue(plugin.settings.access.enableCommand);
-			toggle.onChange(async (value) => {
-				plugin.settings.access.enableCommand = value;
-				await plugin.saveSettings();
-				refresh();
-			});
-		});
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Enable ribbon icon")
+    .setDesc(
+      "Click an icon in the Obsidian ribbon menu bar to open the Project Browser in a new tab.",
+    )
+    .addToggle((toggle) => {
+      toggle.setValue(plugin.settings.access.enableRibbonIcon);
+      toggle.onChange(async (value) => {
+        plugin.settings.access.enableRibbonIcon = value;
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Launch folder')
-		.setDesc('Which folder should new Project Browser tabs open in.')
-		.addText((text) => {
-			text.setValue(plugin.settings.access.launchFolder);
-			text.inputEl.addEventListener( 'blur', (e) => {
-				const safeValue = folderPathSanitize(text.getValue());
-				text.setValue(safeValue);
-				plugin.settings.access.launchFolder = safeValue;
-				plugin.saveSettings();
-			})
-		})
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Enable command")
+    .setDesc(
+      "Run a command from the Command Palette at any time to open the Project Browser in a new tab.",
+    )
+    .addToggle((toggle) => {
+      toggle.setValue(plugin.settings.access.enableCommand);
+      toggle.onChange(async (value) => {
+        plugin.settings.access.enableCommand = value;
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Use Aliases')
-		.setDesc(`Display the first alias of a file as it's name in the Project Browser if available.`)
-		.addToggle((toggle) => {
-			toggle.setValue(plugin.settings.useAliases);
-			toggle.onChange(async (value) => {
-				plugin.settings.useAliases = value;
-				await plugin.saveSettings();
-				refresh();
-			});
-		})
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Launch folder")
+    .setDesc("Which folder should new Project Browser tabs open in.")
+    .addText((text) => {
+      text.setValue(plugin.settings.access.launchFolder);
+      text.inputEl.addEventListener("blur", (e) => {
+        const safeValue = folderPathSanitize(text.getValue());
+        text.setValue(safeValue);
+        plugin.settings.access.launchFolder = safeValue;
+        plugin.saveSettings();
+      });
+    });
+
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Use Aliases")
+    .setDesc(
+      `Display the first alias of a file as it's name in the Project Browser if available.`,
+    )
+    .addToggle((toggle) => {
+      toggle.setValue(plugin.settings.useAliases);
+      toggle.onChange(async (value) => {
+        plugin.settings.useAliases = value;
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 }
 
 function insertStateSettings(containerEl: HTMLElement, refresh: Function) {
-	const {plugin} = getGlobals();
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
-	sectionEl.createEl('h2', { text: 'States' });
-	sectionEl.createEl('p', { text: `This is the list of categories that Project Browser will help assign notes and group by in the Browser view. Add new states and drag them to reorder or delete.` });
-	// sectionEl.createEl('p', { text: `Notes states will appear in reverse order in the Browser view so that more progressed notes are shown higher. Hidden states will not show.` });
+  const { plugin } = getGlobals();
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_controls-section",
+  );
+  sectionEl.createEl("h2", { text: "States" });
+  sectionEl.createEl("p", {
+    text: `This is the list of categories that Project Browser will help assign notes and group by in the Browser view. Add new states and drag them to reorder or delete.`,
+  });
+  // sectionEl.createEl('p', { text: `Notes states will appear in reverse order in the Browser view so that more progressed notes are shown higher. Hidden states will not show.` });
 
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Loop states')
-		.setDesc('When pressing the hotkeys to step states forward or backward, should it cycle back to the first or last state when the end is reached?')
-		.addToggle((toggle) => {
-			toggle.setValue(plugin.settings.loopStatesWhenCycling);
-			toggle.onChange(async (value) => {
-				plugin.settings.loopStatesWhenCycling = value;
-				await plugin.saveSettings();
-				refresh();
-			});
-		});
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Loop states")
+    .setDesc(
+      "When pressing the hotkeys to step states forward or backward, should it cycle back to the first or last state when the end is reached?",
+    )
+    .addToggle((toggle) => {
+      toggle.setValue(plugin.settings.loopStatesWhenCycling);
+      toggle.onChange(async (value) => {
+        plugin.settings.loopStatesWhenCycling = value;
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 
-	insertStateEditor(sectionEl);
+  insertStateEditor(sectionEl);
 
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Default state')
-		.addDropdown((dropdown) => {
-			function updateDropdownOptions() {
-				const options: Record<string, string> = {};
-				Object.values(plugin.settings.states.visible).map((stateSettings: StateSettings) => {
-					options[stateSettings.name] = stateSettings.name;
-				});
-				Object.values(plugin.settings.states.hidden).map((stateSettings: StateSettings) => {
-					options[stateSettings.name] = stateSettings.name;
-				});
-				options['(None)'] = '(None)';
-				dropdown.selectEl.empty();
-				dropdown.addOptions(options)
-			}
-			updateDropdownOptions();
-			dropdown.selectEl.addEventListener('focus', (event) => {
-				updateDropdownOptions();
-			});
-			dropdown.selectEl.addEventListener('change', (event) => {
-				plugin.settings.defaultState = dropdown.getValue() == '(None)' ? undefined : dropdown.getValue() as string;
-				plugin.saveSettings();
-			});
-		})
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Default state")
+    .addDropdown((dropdown) => {
+      function updateDropdownOptions() {
+        const options: Record<string, string> = {};
+        Object.values(plugin.settings.states.visible).map(
+          (stateSettings: StateSettings) => {
+            options[stateSettings.name] = stateSettings.name;
+          },
+        );
+        Object.values(plugin.settings.states.hidden).map(
+          (stateSettings: StateSettings) => {
+            options[stateSettings.name] = stateSettings.name;
+          },
+        );
+        options["(None)"] = "(None)";
+        dropdown.selectEl.empty();
+        dropdown.addOptions(options);
+      }
+      updateDropdownOptions();
+      dropdown.selectEl.addEventListener("focus", (event) => {
+        updateDropdownOptions();
+      });
+      dropdown.selectEl.addEventListener("change", (event) => {
+        plugin.settings.defaultState =
+          dropdown.getValue() == "(None)"
+            ? undefined
+            : (dropdown.getValue() as string);
+        plugin.saveSettings();
+      });
+    });
 }
 
 function insertPrioritySettings(containerEl: HTMLElement, refresh: Function) {
-	const {plugin} = getGlobals();
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
-	sectionEl.createEl('h2', { text: 'Priorities' });
-	sectionEl.createEl('p', { text: `Files can be given high or low priorities from within the browser panel. This can make notes appear with different styling or as grouped by priority.` });
+  const { plugin } = getGlobals();
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_controls-section",
+  );
+  sectionEl.createEl("h2", { text: "Priorities" });
+  sectionEl.createEl("p", {
+    text: `Files can be given high or low priorities from within the browser panel. This can make notes appear with different styling or as grouped by priority.`,
+  });
 
-	// Add toggle for treating priorities as links
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Treat priorities as links')
-		.setDesc('This will input priorities as internal Obsidian links so that they can be opened and will appear in the graph view as nodes.')
-		.addToggle((toggle) => {
-			// Check if any priority has link enabled to set the initial state
-			const hasLinkEnabled = plugin.settings.priorities.some(priority => priority.link);
-			toggle.setValue(hasLinkEnabled);
-			toggle.onChange(async (value) => {
-				// Update all priorities to have the same link setting
-				plugin.settings.priorities.forEach(priority => {
-					priority.link = value;
-				});
-				await plugin.saveSettings();
-				refresh();
-			});
-		});
+  // Add toggle for treating priorities as links
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Treat priorities as links")
+    .setDesc(
+      "This will input priorities as internal Obsidian links so that they can be opened and will appear in the graph view as nodes.",
+    )
+    .addToggle((toggle) => {
+      // Check if any priority has link enabled to set the initial state
+      const hasLinkEnabled = plugin.settings.priorities.some(
+        (priority) => priority.link,
+      );
+      toggle.setValue(hasLinkEnabled);
+      toggle.onChange(async (value) => {
+        // Update all priorities to have the same link setting
+        plugin.settings.priorities.forEach((priority) => {
+          priority.link = value;
+        });
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 }
 
 function insertNoteSettings(containerEl: HTMLElement, refresh: Function) {
-	const {plugin} = getGlobals();
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
-	sectionEl.createEl('h2', { text: 'Notes' });
-	sectionEl.createEl('p', { text: 'This section defines how Project Browser features are integrated on screen when your markdown notes display.' });
-	new Setting(sectionEl)
-		.setClass('ddc_pb_setting')
-		.setName('Show state menu in notes')
-		.setDesc('This can be toggled any time through a command (Default shortcut: Cmd+Shift+S).')
-		.addToggle((toggle) => {
-			toggle.setValue(plugin.settings.showStateMenu);
-			toggle.onChange(async (value) => {
-				plugin.settings.showStateMenu = value;
-				await plugin.saveSettings();
-				refresh();
-			});
-		});
-
+  const { plugin } = getGlobals();
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_controls-section",
+  );
+  sectionEl.createEl("h2", { text: "Notes" });
+  sectionEl.createEl("p", {
+    text: "This section defines how Project Browser features are integrated on screen when your markdown notes display.",
+  });
+  new Setting(sectionEl)
+    .setClass("ddc_pb_setting")
+    .setName("Show state menu in notes")
+    .setDesc(
+      "This can be toggled any time through a command (Default shortcut: Cmd+Shift+S).",
+    )
+    .addToggle((toggle) => {
+      toggle.setValue(plugin.settings.showStateMenu);
+      toggle.onChange(async (value) => {
+        plugin.settings.showStateMenu = value;
+        await plugin.saveSettings();
+        refresh();
+      });
+    });
 }
 
 function insertDrawingSettings(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
-	sectionEl.createEl('h2', { text: 'Drawing' });
-	sectionEl.createEl('p', { text: `While editing a Markdown file, run the action 'Insert new hand drawn section' to embed a drawing canvas.` });
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_controls-section",
+  );
+  sectionEl.createEl("h2", { text: "Drawing" });
+  sectionEl.createEl("p", {
+    text: `While editing a Markdown file, run the action 'Insert new hand drawn section' to embed a drawing canvas.`,
+  });
 }
 
 function insertWritingSettings(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_controls-section');
-	sectionEl.createEl('h2', { text: 'Writing' });
-	sectionEl.createEl('p', { text: `While editing a Markdown file, run the action 'Insert new handwriting section' to embed a section for writing with a stylus.` });
-	insertWritingLimitations(sectionEl);
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_controls-section",
+  );
+  sectionEl.createEl("h2", { text: "Writing" });
+  sectionEl.createEl("p", {
+    text: `While editing a Markdown file, run the action 'Insert new handwriting section' to embed a section for writing with a stylus.`,
+  });
+  insertWritingLimitations(sectionEl);
 }
 
 function insertWritingLimitations(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_current-limitations-section');
-	const accordion = sectionEl.createEl('details');
-	accordion.createEl('summary', { text: `Notable writing limitations (Expand for details)` });
-	accordion.createEl('p', { text: `Only the last 300 strokes will be visible while writing (Others will dissapear). This is because the plugin currently experiences lag while displaying long amounts of writing that degrades pen fluidity.` });
-	accordion.createEl('p', { text: `All your writing is still saved, however, and will appear in full whenever the embed is locked.` });
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_current-limitations-section",
+  );
+  const accordion = sectionEl.createEl("details");
+  accordion.createEl("summary", {
+    text: `Notable writing limitations (Expand for details)`,
+  });
+  accordion.createEl("p", {
+    text: `Only the last 300 strokes will be visible while writing (Others will dissapear). This is because the plugin currently experiences lag while displaying long amounts of writing that degrades pen fluidity.`,
+  });
+  accordion.createEl("p", {
+    text: `All your writing is still saved, however, and will appear in full whenever the embed is locked.`,
+  });
 }
 
 function insertPrereleaseWarning(containerEl: HTMLElement) {
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_prerelease-warning-section');
-	const accordion = sectionEl.createEl('details', {cls: 'ddc_pb_settings-section-warning'});
-	accordion.createEl('summary', { text: `This plugin is in an Alpha state (Expand for details)` });
-	accordion.createEl('p', { text: `What does Alpha mean? Development of products like this plugin often involve moving through multiple different stages (e.g. Alpha, Beta, then Standard Release).` });
-	accordion.createEl('p', { text: `Alpha, the current stage, means that this plugin is in early development and may undergo large changes that break or change previous functionality.` });
-	accordion.createEl('p', { text: `While in Alpha, please exercise caution while using the plugin, however, note that I (The developer of this plugin) am proceeding with caution to help ensure any files created in this version will be compatible or converted to work with future versions (My own vaults depend on it as well).` });
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_prerelease-warning-section",
+  );
+  const accordion = sectionEl.createEl("details", {
+    cls: "ddc_pb_settings-section-warning",
+  });
+  accordion.createEl("summary", {
+    text: `This plugin is in an Alpha state (Expand for details)`,
+  });
+  accordion.createEl("p", {
+    text: `What does Alpha mean? Development of products like this plugin often involve moving through multiple different stages (e.g. Alpha, Beta, then Standard Release).`,
+  });
+  accordion.createEl("p", {
+    text: `Alpha, the current stage, means that this plugin is in early development and may undergo large changes that break or change previous functionality.`,
+  });
+  accordion.createEl("p", {
+    text: `While in Alpha, please exercise caution while using the plugin, however, note that I (The developer of this plugin) am proceeding with caution to help ensure any files created in this version will be compatible or converted to work with future versions (My own vaults depend on it as well).`,
+  });
 }
 
 function insertGenericWarning(containerEl: HTMLElement, text: string) {
-	const sectionEl = containerEl.createDiv('ddc_pb_settings-section ddc_pb_generic-warning-section');
-	const warningEl = sectionEl.createDiv('ddc_pb_settings-section-warning');
-	warningEl.createEl('p', {text});
+  const sectionEl = containerEl.createDiv(
+    "ddc_pb_settings-section ddc_pb_generic-warning-section",
+  );
+  const warningEl = sectionEl.createDiv("ddc_pb_settings-section-warning");
+  warningEl.createEl("p", { text });
 }
