@@ -146,7 +146,7 @@ function insertAccessSettings(containerEl: HTMLElement, refresh: Function) {
 				plugin.settings.access.launchFolder = safeValue;
 				plugin.saveSettings();
 			})
-		})
+		});
 
 	new Setting(sectionEl)
 		.setClass('ddc_pb_setting')

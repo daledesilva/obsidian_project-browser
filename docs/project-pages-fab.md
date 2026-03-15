@@ -85,6 +85,7 @@ flowchart TB
 
 ## Technical gotchas
 
+- **Mouse back button (Canvas/Base)** — Obsidian has known navigation-history bugs with Canvas and Base files. When the back button fails to return to the project browser (e.g. shows a blank page), use the FAB’s **Folder** button instead. See [known-issues-and-attempted-fixes.md](known-issues-and-attempted-fixes.md) for technical context and attempted solutions.
 - **Empty or single-page projects** — The FAB still appears; the page list is simply empty when there are no other pages.
 - **Notes in subfolders** — Only notes whose **direct parent** is the project folder see the project menu. Notes inside subfolders of a project do not.
 - **Note at vault root** — `activeFile.parent` may be null; the vault root folder is used for all folder actions.

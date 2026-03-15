@@ -61,6 +61,7 @@ Below are the high level features in my current development plan along with when
 
 ## 🧪 Development
 - Testing setup and development: [docs/testing.md](docs/testing.md)
+- Known issues and attempted fixes: [docs/known-issues-and-attempted-fixes.md](docs/known-issues-and-attempted-fixes.md)
 - Plugin settings (display behaviour): [docs/settings.md](docs/settings.md)
 - File type visibility: [docs/file-type-visibility.md](docs/file-type-visibility.md)
 - Projects (folders as cards): [docs/projects.md](docs/projects.md)
