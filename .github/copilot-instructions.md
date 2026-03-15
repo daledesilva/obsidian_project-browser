@@ -41,6 +41,12 @@ Design documentation and implementation notes live in `docs/` at the repository 
 
 ---
 
+## Plugin settings
+
+Never create a new plugin settings version unless explicitly asked. When adding or changing settings, work within the current version (`PluginSettings_0_4_0` in `src/types/plugin-settings_0_4_0.ts`). Do not introduce new migration paths or versioned type files unless the user explicitly requests a new settings version.
+
+---
+
 ## Documentation standards
 
 ### Location
