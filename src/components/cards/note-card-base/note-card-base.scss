@@ -43,17 +43,29 @@
         animation-fill-mode: backwards;
     }
 
-    .ddc_pb_note-card-type-label {
+    .ddc_pb_note-card-top-right {
         position: absolute;
         top: 0.25em;
         right: 0.25em;
+        display: flex;
+        align-items: center;
+        gap: 0.25em;
         pointer-events: none;
+    }
+
+    .ddc_pb_note-card-type-label {
         font-size: 0.65rem;
         font-weight: 400;
         letter-spacing: 0.04em;
         text-transform: uppercase;
         color: var(--text-faint, rgba(255, 255, 255, 0.4));
         opacity: 0.75;
+    }
+
+    .ddc_pb_external-file-icon {
+        width: 0.9em;
+        height: 0.9em;
+        color: var(--interactive-accent);
     }
 
     .ddc_pb_file-ext-faint {

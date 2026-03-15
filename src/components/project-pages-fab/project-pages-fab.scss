@@ -29,19 +29,40 @@
         text-overflow: ellipsis;
         font-size: 0.9em;
 
-        .ddc_pb_file-type-tag {
+        .ddc_pb_project-pages-fab__page-button-tags {
             position: absolute;
             bottom: 0;
             right: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            pointer-events: none;
+        }
+
+        .ddc_pb_project-pages-fab__page-button-external-icon {
+            position: absolute;
+            top: 0.15em;
+            right: 0.15em;
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .ddc_pb_file-type-tag {
             padding: 1px 3px;
             border-radius: 3px 0 8px 0;
-            pointer-events: none;
             font-size: 0.4rem;
             font-weight: 400;
             letter-spacing: 0.04em;
             text-transform: uppercase;
             color: var(--text-muted);
             background-color: var(--background-secondary);
+        }
+
+        .ddc_pb_external-file-icon {
+            flex-shrink: 0;
+            transform: scale(0.75);
+            color: var(--interactive-accent);
         }
 
         .ddc_pb_file-ext-faint {
