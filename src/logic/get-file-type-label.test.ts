@@ -1,5 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
-import { getFileTypeLabel } from "./get-file-type-label";
+import { getFileTypeLabel, hasFrontmatterSupport } from "./get-file-type-label";
 
 describe("getFileTypeLabel", () => {
   test("returns null for markdown", () => {
@@ -31,5 +31,23 @@ describe("getFileTypeLabel", () => {
 
   test("handles empty or null extension", () => {
     expect(getFileTypeLabel("")).toBeNull();
+  });
+});
+
+describe("hasFrontmatterSupport", () => {
+  test("returns true for md", () => {
+    expect(hasFrontmatterSupport("md")).toBe(true);
+    expect(hasFrontmatterSupport("MD")).toBe(true);
+  });
+
+  test("returns false for canvas, base, pdf, images", () => {
+    expect(hasFrontmatterSupport("canvas")).toBe(false);
+    expect(hasFrontmatterSupport("base")).toBe(false);
+    expect(hasFrontmatterSupport("pdf")).toBe(false);
+    expect(hasFrontmatterSupport("png")).toBe(false);
+  });
+
+  test("returns false for empty or null", () => {
+    expect(hasFrontmatterSupport("")).toBe(false);
   });
 });
