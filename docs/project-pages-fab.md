@@ -8,7 +8,7 @@ When working in a project, you often need to jump between its pages. The Project
 
 ## Conceptual understanding
 
-- **Project Pages FAB** — A floating button with a pages icon that appears whenever a markdown file is open. Its menu varies: for notes inside a project, it shows other project pages and an Add page action; for notes outside a project, it shows Folder, New file, and Add page.
+- **Project Pages FAB** — A floating button with a pages icon that appears whenever any file that Obsidian can display is open (markdown, PDF, canvas, images, etc.). Its menu varies: for files inside a project, it shows other project pages and an Add page action; for files outside a project, it shows Folder, New file, and Add page.
 - **Pages** — The direct file children of the project folder (excluding `folder-settings.pbs`). Notes in subfolders of a project are not included.
 
 ## Flows and relationships
@@ -40,8 +40,8 @@ flowchart TB
 
 ### When the FAB appears
 
-1. You open a note (markdown file) in the editor.
-2. The FAB appears in the bottom-right corner for any open markdown note, whether inside a project or not.
+1. You open a file (markdown, PDF, canvas, image, etc.) in the editor.
+2. The FAB appears in the bottom-right corner for any open file view, whether inside a project or not.
 3. If the note’s parent folder is `null` (e.g. file at vault root), the vault root is used for folder actions.
 
 ### Using the FAB — note inside a project
@@ -75,7 +75,7 @@ flowchart TB
 ## Technical implementation
 
 - **Component**: `ProjectPagesFAB` in `src/components/project-pages-fab/`
-- **Integration**: Rendered from `registerMarkdownViewMods` whenever the active file is a markdown file. Parent folder is `activeFile.parent ?? vault.getRoot()`.
+- **Integration**: Rendered from `registerMarkdownViewMods` whenever the active leaf shows a file view (any type Obsidian can display). Parent folder is `activeFile.parent ?? vault.getRoot()`.
 - **Page list**: Derived from `getItemsInFolder(projectFolder)` — filtered to `TFile`, filtered by visible file types (`isExtensionVisible`), sorted by name.
 - **Page button labels**: Use `getFileDisplayNameParts()`, which respects the "Show extension for non-document files" setting. The extension portion is faded with `--text-faint`. Only canvas and base files show a type tag (CANVAS, BASE) at the top-right of each button; other file types do not.
 - **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) for details.

@@ -1,5 +1,5 @@
 import './markdown-view-mods.scss';
-import { ItemView, MarkdownView, Menu, MenuItem, TFile, TFolder, View } from "obsidian";
+import { FileView, ItemView, MarkdownView, Menu, MenuItem, TFile, TFolder, View, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { StateMenu } from 'src/components/state-menu/state-menu';
@@ -22,6 +22,10 @@ interface ProjectPagesFabRoot {
     render: (element: React.ReactElement) => void;
 }
 
+function isFileView(leaf: WorkspaceLeaf | null): leaf is WorkspaceLeaf & { view: FileView } {
+    return !!leaf && leaf.view instanceof FileView;
+}
+
 //////////
 
 export function registerMarkdownViewMods() {
@@ -31,14 +35,15 @@ export function registerMarkdownViewMods() {
 
     // NOTE: Opening a different file in the same leaf counts as an active-leaf-change, but the header gets replaced, it updates.
     plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
-        if(!leaf) return;
+        if (!leaf) return;
 
-		const viewType = leaf.view.getViewType();
-		if(viewType === 'markdown') {
-            addStateHeader();
+        if (isFileView(leaf)) {
             addOrRemoveProjectPagesFAB();
+            if (leaf.view instanceof MarkdownView) {
+                addStateHeader();
+            }
         }
-	}));
+    }));
 }
 
 function addViewMenuOptions() {
