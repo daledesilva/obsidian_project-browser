@@ -35,20 +35,45 @@ import { getStateByName } from "src/logic/get-state-by-name";
 //     return pathAndVersionedBasename + '.' + ext;
 // }
 
+const PAGE_NAME_PATTERN = /page\s*(\d+)/i;
+
+/**
+ * Returns the next available "Page N" name for a project folder.
+ * Scans existing file basenames for "Page #" (case- and space-insensitive),
+ * finds the max number, and returns "Page " + (max + 1). Returns "Page 1" if none match.
+ */
+function getNextPageNameInProject(folder: TFolder): string {
+    const children = folder.children;
+    if (!children) return 'Page 1';
+
+    const pageNumbers: number[] = [];
+    for (const child of children) {
+        if (!(child instanceof TFile)) continue;
+        const basename = child.basename;
+        const match = basename.match(PAGE_NAME_PATTERN);
+        if (match) pageNumbers.push(parseInt(match[1], 10));
+    }
+
+    const maxNumber = pageNumbers.length > 0 ? Math.max(...pageNumbers) : 0;
+    return `Page ${maxNumber + 1}`;
+}
+
 interface CreateProjectProps {
     parentFolder: TFolder,
     projectName: string,
     stateName?: string,
 }
+
 export async function createProject(props: CreateProjectProps): Promise<TFile> {
     const v = props.parentFolder.vault;
     const globals = getGlobals();
-        
-    // Creating a project folder
-    // const projectFolder = await createFolders(v, projectPath);
-    // const primaryProjectFile = await createDefaultMarkdownFile(v, projectFolder, 'Article');
-    
-    const primaryProjectFile = await createDefaultMarkdownFile(v, props.parentFolder, props.projectName);
+
+    const folderSettings = await getFolderSettings(v, props.parentFolder);
+    const parentIsProject = folderSettings.isProject === true;
+    const usePageNaming = parentIsProject && props.projectName === 'Untitled';
+
+    const projectName = usePageNaming ? getNextPageNameInProject(props.parentFolder) : props.projectName;
+    const primaryProjectFile = await createDefaultMarkdownFile(v, props.parentFolder, projectName);
 
     if(props.stateName) {
         const stateSettings = getStateByName(props.stateName);
@@ -156,6 +181,9 @@ export async function createProjectFromNote(note: TFile, parentFolder: TFolder):
     if (!moved) {
         throw new Error(`Failed to move note into project folder`);
     }
+
+    // Rename the moved note to "Page 1" so the second page can be "Page 2"
+    await renameTFile(note, 'Page 1');
 
     await setFolderAsProject(newFolder);
 

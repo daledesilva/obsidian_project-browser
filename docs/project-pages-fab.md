@@ -63,10 +63,14 @@ flowchart TB
 ### Add page (note outside project) flow
 
 1. A new subfolder is created in the note’s parent, named from the note’s basename (or with `(2)`, `(3)`, etc. if a conflict exists).
-2. The current note is moved into that folder.
+2. The current note is moved into that folder and renamed to **Page 1**.
 3. The folder is marked as a project (`folder-settings.pbs` with `isProject: true`).
-4. A second page (new file) is created in the project folder.
+4. A second page (new file) named **Page 2** is created in the project folder.
 5. The second page opens in the same leaf.
+
+### Page naming when adding pages
+
+When adding a page to a project, new pages are named "Page N" using the next available number. Existing files whose basenames match "Page" followed by optional whitespace and digits (case-insensitive, e.g. `Page 1`, `page 2`, `PAGE 3`) are scanned; the new page is named "Page " + (max + 1). If no such files exist, the new page is named "Page 1". This applies both when converting a note to a project (original → "Page 1", new → "Page 2") and when adding pages to existing projects.
 
 ### Visual feedback
 
@@ -80,7 +84,7 @@ flowchart TB
 - **Page button labels**: Use `getFileDisplayNameParts()`, which respects the "Show extension for non-document files" setting. The extension portion is faded with `--text-faint`. Only canvas and base files show a type tag (CANVAS, BASE) at the top-right of each button; other file types do not.
 - **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) for details.
 - **Navigation**: Uses `openFileInSameLeaf` followed by `openStateMenuIfClosed`.
-- **Add page (non-project)**: `createProjectFromNote` in `src/utils/file-manipulation.ts` — creates folder, moves note, sets project, creates second page.
+- **Add page (non-project)**: `createProjectFromNote` in `src/utils/file-manipulation.ts` — creates folder, moves note, renames it to "Page 1", sets project, creates second page as "Page 2".
 - **Click-outside close**: `pointerdown` on `document`; closes when the target is outside the FAB/buttons container. Clicks on Obsidian menus (`.menu`) or modals (`.modal`, `.modal-bg`) are ignored so the menu stays open during context-menu actions like Delete.
 
 ## Technical gotchas
