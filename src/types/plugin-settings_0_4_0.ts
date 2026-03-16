@@ -83,10 +83,13 @@ export const DEFAULT_FILE_TYPE_SETTINGS_0_4_0: FileTypeSettings_0_4_0 = {
 export interface PluginSettings_0_4_0 extends PluginSettings_0_3_0 {
     settingsVersion: '0.4.0';
     fileTypes: FileTypeSettings_0_4_0;
+    /** When true, show the rename popup when a new page is created so the user can immediately rename it. Default: true. */
+    showRenamePopupOnNewPage?: boolean;
 }
 
 export const DEFAULT_PLUGIN_SETTINGS_0_4_0: PluginSettings_0_4_0 = {
     ...DEFAULT_PLUGIN_SETTINGS_0_3_0,
     settingsVersion: '0.4.0',
     fileTypes: { ...DEFAULT_FILE_TYPE_SETTINGS_0_4_0 },
+    showRenamePopupOnNewPage: true,
 };

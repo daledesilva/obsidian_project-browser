@@ -326,6 +326,19 @@ function insertNoteSettings(containerEl: HTMLElement, refresh: () => void) {
 				refresh();
 			});
 		});
+
+	new Setting(contentEl)
+		.setClass('ddc_pb_setting')
+		.setName('Show rename popup when creating new pages')
+		.setDesc('When enabled, the renaming popup is shown immediately upon new page creation. Press enter or escape to accept quickly, or disable this setting to prevent the popup showing.')
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.showRenamePopupOnNewPage ?? true);
+			toggle.onChange(async (value) => {
+				plugin.settings.showRenamePopupOnNewPage = value;
+				await plugin.saveSettings();
+				refresh();
+			});
+		});
 }
 
 function insertDrawingSettings(containerEl: HTMLElement) {

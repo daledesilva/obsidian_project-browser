@@ -87,6 +87,7 @@ New pages open with the filename activated for renaming (via Obsidian's Edit fil
 - **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) for details.
 - **Navigation**: Uses `openFileInSameLeaf` followed by `openStateMenuIfClosed`.
 - **Add page (non-project)**: `createProjectFromNote` in `src/utils/file-manipulation.ts` — creates folder, moves note, renames it to "Page 1", sets project, creates second page as "Page 2".
+- **Rename popup on new page**: Controlled by "Show rename popup when creating new pages" (File Overlays, settings). When enabled (default), new pages open with the filename activated for renaming; when disabled, they open without the rename popup.
 - **Click-outside close**: `pointerdown` on `document`; closes when the target is outside the FAB/buttons container. Clicks on Obsidian menus (`.menu`) or modals (`.modal`, `.modal-bg`) are ignored so the menu stays open during context-menu actions like Delete.
 
 ## Technical gotchas

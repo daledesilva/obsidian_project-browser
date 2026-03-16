@@ -41,9 +41,13 @@ export async function openFileInBackgroundTab(file: TFile) {
 /**
  * Opens a newly created page and schedules the filename to be activated for renaming when the file opens.
  * Tries Obsidian's native "Edit file title" command first; falls back to RenameFileModal.
+ * Respects plugin.settings.showRenamePopupOnNewPage; when false, opens the file without the rename popup.
  */
 export function openNewPageAndSelectTitle(file: TFile) {
-    pendingTitleSelectPaths.add(file.path);
+    const {plugin} = getGlobals();
+    if (plugin.settings.showRenamePopupOnNewPage ?? true) {
+        pendingTitleSelectPaths.add(file.path);
+    }
     openFileInSameLeaf(file);
 }
 

@@ -187,6 +187,7 @@ export function migrate_0_3_0_to_0_4_0(oldSettings: PluginSettings_0_3_0): Plugi
         ...oldSettings,
         settingsVersion: '0.4.0',
         fileTypes: { ...DEFAULT_PLUGIN_SETTINGS_0_4_0.fileTypes },
+        showRenamePopupOnNewPage: true,
     };
     return JSON.parse(JSON.stringify(newSettings));
 }
