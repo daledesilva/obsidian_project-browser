@@ -138,9 +138,14 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
 
     React.useEffect(() => {
         function handleClickOutside(event: PointerEvent) {
-            if (fabContainerRef.current && !fabContainerRef.current.contains(event.target as Node)) {
-                setMenuIsOpen(false);
-            }
+            if (!fabContainerRef.current) return;
+            if (fabContainerRef.current.contains(event.target as Node)) return;
+
+            const target = event.target as HTMLElement;
+            const isObsidianMenuOrModal = target.closest('.menu, .modal, .modal-bg');
+            if (isObsidianMenuOrModal) return;
+
+            setMenuIsOpen(false);
         }
 
         document.addEventListener('pointerdown', handleClickOutside);

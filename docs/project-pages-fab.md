@@ -81,7 +81,7 @@ flowchart TB
 - **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) for details.
 - **Navigation**: Uses `openFileInSameLeaf` followed by `openStateMenuIfClosed`.
 - **Add page (non-project)**: `createProjectFromNote` in `src/utils/file-manipulation.ts` — creates folder, moves note, sets project, creates second page.
-- **Click-outside close**: `pointerdown` on `document`; closes when the target is outside the FAB/buttons container.
+- **Click-outside close**: `pointerdown` on `document`; closes when the target is outside the FAB/buttons container. Clicks on Obsidian menus (`.menu`) or modals (`.modal`, `.modal-bg`) are ignored so the menu stays open during context-menu actions like Delete.
 
 ## Technical gotchas
 
