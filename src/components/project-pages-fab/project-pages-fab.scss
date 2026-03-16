@@ -1,7 +1,10 @@
 .ddc_pb_project-pages-fab {
+    --ddc-pb-fab-spacing: 12px;
     position: absolute;
     bottom: 24px;
     right: var(--ddc-pb-fab-right-offset, 0);
+    transform: scale(0.7);
+    transform-origin: bottom right;
 
     display: flex;
     flex-direction: column;
@@ -13,6 +16,7 @@
         flex-direction: column;
         align-items: flex-end;
         gap: 8px;
+        margin-right: 24px;
     }
 
     .ddc_pb_project-pages-fab__page-button {
@@ -98,6 +102,7 @@
         flex-direction: column;
         align-items: flex-end;
         gap: 8px;
+        margin-bottom: 24px;
     }
 
     .ddc_pb_project-pages-fab__main-button {
@@ -117,7 +122,10 @@
 
     .ddc_pb_project-pages-fab__project-title {
         cursor: pointer;
-        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 24px 8px 12px;
         min-height: min(40px, 8vw);
         max-width: 250px;
         border-radius: 12px 0 0 12px;
@@ -128,5 +136,9 @@
         font-size: 0.9em;
         background-color: var(--background-primary);
         color: var(--text-normal);
+
+        &--is-project {
+            border-bottom: 2px solid var(--interactive-accent);
+        }
     }
 }

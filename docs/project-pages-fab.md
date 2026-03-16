@@ -9,7 +9,7 @@ When working in a project, you often need to jump between its pages. The Project
 ## Conceptual understanding
 
 - **Project Pages FAB** — A floating button with a pages icon that appears whenever any file that Obsidian can display is open (markdown, PDF, canvas, images, etc.). Its menu varies: for files inside a project, it shows other project pages and an Add page action; for files outside a project, it shows Folder, New file, and Add page.
-- **Project title** — When viewing a note inside a project, a floating pill below the FAB shows the project name. Clicking it navigates to the project index (same as the Folder button).
+- **Floating title** — A pill below the FAB showing the current folder or project name with a back chevron. Clicking navigates back (to the project index when in a project, or to the folder in the browser when in a non-project folder). Hidden at vault root. A 2px accent border appears only when the context is a project.
 - **Pages** — The direct file children of the project folder (excluding `folder-settings.pbs`). Notes in subfolders of a project are not included.
 
 ## Flows and relationships
@@ -81,12 +81,13 @@ New pages open with the filename activated for renaming (via Obsidian's Edit fil
 
 ### Layout and project title
 
-The FAB and project title are grouped in the bottom-right corner of the window:
+The FAB and floating title are grouped in the bottom-right corner of the window:
 
-- **Position** — Both elements sit flush with the right edge, with a small gap between them. The FAB is above the project title. When the content area has a visible scrollbar, the group shifts left to avoid overlapping it.
+- **Scale** — The whole FAB group is scaled to 70%, anchored at the bottom-right.
+- **Position** — Both elements sit flush with the right edge, with a small gap between them. The FAB is above the floating title. When the content area has a visible scrollbar, the group shifts left to avoid overlapping it.
 - **FAB shape** — The main button is 25% wider than its height, with rounded left corners and sharp right corners (pill-style, aligned to the right).
-- **Project title** — A floating pill below the FAB with background and rounded left corners. Only visible when the current file is inside a project. Displays the project folder name. Clicking it navigates to the project index (card browser) for that project.
-- **Non-project files** — When viewing a file outside a project, the project title element is hidden; only the FAB and its menu appear.
+- **Floating title** — A pill below the FAB with a back chevron and background. Always visible except when the file is at vault root. Displays the current folder name (project or non-project). Clicking it navigates to that folder in the card browser. When the folder is a project, a 2px accent-colour bottom border indicates it.
+- **Card Browser FAB** — The card browser has a matching FAB layout (Search, New project, floating parent-folder title with back chevron). The floating title shows the parent folder and navigates back when clicked. Accent border appears only when the current folder is a project.
 
 ## Technical implementation
 

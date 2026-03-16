@@ -1,7 +1,7 @@
 import './project-pages-fab.scss';
 import { TAbstractFile, TFile, TFolder } from 'obsidian';
 import * as React from 'react';
-import { ExternalLink, FilePlus, FileStack, Folder, Plus } from 'lucide-react';
+import { ChevronLeft, ExternalLink, FilePlus, FileStack, Folder, Plus } from 'lucide-react';
 import classNames from 'classnames';
 import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { getItemsInFolder } from 'src/logic/folder-processes';
@@ -257,12 +257,20 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                 >
                     <FileStack size={24} />
                 </button>
-                {props.parentIsProject && (
+                {props.projectFolder.path !== '' && (
                     <button
-                        className="ddc_pb_project-pages-fab__project-title"
+                        className={classNames(
+                            'ddc_pb_project-pages-fab__project-title',
+                            props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project'
+                        )}
                         onClick={handleOpenProjectFolderClick}
-                        title={`Open ${props.projectFolder.name} in project browser`}
+                        title={
+                            props.parentIsProject
+                                ? `Open ${props.projectFolder.name} in project browser`
+                                : 'Open folder in project browser'
+                        }
                     >
+                        <ChevronLeft size={16} className="ddc_pb_project-pages-fab__project-title-chevron" />
                         {props.projectFolder.name}
                     </button>
                 )}

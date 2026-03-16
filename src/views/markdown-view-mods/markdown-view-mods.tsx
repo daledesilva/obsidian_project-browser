@@ -22,46 +22,7 @@ interface ProjectPagesFabRoot {
     render: (element: React.ReactElement) => void;
 }
 
-const FAB_RIGHT_OFFSET_CSS_VAR = '--ddc-pb-fab-right-offset';
-
-function setupFabScrollbarOffset(
-    fabContainerEl: HTMLElement,
-    leafContainerEl: HTMLElement
-): () => void {
-    function updateOffset() {
-        const scroller = leafContainerEl.querySelector('.cm-scroller');
-        if (!scroller || !(scroller instanceof HTMLElement)) {
-            fabContainerEl.style.setProperty(FAB_RIGHT_OFFSET_CSS_VAR, '0px');
-            return;
-        }
-        const hasVerticalScrollbar = scroller.scrollHeight > scroller.clientHeight;
-        if (!hasVerticalScrollbar) {
-            fabContainerEl.style.setProperty(FAB_RIGHT_OFFSET_CSS_VAR, '0px');
-            return;
-        }
-        const scrollbarWidth = scroller.offsetWidth - scroller.clientWidth;
-        fabContainerEl.style.setProperty(FAB_RIGHT_OFFSET_CSS_VAR, `${scrollbarWidth}px`);
-    }
-
-    updateOffset();
-
-    const scroller = leafContainerEl.querySelector('.cm-scroller');
-    if (!scroller) return () => {};
-
-    const resizeObserver = new ResizeObserver(() => {
-        requestAnimationFrame(updateOffset);
-    });
-    resizeObserver.observe(scroller);
-
-    // When content grows while typing, .cm-scroller's size may not change (it's viewport-fixed).
-    // Observe .cm-content too, which grows when content is added and triggers re-check.
-    const content = scroller.querySelector('.cm-content');
-    if (content) {
-        resizeObserver.observe(content);
-    }
-
-    return () => resizeObserver.disconnect();
-}
+import { setupFabScrollbarOffset } from 'src/utils/setup-fab-scrollbar-offset';
 
 function isFileView(leaf: WorkspaceLeaf | null): leaf is WorkspaceLeaf & { view: FileView } {
     return !!leaf && leaf.view instanceof FileView;

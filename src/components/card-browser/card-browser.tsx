@@ -13,6 +13,8 @@ import { getGlobals } from 'src/logic/stores';
 import { SearchInput } from '../search-input/search-input';
 import classNames from 'classnames';
 import { CardBrowserFloatingMenu } from '../card-browser-floating-menu/card-browser-floating-menu';
+import { getFolderSettings } from 'src/utils/file-manipulation';
+import { setupFabScrollbarOffset } from 'src/utils/setup-fab-scrollbar-offset';
 
 //////////
 //////////
@@ -37,6 +39,7 @@ export interface CardBrowserHandlers {
 // export const cardBrowserHandlers = atom<CardBrowserHandlers>()
 
 interface CardBrowserProps {
+    containerEl: HTMLElement,
     path: string,
     setViewStateWithHistory: (viewState: PartialCardBrowserViewState) => void,
     rememberLastTouchedFilepath: (filepath: string) => {},
@@ -51,15 +54,22 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [refreshId, setRefreshId] = React.useState<number>(uuidv4());
     const [searchActive, setSearchActive] = React.useState<boolean>(false);
     const [searchStr, setSearchStr] = React.useState<string>('');
+    const [currentFolderIsProject, setCurrentFolderIsProject] = React.useState<boolean>(false);
     const {state, eState} = props.getViewStates();
-    const browserRef = React.useRef(null);
+    const browserRef = React.useRef<HTMLDivElement>(null);
+    const fabContainerRef = React.useRef<HTMLDivElement>(null);
 
-    // const setCardBrowserHandlers = useSetAtom(cardBrowserHandlers);
-
-    // const [files, setFiles] = useState
     const v = plugin.app.vault;
     const initialFolder = v.getFolderByPath(state.path) || v.getRoot();
     const [sectionsOfItemsRaw, setSectionsOfItemsRaw] = React.useState<import('src/logic/section-processes').Section[] | null>(null);
+
+    React.useEffect(() => {
+        let cancelled = false;
+        getFolderSettings(v, initialFolder).then((settings) => {
+            if (!cancelled) setCurrentFolderIsProject(settings.isProject === true);
+        });
+        return () => { cancelled = true; };
+    }, [initialFolder.path]);
 
     React.useEffect(() => {
         let cancelled = false;
@@ -78,6 +88,12 @@ export const CardBrowser = (props: CardBrowserProps) => {
     
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
 
+    React.useEffect(() => {
+        if (!props.containerEl || !fabContainerRef.current) return;
+        const cleanup = setupFabScrollbarOffset(fabContainerRef.current, props.containerEl);
+        return cleanup;
+    }, [props.containerEl]);
+
     // on mount
     React.useEffect( () => {
         if(!plugin) return;
@@ -87,13 +103,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
         })
         plugin.addGlobalFileDependant(`card-browser_${viewInstanceId}`, rerender);
 
-        // NOTE: When the view is changed to something else, this is never given the chance to unmount.
-        // Must removeDependant from elsewhere?
-        // return;
-
         if(plugin && browserRef.current) {
             registerCardBrowserContextMenu(browserRef.current, initialFolder, {
-                openFile: () => {}, // TODO: maybe remove this... it used to be a function
+                openFile: () => {},
                 getCurFolder,
             });
         }
@@ -109,6 +121,12 @@ export const CardBrowser = (props: CardBrowserProps) => {
         setRefreshId(uuidv4());
     }
     
+    React.useEffect(() => {
+        if (!fabContainerRef.current || !props.containerEl) return;
+        const cleanup = setupFabScrollbarOffset(fabContainerRef.current, props.containerEl);
+        return cleanup;
+    }, [props.containerEl, refreshId]);
+
     return (
         <CardBrowserContext.Provider value={{
             folder: initialFolder,
@@ -117,6 +135,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             rememberLastTouchedFile,
             rerender,
         }}>
+            <div className="ddc_pb_card-browser-root">
             <div
                 ref = {browserRef}
                 className = 'ddc_pb_browser'
@@ -164,12 +183,18 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         </React.Fragment>
                     ))}
                 </div>
+            </div>
+            <div ref={fabContainerRef} className="ddc_pb_card-browser-fab-container">
                 <CardBrowserFloatingMenu
-                    folder = {initialFolder}
-                    searchActive = {searchActive}
-                    activateSearch = {() => setSearchActive(true)}
-                    deactivateSearch = {() => setSearchActive(false)}
+                    folder={initialFolder}
+                    parentFolder={initialFolder.parent}
+                    currentFolderIsProject={currentFolderIsProject}
+                    onOpenParentFolder={openParentFolder}
+                    searchActive={searchActive}
+                    activateSearch={() => setSearchActive(true)}
+                    deactivateSearch={() => setSearchActive(false)}
                 />
+            </div>
             </div>
         </CardBrowserContext.Provider>
     );

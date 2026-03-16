@@ -1,8 +1,7 @@
 import './card-browser-floating-menu.scss';
 import { TFolder } from 'obsidian';
 import * as React from "react";
-import { NewProjectModal } from 'src/modals/new-project-modal/new-project-modal';
-import { Plus, Search } from 'lucide-react';
+import { ChevronLeft, Plus, Search } from 'lucide-react';
 import { createProject } from 'src/utils/file-manipulation';
 import { openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import classNames from 'classnames';
@@ -11,67 +10,83 @@ import classNames from 'classnames';
 //////////
 
 interface CardBrowserFloatingMenuProps {
-    folder: TFolder,
-    searchActive: boolean,
-    activateSearch: () => void,
-    deactivateSearch: () => void,
+    folder: TFolder;
+    parentFolder: TFolder | null;
+    currentFolderIsProject: boolean;
+    onOpenParentFolder: () => void;
+    searchActive: boolean;
+    activateSearch: () => void;
+    deactivateSearch: () => void;
 }
 
 export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => {
-    
-    return <>
-        <div className='ddc_pb_card-browser-floating-menu'>
-            <button
-                className = {classNames([
-                    'ddc_pb_search-button',
-                    props.searchActive && 'ddc_pb_active',
-                ])}
-                onClick = {() => {
-                    if(props.searchActive) {
-                        props.deactivateSearch();
-                    } else {
-                        props.activateSearch();
-                    }
-                }}    
-            >
-                <Search size={20} />
-            </button>
-            <button
-                className = 'ddc_pb_new-button'
-                onClick = {() => newProject(props.folder)}    
-            >
-                <Plus size={33} />
-            </button>
+    async function newProject(folder: TFolder) {
+        try {
+            const newFile = await createProject({
+                parentFolder: folder,
+                projectName: 'Untitled',
+            });
+            openNewPageAndSelectTitle(newFile);
+        } catch (reason) {
+            console.log(reason);
+        }
+    }
+
+    return (
+        <div className="ddc_pb_card-browser-floating-menu">
+            <div className="ddc_pb_card-browser-floating-menu__group">
+                <button
+                    className={classNames(
+                        'ddc_pb_card-browser-floating-menu__search-button',
+                        props.searchActive && 'ddc_pb_active'
+                    )}
+                    onClick={() => {
+                        if (props.searchActive) {
+                            props.deactivateSearch();
+                        } else {
+                            props.activateSearch();
+                        }
+                    }}
+                    title="Search"
+                >
+                    <Search size={20} />
+                </button>
+                <button
+                    className="ddc_pb_card-browser-floating-menu__new-button"
+                    onClick={() => newProject(props.folder)}
+                    title="New project"
+                >
+                    <Plus size={33} />
+                </button>
+                {props.parentFolder !== null && (
+                    <button
+                        className={classNames(
+                            'ddc_pb_card-browser-floating-menu__folder-title',
+                            props.currentFolderIsProject &&
+                                'ddc_pb_card-browser-floating-menu__folder-title--is-project'
+                        )}
+                        onClick={props.onOpenParentFolder}
+                        title={`Open ${props.parentFolder.name} in browser`}
+                    >
+                        <ChevronLeft size={16} className="ddc_pb_card-browser-floating-menu__folder-title-chevron" />
+                        {props.parentFolder.name}
+                    </button>
+                )}
+            </div>
         </div>
-    </>
+    );
 
     //////////
 
     async function newProject(folder: TFolder) {
-        const modal = new NewProjectModal({
-            folder: folder,
-        })
         try {
-            // const newFile = await modal.showModal();
             const newFile = await createProject({
                 parentFolder: folder,
-                projectName: 'Untitled'
+                projectName: 'Untitled',
             });
-            // Slight delay for better feedback of view refreshing
-            // setTimeout( () => { 
-            //     cardBrowserContext.rerender();
-                // Additional delay for notcing refresh before opening file
-                // setTimeout( () => { 
-                    openNewPageAndSelectTitle(newFile);
-                // }, 500);
-            // }, 300)
-
-        } catch(reason) {
+            openNewPageAndSelectTitle(newFile);
+        } catch (reason) {
             console.log(reason);
-
         }
-
     }
-
-}
-
+};

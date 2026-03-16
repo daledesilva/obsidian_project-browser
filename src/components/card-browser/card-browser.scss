@@ -1,3 +1,19 @@
+.ddc_pb_card-browser-root {
+    position: relative;
+    height: 100%;
+}
+
+.ddc_pb_card-browser-fab-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1000;
+
+    .ddc_pb_card-browser-floating-menu {
+        pointer-events: auto;
+    }
+}
+
 .ddc_pb_browser {
     min-height: 100%;
 

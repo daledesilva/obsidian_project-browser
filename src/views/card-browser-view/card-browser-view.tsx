@@ -170,6 +170,7 @@ export class ProjectCardsView extends ItemView {
         this.root.render(
             <JotaiProvider store={globalStore}>
                 <CardBrowser
+                    containerEl={this.contentEl}
                     path = {this.state.path}
                     setViewStateWithHistory = {(statePartial: PartialCardBrowserViewState) => this.setViewStateWithHistory(statePartial)}
                     rememberLastTouchedFilepath = {this.rememberLastTouchedFilepath}
