@@ -1,7 +1,7 @@
 import './project-pages-fab.scss';
 import { TAbstractFile, TFile, TFolder } from 'obsidian';
 import * as React from 'react';
-import { ChevronLeft, ExternalLink, FilePlus, FileStack, Folder, Plus } from 'lucide-react';
+import { ChevronLeft, ExternalLink, FilePlus, FileStack, Plus } from 'lucide-react';
 import classNames from 'classnames';
 import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { getItemsInFolder } from 'src/logic/folder-processes';
@@ -10,6 +10,7 @@ import { getFileDisplayNameParts } from 'src/logic/get-file-display-name';
 import { getFileTypeLabel } from 'src/logic/get-file-type-label';
 import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
 import { getGlobals } from 'src/logic/stores';
+import { isRootPath } from 'src/utils/string-processes';
 
 //////////
 //////////
@@ -173,14 +174,6 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         props.onAddPage?.();
     }
 
-    const folderButtonLabel = props.parentIsProject
-        ? props.projectFolder.name
-        : 'Folder';
-
-    const folderButtonTitle = props.parentIsProject
-        ? `Open ${props.projectFolder.name} in project browser`
-        : 'Open folder in project browser';
-
     return (
         <div className="ddc_pb_project-pages-fab" ref={fabContainerRef}>
             {menuIsOpen && (
@@ -194,18 +187,6 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                             onFileChange={() => setRefreshTrigger((t) => t + 1)}
                         />
                     ))}
-                    {props.parentIsProject && props.onAddPage && (
-                        <button
-                            className="ddc_pb_project-pages-fab__action-button"
-                            onClick={handleAddPageClick}
-                            title="Add page"
-                        >
-                            <FilePlus size={16} />
-                            <span className="ddc_pb_project-pages-fab__action-button-label">
-                                Add page
-                            </span>
-                        </button>
-                    )}
                     {!props.parentIsProject && (
                         <>
                             {props.onNewFile && (
@@ -234,16 +215,6 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                             )}
                         </>
                     )}
-                    <button
-                        className="ddc_pb_project-pages-fab__folder-button"
-                        onClick={handleOpenProjectFolderClick}
-                        title={folderButtonTitle}
-                    >
-                        <Folder size={16} />
-                        <span className="ddc_pb_project-pages-fab__folder-button-label">
-                            {folderButtonLabel}
-                        </span>
-                    </button>
                 </div>
             )}
             <div className="ddc_pb_project-pages-fab__group">
@@ -257,23 +228,23 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                 >
                     <FileStack size={24} />
                 </button>
-                {props.projectFolder.path !== '' && (
-                    <button
-                        className={classNames(
-                            'ddc_pb_project-pages-fab__project-title',
-                            props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project'
-                        )}
-                        onClick={handleOpenProjectFolderClick}
-                        title={
-                            props.parentIsProject
-                                ? `Open ${props.projectFolder.name} in project browser`
-                                : 'Open folder in project browser'
-                        }
-                    >
-                        <ChevronLeft size={16} className="ddc_pb_project-pages-fab__project-title-chevron" />
-                        {props.projectFolder.name}
-                    </button>
-                )}
+                <button
+                    className={classNames(
+                        'ddc_pb_project-pages-fab__project-title',
+                        props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project'
+                    )}
+                    onClick={handleOpenProjectFolderClick}
+                    title={
+                        isRootPath(props.projectFolder.path)
+                            ? 'Open vault root in project browser'
+                            : props.parentIsProject
+                              ? `Open ${props.projectFolder.name} in project browser`
+                              : 'Open folder in project browser'
+                    }
+                >
+                    <ChevronLeft size={16} className="ddc_pb_project-pages-fab__project-title-chevron" />
+                    {isRootPath(props.projectFolder.path) ? 'Home' : props.projectFolder.name}
+                </button>
             </div>
         </div>
     );

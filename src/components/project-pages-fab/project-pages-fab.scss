@@ -3,20 +3,18 @@
     position: absolute;
     bottom: 24px;
     right: var(--ddc-pb-fab-right-offset, 0);
-    transform: scale(0.7);
-    transform-origin: bottom right;
 
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 10px;
 
     .ddc_pb_project-pages-fab__page-buttons {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         gap: 8px;
-        margin-right: 24px;
+        margin-right: 12px;
+        margin-bottom: 12px;
     }
 
     .ddc_pb_project-pages-fab__page-button {
@@ -111,7 +109,7 @@
         width: calc(var(--size) * 1.25);
         height: var(--size);
         padding: 25% !important; // Important to override Obsidian padding at all media sizes
-        border-radius: 999px 0 0 999px;
+        border-radius: 8px 0 0 8px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 
         &.ddc_pb_active {
@@ -125,10 +123,11 @@
         display: flex;
         align-items: center;
         gap: 4px;
+        --page-button-size: min(40px, 8vw);
+        min-height: var(--page-button-size);
         padding: 8px 24px 8px 12px;
-        min-height: min(40px, 8vw);
         max-width: 250px;
-        border-radius: 12px 0 0 12px;
+        border-radius: 8px 0 0 8px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         white-space: nowrap;
         overflow: hidden;

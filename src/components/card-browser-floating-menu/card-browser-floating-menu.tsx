@@ -4,6 +4,7 @@ import * as React from "react";
 import { ChevronLeft, Plus, Search } from 'lucide-react';
 import { createProject } from 'src/utils/file-manipulation';
 import { openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
+import { isRootPath } from 'src/utils/string-processes';
 import classNames from 'classnames';
 
 //////////
@@ -12,7 +13,7 @@ import classNames from 'classnames';
 interface CardBrowserFloatingMenuProps {
     folder: TFolder;
     parentFolder: TFolder | null;
-    currentFolderIsProject: boolean;
+    parentFolderIsProject: boolean;
     onOpenParentFolder: () => void;
     searchActive: boolean;
     activateSearch: () => void;
@@ -58,35 +59,27 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
                 >
                     <Plus size={33} />
                 </button>
-                {props.parentFolder !== null && (
-                    <button
-                        className={classNames(
-                            'ddc_pb_card-browser-floating-menu__folder-title',
-                            props.currentFolderIsProject &&
-                                'ddc_pb_card-browser-floating-menu__folder-title--is-project'
-                        )}
-                        onClick={props.onOpenParentFolder}
-                        title={`Open ${props.parentFolder.name} in browser`}
-                    >
-                        <ChevronLeft size={16} className="ddc_pb_card-browser-floating-menu__folder-title-chevron" />
-                        {props.parentFolder.name}
-                    </button>
-                )}
+                <button
+                    className={classNames(
+                        'ddc_pb_card-browser-floating-menu__folder-title',
+                        props.parentFolderIsProject &&
+                            'ddc_pb_card-browser-floating-menu__folder-title--is-project',
+                        props.parentFolder === null &&
+                            'ddc_pb_card-browser-floating-menu__folder-title--hidden'
+                    )}
+                    onClick={props.parentFolder !== null ? props.onOpenParentFolder : undefined}
+                    title={
+                        props.parentFolder === null
+                            ? undefined
+                            : isRootPath(props.parentFolder.path)
+                              ? 'Open vault root in browser'
+                              : `Open ${props.parentFolder.name} in browser`
+                    }
+                >
+                    <ChevronLeft size={16} className="ddc_pb_card-browser-floating-menu__folder-title-chevron" />
+                    {props.parentFolder === null ? '' : isRootPath(props.parentFolder.path) ? 'Home' : props.parentFolder.name}
+                </button>
             </div>
         </div>
     );
-
-    //////////
-
-    async function newProject(folder: TFolder) {
-        try {
-            const newFile = await createProject({
-                parentFolder: folder,
-                projectName: 'Untitled',
-            });
-            openNewPageAndSelectTitle(newFile);
-        } catch (reason) {
-            console.log(reason);
-        }
-    }
 };

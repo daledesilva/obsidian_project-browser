@@ -54,7 +54,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [refreshId, setRefreshId] = React.useState<number>(uuidv4());
     const [searchActive, setSearchActive] = React.useState<boolean>(false);
     const [searchStr, setSearchStr] = React.useState<string>('');
-    const [currentFolderIsProject, setCurrentFolderIsProject] = React.useState<boolean>(false);
+    const [parentFolderIsProject, setParentFolderIsProject] = React.useState<boolean>(false);
     const {state, eState} = props.getViewStates();
     const browserRef = React.useRef<HTMLDivElement>(null);
     const fabContainerRef = React.useRef<HTMLDivElement>(null);
@@ -64,9 +64,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [sectionsOfItemsRaw, setSectionsOfItemsRaw] = React.useState<import('src/logic/section-processes').Section[] | null>(null);
 
     React.useEffect(() => {
+        const parent = initialFolder.parent;
+        if (!parent) {
+            setParentFolderIsProject(false);
+            return;
+        }
         let cancelled = false;
-        getFolderSettings(v, initialFolder).then((settings) => {
-            if (!cancelled) setCurrentFolderIsProject(settings.isProject === true);
+        getFolderSettings(v, parent).then((settings) => {
+            if (!cancelled) setParentFolderIsProject(settings.isProject === true);
         });
         return () => { cancelled = true; };
     }, [initialFolder.path]);
@@ -188,7 +193,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 <CardBrowserFloatingMenu
                     folder={initialFolder}
                     parentFolder={initialFolder.parent}
-                    currentFolderIsProject={currentFolderIsProject}
+                    parentFolderIsProject={parentFolderIsProject}
                     onOpenParentFolder={openParentFolder}
                     searchActive={searchActive}
                     activateSearch={() => setSearchActive(true)}
