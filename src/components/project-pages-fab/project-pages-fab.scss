@@ -95,6 +95,34 @@
         font-size: 0.9em;
     }
 
+    .ddc_pb_project-pages-fab__action-button--primary {
+        gap: 4px;
+        padding: 0 8px;
+        font-size: 0.85em;
+        color: var(--text-accent);
+        background-color: var(--background-primary);
+        border: 1px solid var(--interactive-accent);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+        &:hover {
+            border-color: var(--interactive-accent-hover);
+            color: var(--text-accent-hover);
+        }
+    }
+
+    .ddc_pb_project-pages-fab__action-button--secondary {
+        gap: 4px;
+        padding: 0 8px;
+        font-size: 0.85em;
+        color: var(--text-normal);
+        background-color: var(--color-base-00);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+
+        &:hover {
+            background-color: var(--background-modifier-hover);
+        }
+    }
+
     .ddc_pb_project-pages-fab__group {
         display: flex;
         flex-direction: column;
@@ -133,11 +161,25 @@
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 0.9em;
-        background-color: var(--background-primary);
+        background-color: var(--color-base-00);
         color: var(--text-normal);
 
-        &--is-project {
-            border-bottom: 2px solid var(--interactive-accent);
+        @media (hover: hover) {
+            &:hover {
+                background-color: var(--background-modifier-hover);
+            }
+        }
+
+        &--is-project,
+        &--is-project-secondary {
+            background-color: var(--interactive-accent);
+            color: var(--text-on-accent);
+
+            @media (hover: hover) {
+                &:hover {
+                    background-color: var(--interactive-accent-hover);
+                }
+            }
         }
     }
 }

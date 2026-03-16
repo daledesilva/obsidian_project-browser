@@ -57,11 +57,24 @@
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 0.9em;
-        background-color: var(--background-primary);
+        background-color: var(--color-base-00);
         color: var(--text-normal);
 
+        @media (hover: hover) {
+            &:hover {
+                background-color: var(--background-modifier-hover);
+            }
+        }
+
         &--is-project {
-            border-bottom: 2px solid var(--interactive-accent);
+            background-color: var(--interactive-accent);
+            color: var(--text-on-accent);
+
+            @media (hover: hover) {
+                &:hover {
+                    background-color: var(--interactive-accent-hover);
+                }
+            }
         }
 
         &--hidden {

@@ -1,7 +1,7 @@
 import './project-pages-fab.scss';
 import { TAbstractFile, TFile, TFolder } from 'obsidian';
 import * as React from 'react';
-import { ChevronLeft, ExternalLink, FilePlus, FileStack, Plus } from 'lucide-react';
+import { ChevronLeft, ExternalLink, FileStack, Plus } from 'lucide-react';
 import classNames from 'classnames';
 import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { getItemsInFolder } from 'src/logic/folder-processes';
@@ -178,38 +178,54 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         <div className="ddc_pb_project-pages-fab" ref={fabContainerRef}>
             {menuIsOpen && (
                 <div className="ddc_pb_project-pages-fab__page-buttons">
-                    {props.parentIsProject && pagesInProject.map((file) => (
-                        <PageMenuFileButton
-                            key={file.path}
-                            file={file}
-                            isCurrentPage={file.path === props.currentFile.path}
-                            onPageClick={handlePageClick}
-                            onFileChange={() => setRefreshTrigger((t) => t + 1)}
-                        />
-                    ))}
+                    {props.parentIsProject && (
+                        <>
+                            {pagesInProject.map((file) => (
+                                <PageMenuFileButton
+                                    key={file.path}
+                                    file={file}
+                                    isCurrentPage={file.path === props.currentFile.path}
+                                    onPageClick={handlePageClick}
+                                    onFileChange={() => setRefreshTrigger((t) => t + 1)}
+                                />
+                            ))}
+                            {props.onAddPage && (
+                                <button
+                                    className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
+                                    onClick={handleAddPageClick}
+                                    title="Add page"
+                                >
+                                    <Plus size={16} />
+                                    <span className="ddc_pb_project-pages-fab__action-button-label">
+                                        Add page
+                                    </span>
+                                </button>
+                            )}
+                        </>
+                    )}
                     {!props.parentIsProject && (
                         <>
+                            {props.onAddPage && (
+                                <button
+                                    className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
+                                    onClick={handleAddPageClick}
+                                    title="Add page"
+                                >
+                                    <Plus size={16} />
+                                    <span className="ddc_pb_project-pages-fab__action-button-label">
+                                        Add page
+                                    </span>
+                                </button>
+                            )}
                             {props.onNewFile && (
                                 <button
-                                    className="ddc_pb_project-pages-fab__action-button"
+                                    className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--secondary"
                                     onClick={handleNewFileClick}
                                     title="New file"
                                 >
                                     <Plus size={16} />
                                     <span className="ddc_pb_project-pages-fab__action-button-label">
                                         New file
-                                    </span>
-                                </button>
-                            )}
-                            {props.onAddPage && (
-                                <button
-                                    className="ddc_pb_project-pages-fab__action-button"
-                                    onClick={handleAddPageClick}
-                                    title="Add page"
-                                >
-                                    <FilePlus size={16} />
-                                    <span className="ddc_pb_project-pages-fab__action-button-label">
-                                        Add page
                                     </span>
                                 </button>
                             )}
@@ -224,9 +240,9 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                         menuIsOpen && 'ddc_pb_active'
                     )}
                     onClick={handleFABClick}
-                    title="Project pages"
+                    title={props.parentIsProject ? 'Project pages' : 'Add page'}
                 >
-                    <FileStack size={24} />
+                    {props.parentIsProject ? <FileStack size={24} /> : <Plus size={24} />}
                 </button>
                 <button
                     className={classNames(
