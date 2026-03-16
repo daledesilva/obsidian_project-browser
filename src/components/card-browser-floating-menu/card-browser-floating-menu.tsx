@@ -4,7 +4,7 @@ import * as React from "react";
 import { NewProjectModal } from 'src/modals/new-project-modal/new-project-modal';
 import { Plus, Search } from 'lucide-react';
 import { createProject } from 'src/utils/file-manipulation';
-import { openFileInSameLeaf } from 'src/logic/file-access-processes';
+import { openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import classNames from 'classnames';
 
 //////////
@@ -62,7 +62,7 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
             //     cardBrowserContext.rerender();
                 // Additional delay for notcing refresh before opening file
                 // setTimeout( () => { 
-                    openFileInSameLeaf(newFile);
+                    openNewPageAndSelectTitle(newFile);
                 // }, 500);
             // }, 300)
 

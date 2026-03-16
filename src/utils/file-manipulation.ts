@@ -218,10 +218,7 @@ async function createFolders(vault: Vault, path: string): Promise<TFolder> {
 }
 
 async function createDefaultMarkdownFile(vault: Vault, folder: TFolder, title: string): Promise<TFile> {
-    let filename = sanitizeFileFolderName(title);
-    // filename = unclashFileName(filename);
-
-    let content = '';//getDefaultMdFileContent();
+    const filename = sanitizeFileFolderName(title);
 
     // @ts-ignore
     return await createNewMarkdownFile(vault, folder, filename);
@@ -231,31 +228,39 @@ async function createDefaultMarkdownFile(vault: Vault, folder: TFolder, title: s
  * Creates an empty markdown file and returns it. If the file exists already it creates a new one and appends a version number.
  * Don't include file extension unless it should appear in the note's title.
  */
-async function createNewMarkdownFile(vault: Vault, folder: TFolder, filename: string, writeOptions: DataWriteOptions, version: number = 1) : Promise<TFile | null> {
-    let pathAndVersionedBasename;
+async function createNewMarkdownFile(
+    vault: Vault,
+    folder: TFolder,
+    filename: string,
+    writeOptions?: DataWriteOptions,
+    version: number = 1
+): Promise<TFile | null> {
+    let pathAndVersionedBasename: string;
     let fileRef: TFile | null = null;
 
     try {
-    
-        if(version == 1) {
+        if (version === 1) {
             pathAndVersionedBasename = `${folder.path}/${filename}`;
         } else {
             pathAndVersionedBasename = `${folder.path}/${filename} (${version})`;
         }
-        
-        if( await vault.adapter.exists(`${pathAndVersionedBasename}.md`) ) {
-            // File already exists, try appending a number (or higher number)
-            fileRef = await createNewMarkdownFile(vault, folder, filename, writeOptions, version+1);
+
+        if (await vault.adapter.exists(`${pathAndVersionedBasename}.md`)) {
+            fileRef = await createNewMarkdownFile(
+                vault,
+                folder,
+                filename,
+                writeOptions,
+                version + 1
+            );
         } else {
-            // It doesn't yet exist, so create it
             fileRef = await vault.create(`${pathAndVersionedBasename}.md`, '', writeOptions);
         }
-
-    } catch(reason) {
-        console.log(reason)
+    } catch (reason) {
+        console.log(reason);
     }
-	
-	return fileRef;
+
+    return fileRef;
 }
 
 

@@ -7,7 +7,7 @@ import { ProjectPagesFAB } from 'src/components/project-pages-fab/project-pages-
 import { getGlobals, getStateMenuSettings } from 'src/logic/stores';
 import { toggleStateMenu } from 'src/logic/toggle-state-menu';
 import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
-import { openFileInSameLeaf } from 'src/logic/file-access-processes';
+import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { createProject, createProjectFromNote, getFolderSettings } from 'src/utils/file-manipulation';
 import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view';
 
@@ -134,7 +134,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
             parentFolder,
             projectName: 'Untitled',
         });
-        openFileInSameLeaf(newFile);
+        openNewPageAndSelectTitle(newFile);
         // Defer refresh; vault events in FAB will update the page list
         setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
     }
@@ -145,11 +145,11 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
                 parentFolder,
                 projectName: 'Untitled',
             });
-            openFileInSameLeaf(newFile);
+            openNewPageAndSelectTitle(newFile);
             openStateMenuIfClosed();
         } else {
             const newFile = await createProjectFromNote(activeFile, parentFolder);
-            openFileInSameLeaf(newFile);
+            openNewPageAndSelectTitle(newFile);
         }
         // Defer refresh; vault events in FAB will update the page list
         setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);

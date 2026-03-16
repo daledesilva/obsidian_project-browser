@@ -1,5 +1,5 @@
 import { Menu, TFolder } from "obsidian";
-import { openFileInSameLeaf } from "src/logic/file-access-processes";
+import { openNewPageAndSelectTitle } from "src/logic/file-access-processes";
 import { getGlobals, getShowHiddenFolders, hideHiddenFolders, unhideHiddenFolders } from "src/logic/stores";
 import { NewFolderModal } from "src/modals/new-folder-modal/new-folder-modal";
 import { createProject, getFolderSettings, setFolderAsProject, setFolderAsFolder } from "src/utils/file-manipulation";
@@ -71,7 +71,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
                         parentFolder: commands.getCurFolder(),
                         projectName: 'Untitled'
                     });
-                    setTimeout( () => openFileInSameLeaf(newFile), 500);
+                    setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
                 })
         );
         menu.addItem((item) =>

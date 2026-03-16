@@ -1,5 +1,5 @@
 import { Menu, TFolder } from "obsidian";
-import { openFileInSameLeaf } from "src/logic/file-access-processes";
+import { openNewPageAndSelectTitle } from "src/logic/file-access-processes";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
 import { getGlobals } from "src/logic/stores";
 import { createProject } from "src/utils/file-manipulation";
@@ -28,7 +28,7 @@ export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFo
                         stateName: stateName
                     });
                     // TODO: This delay should be set as a constant globally to guarantee it's longer than other delay of file appear
-                    setTimeout( () => openFileInSameLeaf(newFile), 500);
+                    setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
                 })
         );
         menu.showAtMouseEvent(event);

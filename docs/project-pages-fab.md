@@ -48,7 +48,7 @@ flowchart TB
 
 1. Click the FAB to open the pages menu.
 2. Other project pages appear as floating buttons above the FAB.
-3. **Add page** — creates a new file in the project and opens it.
+3. **Add page** — creates a new file in the project and opens it. The filename is activated for renaming (via Obsidian's Edit file title or a rename modal) so you can immediately type to rename it if desired.
 4. **Folder** (labeled with the project folder name) — opens that folder in the project browser.
 5. Click a page to navigate to it. The state menu on that page opens by default.
 6. Click the FAB again or click anywhere else to close the menu.
@@ -66,11 +66,13 @@ flowchart TB
 2. The current note is moved into that folder and renamed to **Page 1**.
 3. The folder is marked as a project (`folder-settings.pbs` with `isProject: true`).
 4. A second page (new file) named **Page 2** is created in the project folder.
-5. The second page opens in the same leaf.
+5. The second page opens in the same leaf with the filename ready to rename.
 
 ### Page naming when adding pages
 
 When adding a page to a project, new pages are named "Page N" using the next available number. Existing files whose basenames match "Page" followed by optional whitespace and digits (case-insensitive, e.g. `Page 1`, `page 2`, `PAGE 3`) are scanned; the new page is named "Page " + (max + 1). If no such files exist, the new page is named "Page 1". This applies both when converting a note to a project (original → "Page 1", new → "Page 2") and when adding pages to existing projects.
+
+New pages open with the filename activated for renaming (via Obsidian's Edit file title command or a rename modal) so you can immediately type to rename if desired.
 
 ### Visual feedback
 
