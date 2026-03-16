@@ -9,6 +9,7 @@ When working in a project, you often need to jump between its pages. The Project
 ## Conceptual understanding
 
 - **Project Pages FAB** — A floating button with a pages icon that appears whenever any file that Obsidian can display is open (markdown, PDF, canvas, images, etc.). Its menu varies: for files inside a project, it shows other project pages and an Add page action; for files outside a project, it shows Folder, New file, and Add page.
+- **Project title** — When viewing a note inside a project, a floating pill below the FAB shows the project name. Clicking it navigates to the project index (same as the Folder button).
 - **Pages** — The direct file children of the project folder (excluding `folder-settings.pbs`). Notes in subfolders of a project are not included.
 
 ## Flows and relationships
@@ -78,6 +79,15 @@ New pages open with the filename activated for renaming (via Obsidian's Edit fil
 
 - When the menu is open, the FAB is highlighted (accent color) so you know it can be clicked again to close.
 
+### Layout and project title
+
+The FAB and project title are grouped in the bottom-right corner of the window:
+
+- **Position** — Both elements sit flush with the right edge, with a small gap between them. The FAB is above the project title. When the content area has a visible scrollbar, the group shifts left to avoid overlapping it.
+- **FAB shape** — The main button is 25% wider than its height, with rounded left corners and sharp right corners (pill-style, aligned to the right).
+- **Project title** — A floating pill below the FAB with background and rounded left corners. Only visible when the current file is inside a project. Displays the project folder name. Clicking it navigates to the project index (card browser) for that project.
+- **Non-project files** — When viewing a file outside a project, the project title element is hidden; only the FAB and its menu appear.
+
 ## Technical implementation
 
 - **Component**: `ProjectPagesFAB` in `src/components/project-pages-fab/`
@@ -89,6 +99,7 @@ New pages open with the filename activated for renaming (via Obsidian's Edit fil
 - **Add page (non-project)**: `createProjectFromNote` in `src/utils/file-manipulation.ts` — creates folder, moves note, renames it to "Page 1", sets project, creates second page as "Page 2".
 - **Rename popup on new page**: Controlled by "Show rename popup when creating new pages" (File Overlays, settings). When enabled (default), new pages open with the filename activated for renaming; when disabled, they open without the rename popup.
 - **Click-outside close**: `pointerdown` on `document`; closes when the target is outside the FAB/buttons container. Clicks on Obsidian menus (`.menu`) or modals (`.modal`, `.modal-bg`) are ignored so the menu stays open during context-menu actions like Delete.
+- **Scrollbar accommodation**: When the leaf's content area (`.cm-scroller`) has a visible vertical scrollbar, the FAB group is offset left by the scrollbar width so it does not overlap. A ResizeObserver on both the scroller and `.cm-content` updates the `--ddc-pb-fab-right-offset` CSS variable when the pane is resized or when content grows (e.g. while typing), since the scroller's size often stays viewport-fixed and only the content height changes.
 
 ## Technical gotchas
 

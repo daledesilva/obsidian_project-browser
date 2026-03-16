@@ -22,6 +22,47 @@ interface ProjectPagesFabRoot {
     render: (element: React.ReactElement) => void;
 }
 
+const FAB_RIGHT_OFFSET_CSS_VAR = '--ddc-pb-fab-right-offset';
+
+function setupFabScrollbarOffset(
+    fabContainerEl: HTMLElement,
+    leafContainerEl: HTMLElement
+): () => void {
+    function updateOffset() {
+        const scroller = leafContainerEl.querySelector('.cm-scroller');
+        if (!scroller || !(scroller instanceof HTMLElement)) {
+            fabContainerEl.style.setProperty(FAB_RIGHT_OFFSET_CSS_VAR, '0px');
+            return;
+        }
+        const hasVerticalScrollbar = scroller.scrollHeight > scroller.clientHeight;
+        if (!hasVerticalScrollbar) {
+            fabContainerEl.style.setProperty(FAB_RIGHT_OFFSET_CSS_VAR, '0px');
+            return;
+        }
+        const scrollbarWidth = scroller.offsetWidth - scroller.clientWidth;
+        fabContainerEl.style.setProperty(FAB_RIGHT_OFFSET_CSS_VAR, `${scrollbarWidth}px`);
+    }
+
+    updateOffset();
+
+    const scroller = leafContainerEl.querySelector('.cm-scroller');
+    if (!scroller) return () => {};
+
+    const resizeObserver = new ResizeObserver(() => {
+        requestAnimationFrame(updateOffset);
+    });
+    resizeObserver.observe(scroller);
+
+    // When content grows while typing, .cm-scroller's size may not change (it's viewport-fixed).
+    // Observe .cm-content too, which grows when content is added and triggers re-check.
+    const content = scroller.querySelector('.cm-content');
+    if (content) {
+        resizeObserver.observe(content);
+    }
+
+    return () => resizeObserver.disconnect();
+}
+
 function isFileView(leaf: WorkspaceLeaf | null): leaf is WorkspaceLeaf & { view: FileView } {
     return !!leaf && leaf.view instanceof FileView;
 }
@@ -162,7 +203,14 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
         (fabContainerEl as HTMLElement & { __projectPagesFabRoot?: ProjectPagesFabRoot }).__projectPagesFabRoot = root;
     }
 
-    const root = (fabContainerEl as HTMLElement & { __projectPagesFabRoot?: ProjectPagesFabRoot }).__projectPagesFabRoot;
+    const fabEl = fabContainerEl as HTMLElement & {
+        __projectPagesFabRoot?: ProjectPagesFabRoot;
+        __fabScrollbarCleanup?: () => void;
+    };
+    fabEl.__fabScrollbarCleanup?.();
+    fabEl.__fabScrollbarCleanup = setupFabScrollbarOffset(fabContainerEl, containerEl);
+
+    const root = fabEl.__projectPagesFabRoot;
     if (root) {
         root.render(
             <ProjectPagesFAB
@@ -183,7 +231,11 @@ function removeProjectPagesFAB(containerEl: HTMLElement) {
     const fabContainerEl = containerEl.find(`.${projectPagesFabContainerClassName}`);
     if (!fabContainerEl) return;
 
-    const el = fabContainerEl as HTMLElement & { __projectPagesFabRoot?: ProjectPagesFabRoot };
+    const el = fabContainerEl as HTMLElement & {
+        __projectPagesFabRoot?: ProjectPagesFabRoot;
+        __fabScrollbarCleanup?: () => void;
+    };
+    el.__fabScrollbarCleanup?.();
     if (el.__projectPagesFabRoot) {
         el.__projectPagesFabRoot.unmount();
         delete el.__projectPagesFabRoot;

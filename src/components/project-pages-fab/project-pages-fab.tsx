@@ -246,16 +246,27 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                     </button>
                 </div>
             )}
-            <button
-                className={classNames(
-                    'ddc_pb_project-pages-fab__main-button',
-                    menuIsOpen && 'ddc_pb_active'
+            <div className="ddc_pb_project-pages-fab__group">
+                <button
+                    className={classNames(
+                        'ddc_pb_project-pages-fab__main-button',
+                        menuIsOpen && 'ddc_pb_active'
+                    )}
+                    onClick={handleFABClick}
+                    title="Project pages"
+                >
+                    <FileStack size={24} />
+                </button>
+                {props.parentIsProject && (
+                    <button
+                        className="ddc_pb_project-pages-fab__project-title"
+                        onClick={handleOpenProjectFolderClick}
+                        title={`Open ${props.projectFolder.name} in project browser`}
+                    >
+                        {props.projectFolder.name}
+                    </button>
                 )}
-                onClick={handleFABClick}
-                title="Project pages"
-            >
-                <FileStack size={24} />
-            </button>
+            </div>
         </div>
     );
 };
