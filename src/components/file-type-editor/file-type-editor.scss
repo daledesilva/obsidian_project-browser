@@ -4,40 +4,116 @@
     color: var(--text-normal);
 }
 
-.ddc_pb_file-type-legend {
+.ddc_pb_file-type-section-header {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5em 1em;
-    font-size: 0.85em;
-    color: var(--text-muted);
-    margin-bottom: 1em;
-    width: 100%;
+    flex-direction: column;
+    gap: 0;
+}
 
-    .ddc_pb_file-type-legend-item {
-        padding: 0.2em 0.5em;
-        border-radius: 0.4em;
+.ddc_pb_file-type-legend-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5em;
+}
+
+/* Standard button proportions (like Reset), no fill, accent outline and text */
+/* Wrapper + !important to override Obsidian/theme button styles in settings */
+.ddc_pb_legend-btn-wrapper button.ddc_pb_file-type-legend-btn {
+    appearance: none;
+    background: none !important;
+    background-color: transparent !important;
+    border: 1px solid var(--interactive-accent) !important;
+    border-radius: var(--button-radius);
+    box-shadow: none !important;
+    color: var(--interactive-accent) !important;
+    cursor: pointer;
+    font: inherit;
+    padding: var(--size-4-1) var(--size-4-3);
+
+    &:hover {
+        background: none !important;
+        background-color: transparent !important;
+        border-color: var(--interactive-accent-hover) !important;
+        box-shadow: none !important;
+        color: var(--interactive-accent-hover) !important;
+    }
+}
+
+/* Tippy box: match section header rounding (16px) */
+.tippy-box[data-theme~="ddc_pb_legend"] {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.ddc_pb_file-type-legend-popup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+    padding: 1em;
+    border-radius: 16px;
+}
+
+.ddc_pb_file-type-legend-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5em;
+}
+
+.ddc_pb_file-type-legend-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+.ddc_pb_file-type-legend-heading {
+    font-size: 1.05em;
+    font-weight: 600;
+    margin: 0;
+}
+
+.ddc_pb_file-type-legend-subdesc {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* Legend chips: same styling as real chips (popup is outside .ddc_pb_file-type-section) */
+.ddc_pb_file-type-legend-popup .ddc_pb_draggable.ddc_pb_file-type-legend-chip {
+    flex: 0 0 7em;
+    min-width: 7em;
+    justify-content: center;
+}
+
+.ddc_pb_file-type-legend-popup .ddc_pb_draggable {
+    padding: 8px 14px 8px 10px;
+    border-radius: 1em;
+    display: inline-flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+
+    .ddc_pb_draggable-label {
         font-weight: 500;
     }
 
-    .ddc_pb_file-type-legend-item.ddc_pb_file-type-default {
+    &.ddc_pb_file-type-default {
+        background-color: color-mix(in srgb, var(--interactive-accent) 25%, transparent);
+        color: var(--text-on-accent);
+    }
+
+    &.ddc_pb_file-type-default-full {
         background-color: var(--interactive-accent);
         color: var(--text-on-accent);
     }
 
-    .ddc_pb_file-type-legend-item.ddc_pb_file-type-registered {
+    &.ddc_pb_file-type-registered {
         background-color: var(--text-muted);
         color: var(--background-primary);
     }
 
-    .ddc_pb_file-type-legend-item.ddc_pb_file-type-unsupported {
-        border: none;
-        color: var(--text-muted);
-    }
-
-    .ddc_pb_file-type-legend-sep {
-        color: var(--text-faint);
-        font-size: 0.9em;
+    &.ddc_pb_file-type-unsupported {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-normal);
     }
 }
 
@@ -52,6 +128,8 @@
     h3 {
         font-size: small;
         margin: 0 0 0.5em 0;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
         font-weight: 200;
         width: 100%;
     }
@@ -60,6 +138,8 @@
         font-size: 0.85em;
         color: var(--text-muted);
         margin: 0 0 1em 0;
+        margin-inline-start: 0;
+        padding-inline-start: 0;
         width: 100%;
     }
 
@@ -98,13 +178,13 @@
                     gap: 0.1em;
 
                     .ddc_pb_hidden-item-ext {
-                        font-size: 0.85em;
-                        color: var(--text-muted);
+                        font-size: inherit;
+                        color: inherit;
                     }
 
                     .ddc_pb_hidden-item-plugin {
-                        font-size: 0.8em;
-                        color: var(--text-faint);
+                        font-size: 0.9em;
+                        color: inherit;
                         font-style: italic;
                     }
                 }

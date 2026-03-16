@@ -1,11 +1,13 @@
 import { createRoot } from 'react-dom/client';
 import * as React from 'react';
 import { ItemInterface, ReactSortable } from 'react-sortablejs';
+import Tippy from '@tippyjs/react';
 import { GripVertical } from 'lucide-react';
 import classNames from 'classnames';
 import type { App } from 'obsidian';
 import { getGlobals } from 'src/logic/stores';
 import type { FileTypeSurface } from 'src/types/plugin-settings_0_4_0';
+import 'tippy.js/dist/tippy.css';
 import './file-type-editor.scss';
 
 ///////////
@@ -158,10 +160,16 @@ function runFileTypeDiscovery(plugin: { app: App; settings: { fileTypes: { proje
 ///////////
 ///////////
 
-export function insertFileTypeEditor(containerEl: HTMLElement, onScansComplete?: () => void) {
+export function insertFileTypeEditor(
+    containerEl: HTMLElement,
+    onScansComplete?: () => void,
+    surface?: FileTypeSurface
+) {
     const sectionEl = containerEl.createDiv('ddc_pb_settings-sub-section');
     const contentEl = sectionEl.createDiv();
-    createRoot(contentEl).render(<FileTypeSettingsSection onScansComplete={onScansComplete} />);
+    createRoot(contentEl).render(
+        <FileTypeSettingsSection onScansComplete={onScansComplete} surface={surface} />
+    );
 }
 
 interface FileTypeItem extends ItemInterface {
@@ -171,11 +179,12 @@ interface FileTypeItem extends ItemInterface {
 
 interface FileTypeSettingsSectionProps {
     onScansComplete?: () => void;
+    surface?: FileTypeSurface;
 }
 
 function FileTypeSettingsSection(props: FileTypeSettingsSectionProps) {
     const { plugin } = getGlobals();
-    const { onScansComplete } = props;
+    const { onScansComplete, surface } = props;
 
     React.useEffect(() => {
         const runOnMount = () => {
@@ -187,18 +196,49 @@ function FileTypeSettingsSection(props: FileTypeSettingsSectionProps) {
         setTimeout(runOnMount, 0);
     }, [plugin, onScansComplete]);
 
-    return (
-        <div className="ddc_pb_section-header">
-            <div className="ddc_pb_file-type-legend">
-                <span className="ddc_pb_file-type-legend-item ddc_pb_file-type-default">Native</span>
-                <span className="ddc_pb_file-type-legend-sep">Obsidian built-in</span>
-                <span className="ddc_pb_file-type-legend-item ddc_pb_file-type-registered">Plugin</span>
-                <span className="ddc_pb_file-type-legend-sep">Plugin-registered</span>
-                <span className="ddc_pb_file-type-legend-item ddc_pb_file-type-unsupported">Unsupported</span>
-                <span className="ddc_pb_file-type-legend-sep">From vault scan</span>
+    const surfaces: FileTypeSurface[] = surface ? [surface] : ['projectBrowser', 'pageMenu'];
+
+    const legendContent = (
+        <div className="ddc_pb_file-type-legend-popup">
+            <div className="ddc_pb_file-type-legend-entry">
+                <div className="ddc_pb_draggable ddc_pb_file-type-default ddc_pb_file-type-default-full ddc_pb_file-type-legend-chip">
+                    <span className="ddc_pb_draggable-label">Native</span>
+                </div>
+                <div className="ddc_pb_file-type-legend-content">
+                    <p className="ddc_pb_file-type-legend-subdesc">Core Obsidian file types.</p>
+                </div>
             </div>
-            <FileTypeEditor surface="projectBrowser" />
-            <FileTypeEditor surface="pageMenu" />
+            <div className="ddc_pb_file-type-legend-entry">
+                <div className="ddc_pb_draggable ddc_pb_file-type-registered ddc_pb_file-type-legend-chip">
+                    <span className="ddc_pb_draggable-label">Plugin</span>
+                </div>
+                <div className="ddc_pb_file-type-legend-content">
+                    <p className="ddc_pb_file-type-legend-subdesc">File types added by community plugins.</p>
+                </div>
+            </div>
+            <div className="ddc_pb_file-type-legend-entry">
+                <div className="ddc_pb_draggable ddc_pb_file-type-unsupported ddc_pb_file-type-legend-chip">
+                    <span className="ddc_pb_draggable-label">Other</span>
+                </div>
+                <div className="ddc_pb_file-type-legend-content">
+                    <p className="ddc_pb_file-type-legend-subdesc">Found in your vault but usually hidden by Obsidian.</p>
+                </div>
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="ddc_pb_section-header ddc_pb_file-type-section-header">
+            {surfaces.map((s) => (
+                <FileTypeEditor key={s} surface={s} />
+            ))}
+            <div className="ddc_pb_file-type-legend-row ddc_pb_legend-btn-wrapper">
+                <Tippy content={legendContent} trigger="click" interactive={true} hideOnClick={true} theme="ddc_pb_legend">
+                    <button type="button" className="ddc_pb_file-type-legend-btn">
+                        Legend
+                    </button>
+                </Tippy>
+            </div>
         </div>
     );
 }
@@ -255,12 +295,7 @@ export const FileTypeEditor = (props: FileTypeEditorProps) => {
     return (
         <>
             <div className="ddc_pb_file-type-section">
-                <h3>{surfaceLabel} — Visible file types</h3>
-                <p className="ddc_pb_file-type-description">
-                    {surface === 'projectBrowser'
-                        ? 'Files with these types appear in the project browser card view.'
-                        : 'Files with these types appear in the project pages menu.'}
-                </p>
+                <h3>Show these...</h3>
                 <ReactSortable
                     list={visibleFileTypes}
                     setList={persistVisible}
@@ -300,12 +335,7 @@ export const FileTypeEditor = (props: FileTypeEditorProps) => {
                 </div>
 
                 <div className="ddc_pb_file-type-section">
-                    <h3>{surfaceLabel} — Hidden file types</h3>
-                    <p className="ddc_pb_file-type-description">
-                        {surface === 'projectBrowser'
-                            ? 'Hidden file types do not appear in the project browser view.'
-                            : 'Hidden file types do not appear in the project pages menu.'}
-                    </p>
+                    <h3>Hide these...</h3>
                     <ReactSortable
                         list={hiddenFileTypes}
                         setList={persistHidden}
