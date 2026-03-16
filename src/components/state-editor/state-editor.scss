@@ -1,10 +1,14 @@
 
-.ddc_pb_states-section {
+.ddc_pb_states-section-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
 
+.ddc_pb_states-section {
     background-color: rgba(255,255,255,0.03);
     border-radius: 16px;
     padding: 1em;
-    margin-bottom: 1em;
     display: flex;
     flex-wrap: wrap;
 
@@ -95,6 +99,11 @@
     padding: 0 1em;
     overflow: hidden;
     transition: all 0.2s ease-in-out;
+
+    /* When collapsed: cancel the flex gap above so spacing to Default state matches others */
+    &:not(.ddc_pb_visible) {
+        margin-bottom: -1em;
+    }
     &.ddc_pb_visible {
         height: 7em;
         padding: 1em;

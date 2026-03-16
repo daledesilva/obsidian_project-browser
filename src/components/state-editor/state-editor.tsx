@@ -61,7 +61,7 @@ export const StateEditor = (props: StateEditorProps) => {
 
     return <>
         <div
-            className = 'ddc_pb_section-header'
+            className = 'ddc_pb_section-header ddc_pb_states-section-list'
         >
 
             <div className="ddc_pb_states-section">

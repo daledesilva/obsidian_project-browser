@@ -146,4 +146,17 @@
         min-height: 0;
         overflow: hidden;
     }
+
+    &.ddc_pb_controls-section--states .ddc_pb_controls-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+
+        > .setting-item,
+        > .ddc_pb_settings-sub-section {
+            margin: 0 !important;
+            margin-block-start: 0 !important;
+            margin-block-end: 0 !important;
+        }
+    }
 }

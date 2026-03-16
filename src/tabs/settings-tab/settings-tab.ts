@@ -163,7 +163,7 @@ function insertAccessSettings(containerEl: HTMLElement, refresh: () => void) {
 
 function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 	const {plugin} = getGlobals();
-	const sectionEl = containerEl.createDiv('ddc_pb_controls-section');
+	const sectionEl = containerEl.createDiv('ddc_pb_controls-section ddc_pb_controls-section--states');
 
 	new Setting(sectionEl)
 		.setClass('ddc_pb_controls-header')
