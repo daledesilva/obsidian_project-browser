@@ -55,6 +55,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [searchActive, setSearchActive] = React.useState<boolean>(false);
     const [searchStr, setSearchStr] = React.useState<string>('');
     const [parentFolderIsProject, setParentFolderIsProject] = React.useState<boolean>(false);
+    const [currentFolderIsProject, setCurrentFolderIsProject] = React.useState<boolean>(false);
     const {state, eState} = props.getViewStates();
     const browserRef = React.useRef<HTMLDivElement>(null);
     const fabContainerRef = React.useRef<HTMLDivElement>(null);
@@ -72,6 +73,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
         let cancelled = false;
         getFolderSettings(v, parent).then((settings) => {
             if (!cancelled) setParentFolderIsProject(settings.isProject === true);
+        });
+        return () => { cancelled = true; };
+    }, [initialFolder.path, v]);
+
+    React.useEffect(() => {
+        let cancelled = false;
+        getFolderSettings(v, initialFolder).then((settings) => {
+            if (!cancelled) setCurrentFolderIsProject(settings.isProject === true);
         });
         return () => { cancelled = true; };
     }, [initialFolder.path]);
@@ -194,7 +203,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
                     folder={initialFolder}
                     parentFolder={initialFolder.parent}
                     parentFolderIsProject={parentFolderIsProject}
+                    currentFolderIsProject={currentFolderIsProject}
                     onOpenParentFolder={openParentFolder}
+                    onFolderCreated={rerender}
                     searchActive={searchActive}
                     activateSearch={() => setSearchActive(true)}
                     deactivateSearch={() => setSearchActive(false)}

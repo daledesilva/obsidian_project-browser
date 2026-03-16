@@ -40,6 +40,58 @@
         padding: 25% !important; // Important to override Obsidian padding at all media sizes
         border-radius: 8px 0 0 8px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+
+        &.ddc_pb_active {
+            color: var(--text-on-accent);
+            background-color: var(--interactive-accent);
+        }
+    }
+
+    .ddc_pb_card-browser-floating-menu__action-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        margin-right: 12px;
+        margin-bottom: 12px;
+    }
+
+    .ddc_pb_card-browser-floating-menu__action-button {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-height: min(40px, 8vw);
+        max-width: 200px;
+        padding: 0 8px;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.85em;
+
+        &--primary {
+            color: var(--text-accent);
+            background-color: var(--background-primary);
+            border: 1px solid var(--interactive-accent);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+            &:hover {
+                border-color: var(--interactive-accent-hover);
+                color: var(--text-accent-hover);
+            }
+        }
+
+        &--secondary {
+            color: var(--text-normal);
+            background-color: var(--color-base-00);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+
+            &:hover {
+                background-color: var(--background-modifier-hover);
+            }
+        }
     }
 
     .ddc_pb_card-browser-floating-menu__folder-title {
