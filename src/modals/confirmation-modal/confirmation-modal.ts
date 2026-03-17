@@ -1,8 +1,5 @@
-import { App, Modal, Notice, Setting } from "obsidian";
+import { Modal, Setting } from "obsidian";
 import { getGlobals } from "src/logic/stores";
-import { importFiles } from "src/logic/import-logic";
-import { singleOrPlural } from "src/logic/string-processes";
-import MyPlugin from "src/main";
 
 /////////
 /////////
