@@ -1,24 +1,30 @@
 ---
-description: Standards for writing and organising project documentation
+description: Documentation structure, content, and format standards
 alwaysApply: true
 ---
 
-# Documentation standards
+# Documentation Standards
 
 ## Location
 
-- Documentation lives in `docs/` at the repository root.
-- Separate documentation into individual pages per general concept or feature, and shortlink each page from the main README or parent page.
+Store documentation in a `docs/` folder. Organise into separate pages per concept or feature — do not combine unrelated topics in one file.
 
-## Structure and content order
+## Structure
 
-1. **Why it exists** — lead with the purpose and how it fits into the broader system.
-2. **Conceptual understanding** — flows, reasoning behind design decisions. This is the priority section.
-3. **Flows and relationships** — describe these before diving into specifics.
-4. **Technical implementation details** — only when needed to understand or use the system; keep language- and framework-agnostic where possible. Place lower in the page.
-5. **Technical Gotchas** — a dedicated section for known pitfalls and non-obvious behaviours.
+Every documentation page should follow this order:
 
-## Style
+1. **Why it exists** — the motivation and problem being solved
+2. **Conceptual understanding** — mental model before implementation details
+3. **Flows** — how data or control moves through the system
+4. **Technical details** — implementation specifics
+5. **Technical Gotchas** — a dedicated section for non-obvious pitfalls
 
-- Use Mermaid diagrams for architecture, data flows, and sequences; prefer Mermaid over ASCII art.
-- Language/framework-specific code snippets are allowed as examples but should be clearly labelled and placed in the implementation details section.
+## Format
+
+- Use Mermaid diagrams for flows and architecture — prefer over ASCII art or prose descriptions
+- Lead with context before specifics
+- Keep a "Technical Gotchas" section in any page covering complex or surprising behaviour
+
+## Planning
+
+The final step of every plan must be creating or updating the relevant documentation.

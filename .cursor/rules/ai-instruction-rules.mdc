@@ -3,28 +3,13 @@ description: Maintain both Cursor and GitHub Copilot rules with consistency
 alwaysApply: true
 ---
 
-# AI Instruction Rules — Dual Maintenance
+# AI Instruction Rules
 
-When creating or updating project conventions, coding standards, or AI guidance, **always create or update both**:
+When adding or updating any convention or coding standard, always update **both** locations so they never diverge:
 
-1. **Cursor rules** — `.cursor/rules/*.mdc`
-2. **GitHub Copilot rules** — `.github/copilot-instructions.md` (repo-wide) and/or `.github/instructions/*.instructions.md` (path-scoped)
+| Rule type | Cursor file | Copilot file |
+|---|---|---|
+| Repo-wide / always-apply | `.cursor/rules/*.mdc` | `.github/copilot-instructions.md` |
+| File-scoped | `.cursor/rules/*.mdc` (with `globs:`) | `.github/instructions/*.instructions.md` (with `applyTo:`) |
 
-## Consistency
-
-- Express the **same intent** in both formats. Content may be adapted for each tool’s conventions, but must not conflict.
-- When a Cursor rule changes, update the corresponding Copilot instructions.
-- When adding a new convention, add it to both systems.
-
-## File Locations
-
-| Scope        | Cursor                         | GitHub Copilot                             |
-|-------------|---------------------------------|--------------------------------------------|
-| Repo-wide   | `.cursor/rules/*.mdc` (alwaysApply) | `.github/copilot-instructions.md`         |
-| Path-scoped | `.cursor/rules/*.mdc` (globs)   | `.github/instructions/NAME.instructions.md` (applyTo frontmatter) |
-
-## Format Notes
-
-- **Cursor**: YAML frontmatter with `description`, `globs`, `alwaysApply`
-- **Copilot repo-wide**: Plain Markdown in `.github/copilot-instructions.md`
-- **Copilot path-scoped**: Frontmatter with `applyTo` (glob syntax), then Markdown
+Express the same intent in both formats. Adapt the format to each tool's conventions, but never allow them to conflict.

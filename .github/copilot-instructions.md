@@ -1,110 +1,146 @@
-# obsidian_project-browser — Copilot Instructions
+# Copilot Instructions
 
-These instructions apply repo-wide. When creating or updating project conventions or AI guidance, maintain parity with `.cursor/rules/*.mdc`.
-
----
-
-## Project overview
-
-This workspace contains **obsidian_project-browser** — an Obsidian plugin that replaces the new tab window with a card layout of files in each folder, organised by state. The view is filterable with an inbuilt search field, and files can be assigned a state from a prominent menu within the note.
-
-### Tech stack
-
-- TypeScript, React, Jotai, Redux Toolkit
-- SCSS for styling (co-located with components)
-- Obsidian plugin API for views, settings, modals, and commands
-
-### Documentation
-
-Design documentation and implementation notes live in `docs/` at the repository root.
+These instructions apply to all files in this repository.
 
 ---
 
-## Verification guidelines
+## Project Overview
 
-- Never assume a change will successfully fix something. Every fix must be verified.
-- Do not remove `console.log` statements (or other debug logging) while making a change. Keep them until the fix is confirmed to work.
-- Only remove or reduce logging after verification is complete.
+> **IMPORTANT:** If any `[PLACEHOLDER]` value below has not been filled in, stop and tell the user:
+> _"The project overview in `.github/copilot-instructions.md` still contains unfilled placeholders. Please update it (and the matching `.cursor/rules/project-overview.mdc`) with the real project details before continuing."_
 
----
+**What this project is:** This project is an **Obsidian plugin** (“Project Browser”) designed to help people navigate vault files and folders using a **non-technical, low-effort browsing interface** (ideal when you’re busy or don’t want to think in paths/structure). It replaces the new tab view with a browsable, searchable file/folder layout (see `manifest.json` for the concise plugin description).
 
-## Testing guidelines
+**Folder structure:**
 
-- Never start the server or the app; starting services is the user's responsibility.
+| Folder | Purpose |
+|---|---|
+| `src/` | Plugin source (Obsidian entrypoint, React UI, logic, styles, assets) |
+| `tests/` | Unit/component test scaffolding and E2E specs/helpers |
+| `scripts/` | Release, QA, and test automation scripts |
+| `qa-test-vault/` | Generated vault used for E2E/manual QA |
+| `docs/` | Project documentation |
 
----
+**Architecture:** The plugin bundles to `dist/` via esbuild and is loaded by Obsidian. The entrypoint (`src/main.ts`) registers the plugin behaviour/UI, including the “new tab replacement” browsing experience. UI is primarily React-based, with state handled via Jotai (UI state) and Redux Toolkit (structured workflow/app state where useful). Styles are built from CSS/SCSS and emitted alongside the plugin bundle.
 
-## Editing guidelines
-
-- Respect the project's existing patterns and conventions before introducing new ones.
-- Docs in `docs/` are reference material. Keep them accurate if related code changes.
-
----
-
-## Plugin settings
-
-Never create a new plugin settings version unless explicitly asked. When adding or changing settings, work within the current version (`PluginSettings_0_4_0` in `src/types/plugin-settings_0_4_0.ts`). Do not introduce new migration paths or versioned type files unless the user explicitly requests a new settings version.
-
----
-
-## Documentation standards
-
-### Location
-
-- Documentation lives in `docs/` at the repository root.
-- Separate documentation into individual pages per general concept or feature, and shortlink each page from the main README or parent page.
-
-### Structure and content order
-
-1. **Why it exists** — lead with the purpose and how it fits into the broader system.
-2. **Conceptual understanding** — flows, reasoning behind design decisions. This is the priority section.
-3. **Flows and relationships** — describe these before diving into specifics.
-4. **Technical implementation details** — only when needed to understand or use the system; keep language- and framework-agnostic where possible. Place lower in the page.
-5. **Technical Gotchas** — a dedicated section for known pitfalls and non-obvious behaviours.
-
-### Style
-
-- Use Mermaid diagrams for architecture, data flows, and sequences; prefer Mermaid over ASCII art.
-- Language/framework-specific code snippets are allowed as examples but should be clearly labelled and placed in the implementation details section.
+**Key constraints:**
+- Must stay compatible with Obsidian’s plugin API + packaging expectations (`dist/` output, manifest copied into `dist/`)
+- No backend/server assumptions (this is a local Obsidian plugin)
+- E2E uses WebdriverIO running real Obsidian; don’t start background services as part of automated tasks
 
 ---
 
-## Planning standards
+## Tech Stack
 
-- The final step of every plan must be creating or updating relevant documentation.
+This section is the source of truth for libraries, frameworks, and tools in use. **Update it as the final step of any plan that introduces, removes, or changes a dependency or tool.**
 
----
-
-## Naming conventions
-
-Variable, parameter, and property names must be unambiguous and self-explanatory. A reader should understand exactly what a name represents without needing to trace its origin or read surrounding code.
-
-- Prefer full, descriptive words over abbreviations, acronyms, or single letters.
-- Names should convey both **what** the value is and **what it belongs to** when that context is non-obvious.
-- Avoid generic placeholders like `data`, `info`, `value`, `item`, `temp`, `result`, `obj`, or `val` unless the type itself already provides full context.
-
-```typescript
-// ❌ BAD — ambiguous, requires context to decode
-const val = getEditorBounds(e);
-const temp = user.settings;
-const data = await fetchPage(id);
-
-// ✅ GOOD — explicit and self-contained
-const editorBounds = getEditorBounds(editor);
-const userSettings = user.settings;
-const pageData = await fetchPage(pageId);
-```
-
-- Loop variables and short-lived indices are exempt when the scope is trivially small (e.g. `i` in a simple `for` loop over an array).
-- Boolean names should read as a yes/no question or statement: `isVisible`, `hasUnsavedChanges`, `canEdit`.
+- **Plugin platform:** Obsidian plugin API (`obsidian`)
+- **Language:** TypeScript (TS 4.7), modern JS target (esbuild target `es2021`)
+- **UI:** React 18 (`react`, `react-dom`)
+- **State management:** Jotai (UI state), Redux Toolkit + React-Redux (structured workflow state)
+- **UI utilities:** `classnames`, `@tippyjs/react`, `lucide-react`, `react-sortablejs` / `sortablejs`, `uuid`
+- **Build:** esbuild (`esbuild`), `esbuild-sass-plugin`, `esbuild-plugin-copy`
+- **Linting:** ESLint + `@typescript-eslint/*`
+- **Unit/component testing:** Jest (`jest`, `babel-jest`, `jest-environment-jsdom`) + React Testing Library (`@testing-library/react`, `@testing-library/jest-dom`)
+- **E2E testing:** WebdriverIO 9 + Mocha + `wdio-obsidian-service` + `wdio-obsidian-reporter`
+- **CI:** GitHub Actions (Node 22 in `.github/workflows/test.yaml`)
 
 ---
 
-## AI instruction rules (dual maintenance)
+## AI Instruction Consistency
 
-When creating or updating project conventions, coding standards, or AI guidance, **always create or update both**:
+When adding or updating any convention or coding standard, always update **both** locations so they never diverge:
 
-1. **Cursor rules** — `.cursor/rules/*.mdc`
-2. **GitHub Copilot rules** — `.github/copilot-instructions.md` (repo-wide) and/or `.github/instructions/*.instructions.md` (path-scoped)
+| Rule type | Cursor file | Copilot file |
+|---|---|---|
+| Repo-wide / always-apply | `.cursor/rules/*.mdc` | `.github/copilot-instructions.md` |
+| File-scoped | `.cursor/rules/*.mdc` (with `globs:`) | `.github/instructions/*.instructions.md` (with `applyTo:`) |
 
-Express the **same intent** in both formats. Content may be adapted for each tool's conventions, but must not conflict.
+Express the same intent in both formats. Adapt the format to each tool's conventions, but never allow them to conflict.
+
+---
+
+## Documentation Standards
+
+Store documentation in a `docs/` folder. Organise into separate pages per concept or feature.
+
+Every documentation page follows this order:
+1. **Why it exists** — motivation and problem being solved
+2. **Conceptual understanding** — mental model before implementation details
+3. **Flows** — how data or control moves through the system
+4. **Technical details** — implementation specifics
+5. **Technical Gotchas** — a dedicated section for non-obvious pitfalls
+
+Use Mermaid diagrams for flows and architecture. Prefer Mermaid over ASCII art or prose descriptions.
+
+---
+
+## Editing Guidelines
+
+**Respect existing patterns.** Before introducing a new pattern or abstraction, check how similar problems are already solved and follow the same approach.
+
+**Verify every fix.** Never assume a change will successfully fix something. Run the relevant code path or test after applying the fix. Do not mark a task complete until verification passes.
+
+**Keep console logs during a fix.** Do not remove `console.log` statements while actively making a change. Keep them until the fix is confirmed working. Remove logging only after verification.
+
+**Keep documentation accurate.** When changing code described in `docs/`, update the documentation in the same step.
+
+---
+
+## Environment File Conventions
+
+- Env files belong in the relevant package or service subfolder (e.g. `server/.env`, `client/.env`) — never at the repository root
+- Always update the real `.env` file, not just `.env.example`
+- When adding a new variable, update **both** `.env` and `.env.example` in the same step
+- Infer the correct file from context: API/backend work → server env; frontend/mobile work → client env
+
+---
+
+## Git Workflow
+
+Branch format: `<prefix>/<short-description>` in kebab-case.
+
+| Prefix | Use for |
+|---|---|
+| `feat/` | New features |
+| `fix/` | Bug fixes |
+| `docs/` | Documentation only changes |
+| `refactor/` | Code restructuring without behaviour change |
+| `chore/` | Maintenance, deps, tooling |
+| `experiment/` | Exploratory or throwaway work |
+
+- Lowercase only
+- Hyphens separate words, underscores seperate categories where necessary. Higher level categories first (eg. feat/ui-revamp_colour-updates)
+- Delete branches immediately after merging to `main`
+
+---
+
+## Naming Conventions
+
+Every name must be self-explanatory without needing to trace the surrounding context.
+
+- Prefer full descriptive words over abbreviations
+- Avoid generic placeholders: `data`, `info`, `value`, `item`, `temp`, `result`, `obj`, `val`
+- Name booleans as yes/no answers: `isVisible`, `hasUnsavedChanges`, `canEdit`, `isLoading`
+- Include the owning entity in a name when relevant: `userAvatarUrl`, `orderCreatedAt`
+
+Loop indices (`i`, `j`) are acceptable only in trivially small, obvious loops.
+
+---
+
+## Planning Workflow
+
+- The final step of every plan must be creating or updating the relevant documentation
+- Use Mermaid format for all diagrams in plans and documentation
+- A well-formed plan states the goal, breaks work into discrete steps, calls out risks, and ends with a documentation update
+
+---
+
+## Testing Practices
+
+- Every new feature or meaningful change must include tests
+- Run tests to completion and confirm they pass — do not assume they will pass
+- Mock only dependencies that are genuinely impossible to control in a test environment (third-party APIs, hardware, external services)
+- **Never start the server, app, or any background service** — starting services is the user's responsibility
+
+---

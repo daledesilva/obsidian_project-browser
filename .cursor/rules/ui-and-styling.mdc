@@ -1,0 +1,38 @@
+---
+description: UI and styling conventions — use the theme system, no hardcoded values
+globs: **/*.{tsx,jsx,ts,js}
+alwaysApply: false
+---
+
+# UI and Styling
+
+## Use the Theme System
+
+Pull all visual tokens — colors, spacing, typography, border radii, animation timings — from the project's established theme system. Do not hardcode values.
+
+```ts
+// ❌ BAD
+const styles = { color: '#3a86ff', fontSize: 14, padding: 12 };
+
+// ✅ GOOD
+const { colors, spacing, typography } = useTheme();
+const styles = { color: colors.primary, fontSize: typography.body, padding: spacing.md };
+```
+
+## No Inline Styles Except Truly Dynamic Values
+
+Avoid inline styles. The only acceptable exception is a value that is computed at runtime and cannot be expressed statically (e.g. a width derived from a live measurement).
+
+## Follow the Project's Style API
+
+Use whichever style API the project has established. Common patterns:
+
+- React Native: `StyleSheet.create()` with `useTheme()`
+- Web: CSS modules, `styled-components`, or utility classes from the design system
+- Ignite: `useAppTheme()`, `themed()`, `ThemedStyle<T>` with bare JS objects
+
+Do not introduce a new styling approach without a clear reason.
+
+## No Hardcoded Colors or Sizes
+
+If a value could ever need to change for a theme, dark mode, or screen size, it must come from the theme — not be hardcoded.

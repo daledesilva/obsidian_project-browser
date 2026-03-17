@@ -1,9 +1,25 @@
 ---
-description: Editing guardrails for the obsidian_project-browser workspace
+description: Editing guardrails — respect existing patterns, verify fixes, keep logs
 alwaysApply: true
 ---
 
-# Editing guidelines
+# Editing Guidelines
 
-- Respect the project's existing patterns and conventions before introducing new ones.
-- Docs in `docs/` are reference material. Keep them accurate if related code changes.
+## Respect Existing Patterns
+
+Before introducing a new pattern or abstraction, check how similar problems are already solved in the codebase and follow the same approach. Only introduce a new pattern if there is a clear reason the existing one cannot work.
+
+## Verify Fixes
+
+Never assume a change will successfully fix something. Every fix must be verified:
+
+- Run the relevant code path or test after applying the fix
+- Do not mark a task complete until verification passes
+
+## Keep Console Logs During a Fix
+
+Do not remove `console.log` statements while actively making a change. Keep them until the fix is confirmed working. Remove logging only after verification.
+
+## Keep Documentation Accurate
+
+When changing code that is described in `docs/`, update the documentation in the same step. Do not leave docs out of sync with the implementation.

@@ -1,27 +1,40 @@
 ---
-description: Variable and identifier naming must be unambiguous and explicit
+description: Variable and identifier naming — unambiguous, self-explanatory, no generic placeholders
 alwaysApply: true
 ---
 
-# Naming conventions
+# Naming Conventions
 
-Variable, parameter, and property names must be unambiguous and self-explanatory. A reader should understand exactly what a name represents without needing to trace its origin or read surrounding code.
+## Core Principle
 
-- Prefer full, descriptive words over abbreviations, acronyms, or single letters.
-- Names should convey both **what** the value is and **what it belongs to** when that context is non-obvious.
-- Avoid generic placeholders like `data`, `info`, `value`, `item`, `temp`, `result`, `obj`, or `val` unless the type itself already provides full context.
+Every name must be self-explanatory without needing to trace the surrounding context. A reader should understand what a variable holds and what it belongs to from the name alone.
 
-```typescript
-// ❌ BAD — ambiguous, requires context to decode
-const val = getEditorBounds(e);
-const temp = user.settings;
-const data = await fetchPage(id);
+## Prefer Full Words
 
-// ✅ GOOD — explicit and self-contained
-const editorBounds = getEditorBounds(editor);
-const userSettings = user.settings;
-const pageData = await fetchPage(pageId);
-```
+Prefer full descriptive words over abbreviations. Abbreviations save keystrokes but cost comprehension.
 
-- Loop variables and short-lived indices are exempt when the scope is trivially small (e.g. `i` in a simple `for` loop over an array).
-- Boolean names should read as a yes/no question or statement: `isVisible`, `hasUnsavedChanges`, `canEdit`.
+## Avoid Generic Placeholders
+
+Do not use vague names that say nothing about what the value actually is:
+
+❌ `data`, `info`, `value`, `item`, `temp`, `result`, `obj`, `val`, `thing`
+
+✅ Use names that describe the domain concept: `userProfile`, `invoiceTotal`, `pendingMessages`
+
+Loop indices (`i`, `j`) are acceptable only in trivially small, obvious loops.
+
+## Booleans
+
+Name booleans as a yes/no question answer:
+
+✅ `isVisible`, `hasUnsavedChanges`, `canEdit`, `isLoading`, `hasFailed`
+
+❌ `visible`, `unsavedChanges`, `editable`, `loading`
+
+## Convey Ownership
+
+When a value belongs to a specific entity, include that entity in the name:
+
+✅ `userAvatarUrl`, `orderCreatedAt`, `sessionTokenExpiry`
+
+❌ `avatarUrl`, `createdAt`, `expiry`
