@@ -74,4 +74,5 @@ flowchart TB
 
 ## Related
 
+- [States and sections](states-and-sections.md) — How visible/hidden states and the No status section work.
 - [Project Pages FAB](project-pages-fab.md) — Floating action button for quick navigation between pages when viewing a note inside a project.
