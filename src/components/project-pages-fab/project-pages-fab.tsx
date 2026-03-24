@@ -153,6 +153,12 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         return () => document.removeEventListener('pointerdown', handleClickOutside);
     }, []);
 
+    React.useEffect(() => {
+        if (props.initialMenuOpen) {
+            setMenuIsOpen(true);
+        }
+    }, [props.initialMenuOpen]);
+
     function handleFABClick() {
         setMenuIsOpen((prev) => !prev);
     }

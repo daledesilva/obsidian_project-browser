@@ -148,6 +148,7 @@ async function main() {
   await ensureDir(join(VAULT_ROOT, ".obsidian/plugins/project-browser"));
   await ensureDir(join(VAULT_ROOT, "Project A"));
   await ensureDir(join(VAULT_ROOT, "Project B"));
+  await ensureDir(join(VAULT_ROOT, "Cross Type Project"));
   await ensureDir(join(VAULT_ROOT, "Archive"));
   await ensureDir(join(VAULT_ROOT, "Reference"));
   await ensureDir(join(VAULT_ROOT, "File Types Test"));
@@ -267,6 +268,47 @@ Fourth page in Project B.
     "Project B/notes-export.txt",
     "Exported notes data for manual QA.\n"
   );
+
+  // Cross Type Project (project with 2 markdown, 2 canvas, 2 base pages)
+  await write("Cross Type Project/folder-settings.pbs", FOLDER_SETTINGS_PBS);
+  await write(
+    "Cross Type Project/Markdown Page 1.md",
+    `---
+state: Idea
+---
+
+# Markdown Page 1
+
+Cross-type permutation test fixture.
+`
+  );
+  await write(
+    "Cross Type Project/Markdown Page 2.md",
+    `---
+state: Drafting
+---
+
+# Markdown Page 2
+
+Cross-type permutation test fixture.
+`
+  );
+  await write(
+    "Cross Type Project/Canvas Page 1.canvas",
+    JSON.stringify({
+      nodes: [],
+      edges: [],
+    })
+  );
+  await write(
+    "Cross Type Project/Canvas Page 2.canvas",
+    JSON.stringify({
+      nodes: [],
+      edges: [],
+    })
+  );
+  await write("Cross Type Project/Base Page 1.base", "views: []\n");
+  await write("Cross Type Project/Base Page 2.base", "views: []\n");
 
   // Archive (plain folder with notes)
   await write(

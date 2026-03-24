@@ -5,21 +5,39 @@
  */
 export const FAB_RIGHT_OFFSET_CSS_VAR = '--ddc-pb-fab-right-offset';
 
-const SCROLL_CONTAINER_SELECTORS = ['.cm-scroller', '.ddc_pb_browser'];
+const SCROLL_CONTAINER_SELECTORS = ['.cm-scroller', '.ddc_pb_browser', '.bases-view'];
+const FALLBACK_SCROLL_CONTAINER_SELECTORS = ['.view-content', '.workspace-leaf-content .view-content'];
+
+function getScrollContainer(leafContainerEl: HTMLElement): HTMLElement | null {
+    for (const selector of SCROLL_CONTAINER_SELECTORS) {
+        if (leafContainerEl.matches(selector)) {
+            return leafContainerEl;
+        }
+        const el = leafContainerEl.querySelector(selector);
+        if (el && el instanceof HTMLElement) {
+            return el;
+        }
+    }
+
+    for (const selector of FALLBACK_SCROLL_CONTAINER_SELECTORS) {
+        if (leafContainerEl.matches(selector)) {
+            return leafContainerEl;
+        }
+        const el = leafContainerEl.querySelector(selector);
+        if (el && el instanceof HTMLElement) {
+            return el;
+        }
+    }
+
+    return null;
+}
 
 export function setupFabScrollbarOffset(
     fabContainerEl: HTMLElement,
     leafContainerEl: HTMLElement
 ): () => void {
     function updateOffset() {
-        let scroller: HTMLElement | null = null;
-        for (const selector of SCROLL_CONTAINER_SELECTORS) {
-            const el = leafContainerEl.querySelector(selector);
-            if (el && el instanceof HTMLElement) {
-                scroller = el;
-                break;
-            }
-        }
+        const scroller = getScrollContainer(leafContainerEl);
         if (!scroller) {
             fabContainerEl.style.setProperty(FAB_RIGHT_OFFSET_CSS_VAR, '0px');
             return;
@@ -35,14 +53,7 @@ export function setupFabScrollbarOffset(
 
     updateOffset();
 
-    let scroller: Element | null = null;
-    for (const selector of SCROLL_CONTAINER_SELECTORS) {
-        const el = leafContainerEl.querySelector(selector);
-        if (el) {
-            scroller = el;
-            break;
-        }
-    }
+    const scroller = getScrollContainer(leafContainerEl);
     if (!scroller) return () => {};
 
     const resizeObserver = new ResizeObserver(() => {
@@ -56,6 +67,11 @@ export function setupFabScrollbarOffset(
         const content = scroller.querySelector('.cm-content');
         if (content) {
             resizeObserver.observe(content);
+        }
+    } else {
+        const firstChild = scroller.firstElementChild;
+        if (firstChild) {
+            resizeObserver.observe(firstChild);
         }
     }
 

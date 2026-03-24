@@ -52,7 +52,9 @@ flowchart TB
 3. **Add page** — creates a new file in the project and opens it. The filename is activated for renaming (via Obsidian's Edit file title or a rename modal) so you can immediately type to rename it if desired.
 4. **Folder** (labeled with the project folder name) — opens that folder in the project browser.
 5. Click a page to navigate to it. The state menu on that page opens by default.
-6. Click the FAB again or click anywhere else to close the menu.
+6. The pages menu stays open after page navigation, so you can quickly move through multiple pages without reopening it each time.
+7. The selected page button updates after each navigation, including markdown, canvas, and base transitions.
+8. Click the FAB again or click anywhere else to close the menu.
 
 ### Using the FAB — note outside a project
 
@@ -97,6 +99,8 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Page button labels**: Use `getFileDisplayNameParts()`, which respects the "Show extension for non-document files" setting. The extension portion is faded with `--text-faint`. Only canvas and base files show a type tag (CANVAS, BASE) at the top-right of each button; other file types do not.
 - **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) for details.
 - **Navigation**: Uses `openFileInSameLeaf` followed by `openStateMenuIfClosed`.
+- **Navigation menu state**: Page-to-page navigation keeps the menu open so users can continue navigating without reopening it.
+- **State sync on page switch**: FAB/state header refreshes on both active-leaf changes and file-open events for the active file view, so selected-page highlighting and related header state update correctly when switching files in the same leaf (including markdown, canvas, and base transitions).
 - **Add page (non-project)**: `createProjectFromNote` in `src/utils/file-manipulation.ts` — creates folder, moves note, renames it to "Page 1", sets project, creates second page as "Page 2".
 - **Rename popup on new page**: Controlled by "Show rename popup when creating new pages" (File Overlays, settings). When enabled (default), new pages open with the filename activated for renaming; when disabled, they open without the rename popup.
 - **Click-outside close**: `pointerdown` on `document`; closes when the target is outside the FAB/buttons container. Clicks on Obsidian menus (`.menu`) or modals (`.modal`, `.modal-bg`) are ignored so the menu stays open during context-menu actions like Delete.
