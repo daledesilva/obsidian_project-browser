@@ -295,7 +295,8 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                                 )}
                                 {props.onNewFile && (
                                     <FabMenuActionButton
-                                        variant="secondary"
+                                        variant="primary"
+                                        density="compact"
                                         label="New file"
                                         onClick={handleNewFileClick}
                                     />

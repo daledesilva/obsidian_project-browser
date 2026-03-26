@@ -85,8 +85,6 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
     }
 
     const fileOrPageLabel = props.currentFolderIsProject ? 'New page' : 'New file';
-    const submenuVariant = props.currentFolderIsProject ? 'primary' : 'secondary';
-    const submenuDensity = props.currentFolderIsProject ? 'compact' : 'default';
 
     return (
         <div className="ddc_pb_card-browser-floating-menu" ref={fabContainerRef}>
@@ -94,14 +92,14 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
                 {menuIsOpen && (
                     <FabMenuActionButtonStack padBottom>
                         <FabMenuActionButton
-                            variant={submenuVariant}
-                            density={submenuDensity}
+                            variant="primary"
+                            density="compact"
                             label={fileOrPageLabel}
                             onClick={handleNewFileOrPage}
                         />
                         <FabMenuActionButton
-                            variant={submenuVariant}
-                            density={submenuDensity}
+                            variant="primary"
+                            density="compact"
                             label="New folder"
                             onClick={handleNewFolder}
                         />
