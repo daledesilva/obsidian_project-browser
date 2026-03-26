@@ -19,7 +19,8 @@ These instructions apply to all files in this repository.
 | `tests/` | Unit/component test scaffolding and E2E specs/helpers |
 | `scripts/` | Release, QA, and test automation scripts |
 | `qa-test-vault/` | Generated vault used for E2E/manual QA |
-| `docs/` | Project documentation |
+| `dist/` | Build output (generated; used by Obsidian + E2E runner) |
+| `docs/` | Project documentation (features, settings, testing, known issues) |
 
 **Architecture:** The plugin bundles to `dist/` via esbuild and is loaded by Obsidian. The entrypoint (`src/main.ts`) registers the plugin behaviour/UI, including the “new tab replacement” browsing experience. UI is primarily React-based, with state handled via Jotai (UI state) and Redux Toolkit (structured workflow/app state where useful). Styles are built from CSS/SCSS and emitted alongside the plugin bundle.
 
@@ -97,9 +98,9 @@ After successful implementation, suggest that the user request relevant document
 
 ## Environment File Conventions
 
-- Env files belong in the relevant package or service subfolder (e.g. `server/.env`, `client/.env`) — never at the repository root
-- Always update the real `.env` file, not just `.env.example`
-- When adding a new variable, update **both** `.env` and `.env.example` in the same step
+- Env files belong in the relevant package or service subfolder (e.g. `server/.env`, `client/.env`). Never place env files at the repository root unless there is no service subfolder
+- Always update the real `.env` file as well as `.env.example` and variations
+- When adding a new variable, update **both** `.env` and `.env.example` in the same step (`.env.example` should reflect every variable that `.env` contains, with placeholder or documented values)
 - Infer the correct file from context: API/backend work → server env; frontend/mobile work → client env
 
 ---
@@ -131,6 +132,7 @@ Every name must be self-explanatory without needing to trace the surrounding con
 - Avoid generic placeholders: `data`, `info`, `value`, `item`, `temp`, `result`, `obj`, `val`
 - Name booleans as yes/no answers: `isVisible`, `hasUnsavedChanges`, `canEdit`, `isLoading`
 - Include the owning entity in a name when relevant: `userAvatarUrl`, `orderCreatedAt`
+- **Export boundary:** anything **`export`ed** for other files **should** use a **file-scoped prefix**; **not exported** module-private helpers in a single-primary-component **`.tsx`** file should **not** repeat the component/file name — use role names (e.g. `outerSx` not `userBubbleOuterSx`). See **`.cursor/rules/naming-conventions.mdc`**.
 
 Loop indices (`i`, `j`) are acceptable only in trivially small, obvious loops.
 
