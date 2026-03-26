@@ -11,6 +11,10 @@ import { getFileTypeLabel } from 'src/logic/get-file-type-label';
 import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
 import { getGlobals } from 'src/logic/stores';
 import { isRootPath } from 'src/utils/string-processes';
+import {
+    FabMenuActionButton,
+    FabMenuActionButtonStack,
+} from 'src/components/fab-menu-action-button/fab-menu-action-button';
 
 //////////
 //////////
@@ -271,45 +275,34 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
             )}
             <div className="ddc_pb_project-pages-fab__footer">
                 {showMenuActions && (
-                    <div className="ddc_pb_project-pages-fab__menu-actions">
+                    <FabMenuActionButtonStack>
                         {props.parentIsProject ? (
-                            <button
-                                className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary ddc_pb_project-pages-fab__action-button--add-page"
+                            <FabMenuActionButton
+                                variant="primary"
+                                density="compact"
+                                label="Add page"
                                 onClick={handleAddPageClick}
-                                title="Add page"
-                            >
-                                <Plus size={11} />
-                                <span className="ddc_pb_project-pages-fab__action-button-label">Add page</span>
-                            </button>
+                            />
                         ) : (
                             <>
                                 {props.onAddPage && (
-                                    <button
-                                        className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary ddc_pb_project-pages-fab__action-button--add-page"
+                                    <FabMenuActionButton
+                                        variant="primary"
+                                        density="compact"
+                                        label="Add page"
                                         onClick={handleAddPageClick}
-                                        title="Add page"
-                                    >
-                                        <Plus size={11} />
-                                        <span className="ddc_pb_project-pages-fab__action-button-label">
-                                            Add page
-                                        </span>
-                                    </button>
+                                    />
                                 )}
                                 {props.onNewFile && (
-                                    <button
-                                        className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--secondary"
+                                    <FabMenuActionButton
+                                        variant="secondary"
+                                        label="New file"
                                         onClick={handleNewFileClick}
-                                        title="New file"
-                                    >
-                                        <Plus size={11} />
-                                        <span className="ddc_pb_project-pages-fab__action-button-label">
-                                            New file
-                                        </span>
-                                    </button>
+                                    />
                                 )}
                             </>
                         )}
-                    </div>
+                    </FabMenuActionButtonStack>
                 )}
                 <div className="ddc_pb_project-pages-fab__group">
                     <button

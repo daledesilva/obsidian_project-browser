@@ -6,6 +6,10 @@ import { createFolder, createProject } from 'src/utils/file-manipulation';
 import { openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { isRootPath } from 'src/utils/string-processes';
 import classNames from 'classnames';
+import {
+    FabMenuActionButton,
+    FabMenuActionButtonStack,
+} from 'src/components/fab-menu-action-button/fab-menu-action-button';
 
 //////////
 //////////
@@ -81,42 +85,38 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
     }
 
     const fileOrPageLabel = props.currentFolderIsProject ? 'New page' : 'New file';
-
-    const actionButtonStyle = props.currentFolderIsProject ? '--primary' : '--secondary';
+    const submenuVariant = props.currentFolderIsProject ? 'primary' : 'secondary';
+    const submenuDensity = props.currentFolderIsProject ? 'compact' : 'default';
 
     return (
         <div className="ddc_pb_card-browser-floating-menu" ref={fabContainerRef}>
             <div className="ddc_pb_card-browser-floating-menu__group">
                 {menuIsOpen && (
-                    <div className="ddc_pb_card-browser-floating-menu__action-buttons">
-                        <button
-                            className={classNames(
-                                'ddc_pb_card-browser-floating-menu__action-button',
-                                `ddc_pb_card-browser-floating-menu__action-button${actionButtonStyle}`
-                            )}
+                    <FabMenuActionButtonStack padBottom>
+                        <FabMenuActionButton
+                            variant={submenuVariant}
+                            density={submenuDensity}
+                            label={fileOrPageLabel}
                             onClick={handleNewFileOrPage}
-                            title={fileOrPageLabel}
-                        >
-                            <Plus size={16} />
-                            <span className="ddc_pb_card-browser-floating-menu__action-button-label">
-                                {fileOrPageLabel}
-                            </span>
-                        </button>
-                        <button
-                            className={classNames(
-                                'ddc_pb_card-browser-floating-menu__action-button',
-                                `ddc_pb_card-browser-floating-menu__action-button${actionButtonStyle}`
-                            )}
+                        />
+                        <FabMenuActionButton
+                            variant={submenuVariant}
+                            density={submenuDensity}
+                            label="New folder"
                             onClick={handleNewFolder}
-                            title="New folder"
-                        >
-                            <Plus size={16} />
-                            <span className="ddc_pb_card-browser-floating-menu__action-button-label">
-                                New folder
-                            </span>
-                        </button>
-                    </div>
+                        />
+                    </FabMenuActionButtonStack>
                 )}
+                <button
+                    className={classNames(
+                        'ddc_pb_card-browser-floating-menu__new-button',
+                        menuIsOpen && 'ddc_pb_active'
+                    )}
+                    onClick={() => setMenuIsOpen((prev) => !prev)}
+                    title={menuIsOpen ? 'Close menu' : 'New'}
+                >
+                    <Plus size={20} />
+                </button>
                 <button
                     className={classNames(
                         'ddc_pb_card-browser-floating-menu__search-button',
@@ -132,16 +132,6 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
                     title="Search"
                 >
                     <Search size={20} />
-                </button>
-                <button
-                    className={classNames(
-                        'ddc_pb_card-browser-floating-menu__new-button',
-                        menuIsOpen && 'ddc_pb_active'
-                    )}
-                    onClick={() => setMenuIsOpen((prev) => !prev)}
-                    title={menuIsOpen ? 'Close menu' : 'New'}
-                >
-                    <Plus size={20} />
                 </button>
                 <button
                     className={classNames(
