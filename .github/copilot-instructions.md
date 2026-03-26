@@ -49,7 +49,9 @@ This section is the source of truth for libraries, frameworks, and tools in use.
 
 ## AI Instruction Consistency
 
-When adding or updating any convention or coding standard, always update **both** locations so they never diverge:
+When adding or updating any convention or coding standard, always update **both** locations so they never diverge.
+
+If the `./_reference_ide-setup/` folder is present, the rule changes must also be reflected there (it is a reference mirror of IDE setup + instructions).
 
 | Rule type | Cursor file | Copilot file |
 |---|---|---|
@@ -64,6 +66,8 @@ Express the same intent in both formats. Adapt the format to each tool's convent
 
 Store documentation in a `docs/` folder. Organise into separate pages per concept or feature.
 
+**Docs are not a source of truth for how code works.** Documentation MUST not be used as an authoritative reference for how the project currently works or how specific code paths behave. For behavior/implementation details, use the codebase and any relevant external/official API/service documentation the code relies on instead—unless the task explicitly instructs you to use `docs/`.
+
 Every documentation page follows this order:
 1. **Why it exists** — motivation and problem being solved
 2. **Conceptual understanding** — mental model before implementation details
@@ -73,6 +77,8 @@ Every documentation page follows this order:
 
 Use Mermaid diagrams for flows and architecture. Prefer Mermaid over ASCII art or prose descriptions.
 
+After successful implementation, suggest that the user request relevant documentation be written or updated. Do **not** write or update documentation unless the user explicitly asks you to.
+
 ---
 
 ## Editing Guidelines
@@ -81,9 +87,11 @@ Use Mermaid diagrams for flows and architecture. Prefer Mermaid over ASCII art o
 
 **Verify every fix.** Never assume a change will successfully fix something. Run the relevant code path or test after applying the fix. Do not mark a task complete until verification passes.
 
-**Keep console logs during a fix.** Do not remove `console.log` statements while actively making a change. Keep them until the fix is confirmed working. Remove logging only after verification.
+**Keep console logs during a fix.** Do not remove `console.log` statements while actively making a change.
 
-**Keep documentation accurate.** When changing code described in `docs/`, update the documentation in the same step.
+**Debug mode rule:** Never remove logging added for debugging until a final test has been run that shows through the logs that the problem has been fixed. Do not assume a fix has worked without this confirmation.
+
+**Keep documentation accurate.** If the user asks you to write/update documentation (or you are already editing docs for the task), keep documentation accurate and consistent with the implementation. After successful implementation, suggest that the user request documentation be written/updated, but do **not** write or update documentation unless the user explicitly asks you to.
 
 ---
 
@@ -130,16 +138,17 @@ Loop indices (`i`, `j`) are acceptable only in trivially small, obvious loops.
 
 ## Planning Workflow
 
-- The final step of every plan must be creating or updating the relevant documentation
+- After successful implementation, suggest that the user request relevant documentation be written or updated (do **not** write/update docs unless explicitly asked)
 - Use Mermaid format for all diagrams in plans and documentation
-- A well-formed plan states the goal, breaks work into discrete steps, calls out risks, and ends with a documentation update
+- A well-formed plan states the goal, breaks work into discrete steps, calls out risks, and ends with suggesting the user request documentation
 
 ---
 
 ## Testing Practices
 
-- Every new feature or meaningful change must include tests
-- Run tests to completion and confirm they pass — do not assume they will pass
+- After implementing a new feature or meaningful change, suggest that the user request relevant tests (unit and/or e2e) be written and run
+- Do **not** write tests or run tests unless the user explicitly asks you to
+- If the user asks you to run tests, run them to completion and confirm they pass — do not assume they will pass
 - Mock only dependencies that are genuinely impossible to control in a test environment (third-party APIs, hardware, external services)
 - **Never start the server, app, or any background service** — starting services is the user's responsibility
 

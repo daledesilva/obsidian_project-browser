@@ -5,7 +5,9 @@ alwaysApply: true
 
 # AI Instruction Rules
 
-When adding or updating any convention or coding standard, always update **both** locations so they never diverge:
+When adding or updating any convention or coding standard, always update **both** locations so they never diverge.
+
+If the `./_reference_ide-setup/` folder is present, the rule changes must also be reflected there (it is a reference mirror of IDE setup + instructions).
 
 | Rule type | Cursor file | Copilot file |
 |---|---|---|

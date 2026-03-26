@@ -5,13 +5,15 @@ alwaysApply: true
 
 # Testing Practices
 
-## Tests Are Required
+## Suggest Tests After Implementation
 
-Every new feature or meaningful code change must include tests. Do not consider a task complete without them.
+After implementing a new feature or meaningful code change, suggest that the user request relevant tests (unit and/or e2e) be written and run.
 
-## Tests Must Be Run and Verified
+Do **not** write tests or run tests unless the user explicitly asks you to.
 
-Run tests to completion and confirm they pass. Do not assume a test will pass without running it.
+## If Asked: Tests Must Be Run and Verified
+
+If the user asks you to run tests, run them to completion and confirm they pass. Do not assume a test will pass without running it.
 
 ## Mock Only Uncontrollable Dependencies
 

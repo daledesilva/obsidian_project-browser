@@ -36,3 +36,6 @@ coverage/
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# Local reference material (not part of the plugin)
+/_reference_*/

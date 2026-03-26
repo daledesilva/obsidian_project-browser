@@ -9,6 +9,12 @@ alwaysApply: true
 
 Store documentation in a `docs/` folder. Organise into separate pages per concept or feature — do not combine unrelated topics in one file.
 
+## Docs Are Not an Implementation Reference
+
+Documentation MUST not be used as a reference for how the project currently works or how specific code paths behave.
+
+When you need behavioral or implementation details, use the codebase and any relevant external/official service documentation instead—unless the task explicitly instructs you to use `docs/`.
+
 ## Structure
 
 Every documentation page should follow this order:
@@ -27,4 +33,6 @@ Every documentation page should follow this order:
 
 ## Planning
 
-The final step of every plan must be creating or updating the relevant documentation.
+After successful implementation, suggest that the user request relevant documentation be written or updated.
+
+Do **not** write or update documentation unless the user explicitly asks you to.

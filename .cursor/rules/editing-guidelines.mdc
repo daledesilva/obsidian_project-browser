@@ -18,8 +18,12 @@ Never assume a change will successfully fix something. Every fix must be verifie
 
 ## Keep Console Logs During a Fix
 
-Do not remove `console.log` statements while actively making a change. Keep them until the fix is confirmed working. Remove logging only after verification.
+Do not remove `console.log` statements while actively making a change.
+
+**Debug mode rule:** Never remove logging added for debugging until a final test has been run that shows through the logs that the problem has been fixed. Do not assume a fix has worked without this confirmation.
 
 ## Keep Documentation Accurate
 
-When changing code that is described in `docs/`, update the documentation in the same step. Do not leave docs out of sync with the implementation.
+If the user asks you to write/update documentation (or you are already editing docs for the task), keep documentation accurate and consistent with the implementation.
+
+After successful implementation, suggest that the user request documentation be written/updated, but do **not** write or update documentation unless the user explicitly asks you to.
