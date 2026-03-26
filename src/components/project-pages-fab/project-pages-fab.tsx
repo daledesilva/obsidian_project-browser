@@ -15,6 +15,9 @@ import { isRootPath } from 'src/utils/string-processes';
 //////////
 //////////
 
+const PAGE_LIST_EDGE_FADE_DEPTH_PX = 24;
+const PAGE_LIST_SCROLL_EPSILON_PX = 1;
+
 interface ProjectPagesFABProps {
     projectFolder: TFolder;
     currentFile: TFile;
@@ -140,21 +143,42 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         };
     }, [props.projectFolder]);
 
-    const updatePageListOverflow = React.useCallback(() => {
+    const syncPageListScrollPresentation = React.useCallback(() => {
         const scrollEl = pageListScrollRef.current;
         if (!scrollEl) return;
-        setPageListHasOverflow(scrollEl.scrollHeight > scrollEl.clientHeight + 1);
+
+        const hasOverflow = scrollEl.scrollHeight > scrollEl.clientHeight + PAGE_LIST_SCROLL_EPSILON_PX;
+        setPageListHasOverflow(hasOverflow);
+
+        const fadeDepth = `${PAGE_LIST_EDGE_FADE_DEPTH_PX}px`;
+        if (!hasOverflow) {
+            scrollEl.style.setProperty('--ddc-pb-page-list-fade-top', '0px');
+            scrollEl.style.setProperty('--ddc-pb-page-list-fade-bottom', '0px');
+            return;
+        }
+
+        const atTop = scrollEl.scrollTop <= PAGE_LIST_SCROLL_EPSILON_PX;
+        const atBottom =
+            scrollEl.scrollTop + scrollEl.clientHeight >=
+            scrollEl.scrollHeight - PAGE_LIST_SCROLL_EPSILON_PX;
+
+        scrollEl.style.setProperty('--ddc-pb-page-list-fade-top', atTop ? '0px' : fadeDepth);
+        scrollEl.style.setProperty('--ddc-pb-page-list-fade-bottom', atBottom ? '0px' : fadeDepth);
     }, []);
+
+    function handlePageListScroll() {
+        syncPageListScrollPresentation();
+    }
 
     React.useLayoutEffect(() => {
         if (!menuIsOpen || !props.parentIsProject) {
             setPageListHasOverflow(false);
             return;
         }
-        updatePageListOverflow();
-        const frameId = requestAnimationFrame(updatePageListOverflow);
+        syncPageListScrollPresentation();
+        const frameId = requestAnimationFrame(syncPageListScrollPresentation);
         return () => cancelAnimationFrame(frameId);
-    }, [menuIsOpen, props.parentIsProject, pagesInProject, refreshTrigger, updatePageListOverflow]);
+    }, [menuIsOpen, props.parentIsProject, pagesInProject, refreshTrigger, syncPageListScrollPresentation]);
 
     React.useEffect(() => {
         if (typeof ResizeObserver === 'undefined') return;
@@ -162,11 +186,11 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         const scrollEl = pageListScrollRef.current;
         const innerEl = pageListInnerRef.current;
         if (!scrollEl) return;
-        const resizeObserver = new ResizeObserver(() => updatePageListOverflow());
+        const resizeObserver = new ResizeObserver(() => syncPageListScrollPresentation());
         resizeObserver.observe(scrollEl);
         if (innerEl) resizeObserver.observe(innerEl);
         return () => resizeObserver.disconnect();
-    }, [menuIsOpen, props.parentIsProject, updatePageListOverflow]);
+    }, [menuIsOpen, props.parentIsProject, syncPageListScrollPresentation]);
 
     React.useEffect(() => {
         function handleClickOutside(event: PointerEvent) {
@@ -220,7 +244,11 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     return (
         <div className="ddc_pb_project-pages-fab" ref={fabContainerRef}>
             {menuIsOpen && props.parentIsProject && (
-                <div className="ddc_pb_project-pages-fab__page-list-scroll" ref={pageListScrollRef}>
+                <div
+                    className="ddc_pb_project-pages-fab__page-list-scroll"
+                    ref={pageListScrollRef}
+                    onScroll={handlePageListScroll}
+                >
                     <div
                         ref={pageListInnerRef}
                         className={classNames(

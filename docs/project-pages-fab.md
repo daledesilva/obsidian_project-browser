@@ -90,6 +90,7 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **FAB shape** — The main button is 25% wider than its height, with rounded left corners and sharp right corners (pill-style, aligned to the right).
 - **Floating title** — A pill below the FAB with a back chevron and background. Always visible except when the file is at vault root. Displays the current folder name (project or non-project). Clicking it navigates to that folder in the card browser. When the folder is a project, a 2px accent-colour bottom border indicates it.
 - **Card Browser FAB** — The card browser has a matching FAB layout (Search, New project, floating parent-folder title with back chevron). The floating title shows the parent folder and navigates back when clicked. Accent border appears only when the current folder is a project.
+- **Project page list (open menu)** — The scrollable list uses vertical padding (not margin) for spacing from edges above the actions. The scrollbar is hidden; scrolling still works with wheel, trackpad, and touch. When the list overflows, a **CSS mask** (`mask-image`) fades opacity at the top and/or bottom **only when there is clipped content** at that edge (no fade at the scroll ends, and no fades when the full list fits).
 
 ## Technical implementation
 
@@ -105,6 +106,7 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Rename popup on new page**: Controlled by "Show rename popup when creating new pages" (File Overlays, settings). When enabled (default), new pages open with the filename activated for renaming; when disabled, they open without the rename popup.
 - **Click-outside close**: `pointerdown` on `document`; closes when the target is outside the FAB/buttons container. Clicks on Obsidian menus (`.menu`) or modals (`.modal`, `.modal-bg`) are ignored so the menu stays open during context-menu actions like Delete.
 - **Scrollbar accommodation**: When the leaf's content area (`.cm-scroller`) has a visible vertical scrollbar, the FAB group is offset left by the scrollbar width so it does not overlap. A ResizeObserver on both the scroller and `.cm-content` updates the `--ddc-pb-fab-right-offset` CSS variable when the pane is resized or when content grows (e.g. while typing), since the scroller's size often stays viewport-fixed and only the content height changes.
+- **Page list scroll presentation**: `ProjectPagesFAB` sets `--ddc-pb-page-list-fade-top` and `--ddc-pb-page-list-fade-bottom` on the scroll container from scroll position and overflow checks (layout effect, `ResizeObserver`, and `onScroll`). Values are `0px` when no fade is needed, or a fixed depth in pixels when that edge clips content.
 
 ## Technical gotchas
 
@@ -114,3 +116,4 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Note at vault root** — `activeFile.parent` may be null; the vault root folder is used for all folder actions.
 - **Folder name conflict** — When creating a project from a note, if a sibling folder with the same name exists, `(2)`, `(3)`, etc. are appended.
 - **Embed content** — Clicks inside transcluded or embedded content close the menu, since those elements are part of the document and the `pointerdown` target is outside the FAB.
+- **Page list edge fades** — Fades use mask alpha (a true opacity falloff of the list), not a solid colour overlay. When the list does not overflow, both fades are off so short lists do not get softened edges.

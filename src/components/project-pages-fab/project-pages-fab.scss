@@ -11,15 +11,37 @@
     align-items: flex-end;
 
     .ddc_pb_project-pages-fab__page-list-scroll {
+        --ddc-pb-page-list-fade-top: 0px;
+        --ddc-pb-page-list-fade-bottom: 0px;
+
         flex: 1 1 0;
         min-height: 0;
         overflow-x: hidden;
         overflow-y: auto;
-        margin-top: 12px;
+        padding-top: 12px;
+        padding-bottom: 12px;
         margin-right: 12px;
-        margin-bottom: 12px;
         scrollbar-width: none;
         -ms-overflow-style: none;
+
+        mask-image: linear-gradient(
+            to bottom,
+            transparent 0,
+            black var(--ddc-pb-page-list-fade-top),
+            black calc(100% - var(--ddc-pb-page-list-fade-bottom)),
+            transparent 100%
+        );
+        mask-size: 100% 100%;
+        mask-repeat: no-repeat;
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            transparent 0,
+            black var(--ddc-pb-page-list-fade-top),
+            black calc(100% - var(--ddc-pb-page-list-fade-bottom)),
+            transparent 100%
+        );
+        -webkit-mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
 
         &::-webkit-scrollbar {
             display: none;
