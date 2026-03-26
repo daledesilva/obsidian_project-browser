@@ -90,7 +90,10 @@ const PageMenuFileButton = (props: PageMenuFileButtonProps) => {
 export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(!!props.initialMenuOpen);
     const [refreshTrigger, setRefreshTrigger] = React.useState(0);
+    const [pageListHasOverflow, setPageListHasOverflow] = React.useState(false);
     const fabContainerRef = React.useRef<HTMLDivElement>(null);
+    const pageListScrollRef = React.useRef<HTMLDivElement>(null);
+    const pageListInnerRef = React.useRef<HTMLDivElement>(null);
 
     const pagesInProject = React.useMemo(() => {
         const items = getItemsInFolder(props.projectFolder);
@@ -137,6 +140,34 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         };
     }, [props.projectFolder]);
 
+    const updatePageListOverflow = React.useCallback(() => {
+        const scrollEl = pageListScrollRef.current;
+        if (!scrollEl) return;
+        setPageListHasOverflow(scrollEl.scrollHeight > scrollEl.clientHeight + 1);
+    }, []);
+
+    React.useLayoutEffect(() => {
+        if (!menuIsOpen || !props.parentIsProject) {
+            setPageListHasOverflow(false);
+            return;
+        }
+        updatePageListOverflow();
+        const frameId = requestAnimationFrame(updatePageListOverflow);
+        return () => cancelAnimationFrame(frameId);
+    }, [menuIsOpen, props.parentIsProject, pagesInProject, refreshTrigger, updatePageListOverflow]);
+
+    React.useEffect(() => {
+        if (typeof ResizeObserver === 'undefined') return;
+        if (!menuIsOpen || !props.parentIsProject) return;
+        const scrollEl = pageListScrollRef.current;
+        const innerEl = pageListInnerRef.current;
+        if (!scrollEl) return;
+        const resizeObserver = new ResizeObserver(() => updatePageListOverflow());
+        resizeObserver.observe(scrollEl);
+        if (innerEl) resizeObserver.observe(innerEl);
+        return () => resizeObserver.disconnect();
+    }, [menuIsOpen, props.parentIsProject, updatePageListOverflow]);
+
     React.useEffect(() => {
         function handleClickOutside(event: PointerEvent) {
             if (!fabContainerRef.current) return;
@@ -180,93 +211,107 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         props.onAddPage?.();
     }
 
+    const showMenuActions =
+        menuIsOpen &&
+        (props.parentIsProject
+            ? !!props.onAddPage
+            : !!(props.onAddPage || props.onNewFile));
+
     return (
         <div className="ddc_pb_project-pages-fab" ref={fabContainerRef}>
-            {menuIsOpen && (
-                <div className="ddc_pb_project-pages-fab__page-buttons">
-                    {props.parentIsProject && (
-                        <>
-                            {pagesInProject.map((file) => (
-                                <PageMenuFileButton
-                                    key={file.path}
-                                    file={file}
-                                    isCurrentPage={file.path === props.currentFile.path}
-                                    onPageClick={handlePageClick}
-                                    onFileChange={() => setRefreshTrigger((t) => t + 1)}
-                                />
-                            ))}
-                            {props.onAddPage && (
-                                <button
-                                    className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
-                                    onClick={handleAddPageClick}
-                                    title="Add page"
-                                >
-                                    <Plus size={16} />
-                                    <span className="ddc_pb_project-pages-fab__action-button-label">
-                                        Add page
-                                    </span>
-                                </button>
-                            )}
-                        </>
-                    )}
-                    {!props.parentIsProject && (
-                        <>
-                            {props.onAddPage && (
-                                <button
-                                    className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
-                                    onClick={handleAddPageClick}
-                                    title="Add page"
-                                >
-                                    <Plus size={16} />
-                                    <span className="ddc_pb_project-pages-fab__action-button-label">
-                                        Add page
-                                    </span>
-                                </button>
-                            )}
-                            {props.onNewFile && (
-                                <button
-                                    className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--secondary"
-                                    onClick={handleNewFileClick}
-                                    title="New file"
-                                >
-                                    <Plus size={16} />
-                                    <span className="ddc_pb_project-pages-fab__action-button-label">
-                                        New file
-                                    </span>
-                                </button>
-                            )}
-                        </>
-                    )}
+            {menuIsOpen && props.parentIsProject && (
+                <div className="ddc_pb_project-pages-fab__page-list-scroll" ref={pageListScrollRef}>
+                    <div
+                        ref={pageListInnerRef}
+                        className={classNames(
+                            'ddc_pb_project-pages-fab__page-list-scroll-inner',
+                            !pageListHasOverflow &&
+                                'ddc_pb_project-pages-fab__page-list-scroll-inner--bottom-aligned'
+                        )}
+                    >
+                        {pagesInProject.map((file) => (
+                            <PageMenuFileButton
+                                key={file.path}
+                                file={file}
+                                isCurrentPage={file.path === props.currentFile.path}
+                                onPageClick={handlePageClick}
+                                onFileChange={() => setRefreshTrigger((t) => t + 1)}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
-            <div className="ddc_pb_project-pages-fab__group">
-                <button
-                    className={classNames(
-                        'ddc_pb_project-pages-fab__main-button',
-                        menuIsOpen && 'ddc_pb_active'
-                    )}
-                    onClick={handleFABClick}
-                    title={props.parentIsProject ? 'Project pages' : 'Add page'}
-                >
-                    {props.parentIsProject ? <FileStack size={24} /> : <Plus size={24} />}
-                </button>
-                <button
-                    className={classNames(
-                        'ddc_pb_project-pages-fab__project-title',
-                        props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project'
-                    )}
-                    onClick={handleOpenProjectFolderClick}
-                    title={
-                        isRootPath(props.projectFolder.path)
-                            ? 'Open vault root in project browser'
-                            : props.parentIsProject
-                              ? `Open ${props.projectFolder.name} in project browser`
-                              : 'Open folder in project browser'
-                    }
-                >
-                    <ChevronLeft size={16} className="ddc_pb_project-pages-fab__project-title-chevron" />
-                    {isRootPath(props.projectFolder.path) ? 'Home' : props.projectFolder.name}
-                </button>
+            <div className="ddc_pb_project-pages-fab__footer">
+                {showMenuActions && (
+                    <div className="ddc_pb_project-pages-fab__menu-actions">
+                        {props.parentIsProject ? (
+                            <button
+                                className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
+                                onClick={handleAddPageClick}
+                                title="Add page"
+                            >
+                                <Plus size={16} />
+                                <span className="ddc_pb_project-pages-fab__action-button-label">Add page</span>
+                            </button>
+                        ) : (
+                            <>
+                                {props.onAddPage && (
+                                    <button
+                                        className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
+                                        onClick={handleAddPageClick}
+                                        title="Add page"
+                                    >
+                                        <Plus size={16} />
+                                        <span className="ddc_pb_project-pages-fab__action-button-label">
+                                            Add page
+                                        </span>
+                                    </button>
+                                )}
+                                {props.onNewFile && (
+                                    <button
+                                        className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--secondary"
+                                        onClick={handleNewFileClick}
+                                        title="New file"
+                                    >
+                                        <Plus size={16} />
+                                        <span className="ddc_pb_project-pages-fab__action-button-label">
+                                            New file
+                                        </span>
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                )}
+                <div className="ddc_pb_project-pages-fab__group">
+                    <button
+                        className={classNames(
+                            'ddc_pb_project-pages-fab__main-button',
+                            menuIsOpen && 'ddc_pb_active'
+                        )}
+                        onClick={handleFABClick}
+                        title={props.parentIsProject ? 'Project pages' : 'Add page'}
+                    >
+                        {props.parentIsProject ? <FileStack size={24} /> : <Plus size={24} />}
+                    </button>
+                    <button
+                        className={classNames(
+                            'ddc_pb_project-pages-fab__project-title',
+                            props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project'
+                        )}
+                        onClick={handleOpenProjectFolderClick}
+                        title={
+                            isRootPath(props.projectFolder.path)
+                                ? 'Open vault root in project browser'
+                                : props.parentIsProject
+                                  ? `Open ${props.projectFolder.name} in project browser`
+                                  : 'Open folder in project browser'
+                        }
+                    >
+                        <ChevronLeft size={16} className="ddc_pb_project-pages-fab__project-title-chevron" />
+                        {isRootPath(props.projectFolder.path) ? 'Home' : props.projectFolder.name}
+                    </button>
+                </div>
             </div>
         </div>
     );
