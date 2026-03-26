@@ -141,7 +141,7 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
                     onClick={() => setMenuIsOpen((prev) => !prev)}
                     title={menuIsOpen ? 'Close menu' : 'New'}
                 >
-                    <Plus size={33} />
+                    <Plus size={20} />
                 </button>
                 <button
                     className={classNames(

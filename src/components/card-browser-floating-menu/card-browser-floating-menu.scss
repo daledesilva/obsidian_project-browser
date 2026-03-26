@@ -1,3 +1,5 @@
+@import '../../styles/fab-chip-search-sized';
+
 .ddc_pb_card-browser-floating-menu {
     --ddc-pb-fab-spacing: 12px;
     position: absolute;
@@ -13,18 +15,13 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 24px;
     }
 
     .ddc_pb_card-browser-floating-menu__search-button {
         cursor: pointer;
-        --size: min(50px, 10vw);
-        width: calc(var(--size) * 1.25);
-        height: var(--size);
-        padding: 15% !important; // Important to override Obsidian padding at all media sizes
-        border-radius: 8px 0 0 8px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        @include ddc-pb-fab-chip-search-sized;
 
         &.ddc_pb_active {
             color: var(--text-on-accent);
@@ -34,12 +31,7 @@
 
     .ddc_pb_card-browser-floating-menu__new-button {
         cursor: pointer;
-        --size: min(80px, 15vw);
-        width: calc(var(--size) * 1.25);
-        height: var(--size);
-        padding: 25% !important; // Important to override Obsidian padding at all media sizes
-        border-radius: 8px 0 0 8px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        @include ddc-pb-fab-chip-search-sized;
 
         &.ddc_pb_active {
             color: var(--text-on-accent);

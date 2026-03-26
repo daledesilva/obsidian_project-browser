@@ -274,22 +274,22 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                     <div className="ddc_pb_project-pages-fab__menu-actions">
                         {props.parentIsProject ? (
                             <button
-                                className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
+                                className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary ddc_pb_project-pages-fab__action-button--add-page"
                                 onClick={handleAddPageClick}
                                 title="Add page"
                             >
-                                <Plus size={16} />
+                                <Plus size={11} />
                                 <span className="ddc_pb_project-pages-fab__action-button-label">Add page</span>
                             </button>
                         ) : (
                             <>
                                 {props.onAddPage && (
                                     <button
-                                        className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary"
+                                        className="ddc_pb_project-pages-fab__action-button ddc_pb_project-pages-fab__action-button--primary ddc_pb_project-pages-fab__action-button--add-page"
                                         onClick={handleAddPageClick}
                                         title="Add page"
                                     >
-                                        <Plus size={16} />
+                                        <Plus size={11} />
                                         <span className="ddc_pb_project-pages-fab__action-button-label">
                                             Add page
                                         </span>
@@ -301,7 +301,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                                         onClick={handleNewFileClick}
                                         title="New file"
                                     >
-                                        <Plus size={16} />
+                                        <Plus size={11} />
                                         <span className="ddc_pb_project-pages-fab__action-button-label">
                                             New file
                                         </span>
@@ -320,7 +320,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                         onClick={handleFABClick}
                         title={props.parentIsProject ? 'Project pages' : 'Add page'}
                     >
-                        {props.parentIsProject ? <FileStack size={24} /> : <Plus size={24} />}
+                        {props.parentIsProject ? <FileStack size={20} /> : <Plus size={20} />}
                     </button>
                     <button
                         className={classNames(

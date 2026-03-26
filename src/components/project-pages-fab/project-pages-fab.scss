@@ -1,3 +1,5 @@
+@import '../../styles/fab-chip-search-sized';
+
 .ddc_pb_project-pages-fab {
     --ddc-pb-fab-spacing: 12px;
     position: absolute;
@@ -138,8 +140,26 @@
 
         &--active {
             cursor: default;
-            color: var(--text-on-accent);
             background-color: var(--interactive-accent);
+
+            &:disabled {
+                opacity: 1;
+                color: #000;
+                -webkit-text-fill-color: #000;
+            }
+
+            &:disabled .ddc_pb_file-ext-faint {
+                color: rgba(0, 0, 0, 0.45);
+            }
+
+            &:disabled .ddc_pb_external-file-icon {
+                color: rgba(0, 0, 0, 0.65);
+            }
+
+            &:disabled .ddc_pb_file-type-tag {
+                color: #000;
+                background-color: rgba(0, 0, 0, 0.28);
+            }
         }
     }
 
@@ -188,22 +208,22 @@
         }
     }
 
+    .ddc_pb_project-pages-fab__action-button--add-page.ddc_pb_project-pages-fab__action-button--primary {
+        font-size: calc(0.85em * 2 / 3);
+        min-height: calc(min(40px, 8vw) * 2 / 3);
+    }
+
     .ddc_pb_project-pages-fab__group {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 24px;
     }
 
     .ddc_pb_project-pages-fab__main-button {
         cursor: pointer;
-        --size: min(80px, 15vw);
-        width: calc(var(--size) * 1.25);
-        height: var(--size);
-        padding: 25% !important; // Important to override Obsidian padding at all media sizes
-        border-radius: 8px 0 0 8px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        @include ddc-pb-fab-chip-search-sized;
 
         &.ddc_pb_active {
             color: var(--text-on-accent);
