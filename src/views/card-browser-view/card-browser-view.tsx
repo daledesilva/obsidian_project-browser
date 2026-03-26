@@ -13,6 +13,9 @@ import { globalStore, getGlobals } from "src/logic/stores";
 
 export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 
+/** Matches `.ddc_pb_card-browser-view-content` in `card-browser.scss` — flex column so only `.ddc_pb_browser` scrolls. */
+export const CARD_BROWSER_VIEW_CONTENT_CLASS = 'ddc_pb_card-browser-view-content';
+
 export interface CardBrowserViewState {
     id?: string, // to allow for forcing a refresh
     path: string;
@@ -115,6 +118,7 @@ export class ProjectCardsView extends ItemView {
         const contentEl = this.contentEl;
         contentEl.empty();
         contentEl.setAttr('style', 'padding: 0;');
+        contentEl.addClass(CARD_BROWSER_VIEW_CONTENT_CLASS);
 
         if(!this.state || isEmpty(this.state)) {
             this.state = setCardBrowserViewStateDefaults();
@@ -143,11 +147,6 @@ export class ProjectCardsView extends ItemView {
 
         // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
         this.state = state;   // this line works - you have to replace the whole object for navigation history to work properly
-
-        // NOTE: This used to be on scrollend, but it was missing some instances where the user would scroll then quickly click
-        this.contentEl.addEventListener('scroll', (e) => {
-            this.saveReturnState();
-        })
 
         this.cardBrowserHandlers?.rerender();
 
@@ -182,6 +181,7 @@ export class ProjectCardsView extends ItemView {
                         }
                     }}
                     passBackHandlers = {this.setCardBrowserHandlers}
+                    onBrowserScroll = {this.handleBrowserScrollForPersist}
                 />
             </JotaiProvider>
         );
@@ -192,11 +192,22 @@ export class ProjectCardsView extends ItemView {
         this.applyScrollOffset();
     }
 
-    applyScrollOffset = () => {
-        setTimeout( () => {
-            if(this.eState?.scrollOffset) this.contentEl.scrollTo(0, this.eState.scrollOffset);
-        }, 50)
+    handleBrowserScrollForPersist = () => {
+        void this.saveReturnState();
+    };
+
+    private getBrowserScrollElement(): HTMLElement | null {
+        return this.contentEl.querySelector('.ddc_pb_browser');
     }
+
+    applyScrollOffset = () => {
+        setTimeout(() => {
+            const scrollEl = this.getBrowserScrollElement();
+            if (this.eState?.scrollOffset != null && scrollEl) {
+                scrollEl.scrollTo(0, this.eState.scrollOffset);
+            }
+        }, 50);
+    };
 
     // My function that I call to navigate to a new folder
     setViewStateWithHistory = (statePartial: PartialCardBrowserViewState) => {
@@ -223,7 +234,8 @@ export class ProjectCardsView extends ItemView {
     }
 
     saveReturnState = async (props?: {lastTouchedFilePath?: string}) => {
-        const scrollOffset = this.contentEl.scrollTop;
+        const scrollHost = this.getBrowserScrollElement() ?? this.contentEl;
+        const scrollOffset = scrollHost.scrollTop;
         
         // Not sure what ephemeral state actually does.
         // State seems to be tied to view type, while ephemeral state is tied to view instance?

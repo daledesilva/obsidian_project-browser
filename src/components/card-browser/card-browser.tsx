@@ -45,7 +45,9 @@ interface CardBrowserProps {
     rememberLastTouchedFilepath: (filepath: string) => {},
     resetLastTouchedFilepath: Function,
     getViewStates: () => {state: CardBrowserViewState, eState: CardBrowserViewEState},
-    passBackHandlers: (handlers: CardBrowserHandlers) => void,
+    passBackHandlers: (handlers: CardBrowserHandlers) => void;
+    /** Persist scroll position; fired on the scrollable `.ddc_pb_browser` region. */
+    onBrowserScroll?: () => void;
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
@@ -107,6 +109,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
         const cleanup = setupFabScrollbarOffset(fabContainerRef.current, props.containerEl);
         return cleanup;
     }, [props.containerEl]);
+
+    React.useEffect(() => {
+        const scrollEl = browserRef.current;
+        const onScroll = props.onBrowserScroll;
+        if (!scrollEl || !onScroll) return;
+        scrollEl.addEventListener('scroll', onScroll, { passive: true });
+        return () => scrollEl.removeEventListener('scroll', onScroll);
+    }, [props.onBrowserScroll]);
 
     // on mount
     React.useEffect( () => {

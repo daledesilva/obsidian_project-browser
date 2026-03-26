@@ -1,6 +1,20 @@
+// Applied to ItemView contentEl in ProjectCardsView.onOpen — keeps scroll inside .ddc_pb_browser
+// so the FAB overlay (sibling of the browser) stays fixed like the page-menu FAB on containerEl.
+.ddc_pb_card-browser-view-content {
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
 .ddc_pb_card-browser-root {
     position: relative;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .ddc_pb_card-browser-fab-container {
@@ -15,7 +29,9 @@
 }
 
 .ddc_pb_browser {
-    min-height: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 
     --browser-inline-margin: 0.5em;
     --browser-block-start-margin: 0em;
@@ -30,7 +46,6 @@
 
     padding: var(--browser-block-start-margin) var(--browser-inline-margin) 20em var(--browser-inline-margin);
     margin-top: 0;
-    overflow-y: auto;
 
     animation-name: transition-on;
     animation-duration: 0.3s;
