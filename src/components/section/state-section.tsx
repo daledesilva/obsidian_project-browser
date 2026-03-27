@@ -9,7 +9,7 @@ import { SmallNoteCardSet } from '../small-note-card-set/small-note-card-set';
 import { sortItems, sortItemsByPriorityThenCreationDate, sortItemsByPriorityThenModifiedDate, sortItemsByPriorityThenName } from 'src/utils/sorting';
 import { registerStateSectionContextMenu } from 'src/context-menus/state-section-context-menu';
 import { CardBrowserContext } from '../card-browser/card-browser';
-import { getGlobals, stateSettingsByNameAtom } from 'src/logic/stores';
+import { getGlobals, projectPageStateSettingsByNameAtom, stateSettingsByNameAtom } from 'src/logic/stores';
 import { StateViewMode, StateViewOrder } from 'src/types/types-map';
 import { StateQuickMenu } from '../section-quick-menu/state-quick-menu';
 import { useAtom, useAtomValue } from 'jotai';
@@ -29,8 +29,10 @@ export const StateSection = (props: React.PropsWithChildren<StateSectionProps>) 
     
     // Memoize the atom to prevent infinite re-renders
     const stateSettingsAtom = React.useMemo(() => 
-        stateSettingsByNameAtom(props.section.title), 
-        [props.section.title]
+        props.section.stateScope === 'projectPage'
+            ? projectPageStateSettingsByNameAtom(props.section.title)
+            : stateSettingsByNameAtom(props.section.title), 
+        [props.section.stateScope, props.section.title]
     );
     
     const stateSettings = useAtomValue(stateSettingsAtom);

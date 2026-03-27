@@ -77,6 +77,33 @@ describe("Project Browser Commands", function () {
     expect(stateAfter!.length).toBeGreaterThan(0);
   });
 
+  it("cycle-state-forward uses project page states inside projects", async function () {
+    const { obsidianPage } = await import("wdio-obsidian-service");
+    await obsidianPage.openFile("Cross Type Project/Markdown Page 1.md");
+    await browser.pause(300);
+
+    await browser.executeObsidian(async ({ app }) => {
+      const file = app.vault.getAbstractFileByPath("Cross Type Project/Markdown Page 1.md");
+      if (!file || !("path" in file)) return;
+      await app.fileManager.processFrontMatter(file as any, (frontmatter: Record<string, string | undefined>) => {
+        frontmatter.state = "[[First Draft]]";
+      });
+    });
+    await browser.pause(300);
+
+    await browser.executeObsidianCommand("project-browser:cycle-state-forward");
+    await browser.pause(500);
+
+    const stateAfter = await browser.executeObsidian(async ({ app }) => {
+      const file = app.vault.getAbstractFileByPath("Cross Type Project/Markdown Page 1.md");
+      if (!file || !("vault" in file)) return null;
+      const content = await app.vault.read(file as { path: string });
+      const match = content.match(/^state:\s*(.+)$/m);
+      return match ? match[1].trim() : null;
+    });
+    expect(stateAfter).toContain("Work in Progress");
+  });
+
   it("toggle-state-menu toggles state menu visibility", async function () {
     const { obsidianPage } = await import("wdio-obsidian-service");
     await obsidianPage.openFile("Project A/note-1.md");

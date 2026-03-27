@@ -4,7 +4,7 @@ import * as React from "react";
 import { Section } from 'src/logic/section-processes';
 import { ListNoteCardSet } from '../list-note-card-set/list-note-card-set';
 import { sortItems, sortItemsByPriorityThenCreationDate, sortItemsByPriorityThenModifiedDate, sortItemsByName, sortItemsByPriorityThenName } from 'src/utils/sorting';
-import { statelessSettingsAtom } from 'src/logic/stores';
+import { projectPageStatelessSettingsAtom, statelessSettingsAtom } from 'src/logic/stores';
 import { useAtom } from 'jotai';
 import { StateViewMode, StateViewOrder } from 'src/types/types-map';
 import { StatelessQuickMenu } from '../section-quick-menu/stateless-quick-menu';
@@ -21,7 +21,10 @@ interface StatelessSectionProps {
 }
 
 export const StatelessSection = (props: React.PropsWithChildren<StatelessSectionProps>) => {
-    const [statelessSettings, setStatelessSettings] = useAtom(statelessSettingsAtom);
+    const scopedStatelessSettingsAtom = props.section.stateScope === 'projectPage'
+        ? projectPageStatelessSettingsAtom
+        : statelessSettingsAtom;
+    const [statelessSettings, setStatelessSettings] = useAtom(scopedStatelessSettingsAtom);
     const curStatelessSettings = statelessSettings || props.section.settings;
     
     const sortedFiles = sortItems(props.section.items, curStatelessSettings);

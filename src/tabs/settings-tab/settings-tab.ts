@@ -1,4 +1,5 @@
 import { insertStateEditor } from 'src/components/state-editor/state-editor';
+import { insertProjectPageStateEditor } from 'src/components/project-page-state-editor/project-page-state-editor';
 import { insertFileTypeEditor } from 'src/components/file-type-editor/file-type-editor';
 import 'src/shared/settings.scss';
 import { PluginSettingTab, Setting } from "obsidian";
@@ -34,6 +35,8 @@ export class MySettingsTab extends PluginSettingTab {
 		insertAccessSettings(containerEl, this.display);
 		containerEl.createEl('hr');
 		insertStateSettings(containerEl, this.display);
+		containerEl.createEl('hr');
+		insertProjectPageStateSettings(containerEl, this.display);
 		containerEl.createEl('hr');
 		insertPrioritySettings(containerEl, this.display);
 		containerEl.createEl('hr');
@@ -167,15 +170,15 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(sectionEl)
 		.setClass('ddc_pb_controls-header')
-		.setName('States')
-		.setDesc('This is the list of categories that Project Browser will help assign notes and group by in the Browser view. Add new states and drag them to reorder or delete.');
+		.setName('Project States')
+		.setDesc('This is the list of categories that Project Browser will help assign projects and group by in the Browser view. Add new project states and drag them to reorder or delete.');
 
 	const contentEl = sectionEl.createDiv('ddc_pb_controls-content');
 
 	new Setting(contentEl)
 		.setClass('ddc_pb_setting')
-		.setName('Loop states')
-		.setDesc('When pressing the hotkeys to step states forward or backward, should it cycle back to the first or last state when the end is reached?')
+		.setName('Loop project states')
+		.setDesc('When pressing the hotkeys to step project states forward or backward, should it cycle back to the first or last state when the end is reached?')
 		.addToggle((toggle) => {
 			toggle.setValue(plugin.settings.loopStatesWhenCycling);
 			toggle.onChange(async (value) => {
@@ -189,7 +192,7 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(contentEl)
 		.setClass('ddc_pb_setting')
-		.setName('Default state')
+		.setName('Default project state')
 		.addDropdown((dropdown) => {
 			function updateDropdownOptions() {
 				const options: Record<string, string> = {};
@@ -212,6 +215,60 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 				plugin.saveSettings();
 			});
 		})
+}
+
+function insertProjectPageStateSettings(containerEl: HTMLElement, refresh: () => void) {
+	const {plugin} = getGlobals();
+	const sectionEl = containerEl.createDiv('ddc_pb_controls-section ddc_pb_controls-section--states');
+
+	new Setting(sectionEl)
+		.setClass('ddc_pb_controls-header')
+		.setName('Page States')
+		.setDesc('This is the list of categories that Project Browser will use for markdown pages inside project folders. Add new page states and drag them to reorder or delete.');
+
+	const contentEl = sectionEl.createDiv('ddc_pb_controls-content');
+
+	new Setting(contentEl)
+		.setClass('ddc_pb_setting')
+		.setName('Loop page states')
+		.setDesc('When pressing the hotkeys to step page states forward or backward, should it cycle back to the first or last state when the end is reached?')
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.loopProjectPageStatesWhenCycling);
+			toggle.onChange(async (value) => {
+				plugin.settings.loopProjectPageStatesWhenCycling = value;
+				await plugin.saveSettings();
+				refresh();
+			});
+		});
+
+	insertProjectPageStateEditor(contentEl);
+
+	new Setting(contentEl)
+		.setClass('ddc_pb_setting')
+		.setName('Default page state')
+		.addDropdown((dropdown) => {
+			function updateDropdownOptions() {
+				const options: Record<string, string> = {};
+				Object.values(plugin.settings.projectPageStates.visible).map((stateSettings: StateSettings) => {
+					options[stateSettings.name] = stateSettings.name;
+				});
+				Object.values(plugin.settings.projectPageStates.hidden).map((stateSettings: StateSettings) => {
+					options[stateSettings.name] = stateSettings.name;
+				});
+				options['(None)'] = '(None)';
+				dropdown.selectEl.empty();
+				dropdown.addOptions(options);
+				dropdown.setValue(plugin.settings.defaultProjectPageState ?? '(None)');
+			}
+			updateDropdownOptions();
+			dropdown.selectEl.addEventListener('focus', () => {
+				updateDropdownOptions();
+			});
+			dropdown.selectEl.addEventListener('change', () => {
+				plugin.settings.defaultProjectPageState = dropdown.getValue() == '(None)' ? undefined : dropdown.getValue() as string;
+				plugin.saveSettings();
+			});
+		});
 }
 
 function createExpandableFileTypeSection(

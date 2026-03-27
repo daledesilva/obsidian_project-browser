@@ -7,7 +7,7 @@ import { setFileState } from "src/logic/frontmatter-processes";
 import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 import { getGlobals } from "src/logic/stores";
 import { DEFAULT_FOLDER_SETTINGS, DEFAULT_SETTINGS, FolderSettings, StateSettings } from "src/types/types-map";
-import { getStateByName } from "src/logic/get-state-by-name";
+import { getProjectPageStateByName, getStateByName } from "src/logic/get-state-by-name";
 
 // //////////
 // //////////
@@ -74,14 +74,18 @@ export async function createProject(props: CreateProjectProps): Promise<TFile> {
 
     const projectName = usePageNaming ? getNextPageNameInProject(props.parentFolder) : props.projectName;
     const primaryProjectFile = await createDefaultMarkdownFile(v, props.parentFolder, projectName);
+    const getScopedStateByName = parentIsProject ? getProjectPageStateByName : getStateByName;
+    const defaultStateName = parentIsProject
+        ? globals.plugin.settings.defaultProjectPageState
+        : globals.plugin.settings.defaultState;
 
     if(props.stateName) {
-        const stateSettings = getStateByName(props.stateName);
+        const stateSettings = getScopedStateByName(props.stateName);
         if(stateSettings) {
             await setFileState(primaryProjectFile, stateSettings);
         }
-    } else if(globals.plugin.settings.defaultState) {
-        const stateSettings = getStateByName(globals.plugin.settings.defaultState);
+    } else if(defaultStateName) {
+        const stateSettings = getScopedStateByName(defaultStateName);
         if(stateSettings) {
             await setFileState(primaryProjectFile, stateSettings);
         }

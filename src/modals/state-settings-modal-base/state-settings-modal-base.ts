@@ -20,7 +20,7 @@ interface StateSettingsModalBaseProps {
 export class StateSettingsModalBase extends Modal {
 	title: string = 'State settings';
 	introText: string;
-	actionButtonLabel: string = 'Save state';
+	actionButtonLabel: string = 'Save';
 	onSuccess: (newState: StateSettings) => {};
 	onReject: ((reason: string) => {}) | undefined;
 	////
@@ -65,7 +65,7 @@ export class StateSettingsModalBase extends Modal {
         
         new Setting(contentEl)
             .setClass('ddc_pb_setting')
-            .setName('Enter name of new state')
+            .setName('Enter name')
             .addText((text) => {
 				this.nameInputEl = text;
                 text.setValue(this.stateSettings.name);

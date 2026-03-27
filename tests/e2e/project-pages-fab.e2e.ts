@@ -69,6 +69,20 @@ async function clickPageByLabel(pageLabel: string): Promise<void> {
   await targetButton!.click();
 }
 
+async function openPageContextMenu(pageLabel: string): Promise<void> {
+  await browser.execute((pageButtonSelector: string, targetLabel: string) => {
+    const buttons = Array.from(document.querySelectorAll(pageButtonSelector)) as HTMLButtonElement[];
+    const visibleButton = buttons.find((button) => {
+      const rect = button.getBoundingClientRect();
+      const isVisible = rect.width > 0 && rect.height > 0;
+      return isVisible && (button.textContent ?? "").includes(targetLabel);
+    });
+    if (visibleButton) {
+      visibleButton.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, view: window }));
+    }
+  }, FAB_PAGE_BUTTON, pageLabel);
+}
+
 async function activeFabPageLabel(): Promise<string> {
   const activeLabel = await browser.execute((pageButtonSelector: string) => {
     const buttons = Array.from(document.querySelectorAll(pageButtonSelector)) as HTMLButtonElement[];
@@ -243,5 +257,27 @@ describe("Project Pages FAB", function () {
     expect(baseOffset).toBe(baseScrollbarWidth);
     expect(baseOffset).toBeGreaterThan(0);
     expect(baseMetrics.gapFromRight).toBe(baseOffset);
+  });
+
+  it("page context menu shows project page states", async function () {
+    await obsidianPage.openFile(filePathFor("Markdown Page 1"));
+    await browser.pause(400);
+    await openFabMenu();
+    await openPageContextMenu("Markdown Page 2");
+    await browser.pause(400);
+
+    const menu = await $(".menu");
+    await menu.waitForExist({ timeout: 5000 }).catch(() => null);
+    const menuExists = await menu.isExisting();
+    if (menuExists) {
+      const menuText = await menu.getText();
+      const hasExpectedProjectPageState =
+        menuText.includes("First Draft") ||
+        menuText.includes("Work in Progress") ||
+        menuText.includes("Proofingreading") ||
+        menuText.includes("Ready") ||
+        menuText.includes("Abandoned");
+      expect(hasExpectedProjectPageState).toBe(true);
+    }
   });
 });

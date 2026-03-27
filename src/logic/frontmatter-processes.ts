@@ -4,6 +4,7 @@ import { error } from "src/utils/log-to-console";
 import { getStateByName } from "./get-state-by-name";
 import { PrioritySettings, StateSettings } from "src/types/types-map";
 import { getPriorityByName } from "./get-priority-by-name";
+import { getStateByNameForFile } from "./get-state-by-name";
 
 ////////////
 
@@ -82,6 +83,19 @@ export const getFileStateSettings = (file: TFile): null | StateSettings => {
     return null;
 }
 
+export const getFileStateSettingsAsync = async (file: TFile): Promise<null | StateSettings> => {
+    const frontmatter = getFileFrontmatter(file);
+    if (!frontmatter) return null;
+
+    if ((frontmatter as FrontMatterCache).state) {
+        const stateName = (frontmatter as FrontMatterCache).state;
+        if (stateName) {
+            return await getStateByNameForFile(file, stateName);
+        }
+    }
+    return null;
+}
+
 export const getFilePrioritySettings = (file: TFile): null | PrioritySettings => {
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
@@ -100,6 +114,12 @@ export const getFilePrioritySettings = (file: TFile): null | PrioritySettings =>
 export const getFileStateName = (file: TFile): null | string => {
     const stateSettings = getFileStateSettings(file);
     if(!stateSettings) return null;
+    return stateSettings.name;
+}
+
+export const getFileStateNameAsync = async (file: TFile): Promise<null | string> => {
+    const stateSettings = await getFileStateSettingsAsync(file);
+    if (!stateSettings) return null;
     return stateSettings.name;
 }
 

@@ -1,15 +1,15 @@
 import { TFile } from "obsidian";
-import { getFileStateSettings } from "./frontmatter-processes";
-import { getGlobals } from "./stores";
+import { getFileStateSettingsAsync } from "./frontmatter-processes";
 import { StateSettings } from "src/types/types-map";
+import { getStateSettingsForFile } from "./project-page-states";
 
 //////////////////
 //////////////////
 
-export function offsetState(file: TFile, offset: number, cycle: boolean = false): StateSettings {
-    const {plugin} = getGlobals();
-    const curStateSettings = getFileStateSettings(file);
-    const allStateSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
+export async function offsetState(file: TFile, offset: number, cycle: boolean = false): Promise<StateSettings> {
+    const curStateSettings = await getFileStateSettingsAsync(file);
+    const scopedStateSettings = await getStateSettingsForFile(file);
+    const allStateSettings = [...scopedStateSettings.visible, ...scopedStateSettings.hidden];
 
     if(curStateSettings) {
         const curStateIndex = allStateSettings.findIndex(state => state.name === curStateSettings?.name);

@@ -2,6 +2,7 @@ import './state-menu.scss';
 import * as React from "react";
 import { TFolder } from 'obsidian';
 import { getStateByName } from 'src/logic/get-state-by-name';
+import { getGlobals } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
 import { getFolderStateName, setFolderState } from 'src/utils/file-manipulation';
 import { StateMenuShell } from './state-menu-shell';
@@ -12,6 +13,7 @@ interface ProjectFolderStateMenuProps {
 }
 
 export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
+    const { plugin } = getGlobals();
     const [currentStateSettings, setCurrentStateSettings] = React.useState<StateSettings | null>(null);
 
     React.useEffect(() => {
@@ -33,6 +35,8 @@ export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
     return (
         <StateMenuShell
             currentStateSettings={currentStateSettings}
+            visibleStates={plugin.settings.states.visible}
+            hiddenStates={plugin.settings.states.hidden}
             onSetState={setProjectFolderState}
         />
     );

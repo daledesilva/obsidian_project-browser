@@ -4,7 +4,14 @@ import { DEFAULT_PLUGIN_SETTINGS_0_1_0, DEFAULT_STATE_SETTINGS_0_1_0, PluginSett
 import * as semVer from 'semver';
 import { PluginSettings } from "./types-map";
 import { DEFAULT_PLUGIN_SETTINGS_0_3_0, DEFAULT_STATE_SETTINGS_0_3_0, PluginSettings_0_3_0 } from "./plugin-settings_0_3_0";
-import { DEFAULT_FILE_TYPE_SETTINGS_0_4_0, DEFAULT_PLUGIN_SETTINGS_0_4_0, FileTypeSettings_0_4_0, PluginSettings_0_4_0 } from "./plugin-settings_0_4_0";
+import {
+    DEFAULT_FILE_TYPE_SETTINGS_0_4_0,
+    DEFAULT_PLUGIN_SETTINGS_0_4_0,
+    DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS_0_4_0,
+    DEFAULT_PROJECT_PAGE_STATE_SETTINGS_0_4_0,
+    FileTypeSettings_0_4_0,
+    PluginSettings_0_4_0,
+} from "./plugin-settings_0_4_0";
 import { findItemByProperty } from "./migration-helpers";
 
 ///////////
@@ -17,7 +24,7 @@ export function migrateOutdatedSettings(settings: {settingsVersion: string}): Pl
     if(semVer.lt(updatedSettings.settingsVersion, '0.1.0'))      updatedSettings = migrate_0_0_5_to_0_1_0(updatedSettings as unknown as PluginSettings_0_0_5);
     if(semVer.lt(updatedSettings.settingsVersion, '0.3.0'))      updatedSettings = migrate_0_1_0_to_0_3_0(updatedSettings as unknown as PluginSettings_0_1_0);
     if(semVer.lt(updatedSettings.settingsVersion, '0.4.0'))      updatedSettings = migrate_0_3_0_to_0_4_0(updatedSettings as unknown as PluginSettings_0_3_0);
-    if(updatedSettings.settingsVersion === '0.4.0')               updatedSettings = patch_0_4_0_fileTypes(updatedSettings as PluginSettings_0_4_0);
+    if(updatedSettings.settingsVersion === '0.4.0')               updatedSettings = patch_0_4_0_settings(updatedSettings as PluginSettings_0_4_0);
     
     if(JSON.stringify(updatedSettings) != JSON.stringify(settings)) {
         console.log('Project Browser: Migrated outdated settings');
@@ -187,22 +194,43 @@ export function migrate_0_3_0_to_0_4_0(oldSettings: PluginSettings_0_3_0): Plugi
         ...oldSettings,
         settingsVersion: '0.4.0',
         fileTypes: { ...DEFAULT_PLUGIN_SETTINGS_0_4_0.fileTypes },
+        projectPageStates: {
+            visible: [...DEFAULT_PROJECT_PAGE_STATE_SETTINGS_0_4_0.visible],
+            hidden: [...DEFAULT_PROJECT_PAGE_STATE_SETTINGS_0_4_0.hidden],
+        },
+        projectPageStateless: { ...DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS_0_4_0 },
+        defaultProjectPageState: DEFAULT_PLUGIN_SETTINGS_0_4_0.defaultProjectPageState,
+        loopProjectPageStatesWhenCycling: DEFAULT_PLUGIN_SETTINGS_0_4_0.loopProjectPageStatesWhenCycling,
         showRenamePopupOnNewPage: true,
     };
     return JSON.parse(JSON.stringify(newSettings));
 }
 
-/** Transforms legacy fileTypes (visible/hidden) to per-surface (projectBrowser/pageMenu). */
-function patch_0_4_0_fileTypes(settings: PluginSettings_0_4_0): PluginSettings_0_4_0 {
-    if (!settings.fileTypes) return settings;
+function patch_0_4_0_settings(settings: PluginSettings_0_4_0): PluginSettings_0_4_0 {
     const patched = JSON.parse(JSON.stringify(settings)) as PluginSettings_0_4_0 & {
         fileTypes: FileTypeSettings_0_4_0 | (
             { visible: string[]; hidden: string[] } &
             { unsupported?: string[]; hiddenAndUnsupportedOrder?: string[] }
         );
     };
-    const fileTypes = patched.fileTypes as Record<string, unknown>;
+    if (!patched.projectPageStates) {
+        patched.projectPageStates = {
+            visible: [...DEFAULT_PROJECT_PAGE_STATE_SETTINGS_0_4_0.visible],
+            hidden: [...DEFAULT_PROJECT_PAGE_STATE_SETTINGS_0_4_0.hidden],
+        };
+    }
+    if (!patched.projectPageStateless) {
+        patched.projectPageStateless = { ...DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS_0_4_0 };
+    }
+    if (patched.defaultProjectPageState === undefined) {
+        patched.defaultProjectPageState = DEFAULT_PLUGIN_SETTINGS_0_4_0.defaultProjectPageState;
+    }
+    if (patched.loopProjectPageStatesWhenCycling === undefined) {
+        patched.loopProjectPageStatesWhenCycling = DEFAULT_PLUGIN_SETTINGS_0_4_0.loopProjectPageStatesWhenCycling;
+    }
 
+    if (!patched.fileTypes) return patched as PluginSettings_0_4_0;
+    const fileTypes = patched.fileTypes as Record<string, unknown>;
     if (fileTypes.projectBrowser) {
         return patched as PluginSettings_0_4_0;
     }

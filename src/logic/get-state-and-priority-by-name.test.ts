@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach, jest } from "@jest/globals";
-import { getStateByName } from "./get-state-by-name";
+import { getProjectPageStateByName, getStateByName } from "./get-state-by-name";
 import { getPriorityByName } from "./get-priority-by-name";
 
 jest.mock("./stores", () => ({
@@ -13,6 +13,15 @@ jest.mock("./stores", () => ({
           ],
           hidden: [
             { name: "Done" },
+          ],
+        },
+        projectPageStates: {
+          visible: [
+            { name: "First Draft" },
+            { name: "Work in Progress" },
+          ],
+          hidden: [
+            { name: "Abandoned" },
           ],
         },
         priorities: [
@@ -43,6 +52,18 @@ describe("getStateByName", () => {
   test("returns null if not found", () => {
     const state = getStateByName("Missing");
     expect(state).toBeNull();
+  });
+});
+
+describe("getProjectPageStateByName", () => {
+  test("finds project page state in visible states", () => {
+    const state = getProjectPageStateByName("First Draft");
+    expect(state).toEqual({ name: "First Draft" });
+  });
+
+  test("finds project page state in hidden states", () => {
+    const state = getProjectPageStateByName("Abandoned");
+    expect(state).toEqual({ name: "Abandoned" });
   });
 });
 

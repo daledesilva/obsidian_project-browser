@@ -1,10 +1,11 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { Section, getStateSettings, orderSections } from "./section-processes";
-import { getFileStateSettings, getFileStateName } from "./frontmatter-processes";
+import { getFileStateSettings, getFileStateName, getFileStateNameAsync } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 import { getGlobals } from "./stores";
 import { getFolderSettings, getFolderStateName } from "src/utils/file-manipulation";
 import { isExtensionVisible } from "./file-type-filter";
+import { FileStateScope } from "./project-page-states";
 
 ///////////
 ///////////
@@ -175,6 +176,8 @@ export async function getSortedSectionsInFolderAsync(folder: TFolder): Promise<S
     const {plugin} = getGlobals();
     const vault = folder.vault;
     const itemsInFolder = getItemsInFolder(folder);
+    const currentFolderSettings = await getFolderSettings(vault, folder);
+    const fileStateScope: FileStateScope = currentFolderSettings.isProject ? 'projectPage' : 'standardNote';
 
     interface ItemsBySectionMap {
         [key: string]: Array<TFile | TFolder>
@@ -201,7 +204,7 @@ export async function getSortedSectionsInFolderAsync(folder: TFolder): Promise<S
         } else if (item instanceof TFile) {
             if (!isExtensionVisible(item.extension, 'projectBrowser')) continue;
 
-            const displayState = getFileStateName(item);
+            const displayState = await getFileStateNameAsync(item);
             if (displayState) {
                 if (!itemsBySection[displayState]) itemsBySection[displayState] = [];
                 itemsBySection[displayState].push(item);
@@ -226,19 +229,21 @@ export async function getSortedSectionsInFolderAsync(folder: TFolder): Promise<S
                 title: key,
                 type: 'stateless',
                 items: value,
-                settings: plugin.settings.stateless,
+                settings: fileStateScope === 'projectPage' ? plugin.settings.projectPageStateless : plugin.settings.stateless,
+                stateScope: fileStateScope,
             });
         } else {
             itemsBySectionArr.push({
                 title: key,
                 type: 'state',
                 items: value,
-                settings: getStateSettings(key),
+                settings: getStateSettings(key, fileStateScope),
+                stateScope: fileStateScope,
             });
         }
     }
 
-    return orderSections(itemsBySectionArr);
+    return orderSections(itemsBySectionArr, fileStateScope);
 }
 
 export function filterSectionsByString(sections: Section[], searchStr: string) {

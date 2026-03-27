@@ -11,12 +11,17 @@ describe("plugin settings migrations (wrapper)", () => {
     // Verify newly introduced fields in later versions exist
     expect(res).toHaveProperty("useAliases");
     expect(res).toHaveProperty("loopStatesWhenCycling");
+    expect(res).toHaveProperty("loopProjectPageStatesWhenCycling");
     // Check stateless section remaps to new keys
     expect(res).toHaveProperty(["stateless", "defaultViewMode"]);
     expect(res).toHaveProperty(["stateless", "defaultViewOrder"]);
+    expect(res).toHaveProperty(["projectPageStateless", "defaultViewMode"]);
+    expect(res).toHaveProperty(["projectPageStateless", "defaultViewOrder"]);
     // Ensure states arrays preserved and mapped
     expect(Array.isArray(res.states.visible)).toBe(true);
     expect(Array.isArray(res.states.hidden)).toBe(true);
+    expect(Array.isArray(res.projectPageStates.visible)).toBe(true);
+    expect(Array.isArray(res.projectPageStates.hidden)).toBe(true);
   });
 });
 

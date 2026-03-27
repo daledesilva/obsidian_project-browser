@@ -102,6 +102,22 @@ export const stateSettingsAtom = atom(
     }
 );
 
+export const projectPageStateSettingsAtom = atom(
+    { visible: [] as StateSettings[], hidden: [] as StateSettings[] },
+    (get, set, newValue: {visible: StateSettings[], hidden: StateSettings[]}) => {
+        set(projectPageStateSettingsAtom, newValue);
+
+        try {
+            const { plugin } = getGlobals();
+            plugin.settings.projectPageStates.visible = newValue.visible;
+            plugin.settings.projectPageStates.hidden = newValue.hidden;
+            plugin.saveSettings();
+        } catch (error) {
+            console.error('Error updating project page state settings:', error);
+        }
+    }
+);
+
 export const folderSettingsAtom = atom(
     // Initial value - will be set during initialization
     { defaultView: 'Small' } as FolderSectionSettings,
@@ -143,6 +159,24 @@ export const statelessSettingsAtom = atom(
     }
 );
 
+export const projectPageStatelessSettingsAtom = atom(
+    { name: '', defaultViewMode: 'List' } as StateSettings,
+    (get, set, newValue: Partial<StateSettings>) => {
+        const currentStatelessSettings = get(projectPageStatelessSettingsAtom);
+        const nextStatelessSettings = { ...currentStatelessSettings, ...newValue };
+
+        set(projectPageStatelessSettingsAtom, nextStatelessSettings);
+
+        try {
+            const { plugin } = getGlobals();
+            plugin.settings.projectPageStateless = nextStatelessSettings;
+            plugin.saveSettings();
+        } catch (error) {
+            console.error('Error updating project page stateless settings:', error);
+        }
+    }
+);
+
 // Initialize atoms from plugin settings (call this when plugin loads)
 export function initializeSettingsAtoms(): void {
     try {
@@ -154,9 +188,14 @@ export function initializeSettingsAtoms(): void {
             visible: plugin.settings.states.visible,
             hidden: plugin.settings.states.hidden
         });
+        store.set(projectPageStateSettingsAtom, {
+            visible: plugin.settings.projectPageStates.visible,
+            hidden: plugin.settings.projectPageStates.hidden,
+        });
         
         store.set(folderSettingsAtom, plugin.settings.folders);
         store.set(statelessSettingsAtom, plugin.settings.stateless);
+        store.set(projectPageStatelessSettingsAtom, plugin.settings.projectPageStateless);
         
     } catch (error) {
         console.error('Error initializing settings atoms:', error);
@@ -218,6 +257,52 @@ export const stateSettingsByNameAtom = (stateName: string) => atom(
         }
         
         console.warn(`State '${stateName}' not found in settings`);
+    }
+);
+
+export const projectPageStateSettingsByNameAtom = (stateName: string) => atom(
+    (get) => {
+        const allStateSettings = get(projectPageStateSettingsAtom);
+        const visibleState = allStateSettings.visible.find(state => state.name === stateName);
+        if (visibleState) {
+            return visibleState;
+        }
+
+        const hiddenState = allStateSettings.hidden.find(state => state.name === stateName);
+        if (hiddenState) {
+            return hiddenState;
+        }
+
+        return null;
+    },
+    (get, set, newSettings: Partial<StateSettings>) => {
+        const currentStateSettings = get(projectPageStateSettingsAtom);
+
+        const visibleIndex = currentStateSettings.visible.findIndex(state => state.name === stateName);
+        if (visibleIndex !== -1) {
+            const updatedVisible = [...currentStateSettings.visible];
+            updatedVisible[visibleIndex] = { ...updatedVisible[visibleIndex], ...newSettings };
+
+            set(projectPageStateSettingsAtom, {
+                visible: updatedVisible,
+                hidden: currentStateSettings.hidden,
+            });
+            return;
+        }
+
+        const hiddenIndex = currentStateSettings.hidden.findIndex(state => state.name === stateName);
+        if (hiddenIndex !== -1) {
+            const updatedHidden = [...currentStateSettings.hidden];
+            updatedHidden[hiddenIndex] = { ...updatedHidden[hiddenIndex], ...newSettings };
+
+            set(projectPageStateSettingsAtom, {
+                visible: currentStateSettings.visible,
+                hidden: updatedHidden,
+            });
+            return;
+        }
+
+        console.warn(`Project page state '${stateName}' not found in settings`);
     }
 );
 

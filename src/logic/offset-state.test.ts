@@ -9,64 +9,80 @@ jest.mock("obsidian", () => {
   return { TFile };
 }, { virtual: true });
 
-const makeGlobals = (visible: any[], hidden: any[]) => ({
-  plugin: {
-    settings: {
-      states: { visible, hidden },
-    },
-  },
-});
-
 describe("offsetState", () => {
-  test("moves to next state with clamp when cycle=false", () => {
-    jest.isolateModules(() => {
-      jest.doMock("./stores", () => ({ getGlobals: () => makeGlobals(
-        [ { name: "Todo" }, { name: "Doing" } ],
-        [ { name: "Done" } ]
-      ) }));
+  test("moves to next state with clamp when cycle=false", async () => {
+    await jest.isolateModulesAsync(async () => {
       jest.doMock("./frontmatter-processes", () => ({
-        getFileStateSettings: () => ({ name: "Todo" }),
+        getFileStateSettingsAsync: async () => ({ name: "Todo" }),
+      }));
+      jest.doMock("./project-page-states", () => ({
+        getStateSettingsForFile: async () => ({
+          visible: [ { name: "Todo" }, { name: "Doing" } ],
+          hidden: [ { name: "Done" } ],
+        }),
       }));
       const { offsetState } = require("./offset-state");
       const file = {} as any;
-      const next = offsetState(file, 1, false);
+      const next = await offsetState(file, 1, false);
       expect(next.name).toBe("Doing");
-      const clamp = offsetState(file, 10, false);
+      const clamp = await offsetState(file, 10, false);
       expect(clamp.name).toBe("Done");
     });
   });
 
-  test("wraps around when cycle=true", () => {
-    jest.isolateModules(() => {
-      jest.doMock("./stores", () => ({ getGlobals: () => makeGlobals(
-        [ { name: "Todo" }, { name: "Doing" } ],
-        [ { name: "Done" } ]
-      ) }));
+  test("wraps around when cycle=true", async () => {
+    await jest.isolateModulesAsync(async () => {
       jest.doMock("./frontmatter-processes", () => ({
-        getFileStateSettings: () => ({ name: "Done" }),
+        getFileStateSettingsAsync: async () => ({ name: "Done" }),
+      }));
+      jest.doMock("./project-page-states", () => ({
+        getStateSettingsForFile: async () => ({
+          visible: [ { name: "Todo" }, { name: "Doing" } ],
+          hidden: [ { name: "Done" } ],
+        }),
       }));
       const { offsetState } = require("./offset-state");
       const file = {} as any;
-      const wrapped = offsetState(file, 1, true);
+      const wrapped = await offsetState(file, 1, true);
       expect(wrapped.name).toBe("Todo");
-      const wrappedNeg = offsetState(file, -1, true);
+      const wrappedNeg = await offsetState(file, -1, true);
       expect(wrappedNeg.name).toBe("Doing");
     });
   });
 
-  test("no current state selects first or last depending on offset sign", () => {
-    jest.isolateModules(() => {
-      jest.doMock("./stores", () => ({ getGlobals: () => makeGlobals(
-        [ { name: "A" }, { name: "B" } ],
-        [ { name: "C" } ]
-      ) }));
+  test("no current state selects first or last depending on offset sign", async () => {
+    await jest.isolateModulesAsync(async () => {
       jest.doMock("./frontmatter-processes", () => ({
-        getFileStateSettings: () => null,
+        getFileStateSettingsAsync: async () => null,
+      }));
+      jest.doMock("./project-page-states", () => ({
+        getStateSettingsForFile: async () => ({
+          visible: [ { name: "A" }, { name: "B" } ],
+          hidden: [ { name: "C" } ],
+        }),
       }));
       const { offsetState } = require("./offset-state");
       const file = {} as any;
-      expect(offsetState(file, 1, false).name).toBe("A");
-      expect(offsetState(file, -1, false).name).toBe("C");
+      expect((await offsetState(file, 1, false)).name).toBe("A");
+      expect((await offsetState(file, -1, false)).name).toBe("C");
+    });
+  });
+
+  test("uses project page states when the file is inside a project", async () => {
+    await jest.isolateModulesAsync(async () => {
+      jest.doMock("./frontmatter-processes", () => ({
+        getFileStateSettingsAsync: async () => ({ name: "First Draft" }),
+      }));
+      jest.doMock("./project-page-states", () => ({
+        getStateSettingsForFile: async () => ({
+          visible: [ { name: "First Draft" }, { name: "Work in Progress" } ],
+          hidden: [ { name: "Abandoned" } ],
+        }),
+      }));
+      const { offsetState } = require("./offset-state");
+      const file = {} as any;
+      const next = await offsetState(file, 1, false);
+      expect(next.name).toBe("Work in Progress");
     });
   });
 });

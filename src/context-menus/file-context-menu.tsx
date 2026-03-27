@@ -1,9 +1,10 @@
 import { Menu, TFile } from "obsidian";
 import { openFileInBackgroundTab } from "src/logic/file-access-processes";
 import { deleteFileWithConfirmation } from "src/logic/file-processes";
-import { getFileStateSettings, getFilePrioritySettings, setFilePriority, setFileState } from "src/logic/frontmatter-processes";
+import { getFileStateSettingsAsync, getFilePrioritySettings, setFilePriority, setFileState } from "src/logic/frontmatter-processes";
 import { hasFrontmatterSupport } from "src/logic/get-file-type-label";
 import { isExtensionUnsupportedByObsidian } from "src/logic/is-extension-unsupported";
+import { getStateSettingsForFile } from "src/logic/project-page-states";
 import { getGlobals } from "src/logic/stores";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PrioritySettings, StateSettings } from "src/types/types-map";
@@ -19,14 +20,9 @@ interface registerFileContextMenuProps {
 
 export function registerFileContextMenu(props: registerFileContextMenuProps) {
     const {plugin} = getGlobals();
-
     const priorities = JSON.parse(JSON.stringify(plugin.settings.priorities));
-    const visibleStates = JSON.parse(JSON.stringify(plugin.settings.states.visible));
-    visibleStates.reverse();
-    const hiddenStates = JSON.parse(JSON.stringify(plugin.settings.states.hidden));
-    hiddenStates.reverse();
 
-    props.fileButtonEl.addEventListener('contextmenu', function(event) {
+    props.fileButtonEl.addEventListener('contextmenu', async function(event) {
         
         // Prevent container divs opening their context menus
         event.stopPropagation();
@@ -37,6 +33,12 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         const fileExtension = props.file.extension ?? '';
         const isUnsupported = isExtensionUnsupportedByObsidian(fileExtension);
         const hasFrontmatter = hasFrontmatterSupport(fileExtension);
+        const currentFileState = await getFileStateSettingsAsync(props.file);
+        const scopedStateSettings = await getStateSettingsForFile(props.file);
+        const visibleStates = JSON.parse(JSON.stringify(scopedStateSettings.visible));
+        visibleStates.reverse();
+        const hiddenStates = JSON.parse(JSON.stringify(scopedStateSettings.hidden));
+        hiddenStates.reverse();
         
         const menu = new Menu();
         if (!isUnsupported) {
@@ -63,11 +65,10 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             menu.addSeparator();
             visibleStates.forEach( (stateSettings: StateSettings) => {
                 menu.addItem((item) => {
-                    const fileRawState = getFileStateSettings(props.file);
                     item.setTitle(stateSettings.name);
-                    if(stateSettings.name === fileRawState?.name) item.setChecked(true);
-                    item.onClick(() => {
-                        setFileState(props.file, stateSettings);
+                    if(stateSettings.name === currentFileState?.name) item.setChecked(true);
+                    item.onClick(async () => {
+                        await setFileState(props.file, stateSettings);
                         props.onFileChange();
                     });
                 });
@@ -75,11 +76,10 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             menu.addSeparator();
             hiddenStates.forEach( (stateSettings: StateSettings) => {
                 menu.addItem((item) => {
-                    const fileRawState = getFileStateSettings(props.file);
                     item.setTitle(stateSettings.name);
-                    if(stateSettings.name === fileRawState?.name) item.setChecked(true);
-                    item.onClick(() => {
-                        setFileState(props.file, stateSettings);
+                    if(stateSettings.name === currentFileState?.name) item.setChecked(true);
+                    item.onClick(async () => {
+                        await setFileState(props.file, stateSettings);
                         props.onFileChange();
                     })
                 });

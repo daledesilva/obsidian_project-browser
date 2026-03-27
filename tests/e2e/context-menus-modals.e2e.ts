@@ -1,6 +1,6 @@
 import { browser, expect } from "@wdio/globals";
 import { dismissBlockingPopups } from "./helpers/dismiss-popups";
-import { openCardBrowserAndEnterFolder } from "./helpers/open-card-browser";
+import { openCardBrowserAndEnterFolder, openCardBrowserAndEnterFolderByName } from "./helpers/open-card-browser";
 
 describe("Project Browser Context Menus and Modals", function () {
   before(async function () {
@@ -57,6 +57,32 @@ describe("Project Browser Context Menus and Modals", function () {
         menuText.includes("Idea") ||
         menuText.includes("Drafting");
       expect(hasExpectedItem).toBe(true);
+    }
+  });
+
+  it("project page note card context menu shows project page states", async function () {
+    await openCardBrowserAndEnterFolderByName("Project A/note-1.md", "Cross Type Project");
+
+    await browser.execute(() => {
+      const card = document.querySelector(".ddc_pb_note-card-base");
+      if (card instanceof HTMLElement) {
+        card.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true, view: window }));
+      }
+    });
+    await browser.pause(400);
+
+    const menu = await $(".menu");
+    await menu.waitForExist({ timeout: 5000 }).catch(() => null);
+    const menuExists = await menu.isExisting();
+    if (menuExists) {
+      const menuText = await menu.getText();
+      const hasExpectedProjectPageState =
+        menuText.includes("First Draft") ||
+        menuText.includes("Work in Progress") ||
+        menuText.includes("Proofingreading") ||
+        menuText.includes("Ready") ||
+        menuText.includes("Abandoned");
+      expect(hasExpectedProjectPageState).toBe(true);
     }
   });
 

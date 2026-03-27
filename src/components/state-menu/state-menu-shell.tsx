@@ -1,17 +1,18 @@
 import * as React from "react";
 import classnames from 'classnames';
 import { useAtomValue } from 'jotai';
-import { getGlobals, stateMenuAtom } from 'src/logic/stores';
+import { stateMenuAtom } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
 import { sanitizeInternalLinkName } from 'src/utils/string-processes';
 
 interface StateMenuShellProps {
     currentStateSettings: StateSettings | null;
+    visibleStates: StateSettings[];
+    hiddenStates: StateSettings[];
     onSetState: (stateSettings: StateSettings | null) => Promise<boolean>;
 }
 
 export const StateMenuShell = (props: StateMenuShellProps) => {
-    const {plugin} = getGlobals();
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const showHighlightRef = React.useRef<boolean>(false);
@@ -25,8 +26,6 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
     }, [stateMenuSettings]);
 
     const displayState = props.currentStateSettings?.name || 'Set State';
-    const visibleStates = plugin.settings.states.visible;
-    const hiddenStates = plugin.settings.states.hidden;
 
     React.useEffect(() => {
         function handleClickOutside(event: PointerEvent) {
@@ -79,7 +78,7 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
                 {menuIsActive && (
                     <>
                         <div className='ddc_pb_visible-state-btns'>
-                            {visibleStates.map((visibleStateSettings) => (
+                            {props.visibleStates.map((visibleStateSettings) => (
                                 <button
                                     key={visibleStateSettings.name}
                                     className={classnames([
@@ -94,7 +93,7 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
                             ))}
                         </div>
                         <div className='ddc_pb_hidden-state-btns'>
-                            {hiddenStates.map((hiddenStateSettings) => (
+                            {props.hiddenStates.map((hiddenStateSettings) => (
                                 <button
                                     key={hiddenStateSettings.name}
                                     className={classnames([

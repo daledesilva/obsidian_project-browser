@@ -4,7 +4,7 @@ import { ArrowUpDown, LayoutGrid, Ungroup } from 'lucide-react';
 import classNames from 'classnames';
 import { Section } from 'src/logic/section-processes';
 import { StateSettings, StateViewMode, StateViewOrder } from 'src/types/types-map';
-import { stateSettingsByNameAtom } from 'src/logic/stores';
+import { projectPageStateSettingsByNameAtom, stateSettingsByNameAtom } from 'src/logic/stores';
 import { useAtom } from 'jotai';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css'; // optional
@@ -22,8 +22,10 @@ interface StateQuickMenuProps {
 export const StateQuickMenu = (props: StateQuickMenuProps) => {
     // Memoize the atom to prevent infinite re-renders
     const stateSettingsAtom = React.useMemo(() => 
-        stateSettingsByNameAtom(props.section.title), 
-        [props.section.title]
+        props.section.stateScope === 'projectPage'
+            ? projectPageStateSettingsByNameAtom(props.section.title)
+            : stateSettingsByNameAtom(props.section.title), 
+        [props.section.stateScope, props.section.title]
     );
     
     const [stateSettings, setStateSettings] = useAtom(stateSettingsAtom);

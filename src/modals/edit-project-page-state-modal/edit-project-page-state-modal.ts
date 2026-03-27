@@ -1,25 +1,21 @@
 import { StateSettingsModalBase } from "src/modals/state-settings-modal-base/state-settings-modal-base";
 import { StateSettings } from "src/types/types-map";
 
-/////////
-/////////
-
-interface EditStateModalProps {
+interface EditProjectPageStateModalProps {
 	stateSettings: StateSettings,
 	onSuccess: (modifiedStateSettings: StateSettings) => {},
 	onReject?: (reason: string) => {},
 }
 
-export class EditStateModal extends StateSettingsModalBase {
-	constructor(props: EditStateModalProps) {
+export class EditProjectPageStateModal extends StateSettingsModalBase {
+	constructor(props: EditProjectPageStateModalProps) {
 		super({
-			title: 'Edit project state',
-			introText: 'Note: Editing the project state name won\'t update existing projects with that project state.',
-			actionButtonLabel: 'Save project state',
+			title: 'Edit page state',
+			introText: 'Note: Editing the page state name will not update existing project pages with that page state.',
+			actionButtonLabel: 'Save page state',
 			stateSettings: props.stateSettings,
 			onSuccess: props.onSuccess,
 			onReject: props.onReject
 		});
 	}
 }
-
