@@ -199,6 +199,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                                 key={file.path}
                                 file={file}
                                 isCurrentPage={file.path === props.currentFile.path}
+                                context="fab"
                                 onPageClick={handlePageClick}
                                 onFileChange={() => setRefreshTrigger((t) => t + 1)}
                             />

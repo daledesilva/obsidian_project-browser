@@ -1,5 +1,3 @@
-@import '../../styles/project-page-menu-file-button';
-
 .ddc_pb_project-pages-sidebar {
 	padding: 8px 10px 12px;
 	display: flex;
@@ -36,13 +34,21 @@
 	gap: 8px;
 }
 
-.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button {
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar {
+	position: relative;
 	width: 100%;
 	max-width: none;
 	text-align: left;
 	box-sizing: border-box;
+	min-height: min(40px, 8vw);
 	padding: 8px 12px;
 	padding-right: 28px;
+	border-radius: 8px;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+	font-size: 0.9em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
@@ -59,32 +65,69 @@
 	}
 }
 
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar .ddc_pb_project-page-menu__file-button-tags {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	pointer-events: none;
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar .ddc_pb_project-page-menu__file-button-external-icon {
+	position: absolute;
+	top: 0.15em;
+	right: 0.15em;
+	display: flex;
+	align-items: center;
+	pointer-events: none;
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar .ddc_pb_external-file-icon {
+	flex-shrink: 0;
+	transform: scale(0.75);
+	color: var(--interactive-accent);
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar .ddc_pb_file-type-tag {
+	padding: 2px 5px;
+	border-radius: 3px 0 8px 0;
+	font-size: 0.4rem;
+	font-weight: 400;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	background-color: var(--background-secondary);
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar .ddc_pb_file-ext-faint {
+	color: var(--text-faint, rgba(255, 255, 255, 0.4));
+}
+
 /* Selected page: theme `button[disabled]` / opacity rules often win without higher specificity */
-.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active,
-.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled {
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar.ddc_pb_project-page-menu__file-button--active,
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar.ddc_pb_project-page-menu__file-button--active:disabled {
 	background-color: var(--interactive-accent) !important;
 	background: var(--interactive-accent) !important;
 	color: #000 !important;
 	-webkit-text-fill-color: #000 !important;
 	opacity: 1 !important;
 	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+	cursor: default !important;
 }
 
-.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_file-ext-faint {
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar.ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_file-ext-faint {
 	color: rgba(0, 0, 0, 0.45) !important;
 }
 
-.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_external-file-icon {
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar.ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_external-file-icon {
 	color: rgba(0, 0, 0, 0.65) !important;
 }
 
-.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_file-type-tag {
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar.ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_file-type-tag {
 	color: #000 !important;
 	background-color: rgba(0, 0, 0, 0.28) !important;
-}
-
-.ddc_pb_project-pages-sidebar__list .ddc_pb_file-type-tag {
-	padding: 2px 5px;
 }
 
 .ddc_pb_project-pages-sidebar__footer {

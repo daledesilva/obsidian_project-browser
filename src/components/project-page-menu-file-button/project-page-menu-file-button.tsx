@@ -11,6 +11,7 @@ import { getGlobals } from 'src/logic/stores';
 export interface ProjectPageMenuFileButtonProps {
     file: TFile;
     isCurrentPage: boolean;
+    context: 'fab' | 'sidebar';
     onPageClick: (file: TFile) => void;
     onFileChange: () => void;
 }
@@ -38,6 +39,7 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
             type="button"
             className={classNames(
                 'ddc_pb_project-page-menu__file-button',
+                `ddc_pb_project-page-menu__file-button--${props.context}`,
                 props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active'
             )}
             onClick={props.isCurrentPage ? undefined : () => props.onPageClick(props.file)}

@@ -160,6 +160,7 @@ export const ProjectPagesSidebarContent = (props: SidebarContentProps) => {
                                 <ProjectPageMenuFileButton
                                     file={file}
                                     isCurrentPage={file.path === activePath}
+                                    context="sidebar"
                                     onPageClick={handlePageClick}
                                     onFileChange={() => setListRefreshToken((v) => v + 1)}
                                 />
