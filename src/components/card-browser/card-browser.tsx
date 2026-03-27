@@ -90,7 +90,9 @@ export const CardBrowser = (props: CardBrowserProps) => {
     React.useEffect(() => {
         let cancelled = false;
         getSortedSectionsInFolderAsync(initialFolder).then((sections) => {
-            if (!cancelled) setSectionsOfItemsRaw(sections);
+            if (!cancelled) {
+                setSectionsOfItemsRaw(sections);
+            }
         });
         return () => { cancelled = true; };
     }, [initialFolder.path, refreshId]);
@@ -101,7 +103,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         filterSectionsByString(copy, searchStr);
         return copy;
     }, [sectionsOfItemsRaw, searchStr]);
-    
+
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
 
     React.useEffect(() => {

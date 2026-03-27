@@ -73,9 +73,7 @@ export function newProjectBrowserLeaf() {
     plugin.app.workspace.setActiveLeaf(leaf)
 }
 
-// This works but you can't click back.
 export function replaceLeaf(leaf: WorkspaceLeaf) {
-    const {plugin} = getGlobals();
     new ProjectCardsView(leaf);
 }
 
@@ -116,7 +114,6 @@ export class ProjectCardsView extends ItemView {
 
     async onOpen() {
         const contentEl = this.contentEl;
-        contentEl.empty();
         contentEl.setAttr('style', 'padding: 0;');
         contentEl.addClass(CARD_BROWSER_VIEW_CONTENT_CLASS);
 
@@ -124,7 +121,10 @@ export class ProjectCardsView extends ItemView {
             this.state = setCardBrowserViewStateDefaults();
         }
 
-        if(!this.root) this.root = createRoot(contentEl);
+        if(!this.root) {
+            contentEl.empty();
+            this.root = createRoot(contentEl);
+        }
 
         this.renderView();
     }
