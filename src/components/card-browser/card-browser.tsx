@@ -15,6 +15,7 @@ import classNames from 'classnames';
 import { CardBrowserFloatingMenu } from '../card-browser-floating-menu/card-browser-floating-menu';
 import { getFolderSettings } from 'src/utils/file-manipulation';
 import { setupFabScrollbarOffset } from 'src/utils/setup-fab-scrollbar-offset';
+import { ProjectFolderStateMenu } from '../state-menu/project-folder-state-menu';
 
 //////////
 //////////
@@ -53,7 +54,7 @@ interface CardBrowserProps {
 export const CardBrowser = (props: CardBrowserProps) => {
     const {plugin} = getGlobals();
     const [viewInstanceId] = React.useState<string>(uuidv4());
-    const [refreshId, setRefreshId] = React.useState<number>(uuidv4());
+    const [refreshId, setRefreshId] = React.useState<string>(uuidv4());
     const [searchActive, setSearchActive] = React.useState<boolean>(false);
     const [searchStr, setSearchStr] = React.useState<string>('');
     const [parentFolderIsProject, setParentFolderIsProject] = React.useState<boolean>(false);
@@ -77,7 +78,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             if (!cancelled) setParentFolderIsProject(settings.isProject === true);
         });
         return () => { cancelled = true; };
-    }, [initialFolder.path, v]);
+    }, [initialFolder.path, refreshId, v]);
 
     React.useEffect(() => {
         let cancelled = false;
@@ -85,7 +86,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             if (!cancelled) setCurrentFolderIsProject(settings.isProject === true);
         });
         return () => { cancelled = true; };
-    }, [initialFolder.path]);
+    }, [initialFolder.path, refreshId, v]);
 
     React.useEffect(() => {
         let cancelled = false;
@@ -162,67 +163,75 @@ export const CardBrowser = (props: CardBrowserProps) => {
             rerender,
         }}>
             <div className="ddc_pb_card-browser-root">
-            <div
-                ref = {browserRef}
-                className = 'ddc_pb_browser'
-            >
-                <BackButtonAndPath
-                    folder = {initialFolder}
-                    onBackClick = {openParentFolder}
-                    onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
-                />
                 <div
-                    className = {classNames([
-                        'ddc_pb_section',
-                        'ddc_pb_nav-and-filter-section'
-                    ])}
+                    ref = {browserRef}
+                    className = 'ddc_pb_browser'
                 >
-                    {(sectionsOfItems ?? []).map( (section) => (
-                        <React.Fragment key={section.title}>
-                            {section.type === "folders" && (<>
-                                <FolderSection section={section}/>
-                            </>)}
-                        </React.Fragment>
-                    ))}
-                    <SearchInput
-                        searchActive = {searchActive}
-                        onChange = {setSearchStr}
-                        hideSearchInput = {() => setSearchActive(false)}
-                        showSearchInput = {() => setSearchActive(true)}
+                    <BackButtonAndPath
+                        folder = {initialFolder}
+                        onBackClick = {openParentFolder}
+                        onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
+                    />
+                    {currentFolderIsProject && (
+                        <div className="ddc_pb_card-browser-project-header">
+                            <ProjectFolderStateMenu
+                                folder={initialFolder}
+                                refreshKey={refreshId}
+                            />
+                        </div>
+                    )}
+                    <div
+                        className = {classNames([
+                            'ddc_pb_section',
+                            'ddc_pb_nav-and-filter-section'
+                        ])}
+                    >
+                        {(sectionsOfItems ?? []).map( (section) => (
+                            <React.Fragment key={section.title}>
+                                {section.type === "folders" && (<>
+                                    <FolderSection section={section}/>
+                                </>)}
+                            </React.Fragment>
+                        ))}
+                        <SearchInput
+                            searchActive = {searchActive}
+                            onChange = {setSearchStr}
+                            hideSearchInput = {() => setSearchActive(false)}
+                            showSearchInput = {() => setSearchActive(true)}
+                        />
+                    </div>
+                    <div>
+                        {(sectionsOfItems ?? []).map( (section) => (
+                            <React.Fragment key={section.title}>
+                                {section.type !== "folders" && (
+                                    (!searchActive || (searchActive && section.items.length > 0)) && (
+                                        <div>
+                                            {section.type === "state" && (
+                                                <StateSection section={section}/>
+                                            )}
+                                            {section.type === "stateless" && (
+                                                <StatelessSection section={section}/>
+                                            )}
+                                        </div>
+                                    )
+                                )}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                </div>
+                <div ref={fabContainerRef} className="ddc_pb_card-browser-fab-container">
+                    <CardBrowserFloatingMenu
+                        folder={initialFolder}
+                        parentFolder={initialFolder.parent}
+                        parentFolderIsProject={parentFolderIsProject}
+                        currentFolderIsProject={currentFolderIsProject}
+                        onOpenParentFolder={openParentFolder}
+                        onFolderCreated={rerender}
+                        searchActive={searchActive}
+                        activateSearch={() => setSearchActive(true)}
+                        deactivateSearch={() => setSearchActive(false)}
                     />
                 </div>
-                <div>
-                    {(sectionsOfItems ?? []).map( (section, index) => (
-                        <React.Fragment key={section.title}>
-                            {section.type !== "folders" && (
-                                (!searchActive || (searchActive && section.items.length > 0)) && (
-                                    <div>
-                                        {section.type === "state" && (
-                                            <StateSection section={section}/>
-                                        )}
-                                        {section.type === "stateless" && (
-                                            <StatelessSection section={section}/>
-                                        )}
-                                    </div>
-                                )
-                            )}
-                        </React.Fragment>
-                    ))}
-                </div>
-            </div>
-            <div ref={fabContainerRef} className="ddc_pb_card-browser-fab-container">
-                <CardBrowserFloatingMenu
-                    folder={initialFolder}
-                    parentFolder={initialFolder.parent}
-                    parentFolderIsProject={parentFolderIsProject}
-                    currentFolderIsProject={currentFolderIsProject}
-                    onOpenParentFolder={openParentFolder}
-                    onFolderCreated={rerender}
-                    searchActive={searchActive}
-                    activateSearch={() => setSearchActive(true)}
-                    deactivateSearch={() => setSearchActive(false)}
-                />
-            </div>
             </div>
         </CardBrowserContext.Provider>
     );

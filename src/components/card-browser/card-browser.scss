@@ -15,6 +15,21 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
+
+    --browser-inline-margin: 0.5em;
+    --browser-block-start-margin: 0em;
+    @media (min-width: 400px) {
+        --browser-inline-margin: 1em;
+        --browser-block-start-margin: 0.3em;
+    }
+    @media (min-width: 600px) {
+        --browser-inline-margin: 2em;
+        --browser-block-start-margin: 0.5em;
+    }
+}
+
+.ddc_pb_card-browser-project-header {
+    margin-bottom: 0.5em;
 }
 
 .ddc_pb_card-browser-fab-container {
@@ -32,17 +47,6 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-
-    --browser-inline-margin: 0.5em;
-    --browser-block-start-margin: 0em;
-    @media (min-width: 400px) {
-        --browser-inline-margin: 1em;
-        --browser-block-start-margin: 0.3em;
-    }
-    @media (min-width: 600px) {
-        --browser-inline-margin: 2em;
-        --browser-block-start-margin: 0.5em;
-    }
 
     padding: var(--browser-block-start-margin) var(--browser-inline-margin) 20em var(--browser-inline-margin);
     margin-top: 0;
