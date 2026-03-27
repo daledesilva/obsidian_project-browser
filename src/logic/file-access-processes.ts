@@ -25,6 +25,24 @@ export function openFileInSameLeaf(file: TFile) {
     leaf.openFile(file);
 }
 
+/**
+ * Opens a file in the most recently focused leaf in the main editor (root split).
+ * Use from sidebar/custom views so clicks do not replace the sidebar leaf with the file.
+ */
+export function openFileInMostRecentRootLeaf(file: TFile): void {
+    const { plugin } = getGlobals();
+    const { workspace } = plugin.app;
+    const rootSplit = workspace.rootSplit;
+    let leaf = rootSplit ? workspace.getMostRecentLeaf(rootSplit) : null;
+    if (!leaf) {
+        leaf = workspace.getMostRecentLeaf();
+    }
+    if (!leaf) {
+        leaf = workspace.getLeaf();
+    }
+    void leaf.openFile(file);
+}
+
 export async function openFileInBackgroundTab(file: TFile) {
     const {plugin} = getGlobals();
     let { workspace } = plugin.app;

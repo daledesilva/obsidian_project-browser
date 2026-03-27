@@ -1,5 +1,6 @@
 import { Notice, Plugin } from 'obsidian';
 import { loadCardBrowserOnNewTab, registerCardBrowserView } from './views/card-browser-view/card-browser-view';
+import { registerProjectPagesSidebarView, detachProjectPagesSidebarLeaves } from './views/project-pages-sidebar-view/project-pages-sidebar-view';
 import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-view-mods';
 import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
 import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon } from './commands/open-project-browser';
@@ -36,6 +37,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 		
 		initStateMenuSettings();
 		registerCardBrowserView()
+		registerProjectPagesSidebarView()
 		registerMarkdownViewMods()
 		registerToggleStateMenuCommand();
 		registerCycleStateCommands();
@@ -62,6 +64,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 	
 
 	onunload() {
+		detachProjectPagesSidebarLeaves();
 		// Make sure to stop anything here
 		this.app.vault.off('create', () => this.refreshFileDependants())
 		this.app.vault.off('delete', () => this.refreshFileDependants())

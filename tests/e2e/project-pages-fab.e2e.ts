@@ -3,8 +3,8 @@ import { obsidianPage } from "wdio-obsidian-service";
 import { dismissBlockingPopups } from "./helpers/dismiss-popups";
 
 const FAB_MAIN_BUTTON = ".ddc_pb_project-pages-fab__main-button";
-const FAB_MENU = ".ddc_pb_project-pages-fab__page-buttons";
-const FAB_PAGE_BUTTON = ".ddc_pb_project-pages-fab__page-button";
+const FAB_MENU = ".ddc_pb_project-pages-fab__page-list-scroll";
+const FAB_PAGE_BUTTON = ".ddc_pb_project-page-menu__file-button";
 
 const crossTypePages = {
   markdown: ["Markdown Page 1", "Markdown Page 2"],

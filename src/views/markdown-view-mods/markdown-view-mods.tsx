@@ -10,6 +10,7 @@ import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
 import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { createProject, createProjectFromNote, getFolderSettings } from 'src/utils/file-manipulation';
 import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view';
+import { syncProjectPagesSidebarFromActiveWorkspaceContext } from 'src/logic/project-pages-sidebar-controller';
 
 //////////
 //////////
@@ -44,6 +45,8 @@ export function registerMarkdownViewMods() {
     plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
         if (!leaf) return;
 
+        void syncProjectPagesSidebarFromActiveWorkspaceContext();
+
         if (isFileView(leaf)) {
             const keepMenuOpen = Date.now() < keepProjectPagesFabMenuOpenUntilMs;
             addOrRemoveProjectPagesFAB({ keepMenuOpen });
@@ -54,6 +57,8 @@ export function registerMarkdownViewMods() {
     }));
 
     plugin.registerEvent(plugin.app.workspace.on('file-open', () => {
+        void syncProjectPagesSidebarFromActiveWorkspaceContext();
+
         const activeLeaf = plugin.app.workspace.getMostRecentLeaf();
         if (!activeLeaf || !isFileView(activeLeaf)) return;
 

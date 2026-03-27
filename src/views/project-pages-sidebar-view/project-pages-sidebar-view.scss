@@ -1,0 +1,136 @@
+@import '../../styles/project-page-menu-file-button';
+
+.ddc_pb_project-pages-sidebar {
+	padding: 8px 10px 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-height: 100%;
+	box-sizing: border-box;
+}
+
+.ddc_pb_project-pages-sidebar__title {
+	font-size: var(--font-ui-small);
+	font-weight: 600;
+	color: var(--text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	margin: 0;
+	flex-shrink: 0;
+}
+
+.ddc_pb_project-pages-sidebar__scroll {
+	flex: 1 1 0;
+	min-height: 0;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.ddc_pb_project-pages-sidebar__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button {
+	width: 100%;
+	max-width: none;
+	text-align: left;
+	box-sizing: border-box;
+	padding: 8px 12px;
+	padding-right: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	text-align: left !important;
+	/* Obsidian / theme button defaults often override idle background; match chip look */
+	background-color: var(--color-base-00);
+	color: var(--text-normal);
+	font-family: inherit;
+
+	@media (hover: hover) {
+		&:hover:not(:disabled):not(.ddc_pb_project-page-menu__file-button--active) {
+			background-color: var(--background-modifier-hover);
+		}
+	}
+}
+
+/* Selected page: theme `button[disabled]` / opacity rules often win without higher specificity */
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active,
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled {
+	background-color: var(--interactive-accent) !important;
+	background: var(--interactive-accent) !important;
+	color: #000 !important;
+	-webkit-text-fill-color: #000 !important;
+	opacity: 1 !important;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_file-ext-faint {
+	color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_external-file-icon {
+	color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--active:disabled .ddc_pb_file-type-tag {
+	color: #000 !important;
+	background-color: rgba(0, 0, 0, 0.28) !important;
+}
+
+.ddc_pb_project-pages-sidebar__list .ddc_pb_file-type-tag {
+	padding: 2px 5px;
+}
+
+.ddc_pb_project-pages-sidebar__footer {
+	flex-shrink: 0;
+	width: 100%;
+	padding-top: 4px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+
+	.ddc_pb_fab-menu-action-button-stack {
+		align-items: stretch;
+	}
+
+	.ddc_pb_fab-menu-action-button {
+		max-width: none;
+	}
+}
+
+.ddc_pb_project-pages-sidebar__project-title-button {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 4px;
+	min-height: min(40px, 8vw);
+	padding: 8px 12px;
+	width: 100%;
+	border: none;
+	border-radius: 8px;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+	font-size: 0.9em;
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	text-align: left !important;
+
+	@media (hover: hover) {
+		&:hover {
+			background-color: var(--interactive-accent-hover);
+		}
+	}
+}
+
+.ddc_pb_project-pages-sidebar__empty {
+	font-size: var(--font-ui-small);
+	color: var(--text-faint);
+	margin: 0;
+	line-height: 1.4;
+}

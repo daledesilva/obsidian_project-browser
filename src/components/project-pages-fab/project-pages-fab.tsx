@@ -1,15 +1,10 @@
 import './project-pages-fab.scss';
 import { TAbstractFile, TFile, TFolder } from 'obsidian';
 import * as React from 'react';
-import { ChevronLeft, ExternalLink, FileStack, Plus } from 'lucide-react';
+import { ChevronLeft, FileStack, Plus } from 'lucide-react';
 import classNames from 'classnames';
-import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
-import { getItemsInFolder } from 'src/logic/folder-processes';
-import { isExtensionVisible } from 'src/logic/file-type-filter';
-import { getFileDisplayNameParts } from 'src/logic/get-file-display-name';
-import { getFileTypeLabel } from 'src/logic/get-file-type-label';
-import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
-import { getGlobals } from 'src/logic/stores';
+import { ProjectPageMenuFileButton } from 'src/components/project-page-menu-file-button/project-page-menu-file-button';
+import { getSortedPageMenuFilesInProjectFolder } from 'src/logic/project-page-list';
 import { isRootPath } from 'src/utils/string-processes';
 import {
     FabMenuActionButton,
@@ -38,62 +33,6 @@ function isPathInFolder(filePath: string, parentPath: string): boolean {
     return fileParentPath === parentPath;
 }
 
-interface PageMenuFileButtonProps {
-    file: TFile;
-    isCurrentPage: boolean;
-    onPageClick: (file: TFile) => void;
-    onFileChange: () => void;
-}
-
-const PageMenuFileButton = (props: PageMenuFileButtonProps) => {
-    const buttonRef = React.useRef<HTMLButtonElement>(null);
-    const { plugin } = getGlobals();
-
-    React.useEffect(() => {
-        if (!plugin || !buttonRef.current) return;
-        registerFileContextMenu({
-            fileButtonEl: buttonRef.current,
-            file: props.file,
-            onFileChange: props.onFileChange,
-        });
-    }, [props.file.path]);
-
-    const fileTypeLabel = getFileTypeLabel(props.file.extension ?? '');
-    const isUnsupported = isExtensionUnsupportedByObsidian(props.file.extension ?? '');
-    const { basename, extension } = getFileDisplayNameParts(props.file);
-
-    return (
-        <button
-            ref={buttonRef}
-            className={classNames(
-                'ddc_pb_project-pages-fab__page-button',
-                props.isCurrentPage && 'ddc_pb_project-pages-fab__page-button--active'
-            )}
-            onClick={props.isCurrentPage ? undefined : () => props.onPageClick(props.file)}
-            disabled={props.isCurrentPage}
-        >
-            {fileTypeLabel && (
-                <span className="ddc_pb_project-pages-fab__page-button-tags">
-                    <span className="ddc_pb_file-type-tag" aria-hidden>
-                        {fileTypeLabel}
-                    </span>
-                </span>
-            )}
-            {isUnsupported && (
-                <span className="ddc_pb_project-pages-fab__page-button-external-icon">
-                    <ExternalLink
-                        className="ddc_pb_external-file-icon"
-                        aria-label="Opens in external program"
-                        size={12}
-                    />
-                </span>
-            )}
-            {basename}
-            {extension && <span className="ddc_pb_file-ext-faint">{extension}</span>}
-        </button>
-    );
-};
-
 export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(!!props.initialMenuOpen);
     const [refreshTrigger, setRefreshTrigger] = React.useState(0);
@@ -103,14 +42,8 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     const pageListInnerRef = React.useRef<HTMLDivElement>(null);
 
     const pagesInProject = React.useMemo(() => {
-        const items = getItemsInFolder(props.projectFolder);
-        if (!items) return [];
-
-        const pageFiles = items
-            .filter((item): item is TFile => item instanceof TFile)
-            .filter((file) => isExtensionVisible(file.extension, 'pageMenu'));
-
-        return [...pageFiles].sort((a, b) => a.name.localeCompare(b.name));
+        void refreshTrigger;
+        return getSortedPageMenuFilesInProjectFolder(props.projectFolder);
     }, [props.projectFolder, refreshTrigger]);
 
     React.useEffect(() => {
@@ -262,7 +195,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                         )}
                     >
                         {pagesInProject.map((file) => (
-                            <PageMenuFileButton
+                            <ProjectPageMenuFileButton
                                 key={file.path}
                                 file={file}
                                 isCurrentPage={file.path === props.currentFile.path}

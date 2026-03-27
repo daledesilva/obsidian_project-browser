@@ -1,0 +1,78 @@
+.ddc_pb_project-page-menu__file-button {
+	position: relative;
+	cursor: pointer;
+	--size: min(40px, 8vw);
+	min-height: var(--size);
+	max-width: 200px;
+	padding: 8px 12px;
+	border-radius: 8px;
+	box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 0.9em;
+
+	.ddc_pb_project-page-menu__file-button-tags {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		pointer-events: none;
+	}
+
+	.ddc_pb_project-page-menu__file-button-external-icon {
+		position: absolute;
+		top: 0.15em;
+		right: 0.15em;
+		display: flex;
+		align-items: center;
+		pointer-events: none;
+	}
+
+	.ddc_pb_file-type-tag {
+		padding: 1px 3px;
+		border-radius: 3px 0 8px 0;
+		font-size: 0.4rem;
+		font-weight: 400;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		background-color: var(--background-secondary);
+	}
+
+	.ddc_pb_external-file-icon {
+		flex-shrink: 0;
+		transform: scale(0.75);
+		color: var(--interactive-accent);
+	}
+
+	.ddc_pb_file-ext-faint {
+		color: var(--text-faint, rgba(255, 255, 255, 0.4));
+	}
+
+	&--active {
+		cursor: default;
+		background-color: var(--interactive-accent);
+
+		&:disabled {
+			opacity: 1;
+			color: #000;
+			-webkit-text-fill-color: #000;
+		}
+
+		&:disabled .ddc_pb_file-ext-faint {
+			color: rgba(0, 0, 0, 0.45);
+		}
+
+		&:disabled .ddc_pb_external-file-icon {
+			color: rgba(0, 0, 0, 0.65);
+		}
+
+		&:disabled .ddc_pb_file-type-tag {
+			color: #000;
+			background-color: rgba(0, 0, 0, 0.28);
+		}
+	}
+}
