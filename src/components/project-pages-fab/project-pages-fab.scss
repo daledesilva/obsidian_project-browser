@@ -1,11 +1,11 @@
 @import '../../styles/fab-chip-search-sized';
 
 .ddc_pb_project-pages-fab {
-    --ddc-pb-fab-spacing: 12px;
+    --ddc-pb-fab-spacing: 36px;
     position: absolute;
     top: 0;
     bottom: 24px;
-    right: var(--ddc-pb-fab-right-offset, 0);
+    right: var(--ddc-pb-fab-spacing);
     min-height: 0;
 
     display: flex;
@@ -22,7 +22,6 @@
         overflow-y: auto;
         padding-top: 12px;
         padding-bottom: 12px;
-        margin-right: 12px;
         scrollbar-width: none;
         -ms-overflow-style: none;
 
@@ -178,9 +177,9 @@
         gap: 4px;
         --page-button-size: min(40px, 8vw);
         min-height: var(--page-button-size);
-        padding: 8px 24px 8px 12px;
+        padding: 8px 12px;
         max-width: 250px;
-        border-radius: 8px 0 0 8px;
+        border-radius: 8px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         white-space: nowrap;
         overflow: hidden;

@@ -1,10 +1,10 @@
 @import '../../styles/fab-chip-search-sized';
 
 .ddc_pb_card-browser-floating-menu {
-    --ddc-pb-fab-spacing: 12px;
+    --ddc-pb-fab-spacing: 36px;
     position: absolute;
     bottom: 24px;
-    right: var(--ddc-pb-fab-right-offset, 0);
+    right: var(--ddc-pb-fab-spacing);
 
     display: flex;
     flex-direction: column;
@@ -46,9 +46,9 @@
         gap: 4px;
         --page-button-size: min(40px, 8vw);
         min-height: var(--page-button-size);
-        padding: 8px 24px 8px 12px;
+        padding: 8px 12px;
         max-width: 250px;
-        border-radius: 8px 0 0 8px;
+        border-radius: 8px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         white-space: nowrap;
         overflow: hidden;

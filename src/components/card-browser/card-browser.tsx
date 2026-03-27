@@ -14,7 +14,6 @@ import { SearchInput } from '../search-input/search-input';
 import classNames from 'classnames';
 import { CardBrowserFloatingMenu } from '../card-browser-floating-menu/card-browser-floating-menu';
 import { getFolderSettings } from 'src/utils/file-manipulation';
-import { setupFabScrollbarOffset } from 'src/utils/setup-fab-scrollbar-offset';
 import { ProjectFolderStateMenu } from '../state-menu/project-folder-state-menu';
 
 //////////
@@ -108,12 +107,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const lastTouchedFilePath = eState?.lastTouchedFilePath || '';
 
     React.useEffect(() => {
-        if (!props.containerEl || !fabContainerRef.current) return;
-        const cleanup = setupFabScrollbarOffset(fabContainerRef.current, props.containerEl);
-        return cleanup;
-    }, [props.containerEl]);
-
-    React.useEffect(() => {
         const scrollEl = browserRef.current;
         const onScroll = props.onBrowserScroll;
         if (!scrollEl || !onScroll) return;
@@ -148,12 +141,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
         setRefreshId(uuidv4());
     }
     
-    React.useEffect(() => {
-        if (!fabContainerRef.current || !props.containerEl) return;
-        const cleanup = setupFabScrollbarOffset(fabContainerRef.current, props.containerEl);
-        return cleanup;
-    }, [props.containerEl, refreshId]);
-
     return (
         <CardBrowserContext.Provider value={{
             folder: initialFolder,

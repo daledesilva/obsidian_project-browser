@@ -29,8 +29,6 @@ interface StateMenuRoot {
     render: (element: React.ReactElement) => void;
 }
 
-import { setupFabScrollbarOffset } from 'src/utils/setup-fab-scrollbar-offset';
-
 function isFileView(leaf: WorkspaceLeaf | null): leaf is WorkspaceLeaf & { view: FileView } {
     return !!leaf && leaf.view instanceof FileView;
 }
@@ -200,10 +198,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
 
     const fabEl = fabContainerEl as HTMLElement & {
         __projectPagesFabRoot?: ProjectPagesFabRoot;
-        __fabScrollbarCleanup?: () => void;
     };
-    fabEl.__fabScrollbarCleanup?.();
-    fabEl.__fabScrollbarCleanup = setupFabScrollbarOffset(fabContainerEl, containerEl);
 
     const root = fabEl.__projectPagesFabRoot;
     if (root) {
@@ -243,9 +238,7 @@ function removeProjectPagesFABElement(fabContainerEl: HTMLElement) {
 
     const el = fabContainerEl as HTMLElement & {
         __projectPagesFabRoot?: ProjectPagesFabRoot;
-        __fabScrollbarCleanup?: () => void;
     };
-    el.__fabScrollbarCleanup?.();
     if (el.__projectPagesFabRoot) {
         el.__projectPagesFabRoot.unmount();
         delete el.__projectPagesFabRoot;

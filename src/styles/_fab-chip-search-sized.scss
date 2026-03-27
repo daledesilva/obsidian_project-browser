@@ -6,6 +6,6 @@
     width: calc(var(--size) * 1.25);
     height: var(--size);
     padding: calc(var(--size) * 0.15) !important; // Override Obsidian button padding at all media sizes
-    border-radius: 8px 0 0 8px;
+    border-radius: 8px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
