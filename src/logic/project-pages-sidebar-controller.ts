@@ -1,4 +1,4 @@
-import { TFolder, ViewState, Workspace } from 'obsidian';
+import { TFolder, Workspace, WorkspaceLeaf } from 'obsidian';
 import { getFolderSettings } from 'src/utils/file-manipulation';
 import {
     PROJECT_PAGES_SIDEBAR_VIEW_TYPE,
@@ -6,13 +6,11 @@ import {
 } from 'src/views/project-pages-sidebar-view/project-pages-sidebar-view';
 import { getGlobals } from './stores';
 
-interface CapturedSidebarLeafState {
-    viewState: ViewState;
-    ephemeralState: unknown;
-}
+/////////////////////////////////
+/////////////////////////////////
 
 /** When the plugin replaced another left-sidebar view, this stores restoration data. */
-let capturedLeftLeafRestore: CapturedSidebarLeafState | null = null;
+let capturedLeftLeafReactivate: WorkspaceLeaf | null = null;
 
 let syncProjectPagesSidebarRequestId = 0;
 
@@ -80,17 +78,18 @@ async function ensureProjectPagesSidebarShowsProject(workspace: Workspace, proje
     let leaf = workspace.getLeavesOfType(PROJECT_PAGES_SIDEBAR_VIEW_TYPE)[0];
 
     if (!leaf) {
-        leaf = workspace.getLeftLeaf(false);
-        const currentType = leaf.getViewState().type;
-        if (
-            currentType !== PROJECT_PAGES_SIDEBAR_VIEW_TYPE &&
-            currentType !== OBSIDIAN_EMPTY_VIEW_TYPE
-        ) {
-            capturedLeftLeafRestore = {
-                viewState: leaf.getViewState(),
-                ephemeralState: leaf.getEphemeralState(),
-            };
+        const leftSplit = workspace.leftSplit as any;
+        const mostRecentLeaf = workspace.getMostRecentLeaf(leftSplit) as any;
+        let curLeaf = (mostRecentLeaf ?? workspace.getLeftLeaf(false)) as any;
+
+        if (!capturedLeftLeafReactivate) {
+            const currentType = curLeaf.getViewState().type;
+            if (currentType !== PROJECT_PAGES_SIDEBAR_VIEW_TYPE && currentType !== OBSIDIAN_EMPTY_VIEW_TYPE) {
+                capturedLeftLeafReactivate = curLeaf;
+            }
         }
+
+        leaf = workspace.getLeftLeaf(false) as any;
     }
 
     const nextState: ProjectPagesSidebarViewState = {
@@ -99,7 +98,7 @@ async function ensureProjectPagesSidebarShowsProject(workspace: Workspace, proje
 
     await leaf.setViewState({
         type: PROJECT_PAGES_SIDEBAR_VIEW_TYPE,
-        state: nextState,
+        state: nextState as unknown as Record<string, unknown>,
         active: false,
     });
     workspace.revealLeaf(leaf);
@@ -109,24 +108,15 @@ async function hideOrRestoreProjectPagesSidebar(workspace: Workspace): Promise<v
     try {
         const leaves = workspace.getLeavesOfType(PROJECT_PAGES_SIDEBAR_VIEW_TYPE);
         if (leaves.length === 0) {
-            capturedLeftLeafRestore = null;
+            capturedLeftLeafReactivate = null;
             return;
         }
 
-        const leaf = leaves[0];
-
-        if (capturedLeftLeafRestore) {
-            const restoreType = capturedLeftLeafRestore.viewState.type;
-            if (restoreType === OBSIDIAN_EMPTY_VIEW_TYPE) {
-                capturedLeftLeafRestore = null;
-                workspace.detachLeavesOfType(PROJECT_PAGES_SIDEBAR_VIEW_TYPE);
-                return;
-            }
-            try {
-                await leaf.setViewState(capturedLeftLeafRestore.viewState, capturedLeftLeafRestore.ephemeralState);
-            } finally {
-                capturedLeftLeafRestore = null;
-            }
+        if (capturedLeftLeafReactivate) {
+            const leafToReactivate = capturedLeftLeafReactivate;
+            capturedLeftLeafReactivate = null;
+            workspace.detachLeavesOfType(PROJECT_PAGES_SIDEBAR_VIEW_TYPE);
+            workspace.revealLeaf(leafToReactivate);
             return;
         }
 
