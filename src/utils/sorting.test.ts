@@ -1,6 +1,7 @@
 import { describe, expect, test, jest } from "@jest/globals";
 import { TFile, TFolder } from "obsidian";
 import {
+  compareItemNamesNaturally,
   sortItemsByName,
   sortItemsByCreationDate,
   sortItemsByModifiedDate,
@@ -29,6 +30,20 @@ describe("sorting utils", () => {
   const fB = makeFile("b.md", 3, 30, "Low");
   const fC = makeFile("c.md", 2, 20);
   const folder = makeFolder("folder");
+
+  test("compareItemNamesNaturally orders numeric suffixes naturally", () => {
+    const names = ["Page 18.md", "Page 2.md", "Page 20.md", "Page 19.md", "Page 10.md"];
+    const sortedNames = [...names].sort((a, b) => compareItemNamesNaturally({ name: a }, { name: b }));
+
+    expect(sortedNames).toEqual(["Page 2.md", "Page 10.md", "Page 18.md", "Page 19.md", "Page 20.md"]);
+  });
+
+  test("compareItemNamesNaturally still sorts non-numeric names alphabetically", () => {
+    const names = ["Gamma.md", "alpha.md", "Beta.md"];
+    const sortedNames = [...names].sort((a, b) => compareItemNamesNaturally({ name: a }, { name: b }));
+
+    expect(sortedNames).toEqual(["alpha.md", "Beta.md", "Gamma.md"]);
+  });
 
   test("sortItemsByName ascending/descending", () => {
     const asc = sortItemsByName([fB, fC, fA], "ascending").map((i) => i.name);

@@ -1,6 +1,7 @@
 import { TFile, TFolder } from 'obsidian';
 import { getItemsInFolder } from './folder-processes';
 import { isExtensionVisible } from './file-type-filter';
+import { compareItemNamesNaturally } from 'src/utils/sorting';
 
 /**
  * Files shown in the project page menu (FAB + sidebar): same rules as ProjectPagesFAB pages list.
@@ -12,5 +13,5 @@ export function getSortedPageMenuFilesInProjectFolder(folder: TFolder): TFile[] 
     return items
         .filter((item): item is TFile => item instanceof TFile)
         .filter((file) => isExtensionVisible(file.extension, 'pageMenu'))
-        .sort((a, b) => a.name.localeCompare(b.name));
+        .sort(compareItemNamesNaturally);
 }

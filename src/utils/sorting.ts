@@ -5,6 +5,15 @@ import { StateSettings, StateViewOrder } from "src/types/types-map";
 //////////////////
 //////////////////
 
+const naturalNameCollator = new Intl.Collator(undefined, {
+    numeric: true,
+    sensitivity: 'base',
+});
+
+export function compareItemNamesNaturally(a: Pick<TAbstractFile, 'name'>, b: Pick<TAbstractFile, 'name'>): number {
+    return naturalNameCollator.compare(a.name, b.name);
+}
+
 export function sortItems(items: Array<TAbstractFile>, stateSettings: StateSettings): TAbstractFile[] {
     let sortedItems: TAbstractFile[] = [];
 
