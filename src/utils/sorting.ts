@@ -19,25 +19,25 @@ export function sortItems(items: Array<TAbstractFile>, stateSettings: StateSetti
 
     if(stateSettings.defaultViewPriorityGrouping) {
         if(stateSettings?.defaultViewOrder === StateViewOrder.AliasOrFilename) {
-            sortedItems = sortItemsByPriorityThenName(items, 'ascending');
+            sortedItems = sortItemsByPriorityThenNaturalName(items, 'ascending');
         } else if(stateSettings?.defaultViewOrder === StateViewOrder.CreationDate) {
             sortedItems = sortItemsByPriorityThenCreationDate(items, 'ascending');
         } else if(stateSettings?.defaultViewOrder === StateViewOrder.ModifiedDate) {
             sortedItems = sortItemsByPriorityThenModifiedDate(items, 'descending');
         } else {
             // Default if no sort order is set for some reason
-            sortedItems = sortItemsByPriorityThenName(items, 'ascending');
+            sortedItems = sortItemsByPriorityThenNaturalName(items, 'ascending');
         }
     } else {
         if(stateSettings?.defaultViewOrder === StateViewOrder.AliasOrFilename) {
-            sortedItems = sortItemsByName(items, 'ascending');
+            sortedItems = sortItemsByNaturalName(items, 'ascending');
         } else if(stateSettings?.defaultViewOrder === StateViewOrder.CreationDate) {
             sortedItems = sortItemsByCreationDate(items, 'ascending');
         } else if(stateSettings?.defaultViewOrder === StateViewOrder.ModifiedDate) {
             sortedItems = sortItemsByModifiedDate(items, 'descending');
         } else {
             // Default if no sort order is set for some reason
-            sortedItems = sortItemsByName(items, 'ascending');
+            sortedItems = sortItemsByNaturalName(items, 'ascending');
         }
     }
     
@@ -53,6 +53,19 @@ export function sortItemsByName(items: Array<TAbstractFile>, direction: 'ascendi
         } else {
             return a.name.localeCompare(b.name) * -1;
         }
+    });
+
+    return sortedItems;
+}
+
+export function sortItemsByNaturalName(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
+    const sortedItems = [...items];
+
+    sortedItems.sort((a: TAbstractFile, b: TAbstractFile) => {
+        const naturalComparison = compareItemNamesNaturally(a, b);
+
+        if (direction === 'ascending') return naturalComparison;
+        return naturalComparison * -1;
     });
 
     return sortedItems;
@@ -144,6 +157,12 @@ export function sortItemsByPriorityThenName(items: Array<TAbstractFile>, directi
     const itemsSortedByName = sortItemsByName(items, direction);
     const itemsSortedByNameAndPriority = sortItemsByPriority(itemsSortedByName);
     return itemsSortedByNameAndPriority;
+}
+
+export function sortItemsByPriorityThenNaturalName(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
+    const itemsSortedByNaturalName = sortItemsByNaturalName(items, direction);
+    const itemsSortedByNaturalNameAndPriority = sortItemsByPriority(itemsSortedByNaturalName);
+    return itemsSortedByNaturalNameAndPriority;
 }
 
 export function sortItemsByPriorityThenCreationDate(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {

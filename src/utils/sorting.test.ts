@@ -3,13 +3,17 @@ import { TFile, TFolder } from "obsidian";
 import {
   compareItemNamesNaturally,
   sortItemsByName,
+  sortItemsByNaturalName,
   sortItemsByCreationDate,
   sortItemsByModifiedDate,
   sortItemsByPriority,
   sortItemsByPriorityThenName,
+  sortItemsByPriorityThenNaturalName,
   sortItemsByPriorityThenCreationDate,
   sortItemsByPriorityThenModifiedDate,
+  sortItems,
 } from "./sorting";
+import { DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS, StateViewOrder } from "src/types/types-map";
 
 jest.mock("src/logic/frontmatter-processes", () => ({
   getFilePrioritySettings: (file: TFile) => (file as any).__priority || null,
@@ -52,6 +56,21 @@ describe("sorting utils", () => {
     expect(desc).toEqual(["c.md", "b.md", "a.md"]);
   });
 
+  test("sortItemsByNaturalName ascending/descending", () => {
+    const numberedFiles = [
+      makeFile("Page 18.md", 1, 10),
+      makeFile("Page 2.md", 2, 20),
+      makeFile("Page 20.md", 3, 30),
+      makeFile("Page 10.md", 4, 40),
+    ];
+
+    const asc = sortItemsByNaturalName(numberedFiles, "ascending").map((i) => i.name);
+    const desc = sortItemsByNaturalName(numberedFiles, "descending").map((i) => i.name);
+
+    expect(asc).toEqual(["Page 2.md", "Page 10.md", "Page 18.md", "Page 20.md"]);
+    expect(desc).toEqual(["Page 20.md", "Page 18.md", "Page 10.md", "Page 2.md"]);
+  });
+
   test("sortItemsByCreationDate respects only files, leaves folders equal", () => {
     const out = sortItemsByCreationDate([folder, fB, fA], "ascending");
     expect(out[0]).toBe(folder);
@@ -76,6 +95,35 @@ describe("sorting utils", () => {
     const names = out.map((i) => (i as any).name);
     // Within same priority, name ascending; High before Low; nulls after defined priorities
     expect(names.indexOf("a.md")).toBeLessThan(names.indexOf("b.md"));
+  });
+
+  test("sortItemsByPriorityThenNaturalName", () => {
+    const numberedHigh = makeFile("Page 10.md", 1, 10, "High");
+    const numberedLow = makeFile("Page 2.md", 2, 20, "Low");
+    const numberedNone = makeFile("Page 18.md", 3, 30);
+
+    const out = sortItemsByPriorityThenNaturalName([numberedNone, numberedHigh, numberedLow], "ascending");
+    const names = out.map((i) => (i as any).name);
+
+    expect(names).toEqual(["Page 10.md", "Page 18.md", "Page 2.md"]);
+  });
+
+  test("sortItems uses natural ordering for Alias or Filename sections", () => {
+    const numberedFiles = [
+      makeFile("Page 18.md", 1, 10),
+      makeFile("Page 2.md", 2, 20),
+      makeFile("Page 20.md", 3, 30),
+      makeFile("Page 10.md", 4, 40),
+    ];
+    const statelessSettings = {
+      ...DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS,
+      defaultViewOrder: StateViewOrder.AliasOrFilename,
+      defaultViewPriorityGrouping: false,
+    };
+
+    const out = sortItems(numberedFiles, statelessSettings).map((i) => i.name);
+
+    expect(out).toEqual(["Page 2.md", "Page 10.md", "Page 18.md", "Page 20.md"]);
   });
 
   test("sortItemsByPriorityThenCreationDate", () => {
