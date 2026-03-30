@@ -167,7 +167,7 @@ export const DEFAULT_PLUGIN_SETTINGS_0_4_0: PluginSettings_0_4_0 = {
         hidden: [...DEFAULT_PROJECT_PAGE_STATE_SETTINGS_0_4_0.hidden],
     },
     projectPageStateless: { ...DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS_0_4_0 },
-    defaultProjectPageState: 'First Draft',
+    defaultProjectPageState: undefined,
     loopProjectPageStatesWhenCycling: true,
     showRenamePopupOnNewPage: true,
 };

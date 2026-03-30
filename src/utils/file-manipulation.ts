@@ -3,11 +3,12 @@
 
 import { App, DataWriteOptions, FileManager, TAbstractFile, TFile, TFolder, Vault, normalizePath } from "obsidian";
 import { folderPathSanitize, parseFilepath, sanitizeFileFolderName } from "./string-processes";
-import { setFileState } from "src/logic/frontmatter-processes";
+import { getFilePrioritySettings, getFileStateSettings, setFilePriority, setFileState } from "src/logic/frontmatter-processes";
 import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 import { getGlobals } from "src/logic/stores";
-import { DEFAULT_FOLDER_SETTINGS, DEFAULT_SETTINGS, FolderSettings, StateSettings } from "src/types/types-map";
+import { DEFAULT_FOLDER_SETTINGS, DEFAULT_SETTINGS, FolderSettings, PrioritySettings, StateSettings } from "src/types/types-map";
 import { getProjectPageStateByName, getStateByName } from "src/logic/get-state-by-name";
+import { getPriorityByName } from "src/logic/get-priority-by-name";
 
 // //////////
 // //////////
@@ -173,6 +174,9 @@ export async function moveFileToFolder(file: TFile, targetFolder: TFolder): Prom
 export async function createProjectFromNote(note: TFile, parentFolder: TFolder): Promise<TFile> {
     const vault = parentFolder.vault;
     const baseName = sanitizeFileFolderName(note.basename);
+    const noteStateSettings = getFileStateSettings(note);
+    const notePrioritySettings = getFilePrioritySettings(note);
+
     if (!baseName) {
         throw new Error('Note basename is empty after sanitization');
     }
@@ -197,6 +201,17 @@ export async function createProjectFromNote(note: TFile, parentFolder: TFolder):
     await renameTFile(note, 'Page 1');
 
     await setFolderAsProject(newFolder);
+
+    if (noteStateSettings) {
+        await setFolderState(newFolder, noteStateSettings);
+    }
+
+    if (notePrioritySettings) {
+        await setFolderPriority(newFolder, notePrioritySettings);
+    }
+
+    await setFileState(note, null);
+    await setFilePriority(note, null);
 
     const secondPage = await createProject({
         parentFolder: newFolder,
@@ -343,6 +358,7 @@ export async function setFolderAsProject(folder: TFolder): Promise<void> {
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     folderSettings.isProject = true;
     delete folderSettings.stateName;
+    delete folderSettings.priorityName;
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
     plugin.refreshFileDependants();
 }
@@ -352,6 +368,7 @@ export async function setFolderAsFolder(folder: TFolder): Promise<void> {
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     folderSettings.isProject = false;
     delete folderSettings.stateName;
+    delete folderSettings.priorityName;
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
     plugin.refreshFileDependants();
 }
@@ -368,9 +385,33 @@ export async function setFolderState(folder: TFolder, stateSettings: StateSettin
     plugin.refreshFileDependants();
 }
 
+export async function setFolderPriority(folder: TFolder, prioritySettings: PrioritySettings | null): Promise<void> {
+    const {plugin} = getGlobals();
+    const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    if (prioritySettings === null) {
+        delete folderSettings.priorityName;
+    } else {
+        folderSettings.priorityName = prioritySettings.name;
+    }
+    await saveFolderSettings(plugin.app.vault, folder, folderSettings);
+    plugin.refreshFileDependants();
+}
+
 export async function getFolderStateName(folder: TFolder): Promise<string | null> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     return folderSettings.stateName ?? null;
+}
+
+export async function getFolderPriorityName(folder: TFolder): Promise<string | null> {
+    const {plugin} = getGlobals();
+    const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    return folderSettings.priorityName ?? null;
+}
+
+export async function getFolderPrioritySettings(folder: TFolder): Promise<PrioritySettings | null> {
+    const priorityName = await getFolderPriorityName(folder);
+    if (!priorityName) return null;
+    return getPriorityByName(priorityName);
 }
 

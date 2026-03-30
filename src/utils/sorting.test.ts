@@ -20,13 +20,26 @@ jest.mock("src/logic/frontmatter-processes", () => ({
 }));
 
 function makeFile(name: string, ctime: number, mtime: number, priority?: "High" | "Low") {
-  const f = new TFile(name, ctime, mtime) as any;
+  const f = new TFile() as any;
+  f.name = name;
+  f.basename = name.replace(/\.[^.]+$/, "");
+  f.extension = name.split(".").pop();
+  f.stat = { ctime, mtime };
   f.__priority = priority ? { name: priority } : null;
   return f as TFile;
 }
 
 function makeFolder(name: string) {
-  return new TFolder(name);
+  const folder = new TFolder() as TFolder & { name: string };
+  folder.name = name;
+  return folder;
+}
+
+function makeProjectFolder(name: string, priority?: "High" | "Low") {
+  const folder = new TFolder() as TFolder & { name: string; priorityName?: string };
+  folder.name = name;
+  folder.priorityName = priority;
+  return folder;
 }
 
 describe("sorting utils", () => {
@@ -88,6 +101,15 @@ describe("sorting utils", () => {
     // High a.md should come before Low b.md; folder unchanged relative where equal-comparisons occur
     expect(out).toContain("a.md");
     expect(out.indexOf("a.md")).toBeLessThan(out.indexOf("b.md"));
+  });
+
+  test("sortItemsByPriority sorts project folders by stored folder priority", () => {
+    const highProject = makeProjectFolder("High Project", "High");
+    const lowProject = makeProjectFolder("Low Project", "Low");
+
+    const out = sortItemsByPriority([lowProject, highProject]).map((item) => item.name);
+
+    expect(out).toEqual(["High Project", "Low Project"]);
   });
 
   test("sortItemsByPriorityThenName", () => {

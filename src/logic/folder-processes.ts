@@ -193,6 +193,7 @@ export async function getSortedSectionsInFolderAsync(folder: TFolder): Promise<S
         if (item instanceof TFolder) {
             const folderSettings = await getFolderSettings(vault, item);
             if (folderSettings.isProject) {
+                (item as TFolder & { priorityName?: string }).priorityName = folderSettings.priorityName;
                 const stateName = folderSettings.stateName ?? null;
                 const sectionKey = stateName ?? ' ';
                 if (!itemsBySection[sectionKey]) itemsBySection[sectionKey] = [];

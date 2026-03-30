@@ -72,11 +72,11 @@ export function sortItemsByNaturalName(items: Array<TAbstractFile>, direction: '
 }
 
 function getStatCtime(item: TAbstractFile): number {
-    return item.stat?.ctime ?? 0;
+    return (item as TAbstractFile & { stat?: { ctime?: number } }).stat?.ctime ?? 0;
 }
 
 function getStatMtime(item: TAbstractFile): number {
-    return item.stat?.mtime ?? 0;
+    return (item as TAbstractFile & { stat?: { mtime?: number } }).stat?.mtime ?? 0;
 }
 
 export function sortItemsByCreationDate(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {
@@ -117,15 +117,12 @@ export function sortItemsByPriority(items: Array<TAbstractFile>): TAbstractFile[
     const sortedItems = [...items];
 
     sortedItems.sort( (a: TAbstractFile, b: TAbstractFile) => {
-        // Don't sort if either aren't files as non-files don't have priorities.
-        if(a instanceof TFolder || b instanceof TFolder) return 0;
-
-        const aPriority = getFilePrioritySettings(a as TFile);
-        const bPriority = getFilePrioritySettings(b as TFile);
+        const aPriority = getItemPriorityName(a);
+        const bPriority = getItemPriorityName(b);
 
         if(aPriority && !bPriority) {
             // b is null
-            if(aPriority.name === 'High') {
+            if(aPriority === 'High') {
                 return -1;
             } else {
                 return 1;
@@ -134,7 +131,7 @@ export function sortItemsByPriority(items: Array<TAbstractFile>): TAbstractFile[
 
         if(!aPriority && bPriority) {
             // a is null
-            if(bPriority.name === 'High') {
+            if(bPriority === 'High') {
                 return 1;
             } else {
                 return -1;
@@ -142,15 +139,25 @@ export function sortItemsByPriority(items: Array<TAbstractFile>): TAbstractFile[
         }
         
         if(aPriority && bPriority) {
-            if(aPriority.name === bPriority.name) return 0;
-            else if(aPriority.name === 'High' && bPriority.name === 'Low') return -1;
-            else if(aPriority.name === 'Low' && bPriority.name === 'High') return 1;
+            if(aPriority === bPriority) return 0;
+            else if(aPriority === 'High' && bPriority === 'Low') return -1;
+            else if(aPriority === 'Low' && bPriority === 'High') return 1;
         }
 
         return 0;
     })
 
     return sortedItems;
+}
+
+function getItemPriorityName(item: TAbstractFile): string | null {
+    if (item instanceof TFolder) {
+        return (item as TFolder & { priorityName?: string }).priorityName ?? null;
+    }
+
+    const prioritySettings = getFilePrioritySettings(item as TFile);
+    if (!prioritySettings) return null;
+    return prioritySettings.name;
 }
 
 export function sortItemsByPriorityThenName(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {

@@ -1,8 +1,13 @@
 import { describe, expect, test } from "@jest/globals";
 import { migrateOutdatedSettings } from "./plugin-settings-migrations";
 import { DEFAULT_PLUGIN_SETTINGS_0_0_5 } from "./plugin-settings_0_0_5";
+import { DEFAULT_PLUGIN_SETTINGS_0_4_0 } from "./plugin-settings_0_4_0";
 
 describe("plugin settings migrations (wrapper)", () => {
+  test("default project page state is none", () => {
+    expect(DEFAULT_PLUGIN_SETTINGS_0_4_0.defaultProjectPageState).toBeUndefined();
+  });
+
   test("migrateOutdatedSettings chains from 0.0.5 and sets expected fields", () => {
     const old = { ...DEFAULT_PLUGIN_SETTINGS_0_0_5, settingsVersion: "0.0.5" } as any;
     const res = migrateOutdatedSettings(old);
@@ -22,6 +27,7 @@ describe("plugin settings migrations (wrapper)", () => {
     expect(Array.isArray(res.states.hidden)).toBe(true);
     expect(Array.isArray(res.projectPageStates.visible)).toBe(true);
     expect(Array.isArray(res.projectPageStates.hidden)).toBe(true);
+    expect(res.defaultProjectPageState).toBeUndefined();
   });
 });
 

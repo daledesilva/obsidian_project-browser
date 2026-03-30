@@ -170,7 +170,7 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(sectionEl)
 		.setClass('ddc_pb_controls-header')
-		.setName('Project States')
+		.setName('FIle & Project States')
 		.setDesc('This is the list of categories that Project Browser will help assign projects and group by in the Browser view. Add new project states and drag them to reorder or delete.');
 
 	const contentEl = sectionEl.createDiv('ddc_pb_controls-content');
