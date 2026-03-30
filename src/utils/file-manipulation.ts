@@ -65,6 +65,25 @@ interface CreateProjectProps {
     stateName?: string,
 }
 
+function normalizeFolderSettings(rawFolderSettings: FolderSettings & { stateName?: string; priorityName?: string }): FolderSettings {
+    const normalizedFolderSettings: FolderSettings = {
+        ...rawFolderSettings,
+    };
+
+    if (!normalizedFolderSettings.state && rawFolderSettings.stateName) {
+        normalizedFolderSettings.state = rawFolderSettings.stateName;
+    }
+
+    if (!normalizedFolderSettings.priority && rawFolderSettings.priorityName) {
+        normalizedFolderSettings.priority = rawFolderSettings.priorityName;
+    }
+
+    delete (normalizedFolderSettings as FolderSettings & { stateName?: string }).stateName;
+    delete (normalizedFolderSettings as FolderSettings & { priorityName?: string }).priorityName;
+
+    return normalizedFolderSettings;
+}
+
 export async function createProject(props: CreateProjectProps): Promise<TFile> {
     const v = props.parentFolder.vault;
     const globals = getGlobals();
@@ -301,10 +320,10 @@ export async function getFolderSettings(vault: Vault, folder: TFolder) : Promise
 
     if(settingsFile) {
         try {
-            folderSettings = {
+            folderSettings = normalizeFolderSettings({
                 ...folderSettings,
                 ...JSON.parse( await vault.read(settingsFile) )
-            };
+            } as FolderSettings & { stateName?: string; priorityName?: string });
         } catch(e) {
             console.log(`Error reading folder settings`, e);
             console.log(`Creating empty settings`);
@@ -317,6 +336,7 @@ export async function getFolderSettings(vault: Vault, folder: TFolder) : Promise
 export async function saveFolderSettings(vault: Vault, folder: TFolder, settings: FolderSettings) {
     let settingsFile: TFile | null = null;
     const filename = `${folder.path}/${FOLDER_SETTINGS_FILENAME}`;
+    const normalizedFolderSettings = normalizeFolderSettings(settings as FolderSettings & { stateName?: string; priorityName?: string });
 
     try {
         settingsFile = vault.getFileByPath(filename);
@@ -324,14 +344,14 @@ export async function saveFolderSettings(vault: Vault, folder: TFolder, settings
 
     if(settingsFile) {
         try {
-            await vault.modify(settingsFile, JSON.stringify(settings, null, 2) );
+            await vault.modify(settingsFile, JSON.stringify(normalizedFolderSettings, null, 2) );
         } catch(e) {
             console.log(`Error writing to folder settings file`, e);
         }
 
     } else {
         try {
-            await vault.create(filename, JSON.stringify(settings, null, 2));
+            await vault.create(filename, JSON.stringify(normalizedFolderSettings, null, 2));
         } catch(e) {
             console.log(`Error creating folder settings file`, e);
         }
@@ -357,8 +377,8 @@ export async function setFolderAsProject(folder: TFolder): Promise<void> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     folderSettings.isProject = true;
-    delete folderSettings.stateName;
-    delete folderSettings.priorityName;
+    delete folderSettings.state;
+    delete folderSettings.priority;
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
     plugin.refreshFileDependants();
 }
@@ -367,8 +387,8 @@ export async function setFolderAsFolder(folder: TFolder): Promise<void> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     folderSettings.isProject = false;
-    delete folderSettings.stateName;
-    delete folderSettings.priorityName;
+    delete folderSettings.state;
+    delete folderSettings.priority;
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
     plugin.refreshFileDependants();
 }
@@ -377,9 +397,9 @@ export async function setFolderState(folder: TFolder, stateSettings: StateSettin
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     if (stateSettings === null) {
-        delete folderSettings.stateName;
+        delete folderSettings.state;
     } else {
-        folderSettings.stateName = stateSettings.name;
+        folderSettings.state = stateSettings.name;
     }
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
     plugin.refreshFileDependants();
@@ -388,10 +408,14 @@ export async function setFolderState(folder: TFolder, stateSettings: StateSettin
 export async function setFolderPriority(folder: TFolder, prioritySettings: PrioritySettings | null): Promise<void> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    const currentPriorityName = folderSettings.priority ?? null;
+
     if (prioritySettings === null) {
-        delete folderSettings.priorityName;
+        delete folderSettings.priority;
+    } else if (currentPriorityName === prioritySettings.name) {
+        delete folderSettings.priority;
     } else {
-        folderSettings.priorityName = prioritySettings.name;
+        folderSettings.priority = prioritySettings.name;
     }
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
     plugin.refreshFileDependants();
@@ -400,13 +424,13 @@ export async function setFolderPriority(folder: TFolder, prioritySettings: Prior
 export async function getFolderStateName(folder: TFolder): Promise<string | null> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
-    return folderSettings.stateName ?? null;
+    return folderSettings.state ?? null;
 }
 
 export async function getFolderPriorityName(folder: TFolder): Promise<string | null> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
-    return folderSettings.priorityName ?? null;
+    return folderSettings.priority ?? null;
 }
 
 export async function getFolderPrioritySettings(folder: TFolder): Promise<PrioritySettings | null> {

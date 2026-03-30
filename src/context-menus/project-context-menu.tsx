@@ -2,8 +2,8 @@ import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
 import { getGlobals } from "src/logic/stores";
 import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
-import { getFolderStateName, setFolderAsFolder, setFolderState } from "src/utils/file-manipulation";
-import { StateSettings } from "src/types/types-map";
+import { getFolderPriorityName, getFolderPrioritySettings, getFolderStateName, setFolderAsFolder, setFolderPriority, setFolderState } from "src/utils/file-manipulation";
+import { PrioritySettings, StateSettings } from "src/types/types-map";
 
 ////////
 ////////
@@ -16,6 +16,7 @@ interface registerProjectContextMenuProps {
 
 export function registerProjectContextMenu(props: registerProjectContextMenuProps) {
     const {plugin} = getGlobals();
+    const priorities = JSON.parse(JSON.stringify(plugin.settings.priorities));
     const visibleStates = JSON.parse(JSON.stringify(plugin.settings.states.visible));
     visibleStates.reverse();
     const hiddenStates = JSON.parse(JSON.stringify(plugin.settings.states.hidden));
@@ -26,6 +27,7 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
         document.body.click();
 
         const currentStateName = await getFolderStateName(props.folder);
+    const currentPrioritySettings = await getFolderPrioritySettings(props.folder);
 
         const menu = new Menu();
         menu.addItem((item) =>
@@ -42,6 +44,17 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
                     props.onProjectChange();
                 })
         );
+        menu.addSeparator();
+        priorities.forEach((prioritySettings: PrioritySettings) => {
+            menu.addItem((item) => {
+                item.setTitle(prioritySettings.name);
+                if (prioritySettings.name === currentPrioritySettings?.name) item.setChecked(true);
+                item.onClick(async () => {
+                    await setFolderPriority(props.folder, prioritySettings);
+                    props.onProjectChange();
+                });
+            });
+        });
         menu.addSeparator();
         visibleStates.forEach((stateSettings: StateSettings) => {
             menu.addItem((item) => {

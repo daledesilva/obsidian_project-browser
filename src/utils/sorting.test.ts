@@ -36,9 +36,9 @@ function makeFolder(name: string) {
 }
 
 function makeProjectFolder(name: string, priority?: "High" | "Low") {
-  const folder = new TFolder() as TFolder & { name: string; priorityName?: string };
+  const folder = new TFolder() as TFolder & { name: string; priority?: string };
   folder.name = name;
-  folder.priorityName = priority;
+  folder.priority = priority;
   return folder;
 }
 

@@ -391,10 +391,74 @@ describe("createProjectFromNote", () => {
       expect(secondPage.path).toBe(`${expectedProjectPath}/Page 2.md`);
       expect(folderSettingsFile).toBeInstanceOf(isolatedObsidian.TFile);
       expect(await mockVaultState.vault.read(folderSettingsFile)).toContain('"isProject": true');
-      expect(await mockVaultState.vault.read(folderSettingsFile)).toContain('"stateName": "In Progress"');
-      expect(await mockVaultState.vault.read(folderSettingsFile)).toContain('"priorityName": "High"');
+      expect(await mockVaultState.vault.read(folderSettingsFile)).toContain('"state": "In Progress"');
+      expect(await mockVaultState.vault.read(folderSettingsFile)).toContain('"priority": "High"');
       expect(setFileState).toHaveBeenCalledWith(note, null);
       expect(setFilePriority).toHaveBeenCalledWith(note, null);
+    });
+  });
+
+  test("normalizes legacy stateName and priorityName fields from existing pbs files", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const isolatedObsidian = require("obsidian") as {
+        TFile: typeof TFile;
+        TFolder: typeof TFolder;
+      };
+      const mockVaultState = createMockVault(isolatedObsidian);
+      const folder = mockVaultState.ensureFolder("Legacy Project");
+      mockVaultState.createMarkdownFile(
+        "Legacy Project/folder-settings.pbs",
+        JSON.stringify({
+          _description: "Obsidian Project Browser folder settings",
+          isProject: true,
+          stateName: "In Progress",
+          priorityName: "High",
+        })
+      );
+
+      getGlobals.mockReturnValue({
+        plugin: {
+          app: {
+            vault: mockVaultState.vault,
+          },
+        },
+      });
+
+      const { getFolderSettings } = require("./file-manipulation") as typeof import("./file-manipulation");
+      const folderSettings = await getFolderSettings(mockVaultState.vault as any, folder);
+
+      expect(folderSettings.state).toBe("In Progress");
+      expect(folderSettings.priority).toBe("High");
+      expect((folderSettings as { stateName?: string }).stateName).toBeUndefined();
+      expect((folderSettings as { priorityName?: string }).priorityName).toBeUndefined();
+    });
+  });
+});
+
+describe("setFolderPriority", () => {
+  test("stores a folder priority and toggles it off when selected again", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const mockVaultState = createMockVault(require("obsidian") as { TFile: typeof TFile; TFolder: typeof TFolder });
+      const folder = mockVaultState.ensureFolder("Project A");
+      const refreshFileDependants = jest.fn();
+
+      getGlobals.mockReturnValue({
+        plugin: {
+          app: {
+            vault: mockVaultState.vault,
+          },
+          refreshFileDependants,
+        },
+      });
+
+      const { getFolderSettings, setFolderPriority } = require("./file-manipulation") as typeof import("./file-manipulation");
+
+      await setFolderPriority(folder, { name: "High" });
+      expect((await getFolderSettings(mockVaultState.vault as any, folder)).priority).toBe("High");
+
+      await setFolderPriority(folder, { name: "High" });
+      expect((await getFolderSettings(mockVaultState.vault as any, folder)).priority).toBeUndefined();
+      expect(refreshFileDependants).toHaveBeenCalledTimes(2);
     });
   });
 });
