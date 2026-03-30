@@ -34,6 +34,40 @@ const isAuthorisedEditor = user.role === 'admin' && permissions.includes('write'
 if (isAuthorisedEditor) { ... }
 ```
 
+## Inline Simple `if` Statements
+
+When an `if` statement has a single simple statement in its body, keep it inline without curly braces.
+
+```ts
+// ❌ BAD
+if (!settings) {
+    return;
+}
+
+// ✅ GOOD
+if (!settings) return;
+```
+
+Use braces when the branch contains more than one statement, a nested branch, or a comment that needs to live inside the branch.
+
+## Do Not Use `useMemo` Unnecessarily
+
+Do not wrap trivial value selection or cheap calculations in `React.useMemo` unless stable identity is actually required.
+
+```tsx
+// ❌ BAD
+const chosenAtom = React.useMemo(
+    () => isProjectPage ? projectPageStatelessSettingsAtom : statelessSettingsAtom,
+    [isProjectPage]
+);
+
+// ✅ GOOD
+let chosenAtom = statelessSettingsAtom;
+if (isProjectPage) chosenAtom = projectPageStatelessSettingsAtom;
+```
+
+Use `React.useMemo` when it is needed to preserve identity for derived objects, derived atoms, or expensive computations.
+
 ## Branch Comments Go Inside the Branch
 
 Place comments that explain a branch at the **start of that branch**, not before the `if` statement.
