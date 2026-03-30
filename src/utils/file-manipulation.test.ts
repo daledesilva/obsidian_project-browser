@@ -1,78 +1,119 @@
 import { describe, expect, test, jest } from "@jest/globals";
-import { parseFilepath } from "./string-processes";
 
-/**
- * Unit tests for file-manipulation (0.1.3: rename path bug, 0.3.2: defaultState for new notes).
- */
+describe("renameTFile", () => {
+  test("keeps a nested file inside its parent folder when renamed", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const renameMock = jest.fn(async () => undefined);
+      const file = {
+        path: "Parent Folder/note.md",
+        extension: "md",
+        vault: {
+          rename: renameMock,
+        },
+      } as any;
 
-describe("parseFilepath for rename path construction", () => {
-  test("preserves folderpath for file in subfolder (0.1.3 regression)", () => {
-    const result = parseFilepath("Project A/note-1.md");
-    expect(result.folderpath).toBe("Project A");
-    expect(result.basename).toBe("note-1");
-    expect(result.ext).toBe("md");
+      const { renameTFile } = require("./file-manipulation");
+      const renamedPath = await renameTFile(file, "renamed-note");
+
+      expect(renameMock).toHaveBeenCalledWith(file, "Parent Folder/renamed-note.md");
+      expect(renamedPath).toBe("Parent Folder/renamed-note.md");
+    });
   });
 
-  test("produces correct new path for rename in subfolder", () => {
-    const { folderpath, ext } = parseFilepath("Project A/note-1.md");
-    const safeName = "renamed-note";
-    const newPathAndName = `${folderpath}/${safeName}.${ext}`;
-    expect(newPathAndName).toBe("Project A/renamed-note.md");
+  test("keeps a file multiple folders deep in place when renamed", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const renameMock = jest.fn(async () => undefined);
+      const file = {
+        path: "Area/Projects/Project A/Notes/note.md",
+        extension: "md",
+        vault: {
+          rename: renameMock,
+        },
+      } as any;
+
+      const { renameTFile } = require("./file-manipulation");
+      const renamedPath = await renameTFile(file, "renamed-note");
+
+      expect(renameMock).toHaveBeenCalledWith(file, "Area/Projects/Project A/Notes/renamed-note.md");
+      expect(renamedPath).toBe("Area/Projects/Project A/Notes/renamed-note.md");
+    });
   });
 
-  test("does not move file to root when path has subfolder", () => {
-    const { folderpath } = parseFilepath("Project A/note-1.md");
-    expect(folderpath).not.toBe("");
-    expect(folderpath).not.toBe("/");
+  test("keeps a root-level file at vault root when renamed", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const renameMock = jest.fn(async () => undefined);
+      const file = {
+        path: "note.md",
+        extension: "md",
+        vault: {
+          rename: renameMock,
+        },
+      } as any;
+
+      const { renameTFile } = require("./file-manipulation");
+      const renamedPath = await renameTFile(file, "renamed-note");
+
+      expect(renameMock).toHaveBeenCalledWith(file, "renamed-note.md");
+      expect(renamedPath).toBe("renamed-note.md");
+    });
   });
 });
 
-describe("createProject defaultState application", () => {
-  test("applies defaultState when stateName not provided (0.3.2)", async () => {
-    jest.isolateModules(() => {
-      const setFileStateMock = jest.fn().mockResolvedValue(true);
-      const getStateByNameMock = jest.fn().mockReturnValue({ name: "Idea" });
+describe("renameTFolder", () => {
+  test("keeps a nested folder inside its parent folder when renamed", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const renameMock = jest.fn(async () => undefined);
+      const folder = {
+        path: "Parent Folder/Child Folder",
+        name: "Child Folder",
+        vault: {
+          rename: renameMock,
+        },
+      } as any;
 
-      jest.doMock("src/logic/frontmatter-processes", () => ({
-        setFileState: setFileStateMock,
-      }));
-      jest.doMock("src/logic/get-state-by-name", () => ({
-        getStateByName: getStateByNameMock,
-      }));
+      const { renameTFolder } = require("./file-manipulation");
+      const renamedPath = await renameTFolder(folder, "Renamed Child Folder");
 
-      const mockVault = {
-        create: jest.fn().mockResolvedValue({
-          path: "Project A/new-note.md",
-          name: "new-note.md",
-          extension: "md",
-          stat: { mtime: Date.now() },
-        }),
-      };
+      expect(renameMock).toHaveBeenCalledWith(folder, "Parent Folder/Renamed Child Folder");
+      expect(renamedPath).toBe("Parent Folder/Renamed Child Folder");
+    });
+  });
 
-      jest.doMock("src/logic/stores", () => ({
-        getGlobals: () => ({
-          plugin: {
-            settings: { defaultState: "Idea" },
-            app: { vault: mockVault },
-          },
-        }),
-      }));
+  test("keeps a folder multiple folders deep in place when renamed", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const renameMock = jest.fn(async () => undefined);
+      const folder = {
+        path: "Area/Projects/Project A/Resources/Research",
+        name: "Research",
+        vault: {
+          rename: renameMock,
+        },
+      } as any;
 
-      // createProject calls createDefaultMarkdownFile which calls vault.create
-      // We need to mock the full chain - createProject is async and complex.
-      // Instead, verify getStateByName is called with defaultState when no stateName.
-      const { getStateByName } = require("src/logic/get-state-by-name");
-      jest.doMock("src/logic/stores", () => ({
-        getGlobals: () => ({
-          plugin: {
-            settings: { defaultState: "Idea" },
-          },
-        }),
-      }));
+      const { renameTFolder } = require("./file-manipulation");
+      const renamedPath = await renameTFolder(folder, "References");
 
-      const stateSettings = getStateByName("Idea");
-      expect(stateSettings).toBeDefined();
-      expect(stateSettings?.name).toBe("Idea");
+      expect(renameMock).toHaveBeenCalledWith(folder, "Area/Projects/Project A/Resources/References");
+      expect(renamedPath).toBe("Area/Projects/Project A/Resources/References");
+    });
+  });
+
+  test("keeps a nested folder inside its project folder when renamed", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const renameMock = jest.fn(async () => undefined);
+      const folder = {
+        path: "Projects/Project A/Research",
+        name: "Research",
+        vault: {
+          rename: renameMock,
+        },
+      } as any;
+
+      const { renameTFolder } = require("./file-manipulation");
+      const renamedPath = await renameTFolder(folder, "References");
+
+      expect(renameMock).toHaveBeenCalledWith(folder, "Projects/Project A/References");
+      expect(renamedPath).toBe("Projects/Project A/References");
     });
   });
 });

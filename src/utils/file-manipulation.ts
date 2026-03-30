@@ -117,17 +117,19 @@ export async function renameAbstractFile(abstractFile: TAbstractFile, newName: s
 
 export async function renameTFile(file: TFile, safeName: string): Promise<string|null> {
     const {folderpath} = parseFilepath(file.path);
+    let newPathAndName = safeName;
+
+    if(file.extension) {
+        newPathAndName = `${safeName}.${file.extension}`;
+    }
+
+    if (folderpath) {
+        newPathAndName = `${folderpath}/${newPathAndName}`;
+    }
 
     try {
-        if(file.extension) {
-            const newPathAndName = `${folderpath}/${safeName}.${file.extension}`;
-            file.vault.rename(file, newPathAndName);
-            return newPathAndName;
-        } else {
-            const newPathAndName = `${folderpath}/${safeName}`;
-            file.vault.rename(file, newPathAndName);
-            return newPathAndName;
-        }
+        await file.vault.rename(file, newPathAndName);
+        return newPathAndName;
     } catch(e) {
         console.log(e)
         return null;
@@ -135,10 +137,15 @@ export async function renameTFile(file: TFile, safeName: string): Promise<string
 }
 
 export async function renameTFolder(folder: TFolder, safeName: string): Promise<string|null> {
-    const newPathAndName = `${folder.path}/${folder.name}`;
+    const { folderpath } = parseFilepath(folder.path);
+    let newPathAndName = safeName;
+    if (folderpath) {
+        newPathAndName = `${folderpath}/${safeName}`;
+    }
+
     try {
-        folder.vault.rename(folder, `${safeName}`);
-        return safeName;
+        await folder.vault.rename(folder, newPathAndName);
+        return newPathAndName;
     } catch(e) {
         console.log(e)
         return null;
