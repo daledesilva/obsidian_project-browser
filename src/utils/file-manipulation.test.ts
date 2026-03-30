@@ -427,8 +427,10 @@ describe("createProjectFromNote", () => {
       const { getFolderSettings } = require("./file-manipulation") as typeof import("./file-manipulation");
       const folderSettings = await getFolderSettings(mockVaultState.vault as any, folder);
 
+      expect(folderSettings.description).toBe("Obsidian Project Browser folder settings");
       expect(folderSettings.state).toBe("In Progress");
       expect(folderSettings.priority).toBe("High");
+      expect((folderSettings as { _description?: string })._description).toBeUndefined();
       expect((folderSettings as { stateName?: string }).stateName).toBeUndefined();
       expect((folderSettings as { priorityName?: string }).priorityName).toBeUndefined();
     });

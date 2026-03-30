@@ -126,7 +126,7 @@ const PLUGIN_DATA_JSON = {
 };
 
 const FOLDER_SETTINGS_PBS = JSON.stringify(
-  { _description: "Obsidian Project Browser folder settings", isProject: true },
+  { description: "Obsidian Project Browser folder settings", isProject: true },
   null,
   2
 );

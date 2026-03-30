@@ -65,10 +65,14 @@ interface CreateProjectProps {
     stateName?: string,
 }
 
-function normalizeFolderSettings(rawFolderSettings: FolderSettings & { stateName?: string; priorityName?: string }): FolderSettings {
+function normalizeFolderSettings(rawFolderSettings: FolderSettings & { _description?: string; stateName?: string; priorityName?: string }): FolderSettings {
     const normalizedFolderSettings: FolderSettings = {
         ...rawFolderSettings,
     };
+
+    if (!normalizedFolderSettings.description && rawFolderSettings._description) {
+        normalizedFolderSettings.description = rawFolderSettings._description;
+    }
 
     if (!normalizedFolderSettings.state && rawFolderSettings.stateName) {
         normalizedFolderSettings.state = rawFolderSettings.stateName;
@@ -78,6 +82,7 @@ function normalizeFolderSettings(rawFolderSettings: FolderSettings & { stateName
         normalizedFolderSettings.priority = rawFolderSettings.priorityName;
     }
 
+    delete (normalizedFolderSettings as FolderSettings & { _description?: string })._description;
     delete (normalizedFolderSettings as FolderSettings & { stateName?: string }).stateName;
     delete (normalizedFolderSettings as FolderSettings & { priorityName?: string }).priorityName;
 
@@ -323,7 +328,7 @@ export async function getFolderSettings(vault: Vault, folder: TFolder) : Promise
             folderSettings = normalizeFolderSettings({
                 ...folderSettings,
                 ...JSON.parse( await vault.read(settingsFile) )
-            } as FolderSettings & { stateName?: string; priorityName?: string });
+            } as FolderSettings & { _description?: string; stateName?: string; priorityName?: string });
         } catch(e) {
             console.log(`Error reading folder settings`, e);
             console.log(`Creating empty settings`);
@@ -336,7 +341,7 @@ export async function getFolderSettings(vault: Vault, folder: TFolder) : Promise
 export async function saveFolderSettings(vault: Vault, folder: TFolder, settings: FolderSettings) {
     let settingsFile: TFile | null = null;
     const filename = `${folder.path}/${FOLDER_SETTINGS_FILENAME}`;
-    const normalizedFolderSettings = normalizeFolderSettings(settings as FolderSettings & { stateName?: string; priorityName?: string });
+    const normalizedFolderSettings = normalizeFolderSettings(settings as FolderSettings & { _description?: string; stateName?: string; priorityName?: string });
 
     try {
         settingsFile = vault.getFileByPath(filename);
