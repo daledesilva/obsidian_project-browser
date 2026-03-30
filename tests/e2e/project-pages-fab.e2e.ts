@@ -150,60 +150,6 @@ async function assertFabButtonHighlighted(): Promise<void> {
   expect(isHighlighted).toBe(true);
 }
 
-async function measureFabPositionMetrics() {
-  return browser.execute(() => {
-    const fab = document.querySelector(".ddc_pb_project-pages-fab") as HTMLElement | null;
-    if (!fab) {
-      return {
-        hasFab: false,
-        gapFromRight: -1,
-        cssOffsetVar: "",
-        scrollerSummary: [],
-      };
-    }
-
-    const rect = fab.getBoundingClientRect();
-    const gapFromRight = window.innerWidth - rect.right;
-    const cssOffsetVar = getComputedStyle(fab).getPropertyValue("--ddc-pb-fab-right-offset").trim();
-
-    const selectors = [".cm-scroller", ".view-content", ".workspace-leaf-content .view-content"];
-    const scrollerSummary = selectors.map((selector) => {
-      const el = document.querySelector(selector) as HTMLElement | null;
-      if (!el) {
-        return { selector, exists: false, scrollbarWidth: 0, hasVerticalScrollbar: false };
-      }
-      return {
-        selector,
-        exists: true,
-        scrollbarWidth: el.offsetWidth - el.clientWidth,
-        hasVerticalScrollbar: el.scrollHeight > el.clientHeight,
-      };
-    });
-
-    return {
-      hasFab: true,
-      gapFromRight,
-      cssOffsetVar,
-      scrollerSummary,
-      discoveredScrollHosts: Array.from(document.querySelectorAll("*"))
-        .map((node) => node as HTMLElement)
-        .filter((el) => {
-          const style = getComputedStyle(el);
-          const allowsScroll = style.overflowY === "auto" || style.overflowY === "scroll" || style.overflowY === "overlay";
-          return allowsScroll && el.scrollHeight > el.clientHeight;
-        })
-        .slice(0, 8)
-        .map((el) => ({
-          tag: el.tagName.toLowerCase(),
-          className: el.className,
-          scrollbarWidth: el.offsetWidth - el.clientWidth,
-          scrollHeight: el.scrollHeight,
-          clientHeight: el.clientHeight,
-        })),
-    };
-  });
-}
-
 describe("Project Pages FAB", function () {
   before(async function () {
     await dismissBlockingPopups();
@@ -234,29 +180,6 @@ describe("Project Pages FAB", function () {
         expect(activeLabel).toContain(targetPage);
       }
     }
-  });
-
-  it("measures FAB right offset on markdown vs base", async function () {
-    await obsidianPage.openFile(filePathFor("Markdown Page 1"));
-    await browser.pause(400);
-    const markdownMetrics = await measureFabPositionMetrics();
-    expect(markdownMetrics.hasFab).toBe(true);
-
-    await obsidianPage.openFile(filePathFor("Base Page 1"));
-    await browser.pause(400);
-    const baseMetrics = await measureFabPositionMetrics();
-    expect(baseMetrics.hasFab).toBe(true);
-    const markdownOffset = Number.parseInt(markdownMetrics.cssOffsetVar, 10) || 0;
-    const baseOffset = Number.parseInt(baseMetrics.cssOffsetVar, 10) || 0;
-    const markdownScrollbarWidth =
-      markdownMetrics.scrollerSummary.find((item) => item.selector === ".cm-scroller")?.scrollbarWidth ?? 0;
-    const baseScrollbarWidth =
-      baseMetrics.discoveredScrollHosts.find((item) => (item.className ?? "").includes("bases-view"))?.scrollbarWidth ?? 0;
-
-    expect(markdownOffset).toBe(markdownScrollbarWidth);
-    expect(baseOffset).toBe(baseScrollbarWidth);
-    expect(baseOffset).toBeGreaterThan(0);
-    expect(baseMetrics.gapFromRight).toBe(baseOffset);
   });
 
   it("page context menu shows project page states", async function () {

@@ -17,6 +17,19 @@ export async function openCardBrowserFrom(filePath: string): Promise<void> {
   const browserView = await $(BROWSER_SELECTOR);
   await browserView.waitForExist({ timeout: DEFAULT_WAIT_MS });
 
+  await browser.executeObsidian(async ({ app }) => {
+    const browserLeaves = app.workspace.getLeavesOfType("card-browser-view");
+    const rootPath = app.vault.getRoot().path;
+    const targetLeaf = browserLeaves[browserLeaves.length - 1];
+    if (!targetLeaf) return;
+
+    await targetLeaf.setViewState({
+      type: "card-browser-view",
+      state: { path: rootPath },
+      active: true,
+    });
+  });
+
   const folderSection = await $(FOLDER_SECTION_SELECTOR);
   await folderSection.waitForExist({ timeout: DEFAULT_WAIT_MS });
 }
@@ -59,17 +72,33 @@ export async function openCardBrowserAndEnterFolderByName(
   folderName: string
 ): Promise<void> {
   await openCardBrowserFrom(filePath);
-  const folderButtons = await $$(FOLDER_BUTTON_SELECTOR);
-  await folderButtons[0].waitForExist({ timeout: 8000 });
-  await browser.pause(1200);
+
+  await browser.waitUntil(
+    () =>
+      browser.execute(
+        (sel: string, name: string) => {
+          const buttons = Array.from(document.querySelectorAll(sel));
+          return buttons.some((button) => {
+            const text = button.textContent ?? "";
+            return text.includes(name);
+          });
+        },
+        FOLDER_BUTTON_SELECTOR,
+        folderName
+      ),
+    {
+      timeout: DEFAULT_WAIT_MS,
+      timeoutMsg: `Folder button containing "${folderName}" was not rendered`,
+    }
+  );
 
   const clicked = await browser.execute(
     (sel: string, name: string) => {
-      const buttons = document.querySelectorAll(sel);
-      for (let i = 0; i < buttons.length; i++) {
-        const text = buttons[i].textContent ?? "";
+      const buttons = Array.from(document.querySelectorAll(sel));
+      for (const button of buttons) {
+        const text = button.textContent ?? "";
         if (text.includes(name)) {
-          (buttons[i] as HTMLElement).click();
+          (button as HTMLElement).click();
           return true;
         }
       }

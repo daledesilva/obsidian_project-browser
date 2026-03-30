@@ -1,6 +1,6 @@
 import { browser, expect } from "@wdio/globals";
 import { dismissBlockingPopups } from "./helpers/dismiss-popups";
-import { openCardBrowserAndEnterFolder, openCardBrowserAndEnterFolderByName } from "./helpers/open-card-browser";
+import { openCardBrowserAndEnterFolder, openCardBrowserFrom } from "./helpers/open-card-browser";
 
 describe("Project Browser Context Menus and Modals", function () {
   before(async function () {
@@ -8,7 +8,6 @@ describe("Project Browser Context Menus and Modals", function () {
   });
 
   it("folder context menu opens on right-click", async function () {
-    const { openCardBrowserFrom } = await import("./helpers/open-card-browser");
     await openCardBrowserFrom("Project A/note-1.md");
 
     await browser.execute(() => {
@@ -61,7 +60,22 @@ describe("Project Browser Context Menus and Modals", function () {
   });
 
   it("project page note card context menu shows project page states", async function () {
-    await openCardBrowserAndEnterFolderByName("Project A/note-1.md", "Cross Type Project");
+    await openCardBrowserFrom("Cross Type Project/Markdown Page 1.md");
+    await browser.executeObsidian(async ({ app }) => {
+      const browserLeaves = app.workspace.getLeavesOfType("card-browser-view");
+      const targetLeaf = browserLeaves[browserLeaves.length - 1];
+      if (!targetLeaf) return;
+
+      await targetLeaf.setViewState({
+        type: "card-browser-view",
+        state: { path: "Cross Type Project" },
+        active: true,
+      });
+    });
+    await browser.pause(500);
+
+    const stateSection = await $(".ddc_pb_state-section");
+    await stateSection.waitForExist({ timeout: 10000 });
 
     await browser.execute(() => {
       const card = document.querySelector(".ddc_pb_note-card-base");
@@ -87,7 +101,6 @@ describe("Project Browser Context Menus and Modals", function () {
   });
 
   it("Rename folder from context menu opens modal; cancel leaves vault unchanged", async function () {
-    const { openCardBrowserFrom } = await import("./helpers/open-card-browser");
     await openCardBrowserFrom("Project A/note-1.md");
 
     await browser.execute(() => {

@@ -5,6 +5,19 @@ import {
   openCardBrowserAndEnterFolder,
 } from "./helpers/open-card-browser";
 
+const standardNoteFilePath = "Archive/old-ideas.md";
+
+async function resetStandardNoteStateToIdea(): Promise<void> {
+  await browser.executeObsidian(async ({ app }) => {
+    const file = app.vault.getAbstractFileByPath("Archive/old-ideas.md");
+    if (!file || !("path" in file)) return;
+
+    await app.fileManager.processFrontMatter(file as any, (frontmatter: Record<string, string | undefined>) => {
+      frontmatter.state = "Idea";
+    });
+  });
+}
+
 describe("Project Browser Commands", function () {
   before(async function () {
     await dismissBlockingPopups();
@@ -41,14 +54,16 @@ describe("Project Browser Commands", function () {
 
   it("cycle-state-forward updates active note state", async function () {
     const { obsidianPage } = await import("wdio-obsidian-service");
-    await obsidianPage.openFile("Project A/note-1.md");
+    await obsidianPage.openFile(standardNoteFilePath);
+    await browser.pause(300);
+    await resetStandardNoteStateToIdea();
     await browser.pause(300);
 
     await browser.executeObsidianCommand("project-browser:cycle-state-forward");
     await browser.pause(400);
 
     const stateAfter = await browser.executeObsidian(async ({ app }) => {
-      const file = app.vault.getAbstractFileByPath("Project A/note-1.md");
+      const file = app.vault.getAbstractFileByPath("Archive/old-ideas.md");
       if (!file || !("vault" in file)) return null;
       const content = await app.vault.read(file as { path: string });
       const match = content.match(/^state:\s*(.+)$/m);
@@ -59,22 +74,22 @@ describe("Project Browser Commands", function () {
 
   it("cycle-state-backward updates active note state", async function () {
     const { obsidianPage } = await import("wdio-obsidian-service");
-    await obsidianPage.openFile("Project A/note-1.md");
+    await obsidianPage.openFile(standardNoteFilePath);
+    await browser.pause(300);
+    await resetStandardNoteStateToIdea();
     await browser.pause(300);
 
     await browser.executeObsidianCommand("project-browser:cycle-state-backward");
     await browser.pause(400);
 
     const stateAfter = await browser.executeObsidian(async ({ app }) => {
-      const file = app.vault.getAbstractFileByPath("Project A/note-1.md");
+      const file = app.vault.getAbstractFileByPath("Archive/old-ideas.md");
       if (!file || !("vault" in file)) return null;
       const content = await app.vault.read(file as { path: string });
       const match = content.match(/^state:\s*(.+)$/m);
       return match ? match[1].trim() : null;
     });
-    // After forward we had Shortlisted; note-1 starts as Idea, so backward from Idea may wrap or go to Final (loop)
-    expect(typeof stateAfter).toBe("string");
-    expect(stateAfter!.length).toBeGreaterThan(0);
+    expect(stateAfter).toContain("Cancelled");
   });
 
   it("cycle-state-forward uses project page states inside projects", async function () {
