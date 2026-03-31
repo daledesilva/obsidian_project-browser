@@ -1,6 +1,6 @@
-import { ICON_PROJECT_BROWSER, ICON_PLUGIN } from "src/constants";
+import { ICON_PROJECT_BROWSER } from "src/constants";
 import { getGlobals } from "src/logic/stores";
-import { newProjectBrowserLeaf, replaceMostRecentLeaf } from "src/views/card-browser-view/card-browser-view";
+import { newProjectBrowserLeaf } from "src/views/card-browser-view/card-browser-view";
 
 ////////
 ////////
@@ -12,7 +12,9 @@ export async function registerOpenProjectBrowserCommand() {
 		id: 'open-project-browser',
 		name: 'Open',
         icon: ICON_PROJECT_BROWSER,
-        callback: () => newProjectBrowserLeaf()
+        callback: () => {
+            void newProjectBrowserLeaf();
+        }
 	});
 }
 
@@ -31,6 +33,6 @@ export async function registerOpenProjectBrowserRibbonIcon() {
     // 'book-text'
     // 'wallet-cards'
     plugin.addRibbonIcon(ICON_PROJECT_BROWSER, 'Open project browser', () => {
-        newProjectBrowserLeaf()
+        void newProjectBrowserLeaf();
     });
 }

@@ -28,6 +28,8 @@ export interface CardBrowserViewEState {
 }
 export type PartialCardBrowserViewEState = Partial<CardBrowserViewEState>;
 
+const pendingLeafReplacements = new WeakSet<WorkspaceLeaf>();
+
 
 
 export function setCardBrowserViewStateDefaults(): CardBrowserViewState {
@@ -55,34 +57,74 @@ export function registerCardBrowserView () {
 export function loadCardBrowserOnNewTab() {
     const {plugin} = getGlobals();
 
-	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
+    function replaceLeafIfEmpty(leaf: WorkspaceLeaf | null) {
         if(!leaf) return;
-        
-		const viewType = leaf.view.getViewType();
-		if(viewType === 'empty') {
-            replaceLeaf(leaf);
-        }
+
+        const viewType = leaf.view.getViewType();
+        if(viewType !== 'empty') return;
+
+        void replaceLeaf(leaf);
+    }
+
+	plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
+		replaceLeafIfEmpty(leaf);
 	}));
+
+    plugin.registerEvent(plugin.app.workspace.on('layout-change', () => {
+        const activeLeaf = plugin.app.workspace.getMostRecentLeaf();
+        replaceLeafIfEmpty(activeLeaf);
+    }));
+
+    replaceLeafIfEmpty(plugin.app.workspace.getMostRecentLeaf());
 }
 
-export function newProjectBrowserLeaf() {
+async function openProjectBrowserInLeaf(leaf: WorkspaceLeaf, shouldActivateLeaf: boolean): Promise<void> {
+    if(pendingLeafReplacements.has(leaf)) return;
+
+    const currentViewType = leaf.view.getViewType();
+    if(currentViewType === CARD_BROWSER_VIEW_TYPE) {
+        if(shouldActivateLeaf) {
+            const {plugin} = getGlobals();
+            plugin.app.workspace.setActiveLeaf(leaf, false, true);
+        }
+        return;
+    }
+
+    pendingLeafReplacements.add(leaf);
+
+    try {
+        await leaf.setViewState({
+            type: CARD_BROWSER_VIEW_TYPE,
+            active: shouldActivateLeaf,
+            state: setCardBrowserViewStateDefaults(),
+        });
+
+        if(shouldActivateLeaf) {
+            const {plugin} = getGlobals();
+            plugin.app.workspace.setActiveLeaf(leaf, false, true);
+        }
+    } finally {
+        pendingLeafReplacements.delete(leaf);
+    }
+}
+
+export async function newProjectBrowserLeaf() {
     const {plugin} = getGlobals();
 
     const leaf = plugin.app.workspace.getLeaf(true);
-    new ProjectCardsView(leaf);
-    plugin.app.workspace.setActiveLeaf(leaf)
+    await openProjectBrowserInLeaf(leaf, true);
 }
 
-export function replaceLeaf(leaf: WorkspaceLeaf) {
-    new ProjectCardsView(leaf);
+export async function replaceLeaf(leaf: WorkspaceLeaf) {
+    await openProjectBrowserInLeaf(leaf, false);
 }
 
-export function replaceMostRecentLeaf() {
+export async function replaceMostRecentLeaf() {
     const {plugin} = getGlobals();
     const leaf = plugin.app.workspace.getMostRecentLeaf();
-    if(leaf) {
-        leaf.open(new ProjectCardsView(leaf));
-    }
+    if(!leaf) return;
+
+    await openProjectBrowserInLeaf(leaf, true);
 }
 
 

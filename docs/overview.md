@@ -34,7 +34,9 @@ flowchart TD
     Start[User starts browsing] --> Entry[Open Card Browser]
 
     Entry -->|"New tab (optional replacement)"| CardBrowser[Card_Browser]
+  Entry -->|"Close final tab"| CardBrowser
     Entry -->|"Command / Ribbon"| CardBrowser
+  Entry -->|"Active leaf becomes empty"| CardBrowser
 
     CardBrowser --> Browse[Browse a folder]
     Browse -->|"Back / Breadcrumbs"| Browse
@@ -65,7 +67,9 @@ flowchart TD
 ## Technical details
 
 - The plugin registers a dedicated Card Browser view, plus editor-side enhancements, during plugin load.
-- New-tab replacement (when enabled) swaps an “empty” leaf for the Card Browser.
+- Browser startup routes through a single Card Browser view-state path whether it is opened from the command, the ribbon button, a new empty tab, or the workspace collapsing down to an empty leaf.
+- New-tab replacement (when enabled) watches for empty active leaves and replaces them with the Card Browser.
+- The startup recovery also listens for layout changes so the browser can re-open when the current leaf becomes empty without a separate leaf switch event.
 
 For the browsing mechanics, sectioning, and navigation model, see:
 
@@ -77,3 +81,4 @@ For the browsing mechanics, sectioning, and navigation model, see:
 ## Technical gotchas
 
 - **New-tab replacement is conditional**: it only replaces leaves that are truly “empty”. If a leaf already contains a file view, the plugin will not replace it.
+- **The final-tab-close path matters**: one startup route depends on the workspace ending up with an empty active leaf after the last tab closes. Testing this behaviour requires actually closing the final active tab, not just opening another empty leaf.
