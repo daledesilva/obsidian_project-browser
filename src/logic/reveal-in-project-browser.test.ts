@@ -85,17 +85,18 @@ describe('reveal-in-project-browser logic', () => {
   });
 
   test('reuses an existing project browser leaf before creating a new leaf', async () => {
+    const callOrder: string[] = [];
     const browserLeaf = {
       view: { getViewType: () => CARD_BROWSER_VIEW_TYPE },
       setViewState: jest.fn().mockResolvedValue(undefined),
       getEphemeralState: jest.fn().mockReturnValue({ scrollOffset: 200 }),
-      setEphemeralState: jest.fn(),
+      setEphemeralState: jest.fn().mockImplementation(() => { callOrder.push('setEphemeralState'); }),
     };
     const workspace = {
       getLeavesOfType: jest.fn().mockReturnValue([browserLeaf]),
       getMostRecentLeaf: jest.fn().mockReturnValue(browserLeaf),
       getLeaf: jest.fn(),
-      setActiveLeaf: setActiveLeafMock,
+      setActiveLeaf: jest.fn().mockImplementation(() => { callOrder.push('setActiveLeaf'); }),
     };
     getGlobals.mockReturnValue({
       plugin: {
@@ -124,7 +125,11 @@ describe('reveal-in-project-browser logic', () => {
       scrollOffset: 0,
       lastTouchedFilePath: 'Project A/note-1.md',
     });
-    expect(setActiveLeafMock).toHaveBeenCalledWith(browserLeaf, false, true);
+    expect(workspace.setActiveLeaf).toHaveBeenCalledWith(browserLeaf, false, true);
+
+    // setActiveLeaf must come before setEphemeralState so that any Obsidian-initiated
+    // reset of ephemeral state during activation cannot overwrite lastTouchedFilePath.
+    expect(callOrder).toEqual(['setActiveLeaf', 'setEphemeralState']);
   });
 
   test('creates a new project browser leaf when none exists', async () => {

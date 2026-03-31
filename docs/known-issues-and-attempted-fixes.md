@@ -38,3 +38,4 @@ When the mouse back button fails to return to the project browser from a Canvas 
 
 - **Obsidian API stability** — Navigation history and view-state handling are Obsidian internals. Plugin workarounds may break across Obsidian versions.
 - **Re-evaluation** — If Obsidian fixes its Canvas/Base navigation bugs in a future release, the approaches above may become obsolete or unnecessary.
+- **`setActiveLeaf` must precede `setEphemeralState` in reveal flow** — When revealing a file in the browser, `setActiveLeaf` must be called before `setEphemeralState`. Obsidian resets the leaf's ephemeral state as part of its own activation logic; if `setEphemeralState` is called first, that reset wipes `lastTouchedFilePath` before React renders. The correct order is: `setViewState` → `setActiveLeaf` → `setEphemeralState`. A call-order assertion in `src/logic/reveal-in-project-browser.test.ts` guards this.
