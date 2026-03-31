@@ -11,6 +11,11 @@ export function showOnboardingNotices_maybe(): boolean {
     return true;
 }
 
+export function showWelcomeTips() {
+    noticeShowingOrDismissed = false;
+    showOnboardingNotices();
+}
+
 let noticeShowingOrDismissed: boolean = false;
 export async function showOnboardingNotices() {
     const {plugin} = getGlobals();

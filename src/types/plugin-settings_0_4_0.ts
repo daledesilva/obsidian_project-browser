@@ -156,6 +156,8 @@ export interface PluginSettings_0_4_0 extends PluginSettings_0_3_0 {
     loopProjectPageStatesWhenCycling: boolean;
     /** When true, show the rename popup when a new page is created so the user can immediately rename it. Default: true. */
     showRenamePopupOnNewPage?: boolean;
+    /** Tracks the expanded/collapsed state of the Setup & Troubleshoot section in settings. Default: true. */
+    onboardingSectionExpanded?: boolean;
 }
 
 export const DEFAULT_PLUGIN_SETTINGS_0_4_0: PluginSettings_0_4_0 = {
