@@ -5,6 +5,7 @@ import { getFileStateSettingsAsync, getFilePrioritySettings, setFilePriority, se
 import { hasFrontmatterSupport } from "src/logic/get-file-type-label";
 import { isExtensionUnsupportedByObsidian } from "src/logic/is-extension-unsupported";
 import { getStateSettingsForFile } from "src/logic/project-page-states";
+import { revealInProjectBrowser } from "src/logic/reveal-in-project-browser";
 import { getGlobals } from "src/logic/stores";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PrioritySettings, StateSettings } from "src/types/types-map";
@@ -46,6 +47,20 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                 item.setTitle('Open in new tab');
                 item.onClick(() => {
                     openFileInBackgroundTab(props.file)
+                });
+            });
+            menu.addItem((item) => {
+                item.setTitle('Reveal in Project Browser');
+                item.onClick(() => {
+                    void revealInProjectBrowser(props.file);
+                });
+            });
+            menu.addSeparator();
+        } else {
+            menu.addItem((item) => {
+                item.setTitle('Reveal in Project Browser');
+                item.onClick(() => {
+                    void revealInProjectBrowser(props.file);
                 });
             });
             menu.addSeparator();

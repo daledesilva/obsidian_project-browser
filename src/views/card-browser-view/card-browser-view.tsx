@@ -7,11 +7,10 @@ import { isEmpty } from "src/utils/misc";
 import { ICON_PLUGIN } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';
 import { globalStore, getGlobals } from "src/logic/stores";
+import { CARD_BROWSER_VIEW_TYPE } from './card-browser-view-constants';
 
 //////////
 //////////
-
-export const CARD_BROWSER_VIEW_TYPE = "card-browser-view";
 
 /** Matches `.ddc_pb_card-browser-view-content` in `card-browser.scss` — flex column so only `.ddc_pb_browser` scrolls. */
 export const CARD_BROWSER_VIEW_CONTENT_CLASS = 'ddc_pb_card-browser-view-content';

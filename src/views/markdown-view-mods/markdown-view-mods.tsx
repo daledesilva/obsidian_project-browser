@@ -9,7 +9,7 @@ import { toggleStateMenu } from 'src/logic/toggle-state-menu';
 import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
 import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { createProject, createProjectFromNote, getFolderSettings } from 'src/utils/file-manipulation';
-import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view';
+import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view-constants';
 
 //////////
 //////////

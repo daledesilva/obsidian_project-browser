@@ -12,6 +12,7 @@ import { showVersionNotice } from './notices/version-notices';
 import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
 import { registerCycleStateCommands } from './commands/cycle-state';
 import { registerFileOpenSelectTitleHandler } from './logic/file-access-processes';
+import { registerRevealInProjectBrowserMenus } from './commands/reveal-in-project-browser';
 
 /////////
 /////////
@@ -43,6 +44,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 		registerToggleStateMenuCommand();
 		registerCycleStateCommands();
 		registerFileOpenSelectTitleHandler(this);
+		registerRevealInProjectBrowserMenus();
 
 		if(this.settings.access.replaceNewTab)		loadCardBrowserOnNewTab();
 		if(this.settings.access.enableRibbonIcon)	registerOpenProjectBrowserRibbonIcon();

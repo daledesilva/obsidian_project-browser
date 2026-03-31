@@ -70,6 +70,10 @@ jest.mock('src/logic/file-processes', () => ({
   deleteFolderWithConfirmation: jest.fn(),
 }));
 
+jest.mock('src/logic/reveal-in-project-browser', () => ({
+  revealInProjectBrowser: jest.fn(),
+}));
+
 jest.mock('src/modals/rename-folder-modal/rename-folder-modal', () => ({
   RenameFolderModal: jest.fn().mockImplementation(() => ({
     showModal: jest.fn(),
@@ -84,6 +88,10 @@ const { getFolderPrioritySettings, getFolderStateName, setFolderPriority } = jes
   getFolderPrioritySettings: jest.Mock;
   getFolderStateName: jest.Mock;
   setFolderPriority: jest.Mock;
+};
+
+const { revealInProjectBrowser } = jest.requireMock('src/logic/reveal-in-project-browser') as {
+  revealInProjectBrowser: jest.Mock;
 };
 
 describe('registerProjectContextMenu', () => {
@@ -134,5 +142,29 @@ describe('registerProjectContextMenu', () => {
 
     expect(setFolderPriority).toHaveBeenCalledWith(folder, { name: 'Low' });
     expect(onProjectChange).toHaveBeenCalled();
+  });
+
+  test('adds reveal in project browser action', async () => {
+    const { registerProjectContextMenu } = await import('./project-context-menu');
+    const projectButtonEl = document.createElement('button');
+    const folder = new MockFolder();
+
+    registerProjectContextMenu({
+      projectButtonEl,
+      folder: folder as never,
+      onProjectChange: jest.fn(),
+    });
+
+    projectButtonEl.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const menu = mockCreatedMenus[0];
+    const revealItem = menu.items.find((item) => 'title' in item && item.title === 'Reveal in Project Browser') as MockMenuItem;
+
+    expect(revealItem).toBeDefined();
+
+    revealItem.onClickHandler?.();
+    expect(revealInProjectBrowser).toHaveBeenCalledWith(folder);
   });
 });

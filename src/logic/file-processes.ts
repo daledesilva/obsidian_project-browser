@@ -1,6 +1,7 @@
 import { Notice, TAbstractFile, TFile, TFolder, Vault } from "obsidian";
 import { getProjectExcerpt } from "./folder-processes";
-import { CARD_BROWSER_VIEW_TYPE, ProjectCardsView } from "src/views/card-browser-view/card-browser-view";
+import { ProjectCardsView } from "src/views/card-browser-view/card-browser-view";
+import { CARD_BROWSER_VIEW_TYPE } from "src/views/card-browser-view/card-browser-view-constants";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { renameAbstractFile } from "src/utils/file-manipulation";
 import { getGlobals } from "./stores";

@@ -134,7 +134,11 @@ To run tests without coverage: `npx jest --coverage=false`.
 
 **Types (unit):** plugin-settings-migrations, migration-helpers, migration tests (0.0.4→0.0.5, 0.0.5→0.1.0, 0.1.0→0.3.0).
 
-**Commands (unit):** open-project-browser.
+**Commands (unit):** open-project-browser, reveal-in-project-browser (native menu registration, section detection from menu items, section caching by source, null-target skip, alternative Finder titles, no-Finder fallback).
+
+**Logic — reveal (unit):** reveal-in-project-browser (reveal location for files and folders, multi-select target resolution, empty selection, mixed-parent selection, file without parent folder, existing-leaf reuse, new-leaf creation, concurrent-reveal guard).
+
+**Context menus (unit):** project-context-menu (priority items, reveal action).
 
 **Modals (unit):** ConfirmationModal (constructor options).
 
@@ -147,6 +151,7 @@ To run tests without coverage: `npx jest --coverage=false`.
 - **Coverage** — V8 provider, output in `coverage/`.
 - **E2E** — WebdriverIO 9, Mocha, wdio-obsidian-service. Config: `wdio.conf.mts`. TypeScript: `tsconfig.e2e.json`.
 - **Startup E2E strategy** — Browser startup tests intentionally cover both event-driven entry (`active-leaf-change`) and layout-driven recovery (`layout-change`) because empty-leaf transitions do not always come from opening a fresh tab.
+- **Reveal menu section detection** — The `file-menu` / `files-menu` handler inspects the `Menu` object's internal `items` array to find the built-in Finder item and read its `section`. This is not a public Obsidian API; if internal menu structure changes, the reveal item will still appear but may land in a different section. The detected section is cached per menu `source` string.
 
 ## Technical gotchas
 

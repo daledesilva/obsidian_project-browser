@@ -1,5 +1,6 @@
 import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
+import { revealInProjectBrowser } from "src/logic/reveal-in-project-browser";
 import { getGlobals } from "src/logic/stores";
 import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
 import { getFolderPriorityName, getFolderPrioritySettings, getFolderStateName, setFolderAsFolder, setFolderPriority, setFolderState } from "src/utils/file-manipulation";
@@ -35,6 +36,12 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
                 .onClick(() => {
                     plugin.settings.access.launchFolder = props.folder.path;
                     plugin.saveSettings();
+                })
+        );
+        menu.addItem((item) =>
+            item.setTitle("Reveal in Project Browser")
+                .onClick(() => {
+                    void revealInProjectBrowser(props.folder);
                 })
         );
         menu.addItem((item) =>

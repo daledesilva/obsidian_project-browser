@@ -16,7 +16,7 @@ import { getGlobals } from 'src/logic/stores';
 import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
 import { isRootPath } from 'src/utils/string-processes';
 import { createProject } from 'src/utils/file-manipulation';
-import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view';
+import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view-constants';
 
 export const PROJECT_PAGES_SIDEBAR_VIEW_TYPE = 'project-browser-project-pages-sidebar';
 

@@ -14,11 +14,12 @@ Project Browser replaces the “blank new tab” experience with a **low-frictio
 
 ## Conceptual understanding
 
-Project Browser has three user-visible “surfaces” that work together.
+Project Browser has three user-visible "surfaces" that work together, plus a context-menu action available throughout Obsidian.
 
-- **Card Browser**: A browsable view of a folder’s contents. It can replace new tabs, or you can open it via command/ribbon. It shows folders plus cards for notes and projects grouped by state.
+- **Card Browser**: A browsable view of a folder's contents. It can replace new tabs, or you can open it via command/ribbon. It shows folders plus cards for notes and projects grouped by state.
 - **State Menu (in-note)**: When you open a note, you can quickly assign it a state (or clear its state) without leaving the editor.
 - **Project Pages FAB**: When any file is open (note, canvas, pdf, etc.), a floating action button lets you jump to other pages in the same project, add pages, or jump back to the folder in the Card Browser.
+- **Reveal in Project Browser**: A context-menu action on native Obsidian menus (file explorer, tab header, editor, etc.) that opens the Card Browser to the selected file's or folder's location. It appears in the same menu section as "Reveal in Finder".
 
 Two important concepts power the experience:
 
@@ -49,7 +50,16 @@ flowchart TD
 
     PagesFab -->|"Open another page"| OpenFile
     PagesFab -->|"Folder button"| CardBrowser
+
+    RevealAction["Reveal in Project Browser\n(context menu)"] -->|"File or folder"| CardBrowser
 ```
+
+### What happens when you "Reveal in Project Browser"
+
+- The plugin hooks into Obsidian's native `file-menu` and `files-menu` events.
+- The menu item appears in the same section as "Reveal in Finder" / "Show in system explorer" (detected by inspecting built-in menu items at registration time and cached by menu source).
+- When clicked, an existing Card Browser leaf is reused if one is open; otherwise a new leaf is created.
+- The Card Browser navigates to the target's parent folder (for files) or the folder itself (for folders), and highlights the target file.
 
 ### What happens when you open a folder in the Card Browser
 
@@ -81,4 +91,4 @@ For the browsing mechanics, sectioning, and navigation model, see:
 ## Technical gotchas
 
 - **New-tab replacement is conditional**: it only replaces leaves that are truly “empty”. If a leaf already contains a file view, the plugin will not replace it.
-- **The final-tab-close path matters**: one startup route depends on the workspace ending up with an empty active leaf after the last tab closes. Testing this behaviour requires actually closing the final active tab, not just opening another empty leaf.
+- **The final-tab-close path matters**: one startup route depends on the workspace ending up with an empty active leaf after the last tab closes. Testing this behaviour requires actually closing the final active tab, not just opening another empty leaf.- **Reveal menu placement is heuristic**: the section ID for "Reveal in Finder" is discovered by inspecting the live `Menu` object's internal `items` array — this is not a public Obsidian API. If Obsidian renames the Finder item, changes its section, or stops exposing `items`, the reveal item will still appear but may land in a different menu section. The section is cached by menu `source` string, so the heuristic only needs to succeed once per source.
