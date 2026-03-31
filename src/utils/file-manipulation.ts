@@ -70,8 +70,8 @@ function normalizeFolderSettings(rawFolderSettings: FolderSettings & { _descript
         ...rawFolderSettings,
     };
 
-    if (!normalizedFolderSettings.description && rawFolderSettings._description) {
-        normalizedFolderSettings.description = rawFolderSettings._description;
+    if (!normalizedFolderSettings.aboutThisFile && rawFolderSettings._description) {
+        normalizedFolderSettings.aboutThisFile = rawFolderSettings._description;
     }
 
     if (!normalizedFolderSettings.state && rawFolderSettings.stateName) {
