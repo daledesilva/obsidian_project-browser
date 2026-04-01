@@ -216,7 +216,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
                 initialMenuOpen={options?.keepMenuOpen}
                 onNavigateToPage={onNavigateToPage}
                 onOpenProjectFolder={onOpenProjectFolder}
-                onNewFile={onNewFile}
+                onNewProject={onNewFile}
                 onAddPage={onAddPage}
             />
         );

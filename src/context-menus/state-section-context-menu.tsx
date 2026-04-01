@@ -20,7 +20,7 @@ export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFo
 
         const menu = new Menu();
         menu.addItem((item) =>
-            item.setTitle("New note")
+            item.setTitle("New page")
                 .onClick(async () => {
                     const newFile = await createProject({
                         parentFolder: baseFolder,

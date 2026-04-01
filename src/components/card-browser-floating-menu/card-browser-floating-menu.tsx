@@ -84,7 +84,7 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
         setMenuIsOpen(false);
     }
 
-    const fileOrPageLabel = props.currentFolderIsProject ? 'New page' : 'New file';
+    const fileOrPageLabel = props.currentFolderIsProject ? 'New page' : 'New project';
 
     return (
         <div className="ddc_pb_card-browser-floating-menu" ref={fabContainerRef}>

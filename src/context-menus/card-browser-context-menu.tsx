@@ -64,8 +64,9 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
             );
         }
         menu.addSeparator();
+        const newFileLabel = folderSettings.isProject ? 'New page' : 'New project';
         menu.addItem((item) =>
-            item.setTitle("New note")
+            item.setTitle(newFileLabel)
                 .onClick(async () => {
                     const newFile = await createProject({
                         parentFolder: commands.getCurFolder(),

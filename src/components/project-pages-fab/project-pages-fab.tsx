@@ -24,7 +24,7 @@ interface ProjectPagesFABProps {
     initialMenuOpen?: boolean;
     onNavigateToPage: (file: TFile) => void;
     onOpenProjectFolder: (folder: TFolder) => void;
-    onNewFile?: () => void | Promise<void>;
+    onNewProject?: () => void | Promise<void>;
     onAddPage?: () => void | Promise<void>;
 }
 
@@ -164,8 +164,8 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         setMenuIsOpen(false);
     }
 
-    function handleNewFileClick() {
-        props.onNewFile?.();
+    function handleNewProjectClick() {
+        props.onNewProject?.();
     }
 
     function handleAddPageClick() {
@@ -176,7 +176,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         menuIsOpen &&
         (props.parentIsProject
             ? !!props.onAddPage
-            : !!(props.onAddPage || props.onNewFile));
+            : !!(props.onAddPage || props.onNewProject));
 
     return (
         <div className="ddc_pb_project-pages-fab" ref={fabContainerRef}>
@@ -227,12 +227,12 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                                         onClick={handleAddPageClick}
                                     />
                                 )}
-                                {props.onNewFile && (
+                                {props.onNewProject && (
                                     <FabMenuActionButton
                                         variant="primary"
                                         density="compact"
-                                        label="New file"
-                                        onClick={handleNewFileClick}
+                                        label="New project"
+                                        onClick={handleNewProjectClick}
                                     />
                                 )}
                             </>
