@@ -24,7 +24,7 @@ function showLatestChanges() {
     const {plugin} = getGlobals()
 
     const noticeBody = createNoticeTemplate(1,3);
-    noticeBody.createEl('h1').setText(`Changes in Project Browser v0.3.2`);
+    noticeBody.createEl('h1').setText(`Changes in Project Browser v0.4`);
     // noticeBody.createEl('p').setText(`Added:`);
     const listEl = noticeBody.createEl('ul');
     listEl.createEl('li').setText(`Added note priorities.`);

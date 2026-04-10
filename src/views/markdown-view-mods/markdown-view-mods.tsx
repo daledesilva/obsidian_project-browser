@@ -153,6 +153,20 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
         if (requestId !== projectPagesFabRenderRequestId) return;
     }
 
+    let parentIsInsideProject = false;
+    if (!parentIsProject) {
+        let ancestor = parentFolder.parent;
+        while (ancestor) {
+            const ancestorSettings = await getFolderSettings(plugin.app.vault, ancestor);
+            if (ancestorSettings.isProject === true) {
+                parentIsInsideProject = true;
+                break;
+            }
+            ancestor = ancestor.parent ?? null;
+        }
+        if (requestId !== projectPagesFabRenderRequestId) return;
+    }
+
     function onNavigateToPage(file: TFile) {
         keepProjectPagesFabMenuOpenUntilMs = Date.now() + 1500;
         openFileInSameLeaf(file);
@@ -213,6 +227,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
                 projectFolder={parentFolder}
                 currentFile={activeFile}
                 parentIsProject={parentIsProject}
+                parentIsInsideProject={parentIsInsideProject}
                 initialMenuOpen={options?.keepMenuOpen}
                 onNavigateToPage={onNavigateToPage}
                 onOpenProjectFolder={onOpenProjectFolder}

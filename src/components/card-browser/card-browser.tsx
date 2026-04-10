@@ -57,6 +57,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [searchActive, setSearchActive] = React.useState<boolean>(false);
     const [searchStr, setSearchStr] = React.useState<string>('');
     const [parentFolderIsProject, setParentFolderIsProject] = React.useState<boolean>(false);
+    const [parentFolderIsInsideProject, setParentFolderIsInsideProject] = React.useState<boolean>(false);
     const [currentFolderIsProject, setCurrentFolderIsProject] = React.useState<boolean>(false);
     const {state, eState} = props.getViewStates();
     const browserRef = React.useRef<HTMLDivElement>(null);
@@ -70,11 +71,32 @@ export const CardBrowser = (props: CardBrowserProps) => {
         const parent = initialFolder.parent;
         if (!parent) {
             setParentFolderIsProject(false);
+            setParentFolderIsInsideProject(false);
             return;
         }
         let cancelled = false;
         getFolderSettings(v, parent).then((settings) => {
-            if (!cancelled) setParentFolderIsProject(settings.isProject === true);
+            if (cancelled) return;
+            const isProject = settings.isProject === true;
+            setParentFolderIsProject(isProject);
+            if (isProject) {
+                setParentFolderIsInsideProject(false);
+                return;
+            }
+            // Walk up ancestors to check if any is a project
+            const checkAncestors = async () => {
+                let ancestor = parent.parent;
+                while (ancestor) {
+                    const ancestorSettings = await getFolderSettings(v, ancestor);
+                    if (ancestorSettings.isProject === true) {
+                        if (!cancelled) setParentFolderIsInsideProject(true);
+                        return;
+                    }
+                    ancestor = ancestor.parent ?? null;
+                }
+                if (!cancelled) setParentFolderIsInsideProject(false);
+            };
+            checkAncestors();
         });
         return () => { cancelled = true; };
     }, [initialFolder.path, refreshId, v]);
@@ -158,6 +180,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         folder = {initialFolder}
                         onBackClick = {openParentFolder}
                         onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
+                        refreshKey = {refreshId}
                     />
                     {currentFolderIsProject && (
                         <div className="ddc_pb_card-browser-project-header">
@@ -211,6 +234,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         folder={initialFolder}
                         parentFolder={initialFolder.parent}
                         parentFolderIsProject={parentFolderIsProject}
+                        parentFolderIsInsideProject={parentFolderIsInsideProject}
                         currentFolderIsProject={currentFolderIsProject}
                         onOpenParentFolder={openParentFolder}
                         onFolderCreated={rerender}

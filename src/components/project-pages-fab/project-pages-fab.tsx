@@ -21,6 +21,7 @@ interface ProjectPagesFABProps {
     projectFolder: TFolder;
     currentFile: TFile;
     parentIsProject: boolean;
+    parentIsInsideProject: boolean;
     initialMenuOpen?: boolean;
     onNavigateToPage: (file: TFile) => void;
     onOpenProjectFolder: (folder: TFolder) => void;
@@ -253,7 +254,8 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                     <button
                         className={classNames(
                             'ddc_pb_project-pages-fab__project-title',
-                            props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project'
+                            props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project',
+                            !props.parentIsProject && props.parentIsInsideProject && 'ddc_pb_project-pages-fab__project-title--is-inside-project'
                         )}
                         onClick={handleOpenProjectFolderClick}
                         title={

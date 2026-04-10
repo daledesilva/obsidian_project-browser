@@ -18,6 +18,7 @@ interface CardBrowserFloatingMenuProps {
     folder: TFolder;
     parentFolder: TFolder | null;
     parentFolderIsProject: boolean;
+    parentFolderIsInsideProject: boolean;
     currentFolderIsProject: boolean;
     onOpenParentFolder: () => void;
     onFolderCreated?: () => void;
@@ -136,6 +137,8 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
                         'ddc_pb_card-browser-floating-menu__folder-title',
                         props.parentFolderIsProject &&
                             'ddc_pb_card-browser-floating-menu__folder-title--is-project',
+                        !props.parentFolderIsProject && props.parentFolderIsInsideProject &&
+                            'ddc_pb_card-browser-floating-menu__folder-title--is-inside-project',
                         props.parentFolder === null &&
                             'ddc_pb_card-browser-floating-menu__folder-title--hidden'
                     )}

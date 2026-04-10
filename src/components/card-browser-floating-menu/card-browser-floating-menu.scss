@@ -64,12 +64,26 @@
         }
 
         &--is-project {
-            background-color: var(--interactive-accent);
+            border-top: 3px solid var(--interactive-accent);
+            border-left: 1px solid var(--interactive-accent);
+            border-right: 1px solid var(--interactive-accent);
+            border-bottom: 1px solid var(--interactive-accent);
             color: var(--text-on-accent);
+            padding-top: calc(8px - 1px);
 
             @media (hover: hover) {
                 &:hover {
-                    background-color: var(--interactive-accent-hover);
+                    background-color: var(--background-modifier-hover);
+                }
+            }
+        }
+
+        &--is-inside-project {
+            color: var(--interactive-accent);
+
+            @media (hover: hover) {
+                &:hover {
+                    background-color: var(--background-modifier-hover);
                 }
             }
         }
