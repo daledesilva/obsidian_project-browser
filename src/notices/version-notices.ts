@@ -27,18 +27,20 @@ function showLatestChanges() {
     noticeBody.createEl('h1').setText(`Changes in Project Browser v0.4`);
     // noticeBody.createEl('p').setText(`Added:`);
     const listEl = noticeBody.createEl('ul');
-    listEl.createEl('li').setText(`Added note priorities.`);
-    listEl.createEl('li').setText(`Added quick menu to sections.`);
-    listEl.createEl('li').setText(`Markdown is now stripped from preview text.`);
-    listEl.createEl('li').setText(`Fixed initial state not being applied.`);
-    listEl.createEl('li').setText(`Fixed errors in styling of notices.`);
+    listEl.createEl('li').setText(`Multi-page projects are here!`);
+    listEl.createEl('li').setText(`Every note, base, or canvas is already considered a project and can have multiple pages added to it`);
+    listEl.createEl('li').setText(`Custom states for pages.`);
+    listEl.createEl('li').setText(`Convert folders to projects.`);
+    listEl.createEl('li').setText(`File type visibility options.`);
+    listEl.createEl('li').setText(`File extension visibility option.`);
+    listEl.createEl('li').setText(`Reveal files/folders in Project Browser from files pane.`);
+    listEl.createEl('li').setText(`Design tweaks to floating buttons.`);
+    listEl.createEl('li').setText(`Fixed stateless sections ignoring quick menu settings.`);
+    listEl.createEl('li').setText(`Fixed files/folders moving to the vault root upon renaming.`);
         
     const link = noticeBody.createEl('a');
-    link.setAttribute('href', 'https://youtu.be/OehEyapjCO8')
+    link.setAttribute('href', 'https://??????????????????????')
     link.setText(`View release video`);
-
-    noticeBody.createEl('h2').setText('Also...');
-    noticeBody.createEl('p').appendText('Multi-page projects are coming in version 0.4!');
 
     // Prevent clicking link from closing notice
     link.onClickEvent( e => e.stopPropagation())
