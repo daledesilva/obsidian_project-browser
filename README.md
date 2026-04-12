@@ -48,15 +48,19 @@ Below are the high level features in my current development plan along with when
 - ✅ Right click actions.
 - ✅ Hide individual folders.
 - ✅ Customise launch folder.
+- ✅ Folders as projects.
+- ✅ Multi-page project support.
+- ✅ Prioritisation of notes.
+- ✅ File browser integration.
 </details>
 
 <details open>
 <summary>Current feature focus</summary>
 
-- [ ] Folders as projects.
-- [ ] Multi-page project support.
-- [ ] Reordering notes.
-- [ ] Prioritisation of notes.
+- [ ] Project Excerpts.
+- [ ] Page Versions & Drafts.
+- [ ] Reordering pages in a project.
+
 </details>
 
 ## ⚠️ Be careful
