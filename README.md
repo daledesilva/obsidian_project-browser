@@ -1,7 +1,10 @@
 # Obsidian Project Browser
-A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a card layout of the files in each folder organised by state. The view is filterable with an inbuilt search field (just start typing!), and files can be assigned a state from a prominent menu within the note.
+An [Obsidian](https://obsidian.md) plugin for browsing your vault through a user-friendly card interface. With multi-page support, add multiple pages to any note, base, or canvas. Hide folders to declutter, and set priorities and states to remain focused.
 
-<img src="docs/media/readme_hero-shot.png" alt="Screenshot of Project Browser plugin">
+No need to dig through an overwhelming heirarchy in the files pane any more.
+
+<img src="docs/media/readme_pages.png" alt="Project Browser supports adding pages to your notes.">
+<img src="docs/media/readme_filter-and-cards.png" alt="In Project Browser, start typing and and the view automatically filters. You can also organise your notes by custom statuses.">
 
 ## 📓 Development Diaries
 I record regular development diaries. [Subscribe and follow along](https://www.youtube.com/@designdebtclub) to see features in development.
