@@ -6,6 +6,10 @@
     bottom: 24px;
     right: var(--ddc-pb-fab-spacing);
 
+    .is-mobile & {
+        bottom: calc(24px + min(40px, 8vw) + 6px);
+    }
+
     display: flex;
     flex-direction: column;
     align-items: flex-end;
