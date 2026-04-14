@@ -7,7 +7,7 @@
     right: var(--ddc-pb-fab-spacing);
 
     .is-mobile & {
-        bottom: calc(24px + min(40px, 8vw) + 6px);
+        bottom: calc(24px + min(40px, 8vw) + 12px);
     }
 
     display: flex;
@@ -93,8 +93,7 @@
         }
 
         &--hidden {
-            opacity: 0;
-            pointer-events: none;
+            display: none;
         }
     }
 }

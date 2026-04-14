@@ -9,7 +9,7 @@
     min-height: 0;
 
     .is-mobile & {
-        bottom: calc(24px + min(40px, 8vw) + 6px);
+        bottom: calc(24px + min(40px, 8vw) + 12px);
     }
 
     display: flex;
