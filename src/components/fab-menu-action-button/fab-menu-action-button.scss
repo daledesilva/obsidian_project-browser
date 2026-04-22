@@ -23,7 +23,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.85em;
+    font-size: 0.9em;
     border: none;
     font-family: inherit;
 
@@ -50,7 +50,6 @@
     }
 
     &--compact {
-        font-size: calc(0.85em * 2 / 3);
         min-height: calc(min(40px, 8vw) * 2 / 3);
     }
 
