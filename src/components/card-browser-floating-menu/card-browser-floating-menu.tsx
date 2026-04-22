@@ -2,7 +2,7 @@ import './card-browser-floating-menu.scss';
 import { TFolder } from 'obsidian';
 import * as React from "react";
 import { ChevronLeft, Plus, Search } from 'lucide-react';
-import { createFolder, createProject } from 'src/utils/file-manipulation';
+import { createFolder, createProject, createSubproject } from 'src/utils/file-manipulation';
 import { openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { isRootPath } from 'src/utils/string-processes';
 import classNames from 'classnames';
@@ -74,6 +74,16 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
         setMenuIsOpen(false);
     }
 
+    async function handleNewSubproject() {
+        try {
+            const newFile = await createSubproject(props.folder);
+            openNewPageAndSelectTitle(newFile);
+        } catch (reason) {
+            console.log(reason);
+        }
+        setMenuIsOpen(false);
+    }
+
     async function handleNewFolder() {
         try {
             const folderPath = getNextNewFolderPath(props.folder);
@@ -85,25 +95,48 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
         setMenuIsOpen(false);
     }
 
-    const fileOrPageLabel = props.currentFolderIsProject ? 'New page' : 'New project';
-
     return (
         <div className="ddc_pb_card-browser-floating-menu" ref={fabContainerRef}>
             <div className="ddc_pb_card-browser-floating-menu__group">
                 {menuIsOpen && (
                     <FabMenuActionButtonStack padBottom>
-                        <FabMenuActionButton
-                            variant="primary"
-                            density="compact"
-                            label={fileOrPageLabel}
-                            onClick={handleNewFileOrPage}
-                        />
-                        <FabMenuActionButton
-                            variant="primary"
-                            density="compact"
-                            label="New folder"
-                            onClick={handleNewFolder}
-                        />
+                        {props.currentFolderIsProject ? (
+                            <>
+                                <FabMenuActionButton
+                                    variant="primary"
+                                    density="compact"
+                                    label="Add page"
+                                    onClick={handleNewFileOrPage}
+                                />
+                                <FabMenuActionButton
+                                    variant="primary"
+                                    density="compact"
+                                    label="Add subproject"
+                                    onClick={handleNewSubproject}
+                                />
+                                <FabMenuActionButton
+                                    variant="primary"
+                                    density="compact"
+                                    label="Add folder"
+                                    onClick={handleNewFolder}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <FabMenuActionButton
+                                    variant="primary"
+                                    density="compact"
+                                    label="New project"
+                                    onClick={handleNewFileOrPage}
+                                />
+                                <FabMenuActionButton
+                                    variant="primary"
+                                    density="compact"
+                                    label="New folder"
+                                    onClick={handleNewFolder}
+                                />
+                            </>
+                        )}
                     </FabMenuActionButtonStack>
                 )}
                 <button

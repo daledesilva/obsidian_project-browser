@@ -127,6 +127,23 @@ export async function createFolder(folderPath: string): Promise<TFolder> {
     return folder
 }
 
+export async function createSubproject(parentFolder: TFolder): Promise<TFile> {
+    const {plugin} = getGlobals();
+    const vault = plugin.app.vault;
+    const basePath = parentFolder.path ? `${parentFolder.path}/` : '';
+    const baseName = 'New subproject';
+    let folderPath = `${basePath}${baseName}`;
+    let n = 2;
+    while (vault.getAbstractFileByPath(folderPath)) {
+        folderPath = `${basePath}${baseName} ${n}`;
+        n++;
+    }
+    const newFolder = await createFolder(folderPath);
+    await setFolderAsProject(newFolder);
+    const firstPage = await createProject({ parentFolder: newFolder, projectName: 'Untitled' });
+    return firstPage;
+}
+
 export async function renameAbstractFile(abstractFile: TAbstractFile, newName: string | null): Promise<string|null> {
     if(!newName) return null;
     const safeFilename = sanitizeFileFolderName(newName);

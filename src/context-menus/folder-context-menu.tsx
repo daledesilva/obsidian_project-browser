@@ -24,6 +24,17 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
         
         const folderSettings = await getFolderSettings(plugin.app.vault, props.folder)
 
+        let folderIsInsideAProject = false;
+        let ancestor = props.folder.parent;
+        while (ancestor) {
+            const ancestorSettings = await getFolderSettings(plugin.app.vault, ancestor);
+            if (ancestorSettings.isProject) {
+                folderIsInsideAProject = true;
+                break;
+            }
+            ancestor = ancestor.parent ?? null;
+        }
+
         // Close other menus (Only works on iOS for some reason, but also only needed there)
         document.body.click();
         
@@ -50,8 +61,9 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
                     })
             );
         } else {
+            const convertToProjectLabel = folderIsInsideAProject ? 'Convert to subproject' : 'Convert to project';
             menu.addItem((item) =>
-                item.setTitle("Convert to project")
+                item.setTitle(convertToProjectLabel)
                     .onClick(async () => {
                         await setFolderAsProject(props.folder);
                         props.onFolderChange();
