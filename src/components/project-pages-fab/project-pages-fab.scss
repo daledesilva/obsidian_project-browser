@@ -7,6 +7,7 @@
     bottom: 24px;
     right: var(--ddc-pb-fab-spacing);
     min-height: 0;
+    pointer-events: none;
 
     .is-mobile & {
         bottom: calc(24px + min(40px, 8vw) + 12px);
@@ -75,6 +76,13 @@
         flex-direction: column;
         align-items: flex-end;
         gap: 12px;
+    }
+
+    .ddc_pb_project-page-menu__file-button--fab,
+    .ddc_pb_fab-menu-action-button,
+    .ddc_pb_project-pages-fab__main-button,
+    .ddc_pb_project-pages-fab__project-title {
+        pointer-events: auto;
     }
 
     .ddc_pb_project-page-menu__file-button--fab {
