@@ -2,7 +2,7 @@
 	"id": "project-browser",
 	"name": "Project Browser",
 	"version": "0.3.2",
-	"minAppVersion": "1.00.0",
+	"minAppVersion": "1.0.0",
 	"description": "Displays your projects as a friendly list of cards. Add multiple pages to projects, apply and group by statuses and priorities, customise card appearances, and filter simply by typing.",
 	"author": "Dale de Silva",
 	"authorUrl": "https://designdebt.club",

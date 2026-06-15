@@ -41,7 +41,7 @@ This section is the source of truth for libraries, frameworks, and tools in use.
 - **State management:** Jotai (UI state), Redux Toolkit + React-Redux (structured workflow state)
 - **UI utilities:** `classnames`, `@tippyjs/react`, `lucide-react`, `react-sortablejs` / `sortablejs`, `uuid`
 - **Build:** esbuild (`esbuild`), `esbuild-sass-plugin`, `esbuild-plugin-copy`
-- **Linting:** ESLint + `@typescript-eslint/*`
+- **Linting:** ESLint 10 + `eslint-plugin-obsidianmd` (Obsidian plugin guidelines) + `@typescript-eslint/*`
 - **Unit/component testing:** Jest (`jest`, `babel-jest`, `jest-environment-jsdom`) + React Testing Library (`@testing-library/react`, `@testing-library/jest-dom`)
 - **E2E testing:** WebdriverIO 9 + Mocha + `wdio-obsidian-service` + `wdio-obsidian-reporter`
 - **CI:** GitHub Actions (Node 22 in `.github/workflows/test.yaml`)
