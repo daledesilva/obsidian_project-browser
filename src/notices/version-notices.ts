@@ -24,9 +24,9 @@ function showLatestChanges() {
     const {plugin} = getGlobals()
 
     const noticeBody = createNoticeTemplate(1,3);
-    noticeBody.createEl('h1').setText(`Changes in Project Browser v0.4`);
-    // noticeBody.createEl('p').setText(`Added:`);
-    const listEl = noticeBody.createEl('ul');
+    noticeBody.createEl('h1').setText(`Project Browser v0.4`);
+    noticeBody.createEl('p').setText(`Added:`);
+    let listEl = noticeBody.createEl('ul');
     listEl.createEl('li').setText(`Multi-page projects are here!`);
     listEl.createEl('li').setText(`Every note, base, or canvas is already considered a project and can have multiple pages added to it`);
     listEl.createEl('li').setText(`Custom states for pages.`);
@@ -37,9 +37,13 @@ function showLatestChanges() {
     listEl.createEl('li').setText(`Design tweaks to floating buttons.`);
     listEl.createEl('li').setText(`Fixed stateless sections ignoring quick menu settings.`);
     listEl.createEl('li').setText(`Fixed files/folders moving to the vault root upon renaming.`);
+    
+    noticeBody.createEl('p').setText(`Breaking changes:`);
+    listEl = noticeBody.createEl('ul');
+    listEl.createEl('li').setText(`Default hotkeys have been removed to align with Obsidian recommendations. Set you preferred hotkeys in the Obsidian settings.`);
         
     const link = noticeBody.createEl('a');
-    link.setAttribute('href', 'https://??????????????????????')
+    link.setAttribute('href', 'https://youtu.be/na0eSecbRUI')
     link.setText(`View release video`);
 
     // Prevent clicking link from closing notice
