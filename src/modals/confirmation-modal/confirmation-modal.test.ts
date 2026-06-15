@@ -5,7 +5,7 @@ jest.mock('src/logic/stores', () => ({
   getGlobals: jest.fn(),
 }));
 
-const { getGlobals } = jest.requireMock('src/logic/stores') as { getGlobals: jest.Mock };
+const { getGlobals } = jest.requireMock('src/logic/stores');
 
 describe('ConfirmationModal', () => {
   beforeEach(() => {

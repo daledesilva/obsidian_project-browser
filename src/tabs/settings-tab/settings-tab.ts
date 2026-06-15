@@ -312,7 +312,7 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 				plugin.settings.defaultState =
 					dropdown.getValue() == "(None)"
 						? undefined
-						: (dropdown.getValue() as string);
+						: (dropdown.getValue());
 				void plugin.saveSettings();
 			});
 		});
@@ -384,7 +384,7 @@ function insertProjectPageStateSettings(
 				plugin.settings.defaultProjectPageState =
 					dropdown.getValue() == "(None)"
 						? undefined
-						: (dropdown.getValue() as string);
+						: (dropdown.getValue());
 				void plugin.saveSettings();
 			});
 		});

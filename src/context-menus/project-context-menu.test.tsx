@@ -80,19 +80,11 @@ jest.mock('src/modals/rename-folder-modal/rename-folder-modal', () => ({
   })),
 }));
 
-const { getGlobals } = jest.requireMock('src/logic/stores') as {
-  getGlobals: jest.Mock;
-};
+const { getGlobals } = jest.requireMock('src/logic/stores');
 
-const { getFolderPrioritySettings, getFolderStateName, setFolderPriority } = jest.requireMock('src/utils/file-manipulation') as {
-  getFolderPrioritySettings: jest.Mock;
-  getFolderStateName: jest.Mock;
-  setFolderPriority: jest.Mock;
-};
+const { getFolderPrioritySettings, getFolderStateName, setFolderPriority } = jest.requireMock('src/utils/file-manipulation');
 
-const { revealInProjectBrowser } = jest.requireMock('src/logic/reveal-in-project-browser') as {
-  revealInProjectBrowser: jest.Mock;
-};
+const { revealInProjectBrowser } = jest.requireMock('src/logic/reveal-in-project-browser');
 
 describe('registerProjectContextMenu', () => {
   beforeEach(() => {

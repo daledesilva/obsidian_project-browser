@@ -16,11 +16,11 @@ import {
 import { DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS, StateViewOrder } from "src/types/types-map";
 
 jest.mock("src/logic/frontmatter-processes", () => ({
-  getFilePrioritySettings: (file: TFile) => (file as any).__priority || null,
+  getFilePrioritySettings: (file: TFile) => (file as unknown).__priority || null,
 }));
 
 function makeFile(name: string, ctime: number, mtime: number, priority?: "High" | "Low") {
-  const f = new TFile() as any;
+  const f = new TFile() as unknown;
   f.name = name;
   f.basename = name.replace(/\.[^.]+$/, "");
   f.extension = name.split(".").pop();
@@ -97,7 +97,7 @@ describe("sorting utils", () => {
   });
 
   test("sortItemsByPriority puts High before Low and leaves folders", () => {
-    const out = sortItemsByPriority([folder, fB, fA, fC]).map((i) => (i as any).name || "folder");
+    const out = sortItemsByPriority([folder, fB, fA, fC]).map((i) => (i as unknown).name || "folder");
     // High a.md should come before Low b.md; folder unchanged relative where equal-comparisons occur
     expect(out).toContain("a.md");
     expect(out.indexOf("a.md")).toBeLessThan(out.indexOf("b.md"));
@@ -114,7 +114,7 @@ describe("sorting utils", () => {
 
   test("sortItemsByPriorityThenName", () => {
     const out = sortItemsByPriorityThenName([fB, fA, fC], "ascending");
-    const names = out.map((i) => (i as any).name);
+    const names = out.map((i) => (i as unknown).name);
     // Within same priority, name ascending; High before Low; nulls after defined priorities
     expect(names.indexOf("a.md")).toBeLessThan(names.indexOf("b.md"));
   });
@@ -125,7 +125,7 @@ describe("sorting utils", () => {
     const numberedNone = makeFile("Page 18.md", 3, 30);
 
     const out = sortItemsByPriorityThenNaturalName([numberedNone, numberedHigh, numberedLow], "ascending");
-    const names = out.map((i) => (i as any).name);
+    const names = out.map((i) => (i as unknown).name);
 
     expect(names).toEqual(["Page 10.md", "Page 18.md", "Page 2.md"]);
   });
@@ -150,13 +150,13 @@ describe("sorting utils", () => {
 
   test("sortItemsByPriorityThenCreationDate", () => {
     const out = sortItemsByPriorityThenCreationDate([fB, fA, fC], "ascending");
-    const names = out.map((i) => (i as any).name);
+    const names = out.map((i) => (i as unknown).name);
     expect(names.indexOf("a.md")).toBeLessThan(names.indexOf("b.md"));
   });
 
   test("sortItemsByPriorityThenModifiedDate", () => {
     const out = sortItemsByPriorityThenModifiedDate([fB, fA, fC], "descending");
-    const names = out.map((i) => (i as any).name);
+    const names = out.map((i) => (i as unknown).name);
     expect(names.indexOf("a.md")).toBeLessThan(names.indexOf("b.md"));
   });
 });

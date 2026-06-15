@@ -53,7 +53,7 @@ export class NewProjectModal extends Modal {
 					text.setValue(this.name);
                 });
                 text.inputEl.addEventListener('keydown', (event) => {
-                    if ((event as KeyboardEvent).key === "Enter") {
+                    if ((event).key === "Enter") {
                         this.name = sanitizeFileFolderName(text.getValue());
 						if(this.name.trim() ==='') this.name = 'Unnamed';
 						text.setValue(this.name);

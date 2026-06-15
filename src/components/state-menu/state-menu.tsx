@@ -57,15 +57,15 @@ const StandardStateMenu = (props: StateMenuProps) => {
         let fileChangeTimeout: NodeJS.Timeout | null = null;
         const handleMetadataChanged = (modifiedFile: TFile, data: string, cache: CachedMetadata) => {
             if (modifiedFile.path !== fileRef.current.path) return;
-            if (fileChangeTimeout) clearTimeout(fileChangeTimeout);
-            fileChangeTimeout = setTimeout(() => {
+            if (fileChangeTimeout) window.clearTimeout(fileChangeTimeout);
+            fileChangeTimeout = window.setTimeout(() => {
                 setStateSettings(getFileStateSettings(fileRef.current));
             }, 100);
         };
         plugin.app.metadataCache.on('changed', handleMetadataChanged);
 
         return () => {
-            if (fileChangeTimeout) clearTimeout(fileChangeTimeout);
+            if (fileChangeTimeout) window.clearTimeout(fileChangeTimeout);
             plugin.app.metadataCache.off('changed', handleMetadataChanged);
         };
     }, [plugin]);

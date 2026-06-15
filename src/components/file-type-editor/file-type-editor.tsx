@@ -193,7 +193,7 @@ function FileTypeSettingsSection(props: FileTypeSettingsSectionProps) {
                 onScansComplete?.();
             }
         };
-        setTimeout(runOnMount, 0);
+        window.setTimeout(runOnMount, 0);
     }, [plugin, onScansComplete]);
 
     const surfaces: FileTypeSurface[] = surface ? [surface] : ['projectBrowser', 'pageMenu'];

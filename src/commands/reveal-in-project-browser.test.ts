@@ -48,14 +48,9 @@ jest.mock('src/logic/reveal-in-project-browser', () => ({
   revealInProjectBrowser: jest.fn(),
 }));
 
-const { getGlobals } = jest.requireMock('src/logic/stores') as {
-  getGlobals: jest.Mock;
-};
+const { getGlobals } = jest.requireMock('src/logic/stores');
 
-const { getProjectBrowserRevealTargetForSelection, revealInProjectBrowser } = jest.requireMock('src/logic/reveal-in-project-browser') as {
-  getProjectBrowserRevealTargetForSelection: jest.Mock;
-  revealInProjectBrowser: jest.Mock;
-};
+const { getProjectBrowserRevealTargetForSelection, revealInProjectBrowser } = jest.requireMock('src/logic/reveal-in-project-browser');
 
 describe('registerRevealInProjectBrowserMenus', () => {
   const workspaceOnMock = jest.fn();
@@ -99,7 +94,7 @@ describe('registerRevealInProjectBrowserMenus', () => {
     const fileMenuHandler = workspaceOnMock.mock.calls[0][1] as (menu: MockMenu, file: TFile, source: string) => void;
     const menu = new MockMenu();
     menu.items.push({ title: 'Reveal in Finder', section: 'system' });
-    fileMenuHandler(menu as never, file, 'file-explorer-context-menu');
+    fileMenuHandler(menu, file, 'file-explorer-context-menu');
 
     expect(getProjectBrowserRevealTargetForSelection).toHaveBeenCalledWith([file]);
     expect(menu.items).toHaveLength(2);
@@ -127,7 +122,7 @@ describe('registerRevealInProjectBrowserMenus', () => {
     const filesMenuHandler = workspaceOnMock.mock.calls[1][1] as (menu: MockMenu, files: TFile[], source: string) => void;
     const menu = new MockMenu();
     menu.items.push({ title: 'Reveal in Finder', section: 'system' });
-    filesMenuHandler(menu as never, [file], 'file-explorer-context-menu');
+    filesMenuHandler(menu, [file], 'file-explorer-context-menu');
 
     expect(getProjectBrowserRevealTargetForSelection).toHaveBeenCalledWith([file]);
     const revealItem = menu.items[1] as MockMenuItem;
@@ -149,10 +144,10 @@ describe('registerRevealInProjectBrowserMenus', () => {
 
     const firstMenu = new MockMenu();
     firstMenu.items.push({ title: 'Reveal in Finder', section: 'system' });
-    fileMenuHandler(firstMenu as never, file, 'file-explorer-context-menu');
+    fileMenuHandler(firstMenu, file, 'file-explorer-context-menu');
 
     const secondMenu = new MockMenu();
-    fileMenuHandler(secondMenu as never, file, 'file-explorer-context-menu');
+    fileMenuHandler(secondMenu, file, 'file-explorer-context-menu');
 
     expect(secondMenu.items).toHaveLength(1);
 
@@ -181,7 +176,7 @@ describe('registerRevealInProjectBrowserMenus', () => {
       },
     });
 
-    fileMenuHandler(menu as never, file, 'tab-header-context-menu');
+    fileMenuHandler(menu, file, 'tab-header-context-menu');
 
     const revealItem = menu.items[1] as MockMenuItem;
     expect(revealItem.section).toBe('system');
@@ -198,7 +193,7 @@ describe('registerRevealInProjectBrowserMenus', () => {
 
     const fileMenuHandler = workspaceOnMock.mock.calls[0][1] as (menu: MockMenu, file: TFile, source: string) => void;
     const menu = new MockMenu();
-    fileMenuHandler(menu as never, file, 'file-explorer-context-menu');
+    fileMenuHandler(menu, file, 'file-explorer-context-menu');
 
     expect(menu.items).toHaveLength(0);
   });
@@ -215,7 +210,7 @@ describe('registerRevealInProjectBrowserMenus', () => {
     const fileMenuHandler = workspaceOnMock.mock.calls[0][1] as (menu: MockMenu, file: TFile, source: string) => void;
     const menu = new MockMenu();
     menu.items.push({ title: 'Show in system explorer', section: 'system' });
-    fileMenuHandler(menu as never, file, 'windows-explorer-menu');
+    fileMenuHandler(menu, file, 'windows-explorer-menu');
 
     const revealItem = menu.items[1] as MockMenuItem;
     expect(revealItem.section).toBe('system');
@@ -232,7 +227,7 @@ describe('registerRevealInProjectBrowserMenus', () => {
 
     const fileMenuHandler = workspaceOnMock.mock.calls[0][1] as (menu: MockMenu, file: TFile, source: string) => void;
     const menu = new MockMenu();
-    fileMenuHandler(menu as never, file, 'unknown-source');
+    fileMenuHandler(menu, file, 'unknown-source');
 
     expect(menu.items).toHaveLength(1);
 
@@ -254,17 +249,17 @@ describe('registerRevealInProjectBrowserMenus', () => {
 
     const explorerMenu = new MockMenu();
     explorerMenu.items.push({ title: 'Reveal in Finder', section: 'system' });
-    fileMenuHandler(explorerMenu as never, file, 'file-explorer-context-menu');
+    fileMenuHandler(explorerMenu, file, 'file-explorer-context-menu');
 
     const tabMenu = new MockMenu();
     tabMenu.items.push({ title: 'Reveal in Finder', section: 'tab-actions' });
-    fileMenuHandler(tabMenu as never, file, 'tab-header');
+    fileMenuHandler(tabMenu, file, 'tab-header');
 
     const cachedExplorerMenu = new MockMenu();
-    fileMenuHandler(cachedExplorerMenu as never, file, 'file-explorer-context-menu');
+    fileMenuHandler(cachedExplorerMenu, file, 'file-explorer-context-menu');
 
     const cachedTabMenu = new MockMenu();
-    fileMenuHandler(cachedTabMenu as never, file, 'tab-header');
+    fileMenuHandler(cachedTabMenu, file, 'tab-header');
 
     expect((cachedExplorerMenu.items[0] as MockMenuItem).section).toBe('system');
     expect((cachedTabMenu.items[0] as MockMenuItem).section).toBe('tab-actions');

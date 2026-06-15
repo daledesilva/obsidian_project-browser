@@ -9,7 +9,7 @@ export async function registerOpenProjectBrowserCommand() {
     const {plugin} = getGlobals();
 
     plugin.addCommand({
-		id: 'open-project-browser',
+		id: 'open',
 		name: 'Open',
         icon: ICON_PROJECT_BROWSER,
         callback: () => {

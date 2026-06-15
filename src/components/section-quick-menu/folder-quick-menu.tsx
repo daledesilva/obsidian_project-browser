@@ -30,10 +30,10 @@ export const FolderQuickMenu = (props: FolderQuickMenuProps) => {
         if(tooltip) {
             tooltipRef.current!.style.display = 'block';
             if(tooltipTimeout) {
-                clearTimeout(tooltipTimeout);
+                window.clearTimeout(tooltipTimeout);
                 tooltipTimeout = null;
             }
-            tooltipTimeout = setTimeout( () => {
+            tooltipTimeout = window.setTimeout( () => {
                 tooltipRef.current!.style.display = 'none';
                 setTooltip(null);
             }, 1000);

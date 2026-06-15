@@ -31,11 +31,11 @@ describe("orderSections", () => {
       const { orderSections } = require("./section-processes");
 
       const unorderedSections: Section[] = [
-        { title: "Drafting", type: "state", items: [], settings: {} as any },
-        { title: "folders", type: "folders", items: [], settings: {} as any },
-        { title: " ", type: "stateless", items: [], settings: {} as any },
-        { title: "Idea", type: "state", items: [], settings: {} as any },
-        { title: "Shortlisted", type: "state", items: [], settings: {} as any },
+        { title: "Drafting", type: "state", items: [], settings: {} as unknown },
+        { title: "folders", type: "folders", items: [], settings: {} as unknown },
+        { title: " ", type: "stateless", items: [], settings: {} as unknown },
+        { title: "Idea", type: "state", items: [], settings: {} as unknown },
+        { title: "Shortlisted", type: "state", items: [], settings: {} as unknown },
       ];
 
       const ordered = orderSections(unorderedSections);
@@ -63,10 +63,10 @@ describe("orderSections", () => {
       const { orderSections } = require("./section-processes");
 
       const unorderedSections: Section[] = [
-        { title: "folders", type: "folders", items: [], settings: {} as any },
-        { title: "Idea", type: "state", items: [], settings: {} as any },
-        { title: "Archived", type: "state", items: [], settings: {} as any },
-        { title: " ", type: "stateless", items: [], settings: {} as any },
+        { title: "folders", type: "folders", items: [], settings: {} as unknown },
+        { title: "Idea", type: "state", items: [], settings: {} as unknown },
+        { title: "Archived", type: "state", items: [], settings: {} as unknown },
+        { title: " ", type: "stateless", items: [], settings: {} as unknown },
       ];
 
       const ordered = orderSections(unorderedSections);

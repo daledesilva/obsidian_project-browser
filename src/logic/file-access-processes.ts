@@ -119,7 +119,7 @@ export function registerFileOpenSelectTitleHandler(plugin: Plugin) {
 
             pendingTitleSelectPaths.delete(openedFile.path);
 
-            setTimeout(() => {
+            window.setTimeout(() => {
                 const activeFile = plugin.app.workspace.getActiveFile();
                 if (activeFile?.path !== openedFile.path) return;
 

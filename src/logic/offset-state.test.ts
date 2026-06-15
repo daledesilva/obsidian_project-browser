@@ -22,7 +22,7 @@ describe("offsetState", () => {
         }),
       }));
       const { offsetState } = require("./offset-state");
-      const file = {} as any;
+      const file = {} as unknown;
       const next = await offsetState(file, 1, false);
       expect(next.name).toBe("Doing");
       const clamp = await offsetState(file, 10, false);
@@ -42,7 +42,7 @@ describe("offsetState", () => {
         }),
       }));
       const { offsetState } = require("./offset-state");
-      const file = {} as any;
+      const file = {} as unknown;
       const wrapped = await offsetState(file, 1, true);
       expect(wrapped.name).toBe("Todo");
       const wrappedNeg = await offsetState(file, -1, true);
@@ -62,7 +62,7 @@ describe("offsetState", () => {
         }),
       }));
       const { offsetState } = require("./offset-state");
-      const file = {} as any;
+      const file = {} as unknown;
       expect((await offsetState(file, 1, false)).name).toBe("A");
       expect((await offsetState(file, -1, false)).name).toBe("C");
     });
@@ -80,7 +80,7 @@ describe("offsetState", () => {
         }),
       }));
       const { offsetState } = require("./offset-state");
-      const file = {} as any;
+      const file = {} as unknown;
       const next = await offsetState(file, 1, false);
       expect(next.name).toBe("Work in Progress");
     });

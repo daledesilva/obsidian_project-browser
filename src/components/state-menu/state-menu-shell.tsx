@@ -147,8 +147,8 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
 
         let resizeTimeout: NodeJS.Timeout | null = null;
         resizeObserverRef.current = new ResizeObserver(() => {
-            if (resizeTimeout) clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
+            if (resizeTimeout) window.clearTimeout(resizeTimeout);
+            resizeTimeout = window.setTimeout(() => {
                 setHeight();
             }, 50);
         });

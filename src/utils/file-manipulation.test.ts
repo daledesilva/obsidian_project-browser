@@ -17,20 +17,13 @@ jest.mock("src/logic/get-state-by-name", () => ({
   getStateByName: jest.fn(),
 }));
 
-const { getGlobals } = jest.requireMock("src/logic/stores") as {
-  getGlobals: jest.Mock;
-};
+const { getGlobals } = jest.requireMock("src/logic/stores");
 const {
   getFilePrioritySettings,
   getFileStateSettings,
   setFilePriority,
   setFileState,
-} = jest.requireMock("src/logic/frontmatter-processes") as {
-  getFilePrioritySettings: jest.Mock;
-  getFileStateSettings: jest.Mock;
-  setFilePriority: jest.Mock;
-  setFileState: jest.Mock;
-};
+} = jest.requireMock("src/logic/frontmatter-processes");
 
 function getParentPath(path: string): string {
   const lastSlashIndex = path.lastIndexOf("/");
@@ -46,20 +39,20 @@ function getEntryName(path: string): string {
 
 function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TFolder }) {
   const { TFile: MockTFile, TFolder: MockTFolder } = constructors;
-  const entries = new Map<string, any>();
+  const entries = new Map<string, unknown>();
   const fileContents = new Map<string, string>();
 
   const rootFolder = new MockTFolder() as TFolder & {
-    children: any[];
+    children: unknown[];
     path: string;
-    vault: any;
+    vault: unknown;
     name: string;
   };
   rootFolder.name = "";
   rootFolder.path = "";
   rootFolder.children = [];
 
-  function updateFileIdentity(file: any, nextPath: string) {
+  function updateFileIdentity(file: unknown, nextPath: string) {
     const nextName = getEntryName(nextPath);
     file.path = nextPath;
     file.name = nextName;
@@ -67,21 +60,21 @@ function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TF
     file.extension = nextName.includes(".") ? nextName.split(".").pop() : "";
   }
 
-  function detachFromParent(entry: any, path: string) {
+  function detachFromParent(entry: unknown, path: string) {
     const parentPath = getParentPath(path);
     const parentFolder = entries.get(parentPath);
     if (!parentFolder) return;
 
-    parentFolder.children = parentFolder.children.filter((child: any) => child !== entry);
+    parentFolder.children = parentFolder.children.filter((child: unknown) => child !== entry);
   }
 
-  function attachToParent(entry: any, path: string) {
+  function attachToParent(entry: unknown, path: string) {
     const parentPath = getParentPath(path);
     const parentFolder = ensureFolder(parentPath);
     parentFolder.children.push(entry);
   }
 
-  function moveFolderChildren(folder: any, previousPath: string, nextPath: string) {
+  function moveFolderChildren(folder: unknown, previousPath: string, nextPath: string) {
     for (const child of folder.children) {
       const childRelativePath = child.path.slice(previousPath.length + 1);
       const nextChildPath = `${nextPath}/${childRelativePath}`;
@@ -103,7 +96,7 @@ function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TF
     }
   }
 
-  function ensureFolder(path: string): any {
+  function ensureFolder(path: string): unknown {
     if (!path) return rootFolder;
 
     const existingEntry = entries.get(path);
@@ -112,9 +105,9 @@ function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TF
     const parentPath = getParentPath(path);
     const parentFolder = ensureFolder(parentPath);
     const folder = new MockTFolder() as TFolder & {
-      children: any[];
+      children: unknown[];
       path: string;
-      vault: any;
+      vault: unknown;
       name: string;
     };
     folder.path = path;
@@ -141,7 +134,7 @@ function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TF
       const parentFolder = ensureFolder(getParentPath(path));
       const file = new MockTFile() as TFile & {
         path: string;
-        vault: any;
+        vault: unknown;
         basename: string;
         extension: string;
         name: string;
@@ -154,7 +147,7 @@ function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TF
       fileContents.set(path, content);
       return file;
     }),
-    rename: jest.fn(async (entry: any, nextPath: string) => {
+    rename: jest.fn(async (entry: unknown, nextPath: string) => {
       const previousPath = entry.path;
       detachFromParent(entry, previousPath);
       entries.delete(previousPath);
@@ -174,8 +167,8 @@ function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TF
       fileContents.set(nextPath, fileContents.get(previousPath) ?? "");
       fileContents.delete(previousPath);
     }),
-    read: jest.fn(async (file: any) => fileContents.get(file.path) ?? ""),
-    modify: jest.fn(async (file: any, content: string) => {
+    read: jest.fn(async (file: unknown) => fileContents.get(file.path) ?? ""),
+    modify: jest.fn(async (file: unknown, content: string) => {
       fileContents.set(file.path, content);
     }),
   };
@@ -190,7 +183,7 @@ function createMockVault(constructors: { TFile: typeof TFile; TFolder: typeof TF
     createMarkdownFile(path: string, content: string = "") {
       const file = new MockTFile() as TFile & {
         path: string;
-        vault: any;
+        vault: unknown;
         basename: string;
         extension: string;
         name: string;
@@ -223,7 +216,7 @@ describe("renameTFile", () => {
         vault: {
           rename: renameMock,
         },
-      } as any;
+      } as unknown;
 
       const { renameTFile } = require("./file-manipulation");
       const renamedPath = await renameTFile(file, "renamed-note");
@@ -242,7 +235,7 @@ describe("renameTFile", () => {
         vault: {
           rename: renameMock,
         },
-      } as any;
+      } as unknown;
 
       const { renameTFile } = require("./file-manipulation");
       const renamedPath = await renameTFile(file, "renamed-note");
@@ -261,7 +254,7 @@ describe("renameTFile", () => {
         vault: {
           rename: renameMock,
         },
-      } as any;
+      } as unknown;
 
       const { renameTFile } = require("./file-manipulation");
       const renamedPath = await renameTFile(file, "renamed-note");
@@ -282,7 +275,7 @@ describe("renameTFolder", () => {
         vault: {
           rename: renameMock,
         },
-      } as any;
+      } as unknown;
 
       const { renameTFolder } = require("./file-manipulation");
       const renamedPath = await renameTFolder(folder, "Renamed Child Folder");
@@ -301,7 +294,7 @@ describe("renameTFolder", () => {
         vault: {
           rename: renameMock,
         },
-      } as any;
+      } as unknown;
 
       const { renameTFolder } = require("./file-manipulation");
       const renamedPath = await renameTFolder(folder, "References");
@@ -320,7 +313,7 @@ describe("renameTFolder", () => {
         vault: {
           rename: renameMock,
         },
-      } as any;
+      } as unknown;
 
       const { renameTFolder } = require("./file-manipulation");
       const renamedPath = await renameTFolder(folder, "References");
@@ -425,7 +418,7 @@ describe("createProjectFromNote", () => {
       });
 
       const { getFolderSettings } = require("./file-manipulation") as typeof import("./file-manipulation");
-      const folderSettings = await getFolderSettings(mockVaultState.vault as any, folder);
+      const folderSettings = await getFolderSettings(mockVaultState.vault as unknown, folder);
 
       expect(folderSettings.aboutThisFile).toBe("Obsidian Project Browser folder settings");
       expect(folderSettings.state).toBe("In Progress");
@@ -456,10 +449,10 @@ describe("setFolderPriority", () => {
       const { getFolderSettings, setFolderPriority } = require("./file-manipulation") as typeof import("./file-manipulation");
 
       await setFolderPriority(folder, { name: "High" });
-      expect((await getFolderSettings(mockVaultState.vault as any, folder)).priority).toBe("High");
+      expect((await getFolderSettings(mockVaultState.vault as unknown, folder)).priority).toBe("High");
 
       await setFolderPriority(folder, { name: "High" });
-      expect((await getFolderSettings(mockVaultState.vault as any, folder)).priority).toBeUndefined();
+      expect((await getFolderSettings(mockVaultState.vault as unknown, folder)).priority).toBeUndefined();
       expect(refreshFileDependants).toHaveBeenCalledTimes(2);
     });
   });

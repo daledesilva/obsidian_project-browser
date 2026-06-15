@@ -69,7 +69,7 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
             });
             openNewPageAndSelectTitle(newFile);
         } catch (reason) {
-            console.log(reason);
+            console.error(reason);
         }
         setMenuIsOpen(false);
     }
@@ -79,7 +79,7 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
             const newFile = await createSubproject(props.folder);
             openNewPageAndSelectTitle(newFile);
         } catch (reason) {
-            console.log(reason);
+            console.error(reason);
         }
         setMenuIsOpen(false);
     }
@@ -90,7 +90,7 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
             await createFolder(folderPath);
             props.onFolderCreated?.();
         } catch (reason) {
-            console.log(reason);
+            console.error(reason);
         }
         setMenuIsOpen(false);
     }

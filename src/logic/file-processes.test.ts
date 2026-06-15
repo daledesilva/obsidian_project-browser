@@ -15,10 +15,8 @@ jest.mock('./folder-processes', () => ({
   getProjectExcerpt: jest.fn().mockResolvedValue('project excerpt'),
 }));
 
-const { getGlobals } = jest.requireMock('./stores') as { getGlobals: jest.Mock };
-const { getProjectExcerpt } = jest.requireMock('./folder-processes') as {
-  getProjectExcerpt: jest.Mock;
-};
+const { getGlobals } = jest.requireMock('./stores');
+const { getProjectExcerpt } = jest.requireMock('./folder-processes');
 
 describe('getFileExcerpt', () => {
   test('processes file content through removeFrontmatter, removeCodeBlocks, etc.', async () => {

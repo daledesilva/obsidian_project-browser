@@ -5,9 +5,7 @@ jest.mock('./stores', () => ({
   getGlobals: jest.fn(),
 }));
 
-const { getGlobals } = jest.requireMock('./stores') as {
-  getGlobals: jest.Mock;
-};
+const { getGlobals } = jest.requireMock('./stores');
 
 describe('isExtensionVisible', () => {
   beforeEach(() => {

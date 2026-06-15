@@ -8,10 +8,8 @@ jest.mock('src/views/card-browser-view/card-browser-view', () => ({
   newProjectBrowserLeaf: jest.fn(),
 }));
 
-const { getGlobals } = jest.requireMock('src/logic/stores') as { getGlobals: jest.Mock };
-const { newProjectBrowserLeaf } = jest.requireMock('src/views/card-browser-view/card-browser-view') as {
-  newProjectBrowserLeaf: jest.Mock;
-};
+const { getGlobals } = jest.requireMock('src/logic/stores');
+const { newProjectBrowserLeaf } = jest.requireMock('src/views/card-browser-view/card-browser-view');
 
 describe('open-project-browser commands', () => {
   const addCommandMock = jest.fn();
@@ -33,7 +31,7 @@ describe('open-project-browser commands', () => {
     await registerOpenProjectBrowserCommand();
     expect(addCommandMock).toHaveBeenCalledTimes(1);
     const call = addCommandMock.mock.calls[0][0];
-    expect(call.id).toBe('open-project-browser');
+    expect(call.id).toBe('open');
     expect(call.name).toBe('Open');
     expect(typeof call.callback).toBe('function');
     call.callback();

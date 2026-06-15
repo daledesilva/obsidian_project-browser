@@ -10,13 +10,9 @@ jest.mock('./file-type-filter', () => ({
   isExtensionVisible: jest.fn(() => true),
 }));
 
-const { getItemsInFolder } = jest.requireMock('./folder-processes') as {
-  getItemsInFolder: jest.Mock;
-};
+const { getItemsInFolder } = jest.requireMock('./folder-processes');
 
-const { isExtensionVisible } = jest.requireMock('./file-type-filter') as {
-  isExtensionVisible: jest.Mock;
-};
+const { isExtensionVisible } = jest.requireMock('./file-type-filter');
 
 function createFile(path: string): TFile {
   const name = path.split('/').pop() ?? path;

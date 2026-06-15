@@ -52,7 +52,7 @@ export class RenameFileModal extends Modal {
 					text.inputEl.value = this.name;
                 });
                 text.inputEl.addEventListener('keyup', async (event) => {
-                    if ((event as KeyboardEvent).key === "Enter") {
+                    if ((event).key === "Enter") {
 						this.name = sanitizeFileFolderName(text.getValue());
 						if(this.name.trim() === '') this.name = 'Unnamed';
                         void renameTFile(this.file, this.name);

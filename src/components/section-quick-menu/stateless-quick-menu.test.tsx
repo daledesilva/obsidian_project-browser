@@ -40,7 +40,7 @@ describe('StatelessQuickMenu', () => {
       saveSettings: jest.fn(),
     };
 
-    setGlobals({ plugin: mockPlugin as any });
+    setGlobals({ plugin: mockPlugin as unknown });
     initializeSettingsAtoms();
   });
 

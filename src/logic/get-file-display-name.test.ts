@@ -10,7 +10,7 @@ describe("getFileDisplayName", () => {
         getFileAliases: () => ["Alias Name"],
       }));
       const { getFileDisplayName } = require("./get-file-display-name");
-      const file = { basename: "Base" } as any;
+      const file = { basename: "Base" } as unknown;
       expect(getFileDisplayName(file)).toBe("Alias Name");
     });
   });
@@ -24,7 +24,7 @@ describe("getFileDisplayName", () => {
         getFileAliases: () => ["Alias Name"],
       }));
       const { getFileDisplayName } = require("./get-file-display-name");
-      const file = { basename: "Base" } as any;
+      const file = { basename: "Base" } as unknown;
       expect(getFileDisplayName(file)).toBe("Base");
     });
   });
@@ -38,7 +38,7 @@ describe("getFileDisplayName", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayName } = require("./get-file-display-name");
-      const file = { basename: "Base" } as any;
+      const file = { basename: "Base" } as unknown;
       expect(getFileDisplayName(file)).toBe("Base");
     });
   });
@@ -54,7 +54,7 @@ describe("getFileDisplayName", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayName } = require("./get-file-display-name");
-      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as any;
+      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as unknown;
       expect(getFileDisplayName(file)).toBe("document.pdf");
     });
   });
@@ -70,7 +70,7 @@ describe("getFileDisplayName", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayName } = require("./get-file-display-name");
-      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as any;
+      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as unknown;
       expect(getFileDisplayName(file)).toBe("document");
     });
   });
@@ -86,7 +86,7 @@ describe("getFileDisplayName", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayName } = require("./get-file-display-name");
-      const file = { basename: "my-canvas", name: "my-canvas.canvas", extension: "canvas" } as any;
+      const file = { basename: "my-canvas", name: "my-canvas.canvas", extension: "canvas" } as unknown;
       expect(getFileDisplayName(file)).toBe("my-canvas");
     });
   });
@@ -102,7 +102,7 @@ describe("getFileDisplayName", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayName } = require("./get-file-display-name");
-      const file = { basename: "my-base", name: "my-base.base", extension: "base" } as any;
+      const file = { basename: "my-base", name: "my-base.base", extension: "base" } as unknown;
       expect(getFileDisplayName(file)).toBe("my-base");
     });
   });
@@ -120,7 +120,7 @@ describe("getFileDisplayNameParts", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayNameParts } = require("./get-file-display-name");
-      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as any;
+      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as unknown;
       const result = getFileDisplayNameParts(file);
       expect(result).toEqual({ basename: "document", extension: ".pdf" });
     });
@@ -137,7 +137,7 @@ describe("getFileDisplayNameParts", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayNameParts } = require("./get-file-display-name");
-      const file = { basename: "my-canvas", name: "my-canvas.canvas", extension: "canvas" } as any;
+      const file = { basename: "my-canvas", name: "my-canvas.canvas", extension: "canvas" } as unknown;
       const result = getFileDisplayNameParts(file);
       expect(result).toEqual({ basename: "my-canvas", extension: null });
     });
@@ -154,7 +154,7 @@ describe("getFileDisplayNameParts", () => {
         getFileAliases: () => null,
       }));
       const { getFileDisplayNameParts } = require("./get-file-display-name");
-      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as any;
+      const file = { basename: "document", name: "document.pdf", extension: "pdf" } as unknown;
       const result = getFileDisplayNameParts(file);
       expect(result).toEqual({ basename: "document", extension: null });
     });
@@ -169,7 +169,7 @@ describe("getFileDisplayNameParts", () => {
         getFileAliases: () => ["Alias Name"],
       }));
       const { getFileDisplayNameParts } = require("./get-file-display-name");
-      const file = { basename: "Base", extension: "md" } as any;
+      const file = { basename: "Base", extension: "md" } as unknown;
       const result = getFileDisplayNameParts(file);
       expect(result).toEqual({ basename: "Alias Name", extension: null });
     });

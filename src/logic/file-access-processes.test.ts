@@ -10,7 +10,7 @@ jest.mock('./stores', () => ({
   getGlobals: jest.fn(),
 }));
 
-const { getGlobals } = jest.requireMock('./stores') as { getGlobals: jest.Mock };
+const { getGlobals } = jest.requireMock('./stores');
 
 describe('openFileInSameLeaf', () => {
   test('opens file in most recent leaf when available', () => {

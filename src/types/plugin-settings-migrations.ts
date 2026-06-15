@@ -27,9 +27,9 @@ export function migrateOutdatedSettings(settings: {settingsVersion: string}): Pl
     if(updatedSettings.settingsVersion === '0.4.0')               updatedSettings = patch_0_4_0_settings(updatedSettings as PluginSettings_0_4_0);
     
     if(JSON.stringify(updatedSettings) != JSON.stringify(settings)) {
-        console.log('Project Browser: Migrated outdated settings');
-        console.log('Old Settings', JSON.parse(JSON.stringify(settings)));
-        console.log('New Settings', JSON.parse(JSON.stringify(updatedSettings)));
+        console.debug('Project Browser: Migrated outdated settings');
+        console.debug('Old Settings', JSON.parse(JSON.stringify(settings)));
+        console.debug('New Settings', JSON.parse(JSON.stringify(updatedSettings)));
     }
 
     return updatedSettings as PluginSettings;
@@ -229,10 +229,10 @@ function patch_0_4_0_settings(settings: PluginSettings_0_4_0): PluginSettings_0_
         patched.loopProjectPageStatesWhenCycling = DEFAULT_PLUGIN_SETTINGS_0_4_0.loopProjectPageStatesWhenCycling;
     }
 
-    if (!patched.fileTypes) return patched as PluginSettings_0_4_0;
+    if (!patched.fileTypes) return patched;
     const fileTypes = patched.fileTypes as Record<string, unknown>;
     if (fileTypes.projectBrowser) {
-        return patched as PluginSettings_0_4_0;
+        return patched;
     }
 
     const oldVisible = (fileTypes.visible as string[]) ?? [];
@@ -257,5 +257,5 @@ function patch_0_4_0_settings(settings: PluginSettings_0_4_0): PluginSettings_0_
             hidden: [...DEFAULT_FILE_TYPE_SETTINGS_0_4_0.pageMenu.hidden],
         },
     };
-    return patched as PluginSettings_0_4_0;
+    return patched;
 }

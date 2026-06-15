@@ -30,8 +30,8 @@ export function openStateMenuIfClosed(): boolean {
 }
 
 export function returnStateMenuAfterDelay() {
-    if(cycleStateTimeout) clearTimeout(cycleStateTimeout);
-    cycleStateTimeout = setTimeout(() => {
+    if(cycleStateTimeout) window.clearTimeout(cycleStateTimeout);
+    cycleStateTimeout = window.setTimeout(() => {
         if(!openedByFunction) return;
         openedByFunction = false;
         const curStateMenuSettings = getStateMenuSettings();

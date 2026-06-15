@@ -83,7 +83,7 @@ describe("folder-processes", () => {
           { name: "Beta Document" },
           { name: "Alpha Project" },
         ] as { name: string }[],
-        settings: {} as any,
+        settings: {} as unknown,
       };
       filterSectionByString(section, "alpha");
       expect(section.items).toHaveLength(2);
@@ -96,7 +96,7 @@ describe("folder-processes", () => {
         type: "state" as const,
         title: "Idea",
         items: [{ name: "Note1" }, { name: "Note2" }] as { name: string }[],
-        settings: {} as any,
+        settings: {} as unknown,
       };
       filterSectionByString(section, "");
       expect(section.items).toHaveLength(2);
@@ -110,13 +110,13 @@ describe("folder-processes", () => {
         type: "state" as const,
         title: "Idea",
         items: [{ name: "Alpha Note" }, { name: "Beta Document" }] as { name: string }[],
-        settings: {} as any,
+        settings: {} as unknown,
       };
       const folderSection = {
         type: "folders" as const,
         title: "folders",
         items: [{ name: "FolderA" }] as { name: string }[],
-        settings: {} as any,
+        settings: {} as unknown,
       };
       filterSectionsByString([stateSection, folderSection], "alpha");
       expect(stateSection.items).toHaveLength(1);

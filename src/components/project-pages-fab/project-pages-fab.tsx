@@ -114,7 +114,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
             return;
         }
         syncPageListScrollPresentation();
-        const frameId = requestAnimationFrame(syncPageListScrollPresentation);
+        const frameId = window.requestAnimationFrame(syncPageListScrollPresentation);
         return () => cancelAnimationFrame(frameId);
     }, [menuIsOpen, props.parentIsProject, pagesInProject, refreshTrigger, syncPageListScrollPresentation]);
 

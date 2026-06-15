@@ -152,12 +152,17 @@ export function sortItemsByPriority(items: Array<TAbstractFile>): TAbstractFile[
 
 function getItemPriorityName(item: TAbstractFile): string | null {
     if (item instanceof TFolder) {
-        return (item as TFolder & { priority?: string }).priority ?? null;
+        const folderPriority = item as { priority?: string };
+        return folderPriority.priority ?? null;
     }
 
-    const prioritySettings = getFilePrioritySettings(item as TFile);
-    if (!prioritySettings) return null;
-    return prioritySettings.name;
+    if (item instanceof TFile) {
+        const prioritySettings = getFilePrioritySettings(item);
+        if (!prioritySettings) return null;
+        return prioritySettings.name;
+    }
+
+    return null;
 }
 
 export function sortItemsByPriorityThenName(items: Array<TAbstractFile>, direction: 'ascending' | 'descending'): TAbstractFile[] {

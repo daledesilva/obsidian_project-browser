@@ -78,9 +78,9 @@ async function ensureProjectPagesSidebarShowsProject(workspace: Workspace, proje
     let leaf = workspace.getLeavesOfType(PROJECT_PAGES_SIDEBAR_VIEW_TYPE)[0];
 
     if (!leaf) {
-        const leftSplit = workspace.leftSplit as any;
-        const mostRecentLeaf = workspace.getMostRecentLeaf(leftSplit) as any;
-        let curLeaf = (mostRecentLeaf ?? workspace.getLeftLeaf(false)) as any;
+        const leftSplit = workspace.leftSplit as unknown;
+        const mostRecentLeaf = workspace.getMostRecentLeaf(leftSplit) as unknown;
+        let curLeaf = (mostRecentLeaf ?? workspace.getLeftLeaf(false));
 
         if (!capturedLeftLeafReactivate) {
             const currentType = curLeaf.getViewState().type;
@@ -89,7 +89,7 @@ async function ensureProjectPagesSidebarShowsProject(workspace: Workspace, proje
             }
         }
 
-        leaf = workspace.getLeftLeaf(false) as any;
+        leaf = workspace.getLeftLeaf(false) as unknown;
     }
 
     const nextState: ProjectPagesSidebarViewState = {

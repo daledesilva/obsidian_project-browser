@@ -35,7 +35,7 @@ export const getFileFrontmatter = (file: TFile): {} | FrontMatterCache => {
 /**
  * Wrapper for processFrontMatter that preserves the file's modified timestamp
  */
-export const processFrontMatterPreserveTimestamp = async (file: TFile, processor: (frontmatter: any) => void): Promise<void> => {
+export const processFrontMatterPreserveTimestamp = async (file: TFile, processor: (frontmatter: unknown) => void): Promise<void> => {
     const {plugin} = getGlobals();
     
     // Capture the current modified time
@@ -56,7 +56,7 @@ export const processFrontMatterPreserveTimestamp = async (file: TFile, processor
 /**
  * Wrapper for processFrontMatter that allows the modified timestamp to be updated
  */
-export const processFrontMatterUpdateTimestamp = async (file: TFile, processor: (frontmatter: any) => void): Promise<void> => {
+export const processFrontMatterUpdateTimestamp = async (file: TFile, processor: (frontmatter: unknown) => void): Promise<void> => {
     const {plugin} = getGlobals();
     await plugin.app.fileManager.processFrontMatter(file, processor);
 }
@@ -72,8 +72,8 @@ export const getFileStateSettings = (file: TFile): null | StateSettings => {
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
 
-    if((frontmatter as FrontMatterCache).state) {
-        const stateName = (frontmatter as FrontMatterCache).state;
+    if((frontmatter).state) {
+        const stateName = (frontmatter).state;
         if(stateName) {
             return getStateByName(stateName);
         } else {
@@ -87,8 +87,8 @@ export const getFileStateSettingsAsync = async (file: TFile): Promise<null | Sta
     const frontmatter = getFileFrontmatter(file);
     if (!frontmatter) return null;
 
-    if ((frontmatter as FrontMatterCache).state) {
-        const stateName = (frontmatter as FrontMatterCache).state;
+    if ((frontmatter).state) {
+        const stateName = (frontmatter).state;
         if (stateName) {
             return await getStateByNameForFile(file, stateName);
         }
@@ -100,8 +100,8 @@ export const getFilePrioritySettings = (file: TFile): null | PrioritySettings =>
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
 
-    if((frontmatter as FrontMatterCache).priority) {
-        const priorityName = (frontmatter as FrontMatterCache).priority;
+    if((frontmatter).priority) {
+        const priorityName = (frontmatter).priority;
         if(priorityName) {
             return getPriorityByName(priorityName);
         } else {
@@ -193,8 +193,8 @@ export const getFileAliases = (file: TFile): null | string => {
     const frontmatter = getFileFrontmatter(file);
     if(!frontmatter) return null;
 
-    if((frontmatter as FrontMatterCache).aliases) {
-        const aliases = (frontmatter as FrontMatterCache).aliases;
+    if((frontmatter).aliases) {
+        const aliases = (frontmatter).aliases;
         return aliases;
     }
     return null;

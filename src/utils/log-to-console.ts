@@ -31,60 +31,62 @@ interface LogOptions {
     stringify?: boolean, // Stringify an object and pretty print it
 }
 
-export function info(_data: any|any[], _options: LogOptions = {}) {
+export function info(_data: unknown|unknown[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.blue.bold('Ink info:'), _data, _options);
 }
-export function warn(_data: any|any[], _options: LogOptions = {}) {
+export function warn(_data: unknown|unknown[], _options: LogOptions = {}) {
     // TODO: check production environment?
-    print(chalk.yellow.bold('Ink warn:'), _data, _options);
+    print(chalk.yellow.bold('Ink warn:'), _data, _options, console.warn);
 }
-export function error(_data: any|any[], _options: LogOptions = {}) {
+export function error(_data: unknown|unknown[], _options: LogOptions = {}) {
     // TODO: check production environment?
-    print(chalk.red.bold('Ink error:'), _data, _options);
+    print(chalk.red.bold('Ink error:'), _data, _options, console.error);
 }
-export function debug(_data: any|any[], _options: LogOptions = {}) {
+export function debug(_data: unknown|unknown[], _options: LogOptions = {}) {
     // TODO: check production environment?
-    print(chalk.green.bold('Ink debug:'), _data, _options);
+    print(chalk.green.bold('Ink debug:'), _data, _options, console.debug);
 }
-export function http(_data: any|any[], _options: LogOptions = {}) {
+export function http(_data: unknown|unknown[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.magenta.bold('Ink http:'), _data, _options);
 }
-export function verbose(_data: any|any[], _options: LogOptions = {}) {
+export function verbose(_data: unknown|unknown[], _options: LogOptions = {}) {
     // TODO: check production environment?
     print(chalk.cyan.bold('Ink verbose:'), _data, _options);
 }
 
-function print(_label: string, _data: any|any[], _options: LogOptions = {}) {
+type ConsoleLogFn = (...args: unknown[]) => void;
+
+function print(_label: string, _data: unknown|unknown[], _options: LogOptions = {}, logFn: ConsoleLogFn = console.debug) {
     if(_data instanceof Array) {
-        printArray(_label, _data, _options);
+        printArray(_label, _data, _options, logFn);
     } else if(_data instanceof Object) {
-        printTimestampAndLabel(_label);
-        printObj(_data, _options);
-        printEmptyLine();
+        printTimestampAndLabel(_label, logFn);
+        printObj(_data, _options, logFn);
+        printEmptyLine(logFn);
     } else {
-        printStr(`${getTimestampAndLabel(_label)} ${_data}`);
+        printStr(`${getTimestampAndLabel(_label)} ${_data}`, logFn);
     }
 }
 
-function printArray(_label: string, _data: any[], _options: LogOptions = {}) {
+function printArray(_label: string, _data: unknown[], _options: LogOptions = {}, logFn: ConsoleLogFn = console.debug) {
     let accString = '';
 
     // If an object is first, print a timestamp and label on line before it
     if(_data[0] instanceof Object) {
-        printTimestampAndLabel(_label);
+        printTimestampAndLabel(_label, logFn);
     }
     for(let i=0; i<_data.length; i++) {
 
         if(_data[i] instanceof Object) {
             // Print accumulated strings so far and reset
             if(accString.length) {
-                printStr(accString);
+                printStr(accString, logFn);
                 accString = '';
             }
             // Print object on next line
-            printObj(_data[i], _options);
+            printObj(_data[i], _options, logFn);
 
         } else {
             // Collect strings to print on the same line
@@ -102,23 +104,23 @@ function printArray(_label: string, _data: any[], _options: LogOptions = {}) {
 
             // If there's no more data, print the accumulated string
             if(i===_data.length-1) {
-                printStr(accString);
+                printStr(accString, logFn);
             }
         }
     }
     // If an object was last, put an empty line after it
     if(_data[_data.length-1] instanceof Object) {
-        printEmptyLine();
+        printEmptyLine(logFn);
     }
     
 }
 
-function printStr(_str: string) {
-    console.log(`${_str}`);
+function printStr(_str: string, logFn: ConsoleLogFn = console.debug) {
+    logFn(`${_str}`);
 }
 
-function printObj(_data: any, _options: LogOptions) {
-    let data: any;
+function printObj(_data: unknown, _options: LogOptions, logFn: ConsoleLogFn = console.debug) {
+    let data: unknown;
     if(_options.freeze) {
         data = JSON.parse(JSON.stringify(_data));
     } else {
@@ -127,15 +129,15 @@ function printObj(_data: any, _options: LogOptions) {
     if(_options.stringify) {
         data = JSON.stringify(data, null, 2);
     }
-    console.log(data);
+    logFn(data);
 }
 
-function printTimestampAndLabel(_label: string) {
-    console.log(getTimestampAndLabel(_label));
+function printTimestampAndLabel(_label: string, logFn: ConsoleLogFn = console.debug) {
+    logFn(getTimestampAndLabel(_label));
 }
 
-function printEmptyLine() {
-    console.log('');
+function printEmptyLine(logFn: ConsoleLogFn = console.debug) {
+    logFn('');
 }
 
 function getTimestampAndLabel(_label: string): string {

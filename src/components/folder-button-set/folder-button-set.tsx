@@ -11,9 +11,11 @@ interface FolderButtonSetProps {
 }
 export const FolderButtonSet = (props: FolderButtonSetProps) => {
 
-    const cards = props.folders.map( folder => {
+    const cards = props.folders
+        .filter((folder): folder is TFolder => folder instanceof TFolder)
+        .map( folder => {
         return <FolderButton
-            folder = {folder as TFolder}
+            folder = {folder}
             key = {folder.path}
         />
     });

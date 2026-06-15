@@ -147,7 +147,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
         return;
     }
 
-    const parentFolder = (activeFile.parent ?? plugin.app.vault.getRoot()) as TFolder;
+    const parentFolder = (activeFile.parent ?? plugin.app.vault.getRoot());
     if (parentFolder.path !== resolvedParentFolderAtStart.path) {
         parentIsProject = (await getFolderSettings(plugin.app.vault, parentFolder)).isProject === true;
         if (requestId !== projectPagesFabRenderRequestId) return;
@@ -190,7 +190,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
         });
         openNewPageAndSelectTitle(newFile);
         // Defer refresh; vault events in FAB will update the page list
-        setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
+        window.setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
     }
 
     async function onAddPage() {
@@ -206,7 +206,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
             openNewPageAndSelectTitle(newFile);
         }
         // Defer refresh; vault events in FAB will update the page list
-        setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
+        window.setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
     }
 
     if (!fabContainerEl) {
@@ -241,7 +241,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
 function cleanupInactiveProjectPagesFABs(activeContainerEl: HTMLElement) {
     const fabContainers = Array.from(document.querySelectorAll(`.${projectPagesFabContainerClassName}`));
     for (const fabContainer of fabContainers) {
-        if (!(fabContainer instanceof HTMLElement)) continue;
+        if (!(fabContainer.instanceOf(HTMLElement))) continue;
         if (activeContainerEl.contains(fabContainer)) continue;
         removeProjectPagesFABElement(fabContainer);
     }
@@ -251,7 +251,7 @@ function removeProjectPagesFAB(containerEl: HTMLElement) {
     const fabContainerEl = containerEl.find(`.${projectPagesFabContainerClassName}`);
     if (!fabContainerEl) return;
 
-    removeProjectPagesFABElement(fabContainerEl as HTMLElement);
+    removeProjectPagesFABElement(fabContainerEl);
 }
 
 function removeProjectPagesFABElement(fabContainerEl: HTMLElement) {

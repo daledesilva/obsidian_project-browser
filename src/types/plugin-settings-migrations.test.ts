@@ -9,7 +9,7 @@ describe("plugin settings migrations (wrapper)", () => {
   });
 
   test("migrateOutdatedSettings chains from 0.0.5 and sets expected fields", () => {
-    const old = { ...DEFAULT_PLUGIN_SETTINGS_0_0_5, settingsVersion: "0.0.5" } as any;
+    const old = { ...DEFAULT_PLUGIN_SETTINGS_0_0_5, settingsVersion: "0.0.5" } as unknown;
     const res = migrateOutdatedSettings(old);
     // Verify version bumped
     expect(typeof res.settingsVersion).toBe("string");

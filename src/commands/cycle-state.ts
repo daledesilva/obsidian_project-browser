@@ -16,18 +16,12 @@ export async function registerCycleStateCommands() {
         id: 'cycle-state-forward',
 		name: `Step note's state forward`,
         icon: ICON_STEP_STATE_FORWARD,
-        hotkeys: [
-            {
-                modifiers: ['Meta', 'Shift'],
-                key: 'd',
-            }
-        ],
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
             const wasOpen = openStateMenuIfClosed();
             const delayMs = wasOpen ? 0 : 300; // This timing should match the open time of the menu
-            setTimeout(() => {
+            window.setTimeout(() => {
                 void cycleFileState(file, 1);
             }, delayMs);
             returnStateMenuAfterDelay();
@@ -38,18 +32,12 @@ export async function registerCycleStateCommands() {
         id: 'cycle-state-backward',
 		name: `Step note's state backward`,
         icon: ICON_STEP_STATE_BACKWARD,
-        hotkeys: [
-            {
-                modifiers: ['Meta', 'Shift'],
-                key: 'a',
-            }
-        ],
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
             const wasOpen = openStateMenuIfClosed();
             const delayMs = wasOpen ? 0 : 300; // This timing should match the open time of the menu
-            setTimeout(() => {
+            window.setTimeout(() => {
                 void cycleFileState(file, -1);
             }, delayMs);
             returnStateMenuAfterDelay();

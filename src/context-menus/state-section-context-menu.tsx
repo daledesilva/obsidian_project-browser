@@ -28,7 +28,7 @@ export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFo
                         stateName: stateName
                     });
                     // TODO: This delay should be set as a constant globally to guarantee it's longer than other delay of file appear
-                    setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
+                    window.setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
                 })
         );
         menu.showAtMouseEvent(event);

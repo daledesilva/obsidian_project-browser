@@ -183,7 +183,7 @@ export class ProjectCardsView extends ItemView {
     // Called by Obsidian to provide your view with the state
     // Called automatically when the leaf opens your view
     // Set your state here from what's passed in
-    setState(state: any, result: ViewStateResult): Promise<void> {
+    setState(state: unknown, result: ViewStateResult): Promise<void> {
         result.history = true;
 
         // this.state.path = state.path;   // This line fucks up the navigation history (Even if you think you're overwriting it with the other line)
@@ -194,7 +194,7 @@ export class ProjectCardsView extends ItemView {
         return super.setState(this.state, result);
     }
 
-    setEphemeralState(eState: any): void {
+    setEphemeralState(eState: unknown): void {
         this.eState = eState;
         this.cardBrowserHandlers?.rerender();
         return super.setEphemeralState(this.eState);
@@ -242,7 +242,7 @@ export class ProjectCardsView extends ItemView {
     }
 
     applyScrollOffset = () => {
-        setTimeout(() => {
+        window.setTimeout(() => {
             const scrollEl = this.getBrowserScrollElement();
             if (this.eState?.scrollOffset != null && scrollEl) {
                 scrollEl.scrollTo(0, this.eState.scrollOffset);

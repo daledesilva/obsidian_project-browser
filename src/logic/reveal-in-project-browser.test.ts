@@ -6,9 +6,7 @@ jest.mock('src/logic/stores', () => ({
   getGlobals: jest.fn(),
 }));
 
-const { getGlobals } = jest.requireMock('src/logic/stores') as {
-  getGlobals: jest.Mock;
-};
+const { getGlobals } = jest.requireMock('src/logic/stores');
 
 function createFolder(name: string, path: string, parent: TFolder | null = null) {
   const folder = new TFolder(name) as TFolder & {

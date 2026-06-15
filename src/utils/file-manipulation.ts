@@ -153,7 +153,7 @@ export async function renameAbstractFile(abstractFile: TAbstractFile, newName: s
         return await renameTFolder(abstractFile, safeFilename);
     }
     
-    console.log('Unknown AbstractFile Type:', abstractFile);
+    console.warn('Unknown AbstractFile Type:', abstractFile);
     return null;
 }
 
@@ -173,7 +173,7 @@ export async function renameTFile(file: TFile, safeName: string): Promise<string
         await file.vault.rename(file, newPathAndName);
         return newPathAndName;
     } catch(e) {
-        console.log(e)
+        console.error(e)
         return null;
     }
 }
@@ -189,7 +189,7 @@ export async function renameTFolder(folder: TFolder, safeName: string): Promise<
         await folder.vault.rename(folder, newPathAndName);
         return newPathAndName;
     } catch(e) {
-        console.log(e)
+        console.error(e)
         return null;
     }
 }
@@ -203,7 +203,7 @@ export async function moveFileToFolder(file: TFile, targetFolder: TFolder): Prom
         await file.vault.rename(file, newPath);
         return newPath;
     } catch (e) {
-        console.log(e);
+        console.error(e);
         return null;
     }
 }
@@ -324,7 +324,7 @@ async function createNewMarkdownFile(
             fileRef = await vault.create(`${pathAndVersionedBasename}.md`, '', writeOptions);
         }
     } catch (reason) {
-        console.log(reason);
+        console.error(reason);
     }
 
     return fileRef;
@@ -347,8 +347,8 @@ export async function getFolderSettings(vault: Vault, folder: TFolder) : Promise
                 ...JSON.parse( await vault.read(settingsFile) )
             } as FolderSettings & { _description?: string; stateName?: string; priorityName?: string });
         } catch(e) {
-            console.log(`Error reading folder settings`, e);
-            console.log(`Creating empty settings`);
+            console.error(`Error reading folder settings`, e);
+            console.debug(`Creating empty settings`);
         }
     }
 	
@@ -358,7 +358,7 @@ export async function getFolderSettings(vault: Vault, folder: TFolder) : Promise
 export async function saveFolderSettings(vault: Vault, folder: TFolder, settings: FolderSettings) {
     let settingsFile: TFile | null = null;
     const filename = `${folder.path}/${FOLDER_SETTINGS_FILENAME}`;
-    const normalizedFolderSettings = normalizeFolderSettings(settings as FolderSettings & { _description?: string; stateName?: string; priorityName?: string });
+    const normalizedFolderSettings = normalizeFolderSettings(settings);
 
     try {
         settingsFile = vault.getFileByPath(filename);
@@ -368,14 +368,14 @@ export async function saveFolderSettings(vault: Vault, folder: TFolder, settings
         try {
             await vault.modify(settingsFile, JSON.stringify(normalizedFolderSettings, null, 2) );
         } catch(e) {
-            console.log(`Error writing to folder settings file`, e);
+            console.error(`Error writing to folder settings file`, e);
         }
 
     } else {
         try {
             await vault.create(filename, JSON.stringify(normalizedFolderSettings, null, 2));
         } catch(e) {
-            console.log(`Error creating folder settings file`, e);
+            console.error(`Error creating folder settings file`, e);
         }
     }
 }

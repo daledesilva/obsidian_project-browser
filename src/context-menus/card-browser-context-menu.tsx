@@ -72,7 +72,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
                         parentFolder: commands.getCurFolder(),
                         projectName: 'Untitled'
                     });
-                    setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
+                    window.setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
                 })
         );
         if (folderSettings.isProject) {
@@ -80,7 +80,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
                 item.setTitle("New subproject")
                     .onClick(async () => {
                         const newFile = await createSubproject(commands.getCurFolder());
-                        setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
+                        window.setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
                     })
             );
         }

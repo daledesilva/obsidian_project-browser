@@ -73,7 +73,7 @@ export class StateSettingsModalBase extends Modal {
 					this.sanitizeStateNameAndLink(text.getValue());
                 });
                 text.inputEl.addEventListener('keydown', (event) => {
-                    if ((event as KeyboardEvent).key === "Enter") {
+                    if ((event).key === "Enter") {
                         this.sanitizeStateNameAndLink(text.getValue());
                     }
                 });

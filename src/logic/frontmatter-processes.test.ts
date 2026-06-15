@@ -14,9 +14,9 @@ describe("processFrontMatterPreserveTimestamp", () => {
       };
 
       const modifyCalls: Array<{ content: string; options?: { mtime: number } }> = [];
-      const processFrontMatterCalls: Array<(processor: (fm: any) => void) => void> = [];
+      const processFrontMatterCalls: Array<(processor: (fm: unknown) => void) => void> = [];
 
-      const mockProcessFrontMatter = jest.fn().mockImplementation(async (file: any, processor: (fm: any) => void) => {
+      const mockProcessFrontMatter = jest.fn().mockImplementation(async (file: unknown, processor: (fm: unknown) => void) => {
         processFrontMatterCalls.push(processor);
         processor({ state: "Idea" });
       });
@@ -24,7 +24,7 @@ describe("processFrontMatterPreserveTimestamp", () => {
       const mockVault = {
         getAbstractFileByPath: jest.fn().mockReturnValue(mockFile),
         read: jest.fn().mockResolvedValue("---\nstate: Idea\n---\n\nContent"),
-        modify: jest.fn().mockImplementation((_file: any, content: string, options?: { mtime: number }) => {
+        modify: jest.fn().mockImplementation((_file: unknown, content: string, options?: { mtime: number }) => {
           modifyCalls.push({ content, options });
         }),
       };
@@ -45,7 +45,7 @@ describe("processFrontMatterPreserveTimestamp", () => {
 
       const { processFrontMatterPreserveTimestamp } = require("./frontmatter-processes");
 
-      return processFrontMatterPreserveTimestamp(mockFile as any, (frontmatter: any) => {
+      return processFrontMatterPreserveTimestamp(mockFile, (frontmatter: unknown) => {
         frontmatter.state = "Drafting";
       }).then(() => {
         expect(mockVault.modify).toHaveBeenCalled();
