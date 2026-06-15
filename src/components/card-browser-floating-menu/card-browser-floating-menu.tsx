@@ -57,8 +57,8 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
             setMenuIsOpen(false);
         }
 
-        document.addEventListener('pointerdown', handleClickOutside);
-        return () => document.removeEventListener('pointerdown', handleClickOutside);
+        activeDocument.addEventListener('pointerdown', handleClickOutside);
+        return () => activeDocument.removeEventListener('pointerdown', handleClickOutside);
     }, []);
 
     async function handleNewFileOrPage() {

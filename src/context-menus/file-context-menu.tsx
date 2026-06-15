@@ -29,7 +29,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         event.stopPropagation();
         
         // Close other menus (Only works on iOS for some reason, but also only needed there)
-        document.body.click();
+        activeDocument.body.click();
         
         const fileExtension = props.file.extension ?? '';
         const isUnsupported = isExtensionUnsupportedByObsidian(fileExtension);

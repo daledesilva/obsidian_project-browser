@@ -38,6 +38,14 @@
             transparent 100%
         );
         mask-size: 100% 100%;
+
+        &.ddc_pb_page-list-scroll--fade-top {
+            --ddc-pb-page-list-fade-top: 24px;
+        }
+
+        &.ddc_pb_page-list-scroll--fade-bottom {
+            --ddc-pb-page-list-fade-bottom: 24px;
+        }
         mask-repeat: no-repeat;
         -webkit-mask-image: linear-gradient(
             to bottom,

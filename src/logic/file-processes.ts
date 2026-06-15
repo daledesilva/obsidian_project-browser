@@ -88,9 +88,8 @@ export function deleteFolderWithConfirmation(folder: TFolder) {
 
 export function renameFileOrFolderInPlace(abstractFile: TAbstractFile, origEl: HTMLElement) {
     const origName = abstractFile.name;
-    const origDisplay = origEl.style.display;
 
-    const inputElement = document.createElement('input');
+    const inputElement = activeDocument.createElement('input');
     inputElement.type = 'text';
     inputElement.value = origEl.textContent || 'unnamed';
     inputElement.classList.add(...origEl.classList);
@@ -98,7 +97,7 @@ export function renameFileOrFolderInPlace(abstractFile: TAbstractFile, origEl: H
     origEl.parentNode?.insertBefore(inputElement, origEl);
     inputElement.focus();
     inputElement.select();
-    origEl.style.display = 'none';
+    origEl.classList.add('ddc_pb_rename-source-hidden');
 
     const detectExitKey = (e: KeyboardEvent) => {
         if(e.key === 'Enter') {
@@ -120,7 +119,7 @@ export function renameFileOrFolderInPlace(abstractFile: TAbstractFile, origEl: H
 
     const endRenamingMode = async () => {
         inputElement.parentNode?.removeChild(inputElement);
-        origEl.style.display = origDisplay;
+        origEl.classList.remove('ddc_pb_rename-source-hidden');
     }
 
     inputElement.addEventListener('keyup', detectExitKey);

@@ -140,7 +140,7 @@ function insertSetupTroubleshootSection(containerEl: HTMLElement) {
 	const headerSetting = new Setting(sectionEl)
 		.setClass("ddc_pb_controls-header")
 		.setClass("ddc_pb_controls-header--clickable")
-		.setName("Setup & Troubleshoot")
+		.setName("Setup & troubleshoot")
 		.setDesc("Configuration tips and getting started resources.");
 
 	const arrowEl = headerSetting.settingEl.createSpan("ddc_pb_collapse-arrow");
@@ -238,7 +238,7 @@ function insertAccessSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(sectionEl)
 		.setClass("ddc_pb_setting")
-		.setName("Use Aliases")
+		.setName("Use aliases")
 		.setDesc(
 			`Display the first alias of a file as it's name in the Project Browser if available.`,
 		)
@@ -260,7 +260,7 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(sectionEl)
 		.setClass("ddc_pb_controls-header")
-		.setName("FIle & Project States")
+		.setName("File & project states")
 		.setDesc(
 			"This is the list of categories that Project Browser will help assign projects and group by in the Browser view. Add new project states and drag them to reorder or delete.",
 		);
@@ -329,7 +329,7 @@ function insertProjectPageStateSettings(
 
 	new Setting(sectionEl)
 		.setClass("ddc_pb_controls-header")
-		.setName("Page States")
+		.setName("Page states")
 		.setDesc(
 			"This is the list of categories that Project Browser will use for markdown pages inside project folders. Add new page states and drag them to reorder or delete.",
 		);
@@ -423,7 +423,7 @@ function insertFileTypeSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	createExpandableFileTypeSection(
 		sectionEl,
-		"Browser Panel File Visibility",
+		"Browser panel file visibility",
 		"Control which file types appear in the project browser card view.",
 		"projectBrowser",
 		refresh,
@@ -431,7 +431,7 @@ function insertFileTypeSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	createExpandableFileTypeSection(
 		sectionEl,
-		"Page Menu File Visibility",
+		"Page menu file visibility",
 		"Control which file types appear in the project pages menu.",
 		"pageMenu",
 		refresh,
@@ -478,7 +478,7 @@ function insertNoteSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(sectionEl)
 		.setClass("ddc_pb_controls-header")
-		.setName("File Overlays")
+		.setName("File overlays")
 		.setDesc(
 			"This section defines how Project Browser features are integrated on screen when your files are open.",
 		);
@@ -576,16 +576,16 @@ function insertPrereleaseWarning(containerEl: HTMLElement) {
 		cls: "ddc_pb_settings-section-warning",
 	});
 	accordion.createEl("summary", {
-		text: `This plugin is in an Alpha state (Expand for details)`,
+		text: `This plugin is in beta (Expand for details)`,
 	});
 	accordion.createEl("p", {
-		text: `What does Alpha mean? Development of products like this plugin often involve moving through multiple different stages (e.g. Alpha, Beta, then Standard Release).`,
+		text: `What does beta mean? Development of products like this plugin often involve moving through multiple different stages (e.g. Alpha, Beta, then Standard Release).`,
 	});
 	accordion.createEl("p", {
-		text: `Alpha, the current stage, means that this plugin is in early development and may undergo large changes that break or change previous functionality.`,
+		text: `Beta, the current stage, means that this plugin is in early development and may undergo some changes that break or change previous functionality.`,
 	});
 	accordion.createEl("p", {
-		text: `While in Alpha, please exercise caution while using the plugin, however, note that I (The developer of this plugin) am proceeding with caution to help ensure any files created in this version will be compatible or converted to work with future versions (My own vaults depend on it as well).`,
+		text: `While in beta, please exercise caution while using the plugin, however, note that I (The developer of this plugin) am proceeding with caution to help ensure any files created in this version will be compatible or converted to work with future versions (My own vaults depend on it as well).`,
 	});
 }
 

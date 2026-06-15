@@ -14,7 +14,6 @@ import {
 //////////
 //////////
 
-const PAGE_LIST_EDGE_FADE_DEPTH_PX = 24;
 const PAGE_LIST_SCROLL_EPSILON_PX = 1;
 
 interface ProjectPagesFABProps {
@@ -88,10 +87,11 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         const hasOverflow = scrollEl.scrollHeight > scrollEl.clientHeight + PAGE_LIST_SCROLL_EPSILON_PX;
         setPageListHasOverflow(hasOverflow);
 
-        const fadeDepth = `${PAGE_LIST_EDGE_FADE_DEPTH_PX}px`;
         if (!hasOverflow) {
-            scrollEl.style.setProperty('--ddc-pb-page-list-fade-top', '0px');
-            scrollEl.style.setProperty('--ddc-pb-page-list-fade-bottom', '0px');
+            scrollEl.classList.remove(
+                'ddc_pb_page-list-scroll--fade-top',
+                'ddc_pb_page-list-scroll--fade-bottom',
+            );
             return;
         }
 
@@ -100,8 +100,8 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
             scrollEl.scrollTop + scrollEl.clientHeight >=
             scrollEl.scrollHeight - PAGE_LIST_SCROLL_EPSILON_PX;
 
-        scrollEl.style.setProperty('--ddc-pb-page-list-fade-top', atTop ? '0px' : fadeDepth);
-        scrollEl.style.setProperty('--ddc-pb-page-list-fade-bottom', atBottom ? '0px' : fadeDepth);
+        scrollEl.classList.toggle('ddc_pb_page-list-scroll--fade-top', !atTop);
+        scrollEl.classList.toggle('ddc_pb_page-list-scroll--fade-bottom', !atBottom);
     }, []);
 
     function handlePageListScroll() {
@@ -142,8 +142,8 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
             setMenuIsOpen(false);
         }
 
-        document.addEventListener('pointerdown', handleClickOutside);
-        return () => document.removeEventListener('pointerdown', handleClickOutside);
+        activeDocument.addEventListener('pointerdown', handleClickOutside);
+        return () => activeDocument.removeEventListener('pointerdown', handleClickOutside);
     }, []);
 
     React.useEffect(() => {

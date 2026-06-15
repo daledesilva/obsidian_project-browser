@@ -76,7 +76,7 @@ function addViewMenuOptions() {
     plugin.app.workspace.on('file-menu', (menu, file, source) => {
         if(source !== 'more-options') return;
         menu.addItem((item: MenuItem) => {
-            item.setTitle('Toggle State Menu');
+            item.setTitle('Toggle state menu');
             item.setChecked(getStateMenuSettings().visible);
             item.onClick(toggleStateMenu);
             item.setSection('pane');
@@ -88,7 +88,7 @@ function addViewMenuOptions() {
 function addActionButtons(view: View) {
     // TODO: Currently adding an extra button every time the view is clicked in.
     if (!(view instanceof MarkdownView)) return;
-    const element = view.addAction('file-stack', 'Toggle State Menu', toggleStateMenu);
+    const element = view.addAction('file-stack', 'Toggle state menu', toggleStateMenu);
 }
 
 function addStateHeader() {
@@ -239,7 +239,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
 }
 
 function cleanupInactiveProjectPagesFABs(activeContainerEl: HTMLElement) {
-    const fabContainers = Array.from(document.querySelectorAll(`.${projectPagesFabContainerClassName}`));
+    const fabContainers = Array.from(activeDocument.querySelectorAll(`.${projectPagesFabContainerClassName}`));
     for (const fabContainer of fabContainers) {
         if (!(fabContainer.instanceOf(HTMLElement))) continue;
         if (activeContainerEl.contains(fabContainer)) continue;

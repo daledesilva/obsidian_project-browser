@@ -34,12 +34,12 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
             }
         }
 
-        document.addEventListener('pointerdown', handleClickOutside);
+        activeDocument.addEventListener('pointerdown', handleClickOutside);
         monitorWorkspaceResizes();
 
         return () => {
             unmonitorWorkspaceResizes();
-            document.removeEventListener('pointerdown', handleClickOutside);
+            activeDocument.removeEventListener('pointerdown', handleClickOutside);
         };
     }, []);
 

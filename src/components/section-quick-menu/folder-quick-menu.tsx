@@ -28,13 +28,13 @@ export const FolderQuickMenu = (props: FolderQuickMenuProps) => {
 
     React.useEffect( () => {
         if(tooltip) {
-            tooltipRef.current!.style.display = 'block';
+            tooltipRef.current!.classList.add('ddc_pb_tooltip--visible');
             if(tooltipTimeout) {
                 window.clearTimeout(tooltipTimeout);
                 tooltipTimeout = null;
             }
             tooltipTimeout = window.setTimeout( () => {
-                tooltipRef.current!.style.display = 'none';
+                tooltipRef.current!.classList.remove('ddc_pb_tooltip--visible');
                 setTooltip(null);
             }, 1000);
         }

@@ -64,4 +64,12 @@
 // Show the menu when hovering over the parent section
 .ddc_pb_section:hover .ddc_pb_section-quick-menu {
     opacity: 1;
+}
+
+.ddc_pb_tooltip {
+    display: none;
+
+    &.ddc_pb_tooltip--visible {
+        display: block;
+    }
 } 

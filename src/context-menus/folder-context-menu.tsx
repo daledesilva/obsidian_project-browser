@@ -36,7 +36,7 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
         }
 
         // Close other menus (Only works on iOS for some reason, but also only needed there)
-        document.body.click();
+        activeDocument.body.click();
         
         const menu = new Menu();
         menu.addItem((item) =>
@@ -47,7 +47,7 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
                 })
         );
         menu.addItem((item) =>
-            item.setTitle("Reveal in Project Browser")
+            item.setTitle('Reveal in Project Browser')
                 .onClick(() => {
                     void revealInProjectBrowser(props.folder);
                 })

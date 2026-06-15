@@ -1,5 +1,11 @@
 import '@testing-library/jest-dom';
 
+// Obsidian global for the active popout window document (jsdom has no popouts; alias main document)
+Object.defineProperty(globalThis, 'activeDocument', {
+  get: () => document,
+  configurable: true,
+});
+
 // Obsidian uses String.prototype.contains (or polyfill); ensure it exists for unit tests
 if (!Object.prototype.hasOwnProperty.call(String.prototype, 'contains')) {
   Object.defineProperty(String.prototype, 'contains', {

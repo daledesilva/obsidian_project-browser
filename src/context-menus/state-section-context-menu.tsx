@@ -16,7 +16,7 @@ export function registerStateSectionContextMenu(el: HTMLElement, baseFolder: TFo
         event.stopPropagation();
 
         // Close other menus (Only works on iOS for some reason, but also only needed there)
-        document.body.click();
+        activeDocument.body.click();
 
         const menu = new Menu();
         menu.addItem((item) =>

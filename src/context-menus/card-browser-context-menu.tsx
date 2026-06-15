@@ -19,7 +19,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
         e.stopPropagation();
 
         // Close other menus (Only works on iOS for some reason, but also only needed there)
-        document.body.click();
+        activeDocument.body.click();
 
         const curFolder = commands.getCurFolder();
         const folderSettings = await getFolderSettings(plugin.app.vault, curFolder);

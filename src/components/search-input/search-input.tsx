@@ -21,7 +21,7 @@ export const SearchInput = (props: SearchInputProps) => {
     React.useEffect( () => {    
 
         // Listen to document for any interactions and remember if it occured within the card browser area.
-        document.addEventListener('pointerdown', (event) => {
+        activeDocument.addEventListener('pointerdown', (event) => {
             const cardBrowserEl = (event.target as HTMLElement)?.closest('.ddc_pb_browser');
             if(cardBrowserEl) {
                 lastClickedInCardBrowserRef.current = true;
@@ -30,10 +30,10 @@ export const SearchInput = (props: SearchInputProps) => {
             }
         });
 
-        document.addEventListener('keydown', handleKeyPress);
+        activeDocument.addEventListener('keydown', handleKeyPress);
 
         return () => {
-            document.removeEventListener('keydown', handleKeyPress);
+            activeDocument.removeEventListener('keydown', handleKeyPress);
         };
     });
 
@@ -48,8 +48,8 @@ export const SearchInput = (props: SearchInputProps) => {
         if(!lastClickedInCardBrowserRef.current) return;
         
         const cardBrowserEl = (event.target as HTMLElement)?.closest('.ddc_pb_browser');
-        const activeDomElName = document.activeElement?.tagName;
-        if(!cardBrowserEl?.contains(document.activeElement) && activeDomElName === 'INPUT') return; // Bail if there's an active input outside of the card browser view
+        const activeDomElName = activeDocument.activeElement?.tagName;
+        if(!cardBrowserEl?.contains(activeDocument.activeElement) && activeDomElName === 'INPUT') return; // Bail if there's an active input outside of the card browser view
 
         if(event.key === 'Escape') {
             clearSearchStr();
@@ -57,7 +57,7 @@ export const SearchInput = (props: SearchInputProps) => {
             return;
         }
 
-        if(document.activeElement === searchInputElRef.current) return; // Bail if search box is already active
+        if(activeDocument.activeElement === searchInputElRef.current) return; // Bail if search box is already active
 
         if (event.key.length === 1 && event.key.match(/[a-zA-Z0-9]/)) {
             // Focus the search box so it can handle the rest.

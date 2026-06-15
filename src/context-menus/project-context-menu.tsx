@@ -25,7 +25,7 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
 
     props.projectButtonEl.addEventListener('contextmenu', async (event) => {
         event.stopPropagation();
-        document.body.click();
+        activeDocument.body.click();
 
         const currentStateName = await getFolderStateName(props.folder);
     const currentPrioritySettings = await getFolderPrioritySettings(props.folder);
@@ -39,7 +39,7 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
                 })
         );
         menu.addItem((item) =>
-            item.setTitle("Reveal in Project Browser")
+            item.setTitle('Reveal in Project Browser')
                 .onClick(() => {
                     void revealInProjectBrowser(props.folder);
                 })
