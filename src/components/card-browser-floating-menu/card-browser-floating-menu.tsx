@@ -2,8 +2,9 @@ import './card-browser-floating-menu.scss';
 import { TFolder } from 'obsidian';
 import * as React from "react";
 import { ChevronLeft, Plus, Search } from 'lucide-react';
-import { createFolder, createProject, createSubproject } from 'src/utils/file-manipulation';
-import { openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
+import { createFolder, createProject } from 'src/utils/file-manipulation';
+import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
+import { NewSubprojectModal } from 'src/modals/new-subproject-modal/new-subproject-modal';
 import { isRootPath } from 'src/utils/string-processes';
 import classNames from 'classnames';
 import {
@@ -76,10 +77,12 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
 
     async function handleNewSubproject() {
         try {
-            const newFile = await createSubproject(props.folder);
-            openNewPageAndSelectTitle(newFile);
+            const newFile = await new NewSubprojectModal({ parentFolder: props.folder }).showModal();
+            openFileInSameLeaf(newFile);
         } catch (reason) {
-            console.error(reason);
+            if (reason !== 'cancelled') {
+                console.error(reason);
+            }
         }
         setMenuIsOpen(false);
     }

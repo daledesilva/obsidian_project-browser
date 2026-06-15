@@ -1,8 +1,9 @@
 import { Menu, TFolder } from "obsidian";
-import { openNewPageAndSelectTitle } from "src/logic/file-access-processes";
+import { openFileInSameLeaf, openNewPageAndSelectTitle } from "src/logic/file-access-processes";
 import { getGlobals, getShowHiddenFolders, hideHiddenFolders, unhideHiddenFolders } from "src/logic/stores";
 import { NewFolderModal } from "src/modals/new-folder-modal/new-folder-modal";
-import { createProject, createSubproject, getFolderSettings, setFolderAsProject, setFolderAsFolder } from "src/utils/file-manipulation";
+import { NewSubprojectModal } from "src/modals/new-subproject-modal/new-subproject-modal";
+import { createProject, getFolderSettings, setFolderAsProject, setFolderAsFolder } from "src/utils/file-manipulation";
 
 ////////
 ////////
@@ -79,8 +80,14 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
             menu.addItem((item) =>
                 item.setTitle("New subproject")
                     .onClick(async () => {
-                        const newFile = await createSubproject(commands.getCurFolder());
-                        window.setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
+                        try {
+                            const newFile = await new NewSubprojectModal({
+                                parentFolder: commands.getCurFolder(),
+                            }).showModal();
+                            openFileInSameLeaf(newFile);
+                        } catch {
+                            // cancelled
+                        }
                     })
             );
         }

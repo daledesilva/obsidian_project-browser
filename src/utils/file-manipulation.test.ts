@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test, jest } from "@jest/globals";
 import { TFile, TFolder } from "obsidian";
+import { FOLDER_SETTINGS_FILENAME } from "src/constants";
 
 jest.mock("src/logic/stores", () => ({
   getGlobals: jest.fn(),
@@ -426,6 +427,84 @@ describe("createProjectFromNote", () => {
       expect((folderSettings as { _description?: string })._description).toBeUndefined();
       expect((folderSettings as { stateName?: string }).stateName).toBeUndefined();
       expect((folderSettings as { priorityName?: string }).priorityName).toBeUndefined();
+    });
+  });
+});
+
+describe("createSubproject", () => {
+  test("creates a named subproject folder with Page 1 and marks it as a project", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const isolatedObsidian = require("obsidian") as {
+        TFile: typeof TFile;
+        TFolder: typeof TFolder;
+      };
+      const mockVaultState = createMockVault(isolatedObsidian);
+      const parentFolder = mockVaultState.ensureFolder("Projects/Parent Project");
+      const refreshFileDependants = jest.fn();
+
+      getGlobals.mockReturnValue({
+        plugin: {
+          app: {
+            vault: mockVaultState.vault,
+          },
+          refreshFileDependants,
+          settings: {
+            defaultProjectPageState: "",
+            defaultState: "",
+          },
+        },
+      });
+
+      const { createSubproject } = require("./file-manipulation");
+      const firstPage = await createSubproject(parentFolder, "My Subproject");
+
+      const subprojectFolder = mockVaultState.vault.getAbstractFileByPath("Projects/Parent Project/My Subproject");
+      const pageOne = mockVaultState.vault.getFileByPath("Projects/Parent Project/My Subproject/Page 1.md");
+      const folderSettingsFile = mockVaultState.vault.getFileByPath(
+        `Projects/Parent Project/My Subproject/${FOLDER_SETTINGS_FILENAME}`
+      );
+
+      expect(subprojectFolder).toBeInstanceOf(isolatedObsidian.TFolder);
+      expect(pageOne).toBe(firstPage);
+      expect(firstPage.path).toBe("Projects/Parent Project/My Subproject/Page 1.md");
+      expect(folderSettingsFile).toBeInstanceOf(isolatedObsidian.TFile);
+      expect(await mockVaultState.vault.read(folderSettingsFile)).toContain('"isProject": true');
+    });
+  });
+
+  test("increments the subproject folder name when a collision exists", async () => {
+    await jest.isolateModulesAsync(async () => {
+      const isolatedObsidian = require("obsidian") as {
+        TFile: typeof TFile;
+        TFolder: typeof TFolder;
+      };
+      const mockVaultState = createMockVault(isolatedObsidian);
+      const parentFolder = mockVaultState.ensureFolder("Projects/Parent Project");
+      mockVaultState.ensureFolder("Projects/Parent Project/Alpha");
+      const refreshFileDependants = jest.fn();
+
+      getGlobals.mockReturnValue({
+        plugin: {
+          app: {
+            vault: mockVaultState.vault,
+          },
+          refreshFileDependants,
+          settings: {
+            defaultProjectPageState: "",
+            defaultState: "",
+          },
+        },
+      });
+
+      const { createSubproject } = require("./file-manipulation");
+      const firstPage = await createSubproject(parentFolder, "Alpha");
+
+      const subprojectFolder = mockVaultState.vault.getAbstractFileByPath("Projects/Parent Project/Alpha 2");
+      const pageOne = mockVaultState.vault.getFileByPath("Projects/Parent Project/Alpha 2/Page 1.md");
+
+      expect(subprojectFolder).toBeInstanceOf(isolatedObsidian.TFolder);
+      expect(pageOne).toBe(firstPage);
+      expect(firstPage.path).toBe("Projects/Parent Project/Alpha 2/Page 1.md");
     });
   });
 });
