@@ -28,7 +28,7 @@ function showLatestChanges() {
     noticeBody.createEl('p').setText(`Added:`);
     let listEl = noticeBody.createEl('ul');
     listEl.createEl('li').setText(`Multi-page projects are here!`);
-    listEl.createEl('li').setText(`Every note, base, or canvas is already considered a project and can have multiple pages added to it`);
+    listEl.createEl('li').setText(`Every note, base, or canvas is already considered a project and can have multiple pages added to it.`);
     listEl.createEl('li').setText(`Custom states for pages.`);
     listEl.createEl('li').setText(`Convert folders to projects.`);
     listEl.createEl('li').setText(`File type visibility options.`);
