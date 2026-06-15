@@ -12,8 +12,8 @@ export function createNoticeTemplate(noticeNumber?: number, noticeTotal?: number
 
 export function launchPersistentNotice(noticeBody: DocumentFragment) {
     const notice = new Notice(noticeBody, 0);
-    notice.noticeEl.classList.add('ddc_pb_notice');
-    notice.noticeEl.style.pointerEvents = "none";
+    notice.messageEl.classList.add('ddc_pb_notice');
+    notice.messageEl.style.pointerEvents = "none";
     return notice;
 }
 

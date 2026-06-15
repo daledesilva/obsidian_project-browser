@@ -22,7 +22,7 @@ export function openFileInSameLeaf(file: TFile) {
         leaf = workspace.getLeaf();
     }
 
-    leaf.openFile(file);
+    void leaf.openFile(file);
 }
 
 /**
@@ -53,7 +53,7 @@ export async function openFileInBackgroundTab(file: TFile) {
     await newLeaf.openFile(file);
 
     // switch immediately back to previous tab
-    if(curLeaf) workspace.setActiveLeaf(curLeaf);
+    if(curLeaf) workspace.setActiveLeaf(curLeaf, { focus: true });
 }
 
 /**

@@ -75,7 +75,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
             return;
         }
         let cancelled = false;
-        getFolderSettings(v, parent).then((settings) => {
+        void getFolderSettings(v, parent).then((settings) => {
             if (cancelled) return;
             const isProject = settings.isProject === true;
             setParentFolderIsProject(isProject);
@@ -96,14 +96,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
                 }
                 if (!cancelled) setParentFolderIsInsideProject(false);
             };
-            checkAncestors();
+            void checkAncestors();
         });
         return () => { cancelled = true; };
     }, [initialFolder.path, refreshId, v]);
 
     React.useEffect(() => {
         let cancelled = false;
-        getFolderSettings(v, initialFolder).then((settings) => {
+        void getFolderSettings(v, initialFolder).then((settings) => {
             if (!cancelled) setCurrentFolderIsProject(settings.isProject === true);
         });
         return () => { cancelled = true; };
@@ -111,7 +111,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
 
     React.useEffect(() => {
         let cancelled = false;
-        getSortedSectionsInFolderAsync(initialFolder).then((sections) => {
+        void getSortedSectionsInFolderAsync(initialFolder).then((sections) => {
             if (!cancelled) {
                 setSectionsOfItemsRaw(sections);
             }

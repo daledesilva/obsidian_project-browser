@@ -205,7 +205,7 @@ export class ProjectPagesSidebarItemView extends ItemView {
         this.navigation = false;
         this.icon = ICON_PLUGIN;
         this.state = { projectFolderPath: '' };
-        leaf.open(this);
+        void leaf.open(this);
     }
 
     getViewType(): string {

@@ -95,7 +95,7 @@ export const stateSettingsAtom = atom(
             const { plugin } = getGlobals();
             plugin.settings.states.visible = newValue.visible;
             plugin.settings.states.hidden = newValue.hidden;
-            plugin.saveSettings();
+            void plugin.saveSettings();
         } catch (error) {
             console.error('Error updating state settings:', error);
         }
@@ -111,7 +111,7 @@ export const projectPageStateSettingsAtom = atom(
             const { plugin } = getGlobals();
             plugin.settings.projectPageStates.visible = newValue.visible;
             plugin.settings.projectPageStates.hidden = newValue.hidden;
-            plugin.saveSettings();
+            void plugin.saveSettings();
         } catch (error) {
             console.error('Error updating project page state settings:', error);
         }
@@ -130,7 +130,7 @@ export const folderSettingsAtom = atom(
         try {
             const { plugin } = getGlobals();
             plugin.settings.folders = newValue;
-            plugin.saveSettings();
+            void plugin.saveSettings();
         } catch (error) {
             console.error('Error updating folder settings:', error);
         }
@@ -152,7 +152,7 @@ export const statelessSettingsAtom = atom(
         try {
             const { plugin } = getGlobals();
             plugin.settings.stateless = newStatelessSettings;
-            plugin.saveSettings();
+            void plugin.saveSettings();
         } catch (error) {
             console.error('Error updating stateless settings:', error);
         }
@@ -170,7 +170,7 @@ export const projectPageStatelessSettingsAtom = atom(
         try {
             const { plugin } = getGlobals();
             plugin.settings.projectPageStateless = nextStatelessSettings;
-            plugin.saveSettings();
+            void plugin.saveSettings();
         } catch (error) {
             console.error('Error updating project page stateless settings:', error);
         }

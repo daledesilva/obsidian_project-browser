@@ -39,7 +39,7 @@ export const ProjectCardBase = (props: ProjectCardBaseProps) => {
     React.useEffect(() => {
         let cancelled = false;
 
-        getFolderPriorityName(props.folder).then((nextPriorityName) => {
+        void getFolderPriorityName(props.folder).then((nextPriorityName) => {
             if (!cancelled) {
                 setPriorityName(nextPriorityName);
             }

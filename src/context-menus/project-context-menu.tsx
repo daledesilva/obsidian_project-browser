@@ -35,7 +35,7 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
             item.setTitle("Set as launch project")
                 .onClick(() => {
                     plugin.settings.access.launchFolder = props.folder.path;
-                    plugin.saveSettings();
+                    void plugin.saveSettings();
                 })
         );
         menu.addItem((item) =>
@@ -88,7 +88,7 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
         menu.addItem((item) =>
             item.setTitle("Rename")
                 .onClick(() => {
-                    new RenameFolderModal({ folder: props.folder }).showModal();
+                    void new RenameFolderModal({ folder: props.folder }).showModal();
                     props.onProjectChange();
                 })
         );

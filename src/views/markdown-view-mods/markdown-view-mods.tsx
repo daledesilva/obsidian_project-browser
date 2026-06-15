@@ -49,7 +49,7 @@ export function registerMarkdownViewMods() {
 
         if (isFileView(leaf)) {
             const keepMenuOpen = Date.now() < keepProjectPagesFabMenuOpenUntilMs;
-            addOrRemoveProjectPagesFAB({ keepMenuOpen });
+            void addOrRemoveProjectPagesFAB({ keepMenuOpen });
             if (leaf.view instanceof MarkdownView) {
                 addStateHeader();
             }
@@ -64,7 +64,7 @@ export function registerMarkdownViewMods() {
         if (!activeLeaf || !isFileView(activeLeaf)) return;
 
         const keepMenuOpen = Date.now() < keepProjectPagesFabMenuOpenUntilMs;
-        addOrRemoveProjectPagesFAB({ keepMenuOpen });
+        void addOrRemoveProjectPagesFAB({ keepMenuOpen });
         if (activeLeaf.view instanceof MarkdownView) {
             addStateHeader();
         }
@@ -176,7 +176,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
     function onOpenProjectFolder(folder: TFolder) {
         const activeLeaf = workspace.getMostRecentLeaf();
         if (activeLeaf) {
-            activeLeaf.setViewState({
+            void activeLeaf.setViewState({
                 type: CARD_BROWSER_VIEW_TYPE,
                 state: { path: folder.path },
             });

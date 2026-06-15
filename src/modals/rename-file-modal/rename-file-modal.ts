@@ -55,7 +55,7 @@ export class RenameFileModal extends Modal {
                     if ((event as KeyboardEvent).key === "Enter") {
 						this.name = sanitizeFileFolderName(text.getValue());
 						if(this.name.trim() === '') this.name = 'Unnamed';
-                        renameTFile(this.file, this.name);
+                        void renameTFile(this.file, this.name);
 						this.resolveModal?.(this.file);
 						this.close();
                     }
@@ -77,7 +77,7 @@ export class RenameFileModal extends Modal {
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Save');
 			confirmBtn.onClick(() => {
-				renameTFile(this.file, this.name);	// TODO: If this fails, the modal should report a fail
+				void renameTFile(this.file, this.name);	// TODO: If this fails, the modal should report a fail
 				this.resolveModal?.(this.file);
 				this.close();
 			})

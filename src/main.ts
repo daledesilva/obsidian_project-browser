@@ -41,14 +41,14 @@ export default class ProjectBrowserPlugin extends Plugin {
 		// TODO: This is to be re-enabled in v0.5
 		// registerProjectPagesSidebarView()
 		registerMarkdownViewMods()
-		registerToggleStateMenuCommand();
-		registerCycleStateCommands();
+		void registerToggleStateMenuCommand();
+		void registerCycleStateCommands();
 		registerFileOpenSelectTitleHandler(this);
 		registerRevealInProjectBrowserMenus();
 
 		if(this.settings.access.replaceNewTab)		loadCardBrowserOnNewTab();
-		if(this.settings.access.enableRibbonIcon)	registerOpenProjectBrowserRibbonIcon();
-		if(this.settings.access.enableCommand)		registerOpenProjectBrowserCommand();
+		if(this.settings.access.enableRibbonIcon)	void registerOpenProjectBrowserRibbonIcon();
+		if(this.settings.access.enableCommand)		void registerOpenProjectBrowserCommand();
 
 		registerSettingsTab();
 		
@@ -60,9 +60,9 @@ export default class ProjectBrowserPlugin extends Plugin {
 
 		showNotices();
 
-		this.app.vault.on('create', () => this.refreshFileDependants())
-		this.app.vault.on('delete', () => this.refreshFileDependants())
-		this.app.vault.on('rename', () => this.refreshFileDependants())
+		this.app.vault.on('create', () => { void this.refreshFileDependants(); })
+		this.app.vault.on('delete', () => { void this.refreshFileDependants(); })
+		this.app.vault.on('rename', () => { void this.refreshFileDependants(); })
 	}
 	
 
@@ -81,7 +81,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 			this.settings = Object.assign({}, DEFAULT_SETTINGS, this.settings);
 		} else {
 			this.settings = migrateOutdatedSettings(this.settings);
-			this.saveSettings();
+			void this.saveSettings();
 		}	
 	}
 
@@ -91,7 +91,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 
 	async resetSettings() {
 		this.settings = JSON.parse( JSON.stringify(DEFAULT_SETTINGS) );
-		this.saveSettings();
+		void this.saveSettings();
 		new Notice('Project Browser plugin settings reset');
 	}
 

@@ -102,7 +102,7 @@ export async function revealInProjectBrowser(target: TAbstractFile): Promise<voi
 
         // Activate the leaf first so any Obsidian-initiated setEphemeralState
         // calls (which would clear lastTouchedFilePath) happen before we set it.
-        plugin.app.workspace.setActiveLeaf(leaf, false, true);
+        plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
 
         const existingEphemeralState = leaf.getEphemeralState?.() ?? {};
         leaf.setEphemeralState({

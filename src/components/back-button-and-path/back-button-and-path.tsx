@@ -40,7 +40,7 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
             }
             setProjectFolderPaths(projectPaths);
         };
-        checkProjectFolders();
+        void checkProjectFolders();
     }, [props.folder.path, props.refreshKey]);
 
     const firstProjectIndex = folderTrail.findIndex(f => projectFolderPaths.has(f.path));

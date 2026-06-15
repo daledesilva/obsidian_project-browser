@@ -11,7 +11,7 @@ export function toggleStateMenu() {
     setStateMenuSettings(newStateMenuSettings);
     
     plugin.settings.showStateMenu = newStateMenuSettings.visible;
-    plugin.saveSettings();
+    void plugin.saveSettings();
 }
 
 //////////////////

@@ -101,7 +101,7 @@ async function ensureProjectPagesSidebarShowsProject(workspace: Workspace, proje
         state: nextState as unknown as Record<string, unknown>,
         active: false,
     });
-    workspace.revealLeaf(leaf);
+    void workspace.revealLeaf(leaf);
 }
 
 async function hideOrRestoreProjectPagesSidebar(workspace: Workspace): Promise<void> {
@@ -116,7 +116,7 @@ async function hideOrRestoreProjectPagesSidebar(workspace: Workspace): Promise<v
             const leafToReactivate = capturedLeftLeafReactivate;
             capturedLeftLeafReactivate = null;
             workspace.detachLeavesOfType(PROJECT_PAGES_SIDEBAR_VIEW_TYPE);
-            workspace.revealLeaf(leafToReactivate);
+            void workspace.revealLeaf(leafToReactivate);
             return;
         }
 

@@ -123,31 +123,37 @@ describe('getScrollOffset', () => {
 });
 
 describe('deleteFileImmediately', () => {
-  test('calls vault.delete and refreshFileDependants', () => {
-    const deleteMock = jest.fn();
+  test('calls fileManager.trashFile and refreshFileDependants', async () => {
+    const trashFileMock = jest.fn().mockResolvedValue(undefined);
     const refreshMock = jest.fn();
-    const file = new TFile('file.md', 0, 0) as TFile & { vault: { delete: jest.Mock } };
-    file.vault = { delete: deleteMock } as unknown as TFile['vault'];
-    getGlobals.mockReturnValue({ plugin: { refreshFileDependants: refreshMock } });
+    const file = new TFile('file.md', 0, 0);
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: { fileManager: { trashFile: trashFileMock } },
+        refreshFileDependants: refreshMock,
+      },
+    });
 
-    deleteFileImmediately(file);
-    expect(deleteMock).toHaveBeenCalledWith(file);
+    await deleteFileImmediately(file);
+    expect(trashFileMock).toHaveBeenCalledWith(file);
     expect(refreshMock).toHaveBeenCalled();
   });
 });
 
 describe('deleteFolderImmediately', () => {
-  test('calls vault.delete with folder and true, and refreshFileDependants', () => {
-    const folder = new TFolder('folder') as TFolder & {
-      vault: { delete: jest.Mock };
-    };
-    const deleteMock = jest.fn();
-    folder.vault = { delete: deleteMock } as unknown as TFolder['vault'];
+  test('calls fileManager.trashFile and refreshFileDependants', async () => {
+    const trashFileMock = jest.fn().mockResolvedValue(undefined);
     const refreshMock = jest.fn();
-    getGlobals.mockReturnValue({ plugin: { refreshFileDependants: refreshMock } });
+    const folder = new TFolder('folder');
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: { fileManager: { trashFile: trashFileMock } },
+        refreshFileDependants: refreshMock,
+      },
+    });
 
-    deleteFolderImmediately(folder);
-    expect(deleteMock).toHaveBeenCalledWith(folder, true);
+    await deleteFolderImmediately(folder);
+    expect(trashFileMock).toHaveBeenCalledWith(folder);
     expect(refreshMock).toHaveBeenCalled();
   });
 });

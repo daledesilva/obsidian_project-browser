@@ -63,7 +63,7 @@ export const processFrontMatterUpdateTimestamp = async (file: TFile, processor: 
 
 export const setFileFrontmatter = (file: TFile, newFrontmatter: FrontMatterCache) => {
     const {plugin} = getGlobals();
-    plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
+    void plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
         frontmatter = newFrontmatter;
     });
 }
@@ -149,7 +149,7 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
                 // NOTE: delete frontmatter['state']; // This doesn't work
             }
         });
-        plugin.refreshFileDependants();
+        void plugin.refreshFileDependants();
         return true;
     } catch(e) {
         error(e);
@@ -181,7 +181,7 @@ export const setFilePriority = async (file: TFile, prioritySettings: null | Prio
                 // NOTE: delete frontmatter['priority']; // This doesn't work
             }
         });
-        plugin.refreshFileDependants();
+        void plugin.refreshFileDependants();
         return true;
     } catch(e) {
         error(e);

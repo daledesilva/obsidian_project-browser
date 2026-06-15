@@ -56,10 +56,10 @@ export const NoteCardBase = (props: NoteCardBaseProps) => {
             ])}
             onClick = { (event) => {
                 if (event.ctrlKey || event.metaKey) {
-                    openFileInBackgroundTab(props.file)
+                    void openFileInBackgroundTab(props.file)
                 } else {
                     cardBrowserContext.rememberLastTouchedFile(props.file);
-                    openFileInSameLeaf(props.file)
+                    void openFileInSameLeaf(props.file)
                 }
             }}
             style = {{

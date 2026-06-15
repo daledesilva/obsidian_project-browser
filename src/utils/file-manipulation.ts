@@ -385,14 +385,14 @@ export async function hideFolder(folder: TFolder): Promise<void> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     folderSettings.isHidden = true;
-    saveFolderSettings(plugin.app.vault, folder, folderSettings);
+    await saveFolderSettings(plugin.app.vault, folder, folderSettings);
 }
 
 export async function unhideFolder(folder: TFolder): Promise<void> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
     delete folderSettings.isHidden;
-    saveFolderSettings(plugin.app.vault, folder, folderSettings);
+    await saveFolderSettings(plugin.app.vault, folder, folderSettings);
 }
 
 export async function setFolderAsProject(folder: TFolder): Promise<void> {
@@ -402,7 +402,7 @@ export async function setFolderAsProject(folder: TFolder): Promise<void> {
     delete folderSettings.state;
     delete folderSettings.priority;
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
-    plugin.refreshFileDependants();
+    void plugin.refreshFileDependants();
 }
 
 export async function setFolderAsFolder(folder: TFolder): Promise<void> {
@@ -412,7 +412,7 @@ export async function setFolderAsFolder(folder: TFolder): Promise<void> {
     delete folderSettings.state;
     delete folderSettings.priority;
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
-    plugin.refreshFileDependants();
+    void plugin.refreshFileDependants();
 }
 
 export async function setFolderState(folder: TFolder, stateSettings: StateSettings | null): Promise<void> {
@@ -424,7 +424,7 @@ export async function setFolderState(folder: TFolder, stateSettings: StateSettin
         folderSettings.state = stateSettings.name;
     }
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
-    plugin.refreshFileDependants();
+    void plugin.refreshFileDependants();
 }
 
 export async function setFolderPriority(folder: TFolder, prioritySettings: PrioritySettings | null): Promise<void> {
@@ -440,7 +440,7 @@ export async function setFolderPriority(folder: TFolder, prioritySettings: Prior
         folderSettings.priority = prioritySettings.name;
     }
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
-    plugin.refreshFileDependants();
+    void plugin.refreshFileDependants();
 }
 
 export async function getFolderStateName(folder: TFolder): Promise<string | null> {

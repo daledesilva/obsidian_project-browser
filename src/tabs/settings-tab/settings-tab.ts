@@ -232,7 +232,7 @@ function insertAccessSettings(containerEl: HTMLElement, refresh: () => void) {
 				const safeValue = folderPathSanitize(text.getValue());
 				text.setValue(safeValue);
 				plugin.settings.access.launchFolder = safeValue;
-				plugin.saveSettings();
+				void plugin.saveSettings();
 			});
 		});
 
@@ -313,7 +313,7 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 					dropdown.getValue() == "(None)"
 						? undefined
 						: (dropdown.getValue() as string);
-				plugin.saveSettings();
+				void plugin.saveSettings();
 			});
 		});
 }
@@ -385,7 +385,7 @@ function insertProjectPageStateSettings(
 					dropdown.getValue() == "(None)"
 						? undefined
 						: (dropdown.getValue() as string);
-				plugin.saveSettings();
+				void plugin.saveSettings();
 			});
 		});
 }

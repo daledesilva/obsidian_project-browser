@@ -43,7 +43,7 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
             item.setTitle("Set as launch folder")
                 .onClick(() => {
                     plugin.settings.access.launchFolder = props.folder.path;
-                    plugin.saveSettings();
+                    void plugin.saveSettings();
                 })
         );
         menu.addItem((item) =>
@@ -92,7 +92,7 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
             item.setTitle("Rename folder")
                 .onClick(() => {
                     // renameFileOrFolderInPlace(folder, folderBtnEl)
-                    new RenameFolderModal({
+                    void new RenameFolderModal({
                         folder: props.folder,
                     }).showModal()
                 })

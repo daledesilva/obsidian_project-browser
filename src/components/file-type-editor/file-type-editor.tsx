@@ -151,7 +151,7 @@ function runFileTypeDiscovery(plugin: { app: App; settings: { fileTypes: { proje
         }
     }
     if (addedPlugin || addedVault) {
-        plugin.saveSettings();
+        void plugin.saveSettings();
         return true;
     }
     return false;

@@ -57,7 +57,7 @@ function showLatestChanges() {
         tertiaryBtnEl.addEventListener('click', () => {
             notice.hide();
             plugin.settings.onboardingNotices.lastVersionNoticeRead = plugin.manifest.version;
-            plugin.saveSettings();
+            void plugin.saveSettings();
         });
     }
     

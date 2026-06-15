@@ -125,7 +125,7 @@ describe('reveal-in-project-browser logic', () => {
       scrollOffset: 0,
       lastTouchedFilePath: 'Project A/note-1.md',
     });
-    expect(workspace.setActiveLeaf).toHaveBeenCalledWith(browserLeaf, false, true);
+    expect(workspace.setActiveLeaf).toHaveBeenCalledWith(browserLeaf, { focus: true });
 
     // setActiveLeaf must come before setEphemeralState so that any Obsidian-initiated
     // reset of ephemeral state during activation cannot overwrite lastTouchedFilePath.

@@ -37,11 +37,11 @@ export const FolderButton = (props: FolderButtonProps) => {
             onFolderChange: () => {
                 // Slight delay so that settings changes get picked up
                 setTimeout( async () => {
-                    applyFolderSettings()
+                    void applyFolderSettings()
                 }, 200)
             }
         });
-        applyFolderSettings();
+        void applyFolderSettings();
     }, [])
 
     ////////

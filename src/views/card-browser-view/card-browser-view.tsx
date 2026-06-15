@@ -84,7 +84,7 @@ async function openProjectBrowserInLeaf(leaf: WorkspaceLeaf, shouldActivateLeaf:
     if(currentViewType === CARD_BROWSER_VIEW_TYPE) {
         if(shouldActivateLeaf) {
             const {plugin} = getGlobals();
-            plugin.app.workspace.setActiveLeaf(leaf, false, true);
+            plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
         }
         return;
     }
@@ -100,7 +100,7 @@ async function openProjectBrowserInLeaf(leaf: WorkspaceLeaf, shouldActivateLeaf:
 
         if(shouldActivateLeaf) {
             const {plugin} = getGlobals();
-            plugin.app.workspace.setActiveLeaf(leaf, false, true);
+            plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
         }
     } finally {
         pendingLeafReplacements.delete(leaf);
@@ -142,7 +142,7 @@ export class ProjectCardsView extends ItemView {
         this.navigation = true;
         this.icon = ICON_PLUGIN;
         
-        leaf.open(this);
+        void leaf.open(this);
     }
 
     getViewType() {
@@ -253,7 +253,7 @@ export class ProjectCardsView extends ItemView {
     // My function that I call to navigate to a new folder
     setViewStateWithHistory = (statePartial: PartialCardBrowserViewState) => {
         const nextState = {...this.state, ...statePartial};
-        this.leaf.setViewState({
+        void this.leaf.setViewState({
             type: CARD_BROWSER_VIEW_TYPE,
             state: nextState,
         });

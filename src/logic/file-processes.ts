@@ -50,16 +50,16 @@ export function getScrollOffset(): number {
     return editor.getScrollInfo().top;
 }
 
-export function deleteFileImmediately(file: TFile) {
+export async function deleteFileImmediately(file: TFile) {
     const {plugin} = getGlobals();
-    file.vault.delete(file);
-    plugin.refreshFileDependants();
+    await plugin.app.fileManager.trashFile(file);
+    void plugin.refreshFileDependants();
 }
 
-export function deleteFolderImmediately(folder: TFolder) {
+export async function deleteFolderImmediately(folder: TFolder) {
     const {plugin} = getGlobals();
-    folder.vault.delete(folder, true);
-    plugin.refreshFileDependants();
+    await plugin.app.fileManager.trashFile(folder);
+    void plugin.refreshFileDependants();
 }
 
 export function deleteFileWithConfirmation(file: TFile) {
@@ -68,7 +68,7 @@ export function deleteFileWithConfirmation(file: TFile) {
         message: `Are you sure you'd like to delete "${file.name}" ?`,
         confirmLabel: 'Delete note',
         confirmAction: async () => {
-            deleteFileImmediately(file);
+            await deleteFileImmediately(file);
             new Notice(`Deleted "${file.name}"`);
         }
     }).open();
@@ -80,7 +80,7 @@ export function deleteFolderWithConfirmation(folder: TFolder) {
         message: `Are you sure you'd like to delete "${folder.name}" and it's contents?`,
         confirmLabel: 'Delete folder & contents',
         confirmAction: async () => {
-            deleteFolderImmediately(folder);
+            await deleteFolderImmediately(folder);
             new Notice(`Deleted "${folder.name}"`);
         }
     }).open();
@@ -102,10 +102,10 @@ export function renameFileOrFolderInPlace(abstractFile: TAbstractFile, origEl: H
 
     const detectExitKey = (e: KeyboardEvent) => {
         if(e.key === 'Enter') {
-            saveAbstractFile();
-            endRenamingMode();
+            void saveAbstractFile();
+            void endRenamingMode();
         } else if(e.key === 'Escape') {
-            endRenamingMode();
+            void endRenamingMode();
         }
     }
 

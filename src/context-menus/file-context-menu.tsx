@@ -46,7 +46,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             menu.addItem((item) => {
                 item.setTitle('Open in new tab');
                 item.onClick(() => {
-                    openFileInBackgroundTab(props.file)
+                    void openFileInBackgroundTab(props.file);
                 });
             });
             menu.addItem((item) => {
@@ -72,7 +72,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                     item.setTitle(prioritySettings.name);
                     if(prioritySettings.name === fileRawPriority?.name) item.setChecked(true);
                     item.onClick(() => {
-                        setFilePriority(props.file, prioritySettings);
+                        void setFilePriority(props.file, prioritySettings);
                         props.onFileChange();
                     });
                 });
@@ -105,7 +105,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             item.setTitle("Rename")
             .onClick(() => {
                 // renameFileOrFolderInPlace(props.file, props.noteEl);
-                new RenameFileModal({
+                void new RenameFileModal({
                     file: props.file,
                 }).showModal()
                 props.onFileChange();

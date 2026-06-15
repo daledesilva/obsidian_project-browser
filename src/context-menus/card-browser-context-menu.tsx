@@ -45,7 +45,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
             item.setTitle("Set as launch folder")
                 .onClick(() => {
                     plugin.settings.access.launchFolder = curFolder.path;
-                    plugin.saveSettings();
+                    void plugin.saveSettings();
                 })
         );
         if (folderSettings.isProject) {
@@ -87,7 +87,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
         menu.addItem((item) =>
             item.setTitle("New folder")
                 .onClick(() => {
-                    new NewFolderModal({
+                    void new NewFolderModal({
                         baseFolder: commands.getCurFolder(),
                     }).showModal()
                 })

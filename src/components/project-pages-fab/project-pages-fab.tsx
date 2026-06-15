@@ -166,11 +166,11 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     }
 
     function handleNewProjectClick() {
-        props.onNewProject?.();
+        void props.onNewProject?.();
     }
 
     function handleAddPageClick() {
-        props.onAddPage?.();
+        void props.onAddPage?.();
     }
 
     const showMenuActions =

@@ -57,7 +57,7 @@ export class NewProjectModal extends Modal {
                         this.name = sanitizeFileFolderName(text.getValue());
 						if(this.name.trim() ==='') this.name = 'Unnamed';
 						text.setValue(this.name);
-                        this.initCreateProject();
+                        void this.initCreateProject();
                     }
                 });
             });
@@ -74,7 +74,7 @@ export class NewProjectModal extends Modal {
 			confirmBtn.setClass('project-browser_button');
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Create project');
-			confirmBtn.onClick( () => this.initCreateProject() )
+			confirmBtn.onClick( () => { void this.initCreateProject(); } )
 		})
 
 	}
