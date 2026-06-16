@@ -1,8 +1,0 @@
----
-description: Guidelines for testing — what the agent should and should not do
-alwaysApply: true
----
-
-# Testing guidelines
-
-- Never start the server or the app; starting services is the user's responsibility.

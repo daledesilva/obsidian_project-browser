@@ -51,11 +51,11 @@ export class RenameFolderModal extends Modal {
 					text.setValue(this.name);
                 });
                 text.inputEl.addEventListener('keyup', async (event) => {
-                    if ((event as KeyboardEvent).key === "Enter") {
+                    if ((event).key === "Enter") {
 						this.name = sanitizeFileFolderName(text.getValue());
 						if(this.name.trim() ==='') this.name = 'Unnamed';
 						text.setValue(this.name);
-                        renameTFolder(this.folder, this.name);	// TODO: If this fails, the modal should report a fail
+                        void renameTFolder(this.folder, this.name);	// TODO: If this fails, the modal should report a fail
 						this.resolveModal(this.folder);
 						this.close();
                     }
@@ -77,7 +77,7 @@ export class RenameFolderModal extends Modal {
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Save');
 			confirmBtn.onClick(() => {
-				renameTFolder(this.folder, this.name);	// TODO: If this fails, the modal should report a fail
+				void renameTFolder(this.folder, this.name);	// TODO: If this fails, the modal should report a fail
 				this.resolveModal(this.folder);
 				this.close();
 			})

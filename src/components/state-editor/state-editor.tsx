@@ -61,11 +61,11 @@ export const StateEditor = (props: StateEditorProps) => {
 
     return <>
         <div
-            className = 'ddc_pb_section-header'
+            className = 'ddc_pb_section-header ddc_pb_states-section-list'
         >
 
             <div className="ddc_pb_states-section">
-                <h3>Visible states</h3>
+                <h3>Visible project states</h3>
                 <ReactSortable
                     list = {visibleStates}
                     setList = { async (stateItems) => {
@@ -139,7 +139,7 @@ export const StateEditor = (props: StateEditorProps) => {
             </div>
 
             <div className="ddc_pb_states-section">
-                <h3>Hidden states</h3>
+                <h3>Hidden project states</h3>
                 <ReactSortable
                     list = {hiddenStates}
                     setList = { async (stateItems) => {

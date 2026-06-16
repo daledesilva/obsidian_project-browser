@@ -1,7 +1,10 @@
 # Obsidian Project Browser
-A plugin for [Obsidian](https://obsidian.md) that replaces your new tab window with a card layout of the files in each folder organised by state. The view is filterable with an inbuilt search field (just start typing!), and files can be assigned a state from a prominent menu within the note.
+An [Obsidian](https://obsidian.md) plugin for browsing your vault through a user-friendly card interface. With multi-page support, add multiple pages to any note, base, or canvas. Hide folders to declutter, and set priorities and states to remain focused.
 
-<img src="docs/media/readme_hero-shot.png" alt="Screenshot of Project Browser plugin">
+No need to dig through an overwhelming heirarchy in the files pane any more.
+
+<img src="docs/media/readme_pages.png" alt="Project Browser supports adding pages to your notes.">
+<img src="docs/media/readme_filter-and-cards.png" alt="In Project Browser, start typing and and the view automatically filters. You can also organise your notes by custom statuses.">
 
 ## 📓 Development Diaries
 I record regular development diaries. [Subscribe and follow along](https://www.youtube.com/@designdebtclub) to see features in development.
@@ -45,15 +48,19 @@ Below are the high level features in my current development plan along with when
 - ✅ Right click actions.
 - ✅ Hide individual folders.
 - ✅ Customise launch folder.
+- ✅ Folders as projects.
+- ✅ Multi-page project support.
+- ✅ Prioritisation of notes.
+- ✅ File browser integration.
 </details>
 
 <details open>
 <summary>Current feature focus</summary>
 
-- [ ] Folders as projects.
-- [ ] Multi-page project support.
-- [ ] Reordering notes.
-- [ ] Prioritisation of notes.
+- [ ] Project Excerpts.
+- [ ] Page Versions & Drafts.
+- [ ] Reordering pages in a project.
+
 </details>
 
 ## ⚠️ Be careful
@@ -61,6 +68,7 @@ Below are the high level features in my current development plan along with when
 
 ## 🧪 Development
 - Testing setup and development: [docs/testing.md](docs/testing.md)
+- Known issues and attempted fixes: [docs/known-issues-and-attempted-fixes.md](docs/known-issues-and-attempted-fixes.md)
 - Plugin settings (display behaviour): [docs/settings.md](docs/settings.md)
 - File type visibility: [docs/file-type-visibility.md](docs/file-type-visibility.md)
 - Projects (folders as cards): [docs/projects.md](docs/projects.md)

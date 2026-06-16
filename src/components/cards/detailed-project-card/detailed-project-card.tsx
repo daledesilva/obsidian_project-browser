@@ -19,7 +19,7 @@ export const DetailedProjectCard = (props: DetailedProjectCardProps) => {
     const [blurbRotation] = React.useState(Math.random() * 2 - 1);
 
     React.useEffect(() => {
-        getProjectExcerpt(props.folder).then((excerptText) => {
+        void getProjectExcerpt(props.folder).then((excerptText) => {
             if (excerptText) setExcerpt(excerptText);
         });
     }, []);

@@ -9,9 +9,9 @@ interface NewHiddenStateModalProps {
 export class NewHiddenStateModal extends StateSettingsModalBase {
 	constructor(props: NewHiddenStateModalProps) {
 		super({
-			title: 'Create new hidden state',
-			introText: 'Create a new hidden state to categorize your notes.',
-			actionButtonLabel: 'Create hidden state',
+			title: 'Create new hidden project state',
+			introText: 'Create a new hidden project state to categorize your projects.',
+			actionButtonLabel: 'Create hidden project state',
 			onSuccess: props.onSuccess,
 			onReject: props.onReject
 		});

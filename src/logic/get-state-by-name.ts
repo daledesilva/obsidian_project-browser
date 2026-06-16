@@ -1,21 +1,19 @@
-import { getGlobals } from "./stores";
+import { TFile } from "obsidian";
 import { StateSettings } from "src/types/types-map";
-import { sanitizeInternalLinkName } from "src/utils/string-processes";
+import { getFileStateScope, getStateByNameForScope } from "./project-page-states";
 
 //////////////////
 //////////////////
 
 export function getStateByName(stateName: string): StateSettings | null {
-    const { plugin } = getGlobals();
-    const allStateSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
+    return getStateByNameForScope(stateName, 'standardNote');
+}
 
-    const sanitizedStateName = sanitizeInternalLinkName(stateName);
+export function getProjectPageStateByName(stateName: string): StateSettings | null {
+    return getStateByNameForScope(stateName, 'projectPage');
+}
 
-    for (const stateSettings of allStateSettings) {
-        if (stateSettings.name === sanitizedStateName) {
-            return stateSettings;
-        }
-    }
-
-    return null;
+export async function getStateByNameForFile(file: TFile, stateName: string): Promise<StateSettings | null> {
+    const scope = await getFileStateScope(file);
+    return getStateByNameForScope(stateName, scope);
 }

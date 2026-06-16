@@ -22,6 +22,14 @@ export const singleOrPlural = (count: number, singleVersion: string, pluralVersi
 }
 
 /**
+ * Returns true if the path is the vault root.
+ * Obsidian may represent the root as '' or '/' depending on context.
+ */
+export function isRootPath(path: string): boolean {
+    return path === '' || path === '/';
+}
+
+/**
  * Removes characters from a string that cannot be used in filenames and returns a new string.
  */
 let illegalRe = /[\/\?<>\\:\*\|"]/g;

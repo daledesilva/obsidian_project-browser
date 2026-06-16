@@ -6,7 +6,7 @@
     flex-wrap: wrap;
     gap: 0;
     
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
     margin-inline-start: calc(-1 * var(--browser-inline-margin));
     margin-inline-end: calc(-1 * var(--browser-inline-margin));
 
@@ -62,6 +62,30 @@
             color: var(--text-normal);
             font-weight: var(--bold-weight);
         }
+    }
+
+    a.ddc_pb_project-folder,
+    div.ddc_pb_project-folder {
+        border-radius: 4px;
+        border-top: 3px solid var(--interactive-accent);
+        border-left: 1px solid var(--interactive-accent);
+        border-right: 1px solid var(--interactive-accent);
+        border-bottom: 1px solid var(--interactive-accent);
+        margin-inline: 0.2em;
+        padding-top: calc(0.7em - 1px);
+    }
+
+    a.ddc_pb_inside-project,
+    div.ddc_pb_inside-project,
+    svg.ddc_pb_inside-project {
+        color: var(--interactive-accent);
+    }
+
+    .ddc_pb_breadcrumb-separator {
+        flex-shrink: 0;
+        height: 1.5em;
+        width: 1.5em;
+        opacity: 0.5;
     }
 
 

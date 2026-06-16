@@ -1,24 +1,30 @@
 import './project-pages-fab.scss';
 import { TAbstractFile, TFile, TFolder } from 'obsidian';
 import * as React from 'react';
-import { FilePlus, FileStack, Folder, Plus } from 'lucide-react';
+import { ChevronLeft, FileStack, Plus } from 'lucide-react';
 import classNames from 'classnames';
-import { getItemsInFolder } from 'src/logic/folder-processes';
-import { isExtensionVisible } from 'src/logic/file-type-filter';
-import { getFileDisplayNameParts } from 'src/logic/get-file-display-name';
-import { getFileTypeLabel } from 'src/logic/get-file-type-label';
+import { ProjectPageMenuFileButton } from 'src/components/project-page-menu-file-button/project-page-menu-file-button';
+import { getSortedPageMenuFilesInProjectFolder } from 'src/logic/project-page-list';
+import { isRootPath } from 'src/utils/string-processes';
+import {
+    FabMenuActionButton,
+    FabMenuActionButtonStack,
+} from 'src/components/fab-menu-action-button/fab-menu-action-button';
 
 //////////
 //////////
+
+const PAGE_LIST_SCROLL_EPSILON_PX = 1;
 
 interface ProjectPagesFABProps {
     projectFolder: TFolder;
     currentFile: TFile;
     parentIsProject: boolean;
+    parentIsInsideProject: boolean;
     initialMenuOpen?: boolean;
     onNavigateToPage: (file: TFile) => void;
     onOpenProjectFolder: (folder: TFolder) => void;
-    onNewFile?: () => void | Promise<void>;
+    onNewProject?: () => void | Promise<void>;
     onAddPage?: () => void | Promise<void>;
 }
 
@@ -30,17 +36,14 @@ function isPathInFolder(filePath: string, parentPath: string): boolean {
 export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(!!props.initialMenuOpen);
     const [refreshTrigger, setRefreshTrigger] = React.useState(0);
+    const [pageListHasOverflow, setPageListHasOverflow] = React.useState(false);
     const fabContainerRef = React.useRef<HTMLDivElement>(null);
+    const pageListScrollRef = React.useRef<HTMLDivElement>(null);
+    const pageListInnerRef = React.useRef<HTMLDivElement>(null);
 
     const pagesInProject = React.useMemo(() => {
-        const items = getItemsInFolder(props.projectFolder);
-        if (!items) return [];
-
-        const pageFiles = items
-            .filter((item): item is TFile => item instanceof TFile)
-            .filter((file) => isExtensionVisible(file.extension, 'pageMenu'));
-
-        return [...pageFiles].sort((a, b) => a.name.localeCompare(b.name));
+        void refreshTrigger;
+        return getSortedPageMenuFilesInProjectFolder(props.projectFolder);
     }, [props.projectFolder, refreshTrigger]);
 
     React.useEffect(() => {
@@ -77,16 +80,77 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         };
     }, [props.projectFolder]);
 
-    React.useEffect(() => {
-        function handleClickOutside(event: PointerEvent) {
-            if (fabContainerRef.current && !fabContainerRef.current.contains(event.target as Node)) {
-                setMenuIsOpen(false);
-            }
+    const syncPageListScrollPresentation = React.useCallback(() => {
+        const scrollEl = pageListScrollRef.current;
+        if (!scrollEl) return;
+
+        const hasOverflow = scrollEl.scrollHeight > scrollEl.clientHeight + PAGE_LIST_SCROLL_EPSILON_PX;
+        setPageListHasOverflow(hasOverflow);
+
+        if (!hasOverflow) {
+            scrollEl.classList.remove(
+                'ddc_pb_page-list-scroll--fade-top',
+                'ddc_pb_page-list-scroll--fade-bottom',
+            );
+            return;
         }
 
-        document.addEventListener('pointerdown', handleClickOutside);
-        return () => document.removeEventListener('pointerdown', handleClickOutside);
+        const atTop = scrollEl.scrollTop <= PAGE_LIST_SCROLL_EPSILON_PX;
+        const atBottom =
+            scrollEl.scrollTop + scrollEl.clientHeight >=
+            scrollEl.scrollHeight - PAGE_LIST_SCROLL_EPSILON_PX;
+
+        scrollEl.classList.toggle('ddc_pb_page-list-scroll--fade-top', !atTop);
+        scrollEl.classList.toggle('ddc_pb_page-list-scroll--fade-bottom', !atBottom);
     }, []);
+
+    function handlePageListScroll() {
+        syncPageListScrollPresentation();
+    }
+
+    React.useLayoutEffect(() => {
+        if (!menuIsOpen || !props.parentIsProject) {
+            setPageListHasOverflow(false);
+            return;
+        }
+        syncPageListScrollPresentation();
+        const frameId = window.requestAnimationFrame(syncPageListScrollPresentation);
+        return () => cancelAnimationFrame(frameId);
+    }, [menuIsOpen, props.parentIsProject, pagesInProject, refreshTrigger, syncPageListScrollPresentation]);
+
+    React.useEffect(() => {
+        if (typeof ResizeObserver === 'undefined') return;
+        if (!menuIsOpen || !props.parentIsProject) return;
+        const scrollEl = pageListScrollRef.current;
+        const innerEl = pageListInnerRef.current;
+        if (!scrollEl) return;
+        const resizeObserver = new ResizeObserver(() => syncPageListScrollPresentation());
+        resizeObserver.observe(scrollEl);
+        if (innerEl) resizeObserver.observe(innerEl);
+        return () => resizeObserver.disconnect();
+    }, [menuIsOpen, props.parentIsProject, syncPageListScrollPresentation]);
+
+    React.useEffect(() => {
+        function handleClickOutside(event: PointerEvent) {
+            if (!fabContainerRef.current) return;
+            if (fabContainerRef.current.contains(event.target as Node)) return;
+
+            const target = event.target as HTMLElement;
+            const isObsidianMenuOrModal = target.closest('.menu, .modal, .modal-bg');
+            if (isObsidianMenuOrModal) return;
+
+            setMenuIsOpen(false);
+        }
+
+        activeDocument.addEventListener('pointerdown', handleClickOutside);
+        return () => activeDocument.removeEventListener('pointerdown', handleClickOutside);
+    }, []);
+
+    React.useEffect(() => {
+        if (props.initialMenuOpen) {
+            setMenuIsOpen(true);
+        }
+    }, [props.initialMenuOpen]);
 
     function handleFABClick() {
         setMenuIsOpen((prev) => !prev);
@@ -101,112 +165,112 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         setMenuIsOpen(false);
     }
 
-    function handleNewFileClick() {
-        props.onNewFile?.();
+    function handleNewProjectClick() {
+        void props.onNewProject?.();
     }
 
     function handleAddPageClick() {
-        props.onAddPage?.();
+        void props.onAddPage?.();
     }
 
-    const folderButtonLabel = props.parentIsProject
-        ? props.projectFolder.name
-        : 'Folder';
-
-    const folderButtonTitle = props.parentIsProject
-        ? `Open ${props.projectFolder.name} in project browser`
-        : 'Open folder in project browser';
+    const showMenuActions =
+        menuIsOpen &&
+        (props.parentIsProject
+            ? !!props.onAddPage
+            : !!(props.onAddPage || props.onNewProject));
 
     return (
         <div className="ddc_pb_project-pages-fab" ref={fabContainerRef}>
-            {menuIsOpen && (
-                <div className="ddc_pb_project-pages-fab__page-buttons">
-                    {props.parentIsProject && pagesInProject.map((file) => {
-                        const isCurrentPage = file.path === props.currentFile.path;
-                        const fileTypeLabel = getFileTypeLabel(file.extension ?? '');
-                        const { basename, extension } = getFileDisplayNameParts(file);
-                        return (
-                            <button
-                                key={file.path}
-                                className={classNames(
-                                    'ddc_pb_project-pages-fab__page-button',
-                                    isCurrentPage && 'ddc_pb_project-pages-fab__page-button--active'
-                                )}
-                                onClick={isCurrentPage ? undefined : () => handlePageClick(file)}
-                                disabled={isCurrentPage}
-                            >
-                                {fileTypeLabel && (
-                                    <span className="ddc_pb_file-type-tag" aria-hidden>
-                                        {fileTypeLabel}
-                                    </span>
-                                )}
-                                {basename}
-                                {extension && <span className="ddc_pb_file-ext-faint">{extension}</span>}
-                            </button>
-                        );
-                    })}
-                    {props.parentIsProject && props.onAddPage && (
-                        <button
-                            className="ddc_pb_project-pages-fab__action-button"
-                            onClick={handleAddPageClick}
-                            title="Add page"
-                        >
-                            <FilePlus size={16} />
-                            <span className="ddc_pb_project-pages-fab__action-button-label">
-                                Add page
-                            </span>
-                        </button>
-                    )}
-                    {!props.parentIsProject && (
-                        <>
-                            {props.onNewFile && (
-                                <button
-                                    className="ddc_pb_project-pages-fab__action-button"
-                                    onClick={handleNewFileClick}
-                                    title="New file"
-                                >
-                                    <Plus size={16} />
-                                    <span className="ddc_pb_project-pages-fab__action-button-label">
-                                        New file
-                                    </span>
-                                </button>
-                            )}
-                            {props.onAddPage && (
-                                <button
-                                    className="ddc_pb_project-pages-fab__action-button"
-                                    onClick={handleAddPageClick}
-                                    title="Add page"
-                                >
-                                    <FilePlus size={16} />
-                                    <span className="ddc_pb_project-pages-fab__action-button-label">
-                                        Add page
-                                    </span>
-                                </button>
-                            )}
-                        </>
-                    )}
-                    <button
-                        className="ddc_pb_project-pages-fab__folder-button"
-                        onClick={handleOpenProjectFolderClick}
-                        title={folderButtonTitle}
+            {menuIsOpen && props.parentIsProject && (
+                <div
+                    className="ddc_pb_project-pages-fab__page-list-scroll"
+                    ref={pageListScrollRef}
+                    onScroll={handlePageListScroll}
+                >
+                    <div
+                        ref={pageListInnerRef}
+                        className={classNames(
+                            'ddc_pb_project-pages-fab__page-list-scroll-inner',
+                            !pageListHasOverflow &&
+                                'ddc_pb_project-pages-fab__page-list-scroll-inner--bottom-aligned'
+                        )}
                     >
-                        <Folder size={16} />
-                        <span className="ddc_pb_project-pages-fab__folder-button-label">
-                            {folderButtonLabel}
-                        </span>
-                    </button>
+                        {pagesInProject.map((file) => (
+                            <ProjectPageMenuFileButton
+                                key={file.path}
+                                file={file}
+                                isCurrentPage={file.path === props.currentFile.path}
+                                context="fab"
+                                onPageClick={handlePageClick}
+                                onFileChange={() => setRefreshTrigger((t) => t + 1)}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
-            <button
-                className={classNames(
-                    'ddc_pb_project-pages-fab__main-button',
-                    menuIsOpen && 'ddc_pb_active'
+            <div className="ddc_pb_project-pages-fab__footer">
+                {showMenuActions && (
+                    <FabMenuActionButtonStack>
+                        {props.parentIsProject ? (
+                            <FabMenuActionButton
+                                variant="primary"
+                                density="compact"
+                                label="Add page"
+                                onClick={handleAddPageClick}
+                            />
+                        ) : (
+                            <>
+                                {props.onAddPage && (
+                                    <FabMenuActionButton
+                                        variant="primary"
+                                        density="compact"
+                                        label="Add page"
+                                        onClick={handleAddPageClick}
+                                    />
+                                )}
+                                {props.onNewProject && (
+                                    <FabMenuActionButton
+                                        variant="primary"
+                                        density="compact"
+                                        label="New project"
+                                        onClick={handleNewProjectClick}
+                                    />
+                                )}
+                            </>
+                        )}
+                    </FabMenuActionButtonStack>
                 )}
-                onClick={handleFABClick}
-                title="Project pages"
-            >
-                <FileStack size={24} />
-            </button>
+                <div className="ddc_pb_project-pages-fab__group">
+                    <button
+                        className={classNames(
+                            'ddc_pb_project-pages-fab__main-button',
+                            menuIsOpen && 'ddc_pb_active'
+                        )}
+                        onClick={handleFABClick}
+                        title={props.parentIsProject ? 'Project pages' : 'Add page'}
+                    >
+                        {props.parentIsProject ? <FileStack size={20} /> : <Plus size={20} />}
+                    </button>
+                    <button
+                        className={classNames(
+                            'ddc_pb_project-pages-fab__project-title',
+                            props.parentIsProject && 'ddc_pb_project-pages-fab__project-title--is-project',
+                            !props.parentIsProject && props.parentIsInsideProject && 'ddc_pb_project-pages-fab__project-title--is-inside-project'
+                        )}
+                        onClick={handleOpenProjectFolderClick}
+                        title={
+                            isRootPath(props.projectFolder.path)
+                                ? 'Open vault root in project browser'
+                                : props.parentIsProject
+                                  ? `Open ${props.projectFolder.name} in project browser`
+                                  : 'Open folder in project browser'
+                        }
+                    >
+                        <ChevronLeft size={16} className="ddc_pb_project-pages-fab__project-title-chevron" />
+                        {isRootPath(props.projectFolder.path) ? 'Home' : props.projectFolder.name}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

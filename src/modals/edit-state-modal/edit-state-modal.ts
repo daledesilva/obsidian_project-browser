@@ -13,9 +13,9 @@ interface EditStateModalProps {
 export class EditStateModal extends StateSettingsModalBase {
 	constructor(props: EditStateModalProps) {
 		super({
-			title: 'Edit state',
-			introText: 'Note: Editing the state\'s name won\'t update existing notes with that state.',
-			actionButtonLabel: 'Save state',
+			title: 'Edit project state',
+			introText: 'Note: Editing the project state name won\'t update existing projects with that project state.',
+			actionButtonLabel: 'Save project state',
 			stateSettings: props.stateSettings,
 			onSuccess: props.onSuccess,
 			onReject: props.onReject

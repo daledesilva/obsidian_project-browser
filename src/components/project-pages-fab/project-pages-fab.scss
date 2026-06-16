@@ -1,21 +1,99 @@
+@import '../../styles/fab-chip-search-sized';
+
 .ddc_pb_project-pages-fab {
+    --ddc-pb-fab-spacing: 36px;
     position: absolute;
-    bottom: 100px;
-    right: min(100px, 5vw);
+    top: 0;
+    bottom: 24px;
+    right: var(--ddc-pb-fab-spacing);
+    min-height: 0;
+    pointer-events: none;
+
+    .is-mobile & {
+        bottom: calc(24px + min(40px, 8vw) + 12px);
+    }
 
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 10px;
 
-    .ddc_pb_project-pages-fab__page-buttons {
+    .ddc_pb_project-pages-fab__page-list-scroll {
+        --ddc-pb-page-list-fade-top: 0px;
+        --ddc-pb-page-list-fade-bottom: 0px;
+
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        mask-image: linear-gradient(
+            to bottom,
+            transparent 0,
+            black var(--ddc-pb-page-list-fade-top),
+            black calc(100% - var(--ddc-pb-page-list-fade-bottom)),
+            transparent 100%
+        );
+        mask-size: 100% 100%;
+
+        &.ddc_pb_page-list-scroll--fade-top {
+            --ddc-pb-page-list-fade-top: 24px;
+        }
+
+        &.ddc_pb_page-list-scroll--fade-bottom {
+            --ddc-pb-page-list-fade-bottom: 24px;
+        }
+        mask-repeat: no-repeat;
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            transparent 0,
+            black var(--ddc-pb-page-list-fade-top),
+            black calc(100% - var(--ddc-pb-page-list-fade-bottom)),
+            transparent 100%
+        );
+        -webkit-mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    .ddc_pb_project-pages-fab__page-list-scroll-inner {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         gap: 8px;
+        min-height: 100%;
+        box-sizing: border-box;
+        justify-content: flex-start;
+
+        &--bottom-aligned {
+            justify-content: flex-end;
+        }
     }
 
-    .ddc_pb_project-pages-fab__page-button {
+    .ddc_pb_project-pages-fab__footer {
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+    }
+
+    .ddc_pb_project-page-menu__file-button--fab,
+    .ddc_pb_fab-menu-action-button,
+    .ddc_pb_project-pages-fab__main-button,
+    .ddc_pb_project-pages-fab__project-title {
+        pointer-events: auto;
+    }
+
+    .ddc_pb_project-page-menu__file-button--fab {
         position: relative;
         cursor: pointer;
         --size: min(40px, 8vw);
@@ -29,13 +107,28 @@
         text-overflow: ellipsis;
         font-size: 0.9em;
 
-        .ddc_pb_file-type-tag {
+        .ddc_pb_project-page-menu__file-button-tags {
             position: absolute;
             bottom: 0;
             right: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            pointer-events: none;
+        }
+
+        .ddc_pb_project-page-menu__file-button-external-icon {
+            position: absolute;
+            top: 0.15em;
+            right: 0.15em;
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .ddc_pb_file-type-tag {
             padding: 1px 3px;
             border-radius: 3px 0 8px 0;
-            pointer-events: none;
             font-size: 0.4rem;
             font-weight: 400;
             letter-spacing: 0.04em;
@@ -44,46 +137,107 @@
             background-color: var(--background-secondary);
         }
 
+        .ddc_pb_external-file-icon {
+            flex-shrink: 0;
+            transform: scale(0.75);
+            color: var(--interactive-accent);
+        }
+
         .ddc_pb_file-ext-faint {
             color: var(--text-faint, rgba(255, 255, 255, 0.4));
         }
+    }
 
-        &--active {
-            cursor: default;
+    .ddc_pb_project-page-menu__file-button--fab.ddc_pb_project-page-menu__file-button--active {
+        cursor: default;
+        background-color: var(--interactive-accent);
+
+        &:disabled {
+            opacity: 1;
+            color: #000;
+            -webkit-text-fill-color: #000;
+        }
+
+        &:disabled .ddc_pb_file-ext-faint {
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        &:disabled .ddc_pb_external-file-icon {
+            color: rgba(0, 0, 0, 0.65);
+        }
+
+        &:disabled .ddc_pb_file-type-tag {
+            color: #000;
+            background-color: rgba(0, 0, 0, 0.28);
+        }
+    }
+
+    .ddc_pb_project-pages-fab__group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        margin-bottom: 24px;
+    }
+
+    .ddc_pb_project-pages-fab__main-button {
+        cursor: pointer;
+        @include ddc-pb-fab-chip-search-sized;
+
+        &.ddc_pb_active {
             color: var(--text-on-accent);
             background-color: var(--interactive-accent);
         }
     }
 
-    .ddc_pb_project-pages-fab__folder-button,
-    .ddc_pb_project-pages-fab__action-button {
+    .ddc_pb_project-pages-fab__project-title {
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
-        min-height: min(40px, 8vw);
-        max-width: 200px;
+        gap: 4px;
+        --page-button-size: min(40px, 8vw);
+        min-height: var(--page-button-size);
         padding: 8px 12px;
+        max-width: 250px;
         border-radius: 8px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 0.9em;
-    }
+        background-color: var(--color-base-00);
+        color: var(--text-normal);
 
-    .ddc_pb_project-pages-fab__main-button {
-        cursor: pointer;
-        --size: min(80px, 15vw);
-        width: var(--size);
-        height: var(--size);
-        padding: 25% !important; // Important to override Obsidian padding at all media sizes
-        border-radius: 50%;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        @media (hover: hover) {
+            &:hover {
+                background-color: var(--background-modifier-hover);
+            }
+        }
 
-        &.ddc_pb_active {
+        &--is-project,
+        &--is-project-secondary {
+            border-top: 3px solid var(--interactive-accent);
+            border-left: 1px solid var(--interactive-accent);
+            border-right: 1px solid var(--interactive-accent);
+            border-bottom: 1px solid var(--interactive-accent);
             color: var(--text-on-accent);
-            background-color: var(--interactive-accent);
+            padding-top: calc(8px - 1px);
+
+            @media (hover: hover) {
+                &:hover {
+                    background-color: var(--background-modifier-hover);
+                }
+            }
+        }
+
+        &--is-inside-project {
+            color: var(--interactive-accent);
+
+            @media (hover: hover) {
+                &:hover {
+                    background-color: var(--background-modifier-hover);
+                }
+            }
         }
     }
 }

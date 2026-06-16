@@ -1,0 +1,1 @@
+export const CARD_BROWSER_VIEW_TYPE = 'card-browser-view';

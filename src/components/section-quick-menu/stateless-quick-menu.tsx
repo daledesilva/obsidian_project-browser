@@ -3,8 +3,8 @@ import * as React from "react";
 import { ArrowUpDown, LayoutGrid, Ungroup } from 'lucide-react';
 import classNames from 'classnames';
 import { Section } from 'src/logic/section-processes';
-import { StateViewMode, StateViewOrder } from 'src/types/types-map';
-import { statelessSettingsAtom } from 'src/logic/stores';
+import { StateSettings, StateViewMode, StateViewOrder } from 'src/types/types-map';
+import { projectPageStatelessSettingsAtom, statelessSettingsAtom } from 'src/logic/stores';
 import { useAtom } from 'jotai';
 import Tooltip from '../tooltip/tooltip';
 
@@ -18,8 +18,13 @@ interface StatelessQuickMenuProps {
 }
 
 export const StatelessQuickMenu = (props: StatelessQuickMenuProps) => {
-    // Use statelessSettingsAtom instead of local state
-    const [statelessSettings, setStatelessSettings] = useAtom(statelessSettingsAtom);
+    const scopedStatelessSettingsAtom = React.useMemo(
+        () => props.section.stateScope === 'projectPage'
+            ? projectPageStatelessSettingsAtom
+            : statelessSettingsAtom,
+        [props.section.stateScope]
+    );
+    const [statelessSettings, setStatelessSettings] = useAtom(scopedStatelessSettingsAtom);
     const tooltipRef = React.useRef<HTMLDivElement>(null);
 
     const viewModes = Object.values(StateViewMode);

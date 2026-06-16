@@ -1,5 +1,6 @@
 import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
+import { revealInProjectBrowser } from "src/logic/reveal-in-project-browser";
 import { getGlobals } from "src/logic/stores";
 import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
 import { getFolderSettings, hideFolder, unhideFolder, setFolderAsProject, setFolderAsFolder } from "src/utils/file-manipulation";
@@ -23,15 +24,32 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
         
         const folderSettings = await getFolderSettings(plugin.app.vault, props.folder)
 
+        let folderIsInsideAProject = false;
+        let ancestor = props.folder.parent;
+        while (ancestor) {
+            const ancestorSettings = await getFolderSettings(plugin.app.vault, ancestor);
+            if (ancestorSettings.isProject) {
+                folderIsInsideAProject = true;
+                break;
+            }
+            ancestor = ancestor.parent ?? null;
+        }
+
         // Close other menus (Only works on iOS for some reason, but also only needed there)
-        document.body.click();
+        activeDocument.body.click();
         
         const menu = new Menu();
         menu.addItem((item) =>
             item.setTitle("Set as launch folder")
                 .onClick(() => {
                     plugin.settings.access.launchFolder = props.folder.path;
-                    plugin.saveSettings();
+                    void plugin.saveSettings();
+                })
+        );
+        menu.addItem((item) =>
+            item.setTitle('Reveal in Project Browser')
+                .onClick(() => {
+                    void revealInProjectBrowser(props.folder);
                 })
         );
         if (folderSettings.isProject) {
@@ -43,8 +61,9 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
                     })
             );
         } else {
+            const convertToProjectLabel = folderIsInsideAProject ? 'Convert to subproject' : 'Convert to project';
             menu.addItem((item) =>
-                item.setTitle("Convert to project")
+                item.setTitle(convertToProjectLabel)
                     .onClick(async () => {
                         await setFolderAsProject(props.folder);
                         props.onFolderChange();
@@ -73,7 +92,7 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
             item.setTitle("Rename folder")
                 .onClick(() => {
                     // renameFileOrFolderInPlace(folder, folderBtnEl)
-                    new RenameFolderModal({
+                    void new RenameFolderModal({
                         folder: props.folder,
                     }).showModal()
                 })

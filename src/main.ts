@@ -1,5 +1,6 @@
 import { Notice, Plugin } from 'obsidian';
 import { loadCardBrowserOnNewTab, registerCardBrowserView } from './views/card-browser-view/card-browser-view';
+import { detachProjectPagesSidebarLeaves } from './views/project-pages-sidebar-view/project-pages-sidebar-view';
 import { registerMarkdownViewMods } from './views/markdown-view-mods/markdown-view-mods';
 import { registerSettingsTab } from './tabs/settings-tab/settings-tab';
 import { registerOpenProjectBrowserCommand, registerOpenProjectBrowserRibbonIcon } from './commands/open-project-browser';
@@ -10,6 +11,8 @@ import { initStateMenuSettings, setGlobals, initializeSettingsAtoms } from './lo
 import { showVersionNotice } from './notices/version-notices';
 import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
 import { registerCycleStateCommands } from './commands/cycle-state';
+import { registerFileOpenSelectTitleHandler } from './logic/file-access-processes';
+import { registerRevealInProjectBrowserMenus } from './commands/reveal-in-project-browser';
 
 /////////
 /////////
@@ -35,13 +38,17 @@ export default class ProjectBrowserPlugin extends Plugin {
 		
 		initStateMenuSettings();
 		registerCardBrowserView()
+		// TODO: This is to be re-enabled in v0.5
+		// registerProjectPagesSidebarView()
 		registerMarkdownViewMods()
-		registerToggleStateMenuCommand();
-		registerCycleStateCommands();
+		void registerToggleStateMenuCommand();
+		void registerCycleStateCommands();
+		registerFileOpenSelectTitleHandler(this);
+		registerRevealInProjectBrowserMenus();
 
 		if(this.settings.access.replaceNewTab)		loadCardBrowserOnNewTab();
-		if(this.settings.access.enableRibbonIcon)	registerOpenProjectBrowserRibbonIcon();
-		if(this.settings.access.enableCommand)		registerOpenProjectBrowserCommand();
+		if(this.settings.access.enableRibbonIcon)	void registerOpenProjectBrowserRibbonIcon();
+		if(this.settings.access.enableCommand)		void registerOpenProjectBrowserCommand();
 
 		registerSettingsTab();
 		
@@ -53,13 +60,14 @@ export default class ProjectBrowserPlugin extends Plugin {
 
 		showNotices();
 
-		this.app.vault.on('create', () => this.refreshFileDependants())
-		this.app.vault.on('delete', () => this.refreshFileDependants())
-		this.app.vault.on('rename', () => this.refreshFileDependants())
+		this.app.vault.on('create', () => { void this.refreshFileDependants(); })
+		this.app.vault.on('delete', () => { void this.refreshFileDependants(); })
+		this.app.vault.on('rename', () => { void this.refreshFileDependants(); })
 	}
 	
 
 	onunload() {
+		detachProjectPagesSidebarLeaves();
 		// Make sure to stop anything here
 		this.app.vault.off('create', () => this.refreshFileDependants())
 		this.app.vault.off('delete', () => this.refreshFileDependants())
@@ -73,7 +81,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 			this.settings = Object.assign({}, DEFAULT_SETTINGS, this.settings);
 		} else {
 			this.settings = migrateOutdatedSettings(this.settings);
-			this.saveSettings();
+			void this.saveSettings();
 		}	
 	}
 
@@ -83,7 +91,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 
 	async resetSettings() {
 		this.settings = JSON.parse( JSON.stringify(DEFAULT_SETTINGS) );
-		this.saveSettings();
+		void this.saveSettings();
 		new Notice('Project Browser plugin settings reset');
 	}
 
@@ -104,8 +112,8 @@ export default class ProjectBrowserPlugin extends Plugin {
 	async refreshFileDependants() {
 		// Debounce slightly just so that batch file edits occur once
 		
-		clearTimeout(this.refreshFileDependantsTimeout);
-		this.refreshFileDependantsTimeout = setTimeout(() => {
+		window.clearTimeout(this.refreshFileDependantsTimeout);
+		this.refreshFileDependantsTimeout = window.setTimeout(() => {
 			Object.entries(this.fileDependants).forEach( ([key, handler]) => {
 				try {
 					handler();

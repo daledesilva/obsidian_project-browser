@@ -53,11 +53,11 @@ export class NewProjectModal extends Modal {
 					text.setValue(this.name);
                 });
                 text.inputEl.addEventListener('keydown', (event) => {
-                    if ((event as KeyboardEvent).key === "Enter") {
+                    if ((event).key === "Enter") {
                         this.name = sanitizeFileFolderName(text.getValue());
 						if(this.name.trim() ==='') this.name = 'Unnamed';
 						text.setValue(this.name);
-                        this.initCreateProject();
+                        void this.initCreateProject();
                     }
                 });
             });
@@ -74,7 +74,7 @@ export class NewProjectModal extends Modal {
 			confirmBtn.setClass('project-browser_button');
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Create project');
-			confirmBtn.onClick( () => this.initCreateProject() )
+			confirmBtn.onClick( () => { void this.initCreateProject(); } )
 		})
 
 	}

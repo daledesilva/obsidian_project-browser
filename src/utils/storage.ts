@@ -1,12 +1,15 @@
 import { PLUGIN_KEY } from "src/constants";
+import { getGlobals } from "src/logic/stores";
 
 /////////
 /////////
 
 export const saveLocally = (key: string, value: string) => {
-    localStorage.setItem(`${PLUGIN_KEY}_${key}`, value);
-}
+	const { plugin } = getGlobals();
+	plugin.app.saveLocalStorage(`${PLUGIN_KEY}_${key}`, value);
+};
 
 export const fetchLocally = (key: string) => {
-    return localStorage.getItem(`${PLUGIN_KEY}_${key}`);
-}
+	const { plugin } = getGlobals();
+	return plugin.app.loadLocalStorage(`${PLUGIN_KEY}_${key}`) as string | null;
+};

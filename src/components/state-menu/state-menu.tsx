@@ -1,12 +1,12 @@
 import './state-menu.scss';
-import { CachedMetadata, MarkdownView, TFile } from 'obsidian';
+import { CachedMetadata, TFile } from 'obsidian';
 import * as React from "react";
-import classnames from 'classnames';
-import { getFileStateSettings, getFileStateName, setFileState } from 'src/logic/frontmatter-processes';
-import { getGlobals, stateMenuAtom } from 'src/logic/stores';
-import { useAtomValue } from 'jotai';
-import { sanitizeInternalLinkName } from 'src/utils/string-processes';
+import { getFileStateSettings, setFileState } from 'src/logic/frontmatter-processes';
+import { getGlobals } from 'src/logic/stores';
+import { isMarkdownFileInProject } from 'src/logic/project-page-states';
 import { StateSettings } from 'src/types/types-map';
+import { ProjectPageStateMenu } from './project-page-state-menu';
+import { StateMenuShell } from './state-menu-shell';
 
 //////////
 //////////
@@ -16,215 +16,76 @@ interface StateMenuProps {
 }
 
 export const StateMenu = (props: StateMenuProps) => {
-    const {plugin} = getGlobals();
-    
-    const parentLeafRef = React.useRef(plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf);
-    const stateMenuSettings = useAtomValue(stateMenuAtom);
-    const [file, setFile] = React.useState( props.file );
-    const [stateSettings, setStateSettings] = React.useState<StateSettings | null>( getFileStateSettings(file) );
-    const [menuIsActive, setMenuIsActive] = React.useState(false);
-    const showHighlightRef = React.useRef<boolean>(false);
-    const stateMenuRef = React.useRef<HTMLDivElement>(null);
-    const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
-    const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
+    const [isProjectPage, setIsProjectPage] = React.useState<boolean | null>(null);
 
-    // NOTE: These allow any listening events to use the updated value when it changes.
-    // Because the useState value is captured by the listener's closure and will not update.
-    const stateMenuSettingsRef = React.useRef(stateMenuSettings);
     React.useEffect(() => {
-        stateMenuSettingsRef.current = stateMenuSettings;
-    }, [stateMenuSettings]);
-    //
-    const curFileRef = React.useRef(file);
-    React.useEffect(() => {
-        curFileRef.current = file;
-    }, [file]);
+        let cancelled = false;
 
-    let displayState = stateSettings?.name;
-    if(!displayState) displayState = 'Set State';
-
-    const visibleStates = plugin.settings.states.visible;
-    const hiddenStates = plugin.settings.states.hidden;
-
-    // On first run
-    React.useEffect( () => {
-
-        function handleClickOutside(event: any) {
-            if (stateMenuRef.current && !stateMenuRef.current.contains(event.target)) {
-                setMenuIsActive(false);
+        void isMarkdownFileInProject(props.file).then((nextIsProjectPage) => {
+            if (!cancelled) {
+                setIsProjectPage(nextIsProjectPage);
             }
-        }
-        
-        document.addEventListener('pointerdown', handleClickOutside);
-        monitorWorkspaceResizes();
-        listenForFileChanges();
+        });
 
         return () => {
-            unmonitorWorkspaceResizes();
-            document.removeEventListener('pointerdown', handleClickOutside);
+            cancelled = true;
         };
-    }, [])
-    
+    }, [props.file.path]);
 
-    // Whenever stateMenuSettings has updated
-    React.useEffect( () => {
-        setHeight();
-    }, [stateMenuSettings])
+    if (isProjectPage === null) {
+        return null;
+    }
+
+    if (isProjectPage) {
+        return <ProjectPageStateMenu file={props.file} />;
+    }
+
+    return <StandardStateMenu file={props.file} />;
+}
+
+const StandardStateMenu = (props: StateMenuProps) => {
+    const { plugin } = getGlobals();
+    const [stateSettings, setStateSettings] = React.useState<StateSettings | null>(getFileStateSettings(props.file));
+    const fileRef = React.useRef(props.file);
 
     React.useEffect(() => {
-        setHeight();
-    }, [menuIsActive])
+        fileRef.current = props.file;
+        setStateSettings(getFileStateSettings(props.file));
+    }, [props.file.path]);
 
-    // Just after every render
     React.useEffect(() => {
-        showHighlightRef.current = false;
-    });
+        let fileChangeTimeout: NodeJS.Timeout | null = null;
+        const handleMetadataChanged = (modifiedFile: TFile, data: string, cache: CachedMetadata) => {
+            if (modifiedFile.path !== fileRef.current.path) return;
+            if (fileChangeTimeout) window.clearTimeout(fileChangeTimeout);
+            fileChangeTimeout = window.setTimeout(() => {
+                setStateSettings(getFileStateSettings(fileRef.current));
+            }, 100);
+        };
+        plugin.app.metadataCache.on('changed', handleMetadataChanged);
 
+        return () => {
+            if (fileChangeTimeout) window.clearTimeout(fileChangeTimeout);
+            plugin.app.metadataCache.off('changed', handleMetadataChanged);
+        };
+    }, [plugin]);
 
     return (
-        <div
-            className = 'ddc_pb_state-menu'
-            ref = {stateMenuRef}
-            >
-            <div
-                className = 'ddc_pb_state-menu-content'
-                ref={stateMenuContentRef}
-            >
+        <StateMenuShell
+            currentStateSettings={stateSettings}
+            visibleStates={plugin.settings.states.visible}
+            hiddenStates={plugin.settings.states.hidden}
+            onSetState={setStateAndUpdateMenu}
+        />
+    );
 
-                {!menuIsActive && (
-                    <button
-                        className = {classnames([
-                            'ddc_pb_state-btn',
-                            'ddc_pb_in-closed-menu',
-                            showHighlightRef.current && 'ddc_pb_has-return-transition'
-                        ])}
-                        onClick = {() => {
-                            setMenuIsActive(true);
-                        }}    
-                    >
-                        {displayState}
-                    </button>
-                )}
-            
-                {menuIsActive && (<>
-                    <div className='ddc_pb_visible-state-btns'>
-                        {visibleStates.map( (thisStatesSettings, index) => (
-                            <button
-                                key = {index}
-                                className = {classnames([
-                                    'ddc_pb_state-btn',
-                                    'ddc_pb_visible-state',
-                                    thisStatesSettings.name === stateSettings?.name && 'is-set',
-                                ])}
-                                onClick = {() => setStateAndCloseMenu(thisStatesSettings)}    
-                            >
-                                {sanitizeInternalLinkName(thisStatesSettings.name)}
-                            </button>
-                        ))}
-                    </div>
-                    <div className='ddc_pb_hidden-state-btns'>
-                        {hiddenStates.map( (thisStatesSettings, index) => (
-                            <button
-                                key = {index}
-                                className = {classnames([
-                                    'ddc_pb_state-btn',
-                                    'ddc_pb_hidden-state',
-                                    thisStatesSettings.name === stateSettings?.name && 'is-set',
-                                ])}
-                                onClick = {() => setStateAndCloseMenu(thisStatesSettings)}    
-                            >
-                                {sanitizeInternalLinkName(thisStatesSettings.name)}
-                            </button>
-                        ))}
-                    </div>
-                </>)}
-
-            </div>
-        </div>
-    )
-
-    //////////
-
-    function listenForFileChanges() {
-        if(!plugin) return;
-
-        plugin.registerEvent(plugin.app.workspace.on('file-open', (newFile) => {
-            if(!newFile) return;
-            let activeLeaf = plugin.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
-            if(!activeLeaf) return;
-            if(activeLeaf.view != parentLeafRef.current?.view) return;
-
-            setFile(newFile);
-            const newStateSettings = getFileStateSettings(newFile);
+    async function setStateAndUpdateMenu(newStateSettings: StateSettings | null): Promise<boolean> {
+        const successInSettingState = await setFileState(fileRef.current, newStateSettings);
+        if (successInSettingState) {
             setStateSettings(newStateSettings);
-        }));
-
-        let fileChangeTimeout: NodeJS.Timeout | null = null;
-        plugin.registerEvent(plugin.app.metadataCache.on('changed', (modifiedFile: TFile, data: string, cache: CachedMetadata) => {
-            if(modifiedFile.path !== curFileRef.current.path) return;
-            if(fileChangeTimeout) clearTimeout(fileChangeTimeout);
-            fileChangeTimeout = setTimeout(() => {
-                showHighlightRef.current = true;
-                setStateSettings(getFileStateSettings(curFileRef.current));
-            }, 100);
-        }));
-    }
-
-    async function setStateAndCloseMenu(newStateSettings: StateSettings) {
-        if(!plugin) return;
-
-        if(newStateSettings !== stateSettings) {
-            // set the new state
-            showHighlightRef.current = true;
-            const successInSettingState = await setFileState(file, newStateSettings);
-            if(successInSettingState) setStateSettings(newStateSettings)
-        } else {
-            // erase the existing state
-            showHighlightRef.current = true;
-            const successInErasingState = await setFileState(file, null);
-            if(successInErasingState) setStateSettings(null)
+            return true;
         }
-        setMenuIsActive(false);
+        return false;
     }
-
-    function setHeight() {
-        if(stateMenuSettingsRef.current.visible) {
-            setVisibleHeight();
-        } else {
-            setHiddenHeight();
-        }
-    }
-    function setVisibleHeight() {
-        if(!stateMenuContentRef.current) return;
-        if(!stateMenuRef.current) return;
-        const contentHeight = stateMenuContentRef.current.getBoundingClientRect().height;
-        stateMenuRef.current.style.height = `${contentHeight}px`;
-    }
-    function setHiddenHeight() {
-        if(!stateMenuRef.current) return;
-        stateMenuRef.current.style.height = '0';
-    }
-
-    function monitorWorkspaceResizes() {
-        const surroundingWorkspaceSplit = stateMenuRef.current?.closest('.workspace-split');
-
-        let resizeTimeout: NodeJS.Timeout | null = null;
-        resizeObserverRef.current = new ResizeObserver(() => {
-            if(resizeTimeout) clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                setHeight();
-            }, 50);
-        });
-        if (surroundingWorkspaceSplit) {
-            resizeObserverRef.current?.observe(surroundingWorkspaceSplit);
-        }
-    }
-    function unmonitorWorkspaceResizes() {
-        const surroundingWorkspaceSplit = stateMenuRef.current?.closest('.workspace-split');
-        if (surroundingWorkspaceSplit) {
-            resizeObserverRef.current?.unobserve(surroundingWorkspaceSplit);
-        }
-        resizeObserverRef.current?.disconnect();
-    }
-}
+};
 

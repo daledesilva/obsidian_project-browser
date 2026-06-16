@@ -7,8 +7,13 @@ import { getGlobals } from 'src/logic/stores';
 export function showOnboardingNotices_maybe(): boolean {
     const {plugin} = getGlobals();
     if(plugin.settings.onboardingNotices.welcomeNoticeRead) return false;
-    showOnboardingNotices();
+    void showOnboardingNotices();
     return true;
+}
+
+export function showWelcomeTips() {
+    noticeShowingOrDismissed = false;
+    void showOnboardingNotices();
 }
 
 let noticeShowingOrDismissed: boolean = false;
@@ -153,7 +158,7 @@ function showDevelopmentWelcomeNotice() {
             noticeShowingOrDismissed = false;
             plugin.settings.onboardingNotices.welcomeNoticeRead = true;
             plugin.settings.onboardingNotices.lastVersionNoticeRead = plugin.manifest.version;
-            plugin.saveSettings();
+            void plugin.saveSettings();
         });
     }
     

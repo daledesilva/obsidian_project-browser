@@ -1,0 +1,30 @@
+---
+description: Git branch naming conventions and branch lifecycle
+alwaysApply: true
+---
+
+# Git Workflow
+
+## Branch Naming
+
+Format: `<prefix>/<short-description>` in kebab-case.
+
+Valid prefixes:
+
+| Prefix | Use for |
+|---|---|
+| `feat/` | New features |
+| `fix/` | Bug fixes |
+| `docs/` | Documentation only changes |
+| `refactor/` | Code restructuring without behaviour change |
+| `chore/` | Maintenance, deps, tooling |
+| `experiment/` | Exploratory or throwaway work |
+
+Rules:
+- Lowercase only
+- Hyphens separate words, underscores seperate categories where necessary. Higher level categories first (eg. feat/ui-revamp_colour-updates)
+- Keep descriptions concise and meaningful
+
+## Branch Lifecycle
+
+Delete branches immediately after they are merged to `main`. Do not let stale branches accumulate.

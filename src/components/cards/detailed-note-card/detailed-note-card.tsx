@@ -21,7 +21,7 @@ export const DetailedNoteCard = (props: DetailedNoteCardProps) => {
 
     React.useEffect(() => {
         if(props.file.extension.toLowerCase() == 'md') {
-            getExcerpt(props.file);
+            void getExcerpt(props.file);
         }
     }, []);
 

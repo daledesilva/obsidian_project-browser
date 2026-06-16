@@ -43,12 +43,12 @@ export class ToggleAccordionSetting {
 		return this;
 	}
 
-	onToggle(toggleHandler: (value: boolean) => any): ToggleAccordionSetting {
+	onToggle(toggleHandler: (value: boolean) => unknown): ToggleAccordionSetting {
 		this.toggle.onChange(toggleHandler);
 		return this;
 	}
 
-	setContent(contentHandler: (container: HTMLElement) => any) {
+	setContent(contentHandler: (container: HTMLElement) => unknown) {
 		contentHandler(this.sectionContentEl);
 		return this;
 	}

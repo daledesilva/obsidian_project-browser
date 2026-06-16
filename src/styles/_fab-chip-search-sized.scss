@@ -1,0 +1,11 @@
+// Shared geometry for search-sized FAB chips. Keep search / new / project main FABs in sync.
+// Use padding tied to --size, not %: percentage padding uses the *containing block* width, so in a
+// full-width markdown pane the chip would get huge vertical padding and shrink the icon.
+@mixin ddc-pb-fab-chip-search-sized {
+    --size: min(50px, 10vw);
+    width: calc(var(--size) * 1.25);
+    height: var(--size);
+    padding: calc(var(--size) * 0.15) !important; // Override Obsidian button padding at all media sizes
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}

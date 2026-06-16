@@ -52,11 +52,11 @@ export class RenameFileModal extends Modal {
 					text.inputEl.value = this.name;
                 });
                 text.inputEl.addEventListener('keyup', async (event) => {
-                    if ((event as KeyboardEvent).key === "Enter") {
+                    if ((event).key === "Enter") {
 						this.name = sanitizeFileFolderName(text.getValue());
 						if(this.name.trim() === '') this.name = 'Unnamed';
-                        renameTFile(this.file, this.name);
-						this.resolveModal(this.file);
+                        void renameTFile(this.file, this.name);
+						this.resolveModal?.(this.file);
 						this.close();
                     }
                 });
@@ -68,7 +68,7 @@ export class RenameFileModal extends Modal {
 			cancelBtn.setClass('project-browser_button');
 			cancelBtn.setButtonText('Cancel');
 			cancelBtn.onClick( () => {
-                this.rejectModal('cancelled');
+                this.rejectModal?.('cancelled');
 				this.close();
 			})
 		})
@@ -77,8 +77,8 @@ export class RenameFileModal extends Modal {
 			confirmBtn.setCta();
 			confirmBtn.setButtonText('Save');
 			confirmBtn.onClick(() => {
-				renameTFile(this.file, this.name);	// TODO: If this fails, the modal should report a fail
-				this.resolveModal(this.file);
+				void renameTFile(this.file, this.name);	// TODO: If this fails, the modal should report a fail
+				this.resolveModal?.(this.file);
 				this.close();
 			})
 		})

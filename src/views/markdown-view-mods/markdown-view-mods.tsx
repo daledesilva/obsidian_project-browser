@@ -1,5 +1,5 @@
 import './markdown-view-mods.scss';
-import { ItemView, MarkdownView, Menu, MenuItem, TFile, TFolder, View } from "obsidian";
+import { FileView, ItemView, MarkdownView, Menu, MenuItem, TFile, TFolder, View, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { StateMenu } from 'src/components/state-menu/state-menu';
@@ -7,19 +7,30 @@ import { ProjectPagesFAB } from 'src/components/project-pages-fab/project-pages-
 import { getGlobals, getStateMenuSettings } from 'src/logic/stores';
 import { toggleStateMenu } from 'src/logic/toggle-state-menu';
 import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
-import { openFileInSameLeaf } from 'src/logic/file-access-processes';
+import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { createProject, createProjectFromNote, getFolderSettings } from 'src/utils/file-manipulation';
-import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view';
+import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view-constants';
 
 //////////
 //////////
 
 const stateMenuContainerClassName = 'ddc_pb_state-menu-container';
 const projectPagesFabContainerClassName = 'ddc_pb_project-pages-fab-container';
+let keepProjectPagesFabMenuOpenUntilMs = 0;
+let projectPagesFabRenderRequestId = 0;
 
 interface ProjectPagesFabRoot {
     unmount: () => void;
     render: (element: React.ReactElement) => void;
+}
+
+interface StateMenuRoot {
+    unmount: () => void;
+    render: (element: React.ReactElement) => void;
+}
+
+function isFileView(leaf: WorkspaceLeaf | null): leaf is WorkspaceLeaf & { view: FileView } {
+    return !!leaf && leaf.view instanceof FileView;
 }
 
 //////////
@@ -31,14 +42,33 @@ export function registerMarkdownViewMods() {
 
     // NOTE: Opening a different file in the same leaf counts as an active-leaf-change, but the header gets replaced, it updates.
     plugin.registerEvent(plugin.app.workspace.on('active-leaf-change', (leaf) => {
-        if(!leaf) return;
+        if (!leaf) return;
 
-		const viewType = leaf.view.getViewType();
-		if(viewType === 'markdown') {
-            addStateHeader();
-            addOrRemoveProjectPagesFAB();
+        // TODO: This is to be re-enabled in v0.5
+        // void syncProjectPagesSidebarFromActiveWorkspaceContext();
+
+        if (isFileView(leaf)) {
+            const keepMenuOpen = Date.now() < keepProjectPagesFabMenuOpenUntilMs;
+            void addOrRemoveProjectPagesFAB({ keepMenuOpen });
+            if (leaf.view instanceof MarkdownView) {
+                addStateHeader();
+            }
         }
-	}));
+    }));
+
+    plugin.registerEvent(plugin.app.workspace.on('file-open', () => {
+        // TODO: This is to be re-enabled in v0.5
+        // void syncProjectPagesSidebarFromActiveWorkspaceContext();
+
+        const activeLeaf = plugin.app.workspace.getMostRecentLeaf();
+        if (!activeLeaf || !isFileView(activeLeaf)) return;
+
+        const keepMenuOpen = Date.now() < keepProjectPagesFabMenuOpenUntilMs;
+        void addOrRemoveProjectPagesFAB({ keepMenuOpen });
+        if (activeLeaf.view instanceof MarkdownView) {
+            addStateHeader();
+        }
+    }));
 }
 
 function addViewMenuOptions() {
@@ -46,7 +76,7 @@ function addViewMenuOptions() {
     plugin.app.workspace.on('file-menu', (menu, file, source) => {
         if(source !== 'more-options') return;
         menu.addItem((item: MenuItem) => {
-            item.setTitle('Toggle State Menu');
+            item.setTitle('Toggle state menu');
             item.setChecked(getStateMenuSettings().visible);
             item.onClick(toggleStateMenu);
             item.setSection('pane');
@@ -58,7 +88,7 @@ function addViewMenuOptions() {
 function addActionButtons(view: View) {
     // TODO: Currently adding an extra button every time the view is clicked in.
     if (!(view instanceof MarkdownView)) return;
-    const element = view.addAction('file-stack', 'Toggle State Menu', toggleStateMenu);
+    const element = view.addAction('file-stack', 'Toggle state menu', toggleStateMenu);
 }
 
 function addStateHeader() {
@@ -76,10 +106,16 @@ function addStateHeader() {
         const headerEl = containerEl.children[0];
         stateMenuContainerEl = headerEl.createDiv(stateMenuContainerClassName);
         headerEl.after(stateMenuContainerEl);
-        let stateMenuRoot = createRoot(stateMenuContainerEl);
+        const stateMenuRoot = createRoot(stateMenuContainerEl);
+        (stateMenuContainerEl as HTMLElement & { __stateMenuRoot?: StateMenuRoot }).__stateMenuRoot = stateMenuRoot;
+    }
+
+    const stateEl = stateMenuContainerEl as HTMLElement & { __stateMenuRoot?: StateMenuRoot };
+    const stateMenuRoot = stateEl.__stateMenuRoot;
+    if (stateMenuRoot) {
         stateMenuRoot.render(
             <StateMenu file={activeFile}/>
-        )
+        );
     }
 }
 
@@ -88,28 +124,51 @@ interface AddOrRemoveProjectPagesFABOptions {
 }
 
 async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOptions) {
+    const requestId = ++projectPagesFabRenderRequestId;
     const {plugin} = getGlobals();
     const workspace = plugin.app.workspace;
+    const activeFileAtStart = workspace.getActiveFile();
+    const resolvedParentFolderAtStart = activeFileAtStart?.parent ?? plugin.app.vault.getRoot();
+    let parentIsProject =
+        resolvedParentFolderAtStart instanceof TFolder &&
+        (await getFolderSettings(plugin.app.vault, resolvedParentFolderAtStart)).isProject === true;
+
+    if (requestId !== projectPagesFabRenderRequestId) return;
     const leaf = workspace.getActiveViewOfType(ItemView)?.leaf;
     if (!leaf) return;
-
-    const activeFile = workspace.getActiveFile();
     const containerEl = leaf.view.containerEl;
-    let fabContainerEl = containerEl.find(`.${projectPagesFabContainerClassName}`);
+    const activeFile = workspace.getActiveFile();
 
-    const resolvedParentFolder = activeFile?.parent ?? plugin.app.vault.getRoot();
-    const parentIsProject =
-        resolvedParentFolder instanceof TFolder &&
-        (await getFolderSettings(plugin.app.vault, resolvedParentFolder)).isProject === true;
+    cleanupInactiveProjectPagesFABs(containerEl);
+    let fabContainerEl = containerEl.find(`.${projectPagesFabContainerClassName}`);
 
     if (!activeFile) {
         removeProjectPagesFAB(containerEl);
         return;
     }
 
-    const parentFolder = resolvedParentFolder as TFolder;
+    const parentFolder = (activeFile.parent ?? plugin.app.vault.getRoot());
+    if (parentFolder.path !== resolvedParentFolderAtStart.path) {
+        parentIsProject = (await getFolderSettings(plugin.app.vault, parentFolder)).isProject === true;
+        if (requestId !== projectPagesFabRenderRequestId) return;
+    }
+
+    let parentIsInsideProject = false;
+    if (!parentIsProject) {
+        let ancestor = parentFolder.parent;
+        while (ancestor) {
+            const ancestorSettings = await getFolderSettings(plugin.app.vault, ancestor);
+            if (ancestorSettings.isProject === true) {
+                parentIsInsideProject = true;
+                break;
+            }
+            ancestor = ancestor.parent ?? null;
+        }
+        if (requestId !== projectPagesFabRenderRequestId) return;
+    }
 
     function onNavigateToPage(file: TFile) {
+        keepProjectPagesFabMenuOpenUntilMs = Date.now() + 1500;
         openFileInSameLeaf(file);
         openStateMenuIfClosed();
     }
@@ -117,7 +176,7 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
     function onOpenProjectFolder(folder: TFolder) {
         const activeLeaf = workspace.getMostRecentLeaf();
         if (activeLeaf) {
-            activeLeaf.setViewState({
+            void activeLeaf.setViewState({
                 type: CARD_BROWSER_VIEW_TYPE,
                 state: { path: folder.path },
             });
@@ -129,9 +188,9 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
             parentFolder,
             projectName: 'Untitled',
         });
-        openFileInSameLeaf(newFile);
+        openNewPageAndSelectTitle(newFile);
         // Defer refresh; vault events in FAB will update the page list
-        setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
+        window.setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
     }
 
     async function onAddPage() {
@@ -140,14 +199,14 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
                 parentFolder,
                 projectName: 'Untitled',
             });
-            openFileInSameLeaf(newFile);
+            openNewPageAndSelectTitle(newFile);
             openStateMenuIfClosed();
         } else {
             const newFile = await createProjectFromNote(activeFile, parentFolder);
-            openFileInSameLeaf(newFile);
+            openNewPageAndSelectTitle(newFile);
         }
         // Defer refresh; vault events in FAB will update the page list
-        setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
+        window.setTimeout(() => addOrRemoveProjectPagesFAB({ keepMenuOpen: true }), 0);
     }
 
     if (!fabContainerEl) {
@@ -157,20 +216,34 @@ async function addOrRemoveProjectPagesFAB(options?: AddOrRemoveProjectPagesFABOp
         (fabContainerEl as HTMLElement & { __projectPagesFabRoot?: ProjectPagesFabRoot }).__projectPagesFabRoot = root;
     }
 
-    const root = (fabContainerEl as HTMLElement & { __projectPagesFabRoot?: ProjectPagesFabRoot }).__projectPagesFabRoot;
+    const fabEl = fabContainerEl as HTMLElement & {
+        __projectPagesFabRoot?: ProjectPagesFabRoot;
+    };
+
+    const root = fabEl.__projectPagesFabRoot;
     if (root) {
         root.render(
             <ProjectPagesFAB
                 projectFolder={parentFolder}
                 currentFile={activeFile}
                 parentIsProject={parentIsProject}
+                parentIsInsideProject={parentIsInsideProject}
                 initialMenuOpen={options?.keepMenuOpen}
                 onNavigateToPage={onNavigateToPage}
                 onOpenProjectFolder={onOpenProjectFolder}
-                onNewFile={onNewFile}
+                onNewProject={onNewFile}
                 onAddPage={onAddPage}
             />
         );
+    }
+}
+
+function cleanupInactiveProjectPagesFABs(activeContainerEl: HTMLElement) {
+    const fabContainers = Array.from(activeDocument.querySelectorAll(`.${projectPagesFabContainerClassName}`));
+    for (const fabContainer of fabContainers) {
+        if (!(fabContainer.instanceOf(HTMLElement))) continue;
+        if (activeContainerEl.contains(fabContainer)) continue;
+        removeProjectPagesFABElement(fabContainer);
     }
 }
 
@@ -178,7 +251,15 @@ function removeProjectPagesFAB(containerEl: HTMLElement) {
     const fabContainerEl = containerEl.find(`.${projectPagesFabContainerClassName}`);
     if (!fabContainerEl) return;
 
-    const el = fabContainerEl as HTMLElement & { __projectPagesFabRoot?: ProjectPagesFabRoot };
+    removeProjectPagesFABElement(fabContainerEl);
+}
+
+function removeProjectPagesFABElement(fabContainerEl: HTMLElement) {
+    if (!fabContainerEl) return;
+
+    const el = fabContainerEl as HTMLElement & {
+        __projectPagesFabRoot?: ProjectPagesFabRoot;
+    };
     if (el.__projectPagesFabRoot) {
         el.__projectPagesFabRoot.unmount();
         delete el.__projectPagesFabRoot;

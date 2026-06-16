@@ -36,12 +36,12 @@ export const FolderButton = (props: FolderButtonProps) => {
             folder: props.folder,
             onFolderChange: () => {
                 // Slight delay so that settings changes get picked up
-                setTimeout( async () => {
-                    applyFolderSettings()
+                window.setTimeout( async () => {
+                    void applyFolderSettings()
                 }, 200)
             }
         });
-        applyFolderSettings();
+        void applyFolderSettings();
     }, [])
 
     ////////

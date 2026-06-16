@@ -1,21 +1,31 @@
+@import '../../styles/fab-chip-search-sized';
+
 .ddc_pb_card-browser-floating-menu {
+    --ddc-pb-fab-spacing: 36px;
     position: absolute;
-    bottom: 100px;
-    right: min(100px, 5vw);
+    bottom: 24px;
+    right: var(--ddc-pb-fab-spacing);
+
+    .is-mobile & {
+        bottom: calc(24px + min(40px, 8vw) + 12px);
+    }
 
     display: flex;
     flex-direction: column;
-    align-items: end;
+    align-items: flex-end;
     gap: 10px;
-    
-    .ddc_pb_search-button {
+
+    .ddc_pb_card-browser-floating-menu__group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        margin-bottom: 24px;
+    }
+
+    .ddc_pb_card-browser-floating-menu__search-button {
         cursor: pointer;
-        --size: min(50px, 10vw);
-        width: var(--size);
-        height: var(--size);
-        padding: 15% !important; // Important to override Obsidian padding at all media sizes
-        border-radius: 50%;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        @include ddc-pb-fab-chip-search-sized;
 
         &.ddc_pb_active {
             color: var(--text-on-accent);
@@ -23,14 +33,67 @@
         }
     }
 
-    .ddc_pb_new-button {
+    .ddc_pb_card-browser-floating-menu__new-button {
         cursor: pointer;
-        --size: min(80px, 15vw);
-        width: var(--size);
-        height: var(--size);
-        padding: 25% !important; // Important to override Obsidian padding at all media sizes
-        border-radius: 50%;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        @include ddc-pb-fab-chip-search-sized;
+
+        &.ddc_pb_active {
+            color: var(--text-on-accent);
+            background-color: var(--interactive-accent);
+        }
     }
 
+    .ddc_pb_card-browser-floating-menu__folder-title {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        --page-button-size: min(40px, 8vw);
+        min-height: var(--page-button-size);
+        padding: 8px 12px;
+        max-width: 250px;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 0.9em;
+        background-color: var(--color-base-00);
+        color: var(--text-normal);
+
+        @media (hover: hover) {
+            &:hover {
+                background-color: var(--background-modifier-hover);
+            }
+        }
+
+        &--is-project {
+            border-top: 3px solid var(--interactive-accent);
+            border-left: 1px solid var(--interactive-accent);
+            border-right: 1px solid var(--interactive-accent);
+            border-bottom: 1px solid var(--interactive-accent);
+            color: var(--text-on-accent);
+            padding-top: calc(8px - 1px);
+
+            @media (hover: hover) {
+                &:hover {
+                    background-color: var(--background-modifier-hover);
+                }
+            }
+        }
+
+        &--is-inside-project {
+            color: var(--interactive-accent);
+
+            @media (hover: hover) {
+                &:hover {
+                    background-color: var(--background-modifier-hover);
+                }
+            }
+        }
+
+        &--hidden {
+            display: none;
+        }
+    }
 }

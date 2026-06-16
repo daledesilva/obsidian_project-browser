@@ -1,7 +1,8 @@
 import { Menu, TFolder } from "obsidian";
-import { openFileInSameLeaf } from "src/logic/file-access-processes";
+import { openFileInSameLeaf, openNewPageAndSelectTitle } from "src/logic/file-access-processes";
 import { getGlobals, getShowHiddenFolders, hideHiddenFolders, unhideHiddenFolders } from "src/logic/stores";
 import { NewFolderModal } from "src/modals/new-folder-modal/new-folder-modal";
+import { NewSubprojectModal } from "src/modals/new-subproject-modal/new-subproject-modal";
 import { createProject, getFolderSettings, setFolderAsProject, setFolderAsFolder } from "src/utils/file-manipulation";
 
 ////////
@@ -19,7 +20,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
         e.stopPropagation();
 
         // Close other menus (Only works on iOS for some reason, but also only needed there)
-        document.body.click();
+        activeDocument.body.click();
 
         const curFolder = commands.getCurFolder();
         const folderSettings = await getFolderSettings(plugin.app.vault, curFolder);
@@ -45,7 +46,7 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
             item.setTitle("Set as launch folder")
                 .onClick(() => {
                     plugin.settings.access.launchFolder = curFolder.path;
-                    plugin.saveSettings();
+                    void plugin.saveSettings();
                 })
         );
         if (folderSettings.isProject) {
@@ -64,20 +65,36 @@ export function registerCardBrowserContextMenu(el: HTMLElement, baseFolder: TFol
             );
         }
         menu.addSeparator();
+        const newFileLabel = folderSettings.isProject ? 'New page' : 'New project';
         menu.addItem((item) =>
-            item.setTitle("New note")
+            item.setTitle(newFileLabel)
                 .onClick(async () => {
                     const newFile = await createProject({
                         parentFolder: commands.getCurFolder(),
                         projectName: 'Untitled'
                     });
-                    setTimeout( () => openFileInSameLeaf(newFile), 500);
+                    window.setTimeout( () => openNewPageAndSelectTitle(newFile), 500);
                 })
         );
+        if (folderSettings.isProject) {
+            menu.addItem((item) =>
+                item.setTitle("New subproject")
+                    .onClick(async () => {
+                        try {
+                            const newFile = await new NewSubprojectModal({
+                                parentFolder: commands.getCurFolder(),
+                            }).showModal();
+                            openFileInSameLeaf(newFile);
+                        } catch {
+                            // cancelled
+                        }
+                    })
+            );
+        }
         menu.addItem((item) =>
             item.setTitle("New folder")
                 .onClick(() => {
-                    new NewFolderModal({
+                    void new NewFolderModal({
                         baseFolder: commands.getCurFolder(),
                     }).showModal()
                 })

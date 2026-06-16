@@ -13,9 +13,11 @@ interface FolderSetProps {
 }
 export const FolderSet = (props: FolderSetProps) => {
 
-    const cards = props.folders.map( folder => {
+    const cards = props.folders
+        .filter((folder): folder is TFolder => folder instanceof TFolder)
+        .map( folder => {
         return <FolderButton
-            folder = {folder as TFolder}
+            folder = {folder}
             key = {folder.path}
             onSelect = {props.onFolderSelect}
         />
@@ -38,9 +40,11 @@ interface NoteCardSetProps {
 }
 export const NoteCardSet = (props: NoteCardSetProps) => {
 
-    const cards = props.files.map( file => {
+    const cards = props.files
+        .filter((file): file is TFile => file instanceof TFile)
+        .map( file => {
         return <DetailedNoteCard
-            file = {file as TFile}
+            file = {file}
             key = {file.path}
             onSelect = {props.onFileSelect}
         />

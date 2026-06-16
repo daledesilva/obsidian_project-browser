@@ -14,6 +14,10 @@ By default, the project browser shows all file types that Obsidian natively supp
 
 Project Browser and Page Menu each have separate visible and hidden lists, so you can control what appears in the card view differently from what appears in the pages menu.
 
+### Unsupported types and external-open indicator
+
+File types that Obsidian does not natively support (not in the view registry) open in the system default application when clicked. When such types are visible in the Project Browser or Page Menu, an external-link icon appears to indicate that clicking will open them in an external program. The icon appears at the top right of browser cards and next to the file type tag on page menu buttons.
+
 ## Three sections and color coding
 
 The File Type Editor groups extensions into three categories, each with a distinct color:
@@ -101,6 +105,8 @@ All file type chips show the display name (or `.ext`) on the first line. For plu
 - **Project browser**: `getSortedSectionsInFolder` and `getSortedSectionsInFolderAsync` in `src/logic/folder-processes.ts` use `isExtensionVisible(ext, 'projectBrowser')`.
 - **Pages menu**: `ProjectPagesFAB` in `src/components/project-pages-fab/` uses `isExtensionVisible(ext, 'pageMenu')`.
 - **File type editor**: `FileTypeSettingsSection` runs discovery on mount; `FileTypeEditor` (one per surface) renders visible and hidden sections with ReactSortable for drag-and-drop, plus a shared legend and color-coded chips. Each surface uses a separate ReactSortable `group` so items cannot be dragged between Project Browser and Page Menu.
+- **External-open indicator**: `isExtensionUnsupportedByObsidian(extension)` in `src/logic/is-extension-unsupported.ts` — returns `true` when the extension is not in Obsidian's view registry. When true, `NoteCardBase` and `ProjectPagesFAB` render an external-link icon to indicate the file will open in the system default application.
+- **File context menu** (`src/context-menus/file-context-menu.tsx`): Used on card browser file cards and page menu buttons. Right-click options vary by file type. Notes (`.md`) get the full menu: Open in new tab, Priorities, States, Rename, Delete. Obsidian-supported non-notes (`.canvas`, `.base`, PDF, images, etc.) get Open in new tab, Rename, Delete—no Priorities or States, since those use YAML frontmatter that only markdown supports. Unsupported file types (those that open externally) get only Rename and Delete, since "Open in new tab" would open them in the system default app rather than in Obsidian.
 
 ## Technical gotchas
 

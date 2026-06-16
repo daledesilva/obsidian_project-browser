@@ -28,6 +28,10 @@
 .ddc_pb_hidden-hidden-folder {
     display: none;
 }
+
+.ddc_pb_rename-source-hidden {
+    display: none !important;
+}
 .ddc_pb_visible-hidden-folder {
     outline: solid 3px var(--interactive-hover);
     outline-offset: -2px;

@@ -28,6 +28,13 @@ const FILE_TYPE_LABELS: Record<string, string> = {
 
 const TYPE_TAG_EXTENSIONS = new Set(['canvas', 'base']);
 
+const FRONTMATTER_EXTENSIONS = new Set(['md']);
+
+/** Returns true if the file type supports YAML frontmatter (state, priority, etc.). Only markdown notes do. */
+export function hasFrontmatterSupport(extension: string): boolean {
+    return FRONTMATTER_EXTENSIONS.has((extension ?? '').toLowerCase());
+}
+
 /** Returns a display label for the file type, or null. Only base and canvas show a type tag. */
 export function getFileTypeLabel(extension: string): string | null {
     const ext = (extension ?? '').toLowerCase();

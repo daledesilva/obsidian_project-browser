@@ -8,6 +8,8 @@ import { getGlobals } from 'src/logic/stores';
 import { openFileInBackgroundTab, openFileInSameLeaf } from 'src/logic/file-access-processes';
 import { getFilePrioritySettings } from 'src/logic/frontmatter-processes';
 import { getFileTypeLabel } from 'src/logic/get-file-type-label';
+import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
+import { ExternalLink } from 'lucide-react';
 
 /////////
 /////////
@@ -29,6 +31,7 @@ export const NoteCardBase = (props: NoteCardBaseProps) => {
     const prioritySettings = getFilePrioritySettings(props.file);
     const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
     const fileTypeLabel = getFileTypeLabel(props.file.extension ?? '');
+    const isUnsupported = isExtensionUnsupportedByObsidian(props.file.extension ?? '');
 
     React.useEffect( () => {
         if(!plugin) return;
@@ -53,20 +56,31 @@ export const NoteCardBase = (props: NoteCardBaseProps) => {
             ])}
             onClick = { (event) => {
                 if (event.ctrlKey || event.metaKey) {
-                    openFileInBackgroundTab(props.file)
+                    void openFileInBackgroundTab(props.file)
                 } else {
                     cardBrowserContext.rememberLastTouchedFile(props.file);
-                    openFileInSameLeaf(props.file)
+                    void openFileInSameLeaf(props.file)
                 }
             }}
             style = {{
                 rotate: props.rotation ? props.rotation + 'deg' : undefined,
             }}
         >
-            {fileTypeLabel && (
-                <span className="ddc_pb_note-card-type-label" aria-hidden>
-                    {fileTypeLabel}
-                </span>
+            {(fileTypeLabel || isUnsupported) && (
+                <div className="ddc_pb_note-card-top-right">
+                    {fileTypeLabel && (
+                        <span className="ddc_pb_note-card-type-label" aria-hidden>
+                            {fileTypeLabel}
+                        </span>
+                    )}
+                    {isUnsupported && (
+                        <ExternalLink
+                            className="ddc_pb_external-file-icon"
+                            aria-label="Opens in external program"
+                            size={14}
+                        />
+                    )}
+                </div>
             )}
             {props.children}
         </article>

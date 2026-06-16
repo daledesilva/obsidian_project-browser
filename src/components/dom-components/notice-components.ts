@@ -5,15 +5,14 @@ import { Notice } from "obsidian";
 /////////////
 
 export function createNoticeTemplate(noticeNumber?: number, noticeTotal?: number): DocumentFragment {
-    const noticeBody = document.createDocumentFragment();
+    const noticeBody = activeDocument.createDocumentFragment();
     createNoticeLabel(noticeBody, noticeNumber, noticeTotal);
     return noticeBody;
 }
 
 export function launchPersistentNotice(noticeBody: DocumentFragment) {
     const notice = new Notice(noticeBody, 0);
-    notice.noticeEl.classList.add('ddc_pb_notice');
-    notice.noticeEl.style.pointerEvents = "none";
+    notice.messageEl.classList.add('ddc_pb_notice');
     return notice;
 }
 
@@ -48,14 +47,12 @@ export function createNoticeCtaBar(
         primaryBtnEl = ctaBarEl.createEl('button');
         primaryBtnEl.setText(props.primaryLabel);
         primaryBtnEl.classList.add('ddc_pb_primary-btn')
-        primaryBtnEl.style.pointerEvents = "all";
     }
 
     if(props.tertiaryLabel) {
         tertiaryBtnEl = ctaBarEl.createEl('button');
         tertiaryBtnEl.setText(props.tertiaryLabel);
         tertiaryBtnEl.classList.add('ddc_pb_tertiary-btn')
-        tertiaryBtnEl.style.pointerEvents = "all";
     }
 
     return {

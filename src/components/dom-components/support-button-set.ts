@@ -9,11 +9,11 @@ import { Setting } from "obsidian";
 ///////////
 
 export function createSupportButtonSet(containerEl: DocumentFragment | HTMLElement) {
-    const supportBarEl = containerEl.createDiv('ddc_ink_support-btn-set');
+    const supportBarEl = containerEl.createDiv('ddc_pb_support-btn-set');
     const settingEl = new Setting(supportBarEl);
-    settingEl.infoEl.createEl('p').setText('Like Ink?');
+    settingEl.infoEl.createEl('p').setText('Like Project Browser?');
     settingEl.addButton(btn => {
-        btn.setClass('ddc_ink_secondary-button');
+        btn.setClass('ddc_pb_secondary-button');
         btn.setTooltip('Bluesky');
         btn.setIcon('bluesky');
         btn.onClick( (e) => {
@@ -21,7 +21,7 @@ export function createSupportButtonSet(containerEl: DocumentFragment | HTMLEleme
         })
     })
     settingEl.addButton(btn => {
-        btn.setClass('ddc_ink_secondary-button');
+        btn.setClass('ddc_pb_secondary-button');
         btn.setTooltip('Mastodon');
         btn.setIcon('mastodon');
         btn.onClick( (e) => {
@@ -29,7 +29,7 @@ export function createSupportButtonSet(containerEl: DocumentFragment | HTMLEleme
         })
     })
     settingEl.addButton(btn => {
-        btn.setClass('ddc_ink_secondary-button');
+        btn.setClass('ddc_pb_secondary-button');
         btn.setTooltip('X (Twitter)');
         btn.setIcon('twitter');
         btn.onClick( (e) => {
@@ -37,7 +37,7 @@ export function createSupportButtonSet(containerEl: DocumentFragment | HTMLEleme
         })
     })
     settingEl.addButton(btn => {
-        btn.setClass('ddc_ink_primary-button');
+        btn.setClass('ddc_pb_primary-button');
         btn.setTooltip('Threads');
         btn.setIcon('threads');
         btn.onClick( (e) => {
@@ -45,7 +45,7 @@ export function createSupportButtonSet(containerEl: DocumentFragment | HTMLEleme
         })
     })
     settingEl.addButton(btn => {
-        btn.setClass('ddc_ink_primary-button');
+        btn.setClass('ddc_pb_primary-button');
         btn.setTooltip('Support developer');
         btn.setIcon('heart');
         btn.onClick( (e) => {

@@ -1,5 +1,7 @@
 import { TFile, TFolder } from "obsidian";
 import { PluginFolderSettings, StateSettings_0_0_5 } from "src/types/plugin-settings_0_0_5";
+import { FileStateScope } from "./project-page-states";
+import { getStateByNameForScope, getStateSettingsForScope } from "./project-page-states";
 import { getGlobals } from "./stores";
 
 /////////
@@ -10,12 +12,13 @@ export interface Section {
     title: string,
     items: Array<TFile | TFolder>
     settings: PluginFolderSettings | StateSettings_0_0_5,
+    stateScope?: FileStateScope,
 }
 
-export const orderSections = (unorderedSections: Section[]): Section[] => {
-    const {plugin} = getGlobals();
-    const hiddenStatesNames = plugin.settings.states.hidden.map( stateSettings => stateSettings.name );
-    const orderReference = plugin.settings.states.visible.map( stateSettings => stateSettings.name );
+export const orderSections = (unorderedSections: Section[], stateScope: FileStateScope = 'standardNote'): Section[] => {
+    const scopedStateSettings = getStateSettingsForScope(stateScope);
+    const hiddenStatesNames = scopedStateSettings.hidden.map( stateSettings => stateSettings.name );
+    const orderReference = scopedStateSettings.visible.map( stateSettings => stateSettings.name );
     orderReference.reverse();
     orderReference.unshift('folders');
     orderReference.push(' ');
@@ -50,12 +53,10 @@ export const orderSections = (unorderedSections: Section[]): Section[] => {
 
 
 
-export function getStateSettings(name: string): StateSettings_0_0_5 {
-    const {plugin} = getGlobals();
-    const allSettings = [...plugin.settings.states.visible, ...plugin.settings.states.hidden];
-    for(let i=0; i<=allSettings.length; i++) {
-        if(!allSettings[i]) continue;
-        if(allSettings[i].name === name) return allSettings[i];
+export function getStateSettings(name: string, stateScope: FileStateScope = 'standardNote'): StateSettings_0_0_5 {
+    const scopedSettings = getStateByNameForScope(name, stateScope);
+    if (scopedSettings) {
+        return scopedSettings;
     }
-    return plugin.settings.stateless;
+    return getStateSettingsForScope(stateScope).stateless;
 }

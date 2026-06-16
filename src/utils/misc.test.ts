@@ -11,12 +11,12 @@ describe("isEmpty", () => {
   });
 
   test("ignores prototype properties", () => {
-    function Ctor(this: any) {
+    function Ctor(this: unknown) {
       this.own = 1;
     }
     Ctor.prototype.proto = 2;
     // @ts-ignore
-    const obj = new (Ctor as any)();
+    const obj = new (Ctor as unknown)();
     expect(isEmpty(obj)).toBe(false);
   });
 });
