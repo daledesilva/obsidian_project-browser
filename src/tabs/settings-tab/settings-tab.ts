@@ -9,6 +9,7 @@ import { folderPathSanitize } from "src/utils/string-processes";
 import { getGlobals } from "src/logic/stores";
 import { StateSettings } from "src/types/types-map";
 import { showWelcomeTips } from "src/notices/onboarding-notices";
+import { showRecentChanges } from "src/notices/version-notices";
 
 /////////
 /////////
@@ -169,7 +170,12 @@ function insertSetupTroubleshootSection(containerEl: HTMLElement) {
 		.setClass("ddc_pb_bare-setting")
 		.setClass("ddc_pb_bare-setting--no-bottom-margin")
 		.addButton((btn) => {
+			btn.setButtonText("View recent changes");
+			btn.onClick(() => showRecentChanges());
+		})
+		.addButton((btn) => {
 			btn.setButtonText("Rewatch welcome tips");
+			btn.setCta();
 			btn.onClick(() => showWelcomeTips());
 		});
 }
