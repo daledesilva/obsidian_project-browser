@@ -18,15 +18,19 @@ export function showVersionNotice() {
     }
 }
 
+export function showRecentChanges() {
+    showLatestChanges();
+}
+
 //////////
 
 function showLatestChanges() {
     const {plugin} = getGlobals()
 
-    const noticeBody = createNoticeTemplate(1,3);
-    noticeBody.createEl('h1').setText(`Project Browser v0.4`);
-    noticeBody.createEl('p').setText(`Added:`);
-    let listEl = noticeBody.createEl('ul');
+    const { noticeBody, scrollAreaEl, footerEl } = createNoticeTemplate(1,3);
+    scrollAreaEl.createEl('h1').setText(`Project Browser v0.4`);
+    scrollAreaEl.createEl('p').setText(`Added:`);
+    let listEl = scrollAreaEl.createEl('ul');
     listEl.createEl('li').setText(`Multi-page projects are here!`);
     listEl.createEl('li').setText(`Every note, base, or canvas is already considered a project and can have multiple pages added to it.`);
     listEl.createEl('li').setText(`Custom states for pages.`);
@@ -38,20 +42,17 @@ function showLatestChanges() {
     listEl.createEl('li').setText(`Fixed stateless sections ignoring quick menu settings.`);
     listEl.createEl('li').setText(`Fixed files/folders moving to the vault root upon renaming.`);
     
-    noticeBody.createEl('p').setText(`Breaking changes:`);
-    listEl = noticeBody.createEl('ul');
+    scrollAreaEl.createEl('p').setText(`Breaking changes:`);
+    listEl = scrollAreaEl.createEl('ul');
     listEl.createEl('li').setText(`Default hotkeys have been removed to align with Obsidian recommendations. Set you preferred hotkeys in the Obsidian settings.`);
-        
-    const link = noticeBody.createEl('a');
-    link.setAttribute('href', 'https://youtu.be/na0eSecbRUI')
-    link.setText(`View release video`);
 
-    // Prevent clicking link from closing notice
-    link.onClickEvent( e => e.stopPropagation())
-        
     const {
         tertiaryBtnEl
-    } = createNoticeCtaBar(noticeBody, {
+    } = createNoticeCtaBar(footerEl, {
+        footerLink: {
+            href: 'https://youtu.be/na0eSecbRUI',
+            label: 'View release video',
+        },
         tertiaryLabel: 'Dismiss',
     })
 

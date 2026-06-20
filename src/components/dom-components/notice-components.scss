@@ -6,12 +6,66 @@
     border: solid 1px var(--background-modifier-border) !important;
     box-shadow: 0 2px 8px var(--background-modifier-box-shadow) !important;
 
+    // Cap height so footer actions stay on screen; tune inset after visual check
+    --ddc_pb_notice-viewport-inset: 5rem;
+    --ddc_pb_notice-content-padding: var(--size-4-4);
+    max-height: calc(100dvh - var(--ddc_pb_notice-viewport-inset)) !important;
+    height: fit-content !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+
     // Forcing explicitly clicking a button to dismiss
     pointer-events: none;
 }
 
 .ddc_pb_notice {
     text-align: left !important;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    max-height: calc(100dvh - var(--ddc_pb_notice-viewport-inset));
+    min-height: 0;
+    overflow: hidden;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    pointer-events: auto;
+
+    .ddc_pb_notice-scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: var(--ddc_pb_notice-content-padding);
+        padding-block-end: var(--size-4-2);
+        pointer-events: auto;
+    }
+
+    .ddc_pb_notice-footer {
+        flex-shrink: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1em;
+        padding: var(--ddc_pb_notice-content-padding);
+        pointer-events: auto;
+    }
+
+    .ddc_pb_notice-footer-links {
+        flex-shrink: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35em;
+
+        a {
+            pointer-events: all;
+            font-size: var(--font-ui-small);
+            line-height: var(--font-ui-small);
+            display: inline-flex;
+            align-items: center;
+        }
+    }
     
     p.ddc_pb_notice-label {
         color: var(--text-faint);
@@ -57,18 +111,20 @@
             }
         }        
     }
-    a {
-        pointer-events: all;
+
+    .ddc_pb_notice-footer:not(:has(.ddc_pb_notice-footer-links)) .ddc_pb_notice-cta-bar {
+        width: 100%;
     }
 
     .ddc_pb_notice-cta-bar {
         display: flex;
-        flex-direction: row-reverse; // 
+        flex-shrink: 0;
+        flex-direction: row-reverse;
         justify-content: space-between;
+        gap: var(--size-4-2);
         
         button {
             pointer-events: all;
-            // margin-left: auto; // Right aligns when no siblings
 
             &.ddc_pb_tertiary-btn {
                 color: var(--text-faint);
@@ -76,12 +132,9 @@
                 box-shadow: none;
                 margin-inline: 0;
                 padding-inline: 0;
-
-                // shift text to true bottom
-                padding-top: calc( var(--size-4-1) * 2 );
-                padding-bottom: 0 !important;
+                padding-block: 0 !important;
                 display: inline-flex;
-                align-items: flex-end;
+                align-items: center;
                 line-height: var(--font-ui-small) !important;
     
                 &:hover {

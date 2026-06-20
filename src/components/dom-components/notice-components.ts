@@ -4,20 +4,47 @@ import { Notice } from "obsidian";
 /////////////
 /////////////
 
-export function createNoticeTemplate(noticeNumber?: number, noticeTotal?: number): DocumentFragment {
+export interface NoticeTemplate {
+    noticeBody: DocumentFragment;
+    scrollAreaEl: HTMLDivElement;
+    footerEl: HTMLDivElement;
+}
+
+export function createNoticeTemplate(noticeNumber?: number, noticeTotal?: number): NoticeTemplate {
     const noticeBody = activeDocument.createDocumentFragment();
-    createNoticeLabel(noticeBody, noticeNumber, noticeTotal);
-    return noticeBody;
+    const scrollAreaEl = noticeBody.createDiv('ddc_pb_notice-scroll');
+    createNoticeLabel(scrollAreaEl, noticeNumber, noticeTotal);
+    const footerEl = noticeBody.createDiv('ddc_pb_notice-footer');
+    return {
+        noticeBody,
+        scrollAreaEl,
+        footerEl,
+    };
 }
 
 export function launchPersistentNotice(noticeBody: DocumentFragment) {
     const notice = new Notice(noticeBody, 0);
     notice.messageEl.classList.add('ddc_pb_notice');
+    wireNoticePointerHandling(notice.messageEl);
     return notice;
 }
 
-function createNoticeLabel(noticeBody: DocumentFragment, noticeNumber?: number, noticeTotal?: number): HTMLParagraphElement {
-    const labelEl = noticeBody.createEl('p');
+/** Scroll/footer need pointer-events; stop click bubbling so Obsidian won't dismiss on body clicks. */
+function wireNoticePointerHandling(noticeContentEl: HTMLElement) {
+    noticeContentEl.querySelector('.ddc_pb_notice-scroll')?.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+
+    noticeContentEl.querySelector('.ddc_pb_notice-footer')?.addEventListener('click', (event) => {
+        if (event.target instanceof HTMLElement && event.target.closest('a, button')) {
+            return;
+        }
+        event.stopPropagation();
+    });
+}
+
+function createNoticeLabel(noticeParent: HTMLElement | DocumentFragment, noticeNumber?: number, noticeTotal?: number): HTMLParagraphElement {
+    const labelEl = noticeParent.createEl('p');
     let labelText = `Project Browser plugin`;
     // if(noticeNumber) labelText += ' ('+noticeNumber;
     // if(noticeTotal) labelText += '/'+noticeTotal;
@@ -28,28 +55,45 @@ function createNoticeLabel(noticeBody: DocumentFragment, noticeNumber?: number, 
 }
 
 export function createNoticeCtaBar(
-    noticeBody: DocumentFragment,
+    footerEl: HTMLElement,
     props: {
         primaryLabel?: string,
-        tertiaryLabel?:string
+        tertiaryLabel?: string,
+        footerLink?: { href: string; label: string },
+        footerLinks?: { href: string; label: string }[],
     }): {
         ctaBarEl: HTMLDivElement,
         primaryBtnEl: HTMLButtonElement | null,
         tertiaryBtnEl: HTMLButtonElement | null,
+        footerLinkEls: HTMLAnchorElement[],
     } {
-    
+
     let primaryBtnEl: HTMLButtonElement | null = null;
     let tertiaryBtnEl: HTMLButtonElement | null = null;
-        
-    const ctaBarEl = noticeBody.createDiv('ddc_pb_notice-cta-bar');
+    const footerLinkEls: HTMLAnchorElement[] = [];
 
-    if(props.primaryLabel) {
+    const links = props.footerLinks ?? (props.footerLink ? [props.footerLink] : []);
+
+    if (links.length > 0) {
+        const footerLinksEl = footerEl.createDiv('ddc_pb_notice-footer-links');
+        for (const link of links) {
+            const footerLinkEl = footerLinksEl.createEl('a');
+            footerLinkEl.setAttribute('href', link.href);
+            footerLinkEl.setText(link.label);
+            footerLinkEl.onClickEvent((event) => event.stopPropagation());
+            footerLinkEls.push(footerLinkEl);
+        }
+    }
+
+    const ctaBarEl = footerEl.createDiv('ddc_pb_notice-cta-bar');
+
+    if (props.primaryLabel) {
         primaryBtnEl = ctaBarEl.createEl('button');
         primaryBtnEl.setText(props.primaryLabel);
         primaryBtnEl.classList.add('ddc_pb_primary-btn')
     }
 
-    if(props.tertiaryLabel) {
+    if (props.tertiaryLabel) {
         tertiaryBtnEl = ctaBarEl.createEl('button');
         tertiaryBtnEl.setText(props.tertiaryLabel);
         tertiaryBtnEl.classList.add('ddc_pb_tertiary-btn')
@@ -59,5 +103,6 @@ export function createNoticeCtaBar(
         ctaBarEl,
         primaryBtnEl,
         tertiaryBtnEl,
+        footerLinkEls,
     }
 }

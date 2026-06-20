@@ -22,15 +22,15 @@ export async function showOnboardingNotices() {
     if(noticeShowingOrDismissed) return;
     noticeShowingOrDismissed = true;
 
-    const noticeBody = createNoticeTemplate(1,3);
-    noticeBody.createEl('h1').setText(`Welcome to Project Browser`);
-    noticeBody.createEl('p').setText(`Project Browser is designed to simplify file navigation and help you focus on your priority projects.`);
-    noticeBody.createEl('p').setText(`Here's a quick rundown to help you get started...`);
+    const { noticeBody, scrollAreaEl, footerEl } = createNoticeTemplate(1,3);
+    scrollAreaEl.createEl('h1').setText(`Welcome to Project Browser`);
+    scrollAreaEl.createEl('p').setText(`Project Browser is designed to simplify file navigation and help you focus on your priority projects.`);
+    scrollAreaEl.createEl('p').setText(`Here's a quick rundown to help you get started...`);
     
     const {
         primaryBtnEl,
         tertiaryBtnEl
-    } = createNoticeCtaBar(noticeBody, {
+    } = createNoticeCtaBar(footerEl, {
         primaryLabel: `Read now`,
         tertiaryLabel: 'Remind me later',
     })
@@ -53,15 +53,15 @@ export async function showOnboardingNotices() {
 
 function showBrowserViewNotice() {
     const {plugin} = getGlobals();
-    const noticeBody = createNoticeTemplate();
-    noticeBody.createEl('h1').setText(`The Browse view...`);
-    noticeBody.createEl('p').setText(`By default, the Browse view appears when you create a new tab. You can also open it from the button in the ribbon menu.`);
-    // noticeBody.createEl('icon');
+    const { noticeBody, scrollAreaEl, footerEl } = createNoticeTemplate();
+    scrollAreaEl.createEl('h1').setText(`The Browse view...`);
+    scrollAreaEl.createEl('p').setText(`By default, the Browse view appears when you create a new tab. You can also open it from the button in the ribbon menu.`);
+    // scrollAreaEl.createEl('icon');
     
     const {
         primaryBtnEl,
         tertiaryBtnEl
-    } = createNoticeCtaBar(noticeBody, {
+    } = createNoticeCtaBar(footerEl, {
         primaryLabel: 'Continue',
         tertiaryLabel: 'Remind me later',
     })
@@ -79,15 +79,15 @@ function showBrowserViewNotice() {
 
 function showNotesNotice() {
     const {plugin} = getGlobals();
-    const noticeBody = createNoticeTemplate();
-    noticeBody.createEl('h1').setText(`Note states...`);
-    noticeBody.createEl('p').setText(`The state of each note can be assigned through a button at the top of the note or through the command shortcuts (Cmd+Shift+D and Cmd+Shift+A).`);
-    noticeBody.createEl('p').setText(`Notes in each folder are organised in the browse view by their state.`);
+    const { noticeBody, scrollAreaEl, footerEl } = createNoticeTemplate();
+    scrollAreaEl.createEl('h1').setText(`Note states...`);
+    scrollAreaEl.createEl('p').setText(`The state of each note can be assigned through a button at the top of the note or through the command shortcuts (Cmd+Shift+D and Cmd+Shift+A).`);
+    scrollAreaEl.createEl('p').setText(`Notes in each folder are organised in the browse view by their state.`);
 
     const {
         primaryBtnEl,
         tertiaryBtnEl
-    } = createNoticeCtaBar(noticeBody, {
+    } = createNoticeCtaBar(footerEl, {
         primaryLabel: 'Continue',
         tertiaryLabel: 'Remind me later',
     })
@@ -105,15 +105,15 @@ function showNotesNotice() {
 
 function showCustomisationNotice() {
     const {plugin} = getGlobals();
-    const noticeBody = createNoticeTemplate();
-    noticeBody.createEl('h1').setText(`Customisation...`);
-    noticeBody.createEl('p').setText(`The states and their order can be customised in the settings. As well as when the browse view opens and a growing set of other features.`);
-    noticeBody.createEl('p').setText(`The state menu in each note can also be hidden with Cmd+Shift+S.`);
+    const { noticeBody, scrollAreaEl, footerEl } = createNoticeTemplate();
+    scrollAreaEl.createEl('h1').setText(`Customisation...`);
+    scrollAreaEl.createEl('p').setText(`The states and their order can be customised in the settings. As well as when the browse view opens and a growing set of other features.`);
+    scrollAreaEl.createEl('p').setText(`The state menu in each note can also be hidden with Cmd+Shift+S.`);
 
     const {
         primaryBtnEl,
         tertiaryBtnEl
-    } = createNoticeCtaBar(noticeBody, {
+    } = createNoticeCtaBar(footerEl, {
         primaryLabel: 'Continue',
         tertiaryLabel: 'Remind me later',
     })
@@ -132,21 +132,24 @@ function showCustomisationNotice() {
 
 function showDevelopmentWelcomeNotice() {
     const {plugin} = getGlobals();
-    const noticeBody = createNoticeTemplate();
-    noticeBody.createEl('h1').setText(`Get involved...`);
-    noticeBody.createEl('p').setText(`If you notice any bugs, please report them through the link in the settings.`);
-    noticeBody.createEl('p').setText(`You can also follow along with development and let me know which features are important to you at the link below.`);
+    const { noticeBody, scrollAreaEl, footerEl } = createNoticeTemplate();
+    scrollAreaEl.createEl('h1').setText(`Get involved...`);
+    scrollAreaEl.createEl('p').setText(`If you notice any bugs, please report them through the link in the settings.`);
+    scrollAreaEl.createEl('p').setText(`You can also follow along with development and let me know which features are important to you at the links below.`);
 
-    const link = noticeBody.createEl('a');
-    link.setAttribute('href', 'https://www.youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ')
-    link.setText(`Project Browser development diaries`);
-    // Prevent clicking link from closing notice
-    link.onClickEvent( e => e.stopPropagation())
-    
-    
     const {
         tertiaryBtnEl
-    } = createNoticeCtaBar(noticeBody, {
+    } = createNoticeCtaBar(footerEl, {
+        footerLinks: [
+            {
+                href: 'https://www.youtube.com/playlist?list=PLAiv7XV4xFx3_JUHGUp_vrqturMTsoBUZ',
+                label: 'View dev diaries',
+            },
+            {
+                href: 'https://designdebt.club/socials',
+                label: 'Follow on socials',
+            },
+        ],
         tertiaryLabel: 'Dismiss',
     })
 
