@@ -29,6 +29,7 @@
     width: 100%;
     padding: 0 !important;
     margin: 0 !important;
+    pointer-events: auto;
 
     .ddc_pb_notice-scroll {
         flex: 1 1 auto;
@@ -37,6 +38,7 @@
         overscroll-behavior: contain;
         padding: var(--ddc_pb_notice-content-padding);
         padding-block-end: var(--size-4-2);
+        pointer-events: auto;
     }
 
     .ddc_pb_notice-footer {
@@ -46,6 +48,7 @@
         align-items: center;
         gap: 1em;
         padding: var(--ddc_pb_notice-content-padding);
+        pointer-events: auto;
     }
 
     .ddc_pb_notice-footer-links {
