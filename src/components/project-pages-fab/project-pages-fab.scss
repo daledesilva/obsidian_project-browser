@@ -27,6 +27,7 @@
         overflow-y: auto;
         padding-top: 12px;
         padding-bottom: 12px;
+        pointer-events: auto;
         scrollbar-width: none;
         -ms-overflow-style: none;
 
@@ -102,9 +103,11 @@
         padding: 8px 12px;
         border-radius: 8px;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        white-space: nowrap;
+        white-space: normal;
+        overflow-wrap: anywhere;
         overflow: hidden;
-        text-overflow: ellipsis;
+        text-align: right;
+        line-height: 1.25;
         font-size: 0.9em;
 
         .ddc_pb_project-page-menu__file-button-tags {
