@@ -10,6 +10,7 @@ Reference for commit message format, shared workflow rules, and common slash com
 | **`/commit` command** | `~/.cursor/commands/commit.md` (global) or `.cursor/commands/commit.md` (project) | Explicit workflow: stage → commit → **push** |
 | **`/pr` command** | `~/.cursor/commands/pr.md` (global) or `.cursor/commands/pr.md` (project) | Explicit workflow: inspect branch changes, push if needed, and open a pull request |
 | **`/document` command** | `~/.cursor/commands/document.md` (global) or `.cursor/commands/document.md` (project) | Explicit workflow: document current-thread feature work and add context comments |
+| **`/build-ready-tasks` command** | `~/.cursor/commands/build-ready-tasks.md` (global) or `.cursor/commands/build-ready-tasks.md` (project) | Explicit workflow: pull ClickUp Build Ready tickets from a list, group dependencies, implement, commit, push, and open PRs |
 | **Documentation/context comments rule** | `.cursor/rules/documentation-and-context-comments.mdc` | Shared rule for when to update docs and when to add code comments that explain intent |
 | **ClickUp rule** | `.cursor/rules/clickup.mdc` | Task folder scope; feeds `Clickup Task:` line in commits |
 | **Git workflow** | `.cursor/rules/git-workflow.mdc` | Branch naming and AI commit policy |
@@ -63,5 +64,5 @@ Clickup Task: 86abc1234
 
 | File | Global (`~/.cursor/`) | Project (`.cursor/`) |
 |---|---|---|
-| `commands/{commit,pr,document}.md` | All repos on this machine | Shared with team via git |
+| `commands/{commit,pr,document,build-ready-tasks}.md` | All repos on this machine | Shared with team via git |
 | User Rule (commit format) | Recommended | Optional duplicate as project rule |
