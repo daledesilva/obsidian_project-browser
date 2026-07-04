@@ -33,19 +33,24 @@ export function getGlobals(): StaticGlobals {
 
 export const globalStore = createStore();
 
-interface StateMenuSettings {
-	visible: boolean,
+export type StateMenuSurface = 'noteAndProject' | 'page';
+
+export interface StateMenuSettings {
+	noteAndProjectVisible: boolean,
+	pageVisible: boolean,
 };
 const defaultStateMenuSettings: StateMenuSettings = {
-	visible: true,
+	noteAndProjectVisible: true,
+	pageVisible: true,
 };
 export const stateMenuAtom = atom<StateMenuSettings>(defaultStateMenuSettings)
 export function initStateMenuSettings() {
 	const {plugin} = getGlobals();
 	const store = getDefaultStore();
 	const curStateMenuSettings = store.get(stateMenuAtom);
-	const newStateMenuSettings = JSON.parse(JSON.stringify(curStateMenuSettings));
-	newStateMenuSettings.visible = plugin.settings.showStateMenu;
+	const newStateMenuSettings: StateMenuSettings = { ...curStateMenuSettings };
+	newStateMenuSettings.noteAndProjectVisible = plugin.settings.showNoteAndProjectStateMenu ?? plugin.settings.showStateMenu;
+	newStateMenuSettings.pageVisible = plugin.settings.showPageStateMenu ?? plugin.settings.showStateMenu;
 	store.set(stateMenuAtom, newStateMenuSettings);
 }
 export function setStateMenuSettings(stateMenuSettings: StateMenuSettings): void {
@@ -55,6 +60,20 @@ export function setStateMenuSettings(stateMenuSettings: StateMenuSettings): void
 export function getStateMenuSettings(): StateMenuSettings {
 	const store = getDefaultStore();
 	return store.get(stateMenuAtom);
+}
+export function getStateMenuSurfaceVisibility(stateMenuSettings: StateMenuSettings, surface: StateMenuSurface): boolean {
+	return surface === 'page' ? stateMenuSettings.pageVisible : stateMenuSettings.noteAndProjectVisible;
+}
+export function setStateMenuSurfaceVisibility(
+	stateMenuSettings: StateMenuSettings,
+	surface: StateMenuSurface,
+	visible: boolean,
+): void {
+	if (surface === 'page') {
+		stateMenuSettings.pageVisible = visible;
+		return;
+	}
+	stateMenuSettings.noteAndProjectVisible = visible;
 }
 
 //////////

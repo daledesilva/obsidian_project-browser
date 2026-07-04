@@ -34,7 +34,8 @@ export const CardBrowserContext = React.createContext<{
 });
 
 export interface CardBrowserHandlers {
-    rerender: Function,
+    rerender: () => void,
+    getCurrentFolderIsProject: () => boolean,
 }
 // export const cardBrowserHandlers = atom<CardBrowserHandlers>()
 
@@ -139,10 +140,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
     // on mount
     React.useEffect( () => {
         if(!plugin) return;
-        
-        props.passBackHandlers({
-            rerender,
-        })
         plugin.addGlobalFileDependant(`card-browser_${viewInstanceId}`, rerender);
 
         if(plugin && browserRef.current) {
@@ -153,6 +150,13 @@ export const CardBrowser = (props: CardBrowserProps) => {
         }
         
     },[])
+
+    React.useEffect(() => {
+        props.passBackHandlers({
+            rerender,
+            getCurrentFolderIsProject: () => currentFolderIsProject,
+        });
+    }, [currentFolderIsProject]);
 
     const getCurFolder = (): TFolder => {
         const curFolder = v.getFolderByPath(props.getViewStates().state.path) || v.getRoot();

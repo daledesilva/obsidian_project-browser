@@ -1,7 +1,7 @@
 import * as React from "react";
 import classnames from 'classnames';
 import { useAtomValue } from 'jotai';
-import { stateMenuAtom } from 'src/logic/stores';
+import { getStateMenuSurfaceVisibility, stateMenuAtom, StateMenuSurface } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
 import { sanitizeInternalLinkName } from 'src/utils/string-processes';
 
@@ -9,21 +9,23 @@ interface StateMenuShellProps {
     currentStateSettings: StateSettings | null;
     visibleStates: StateSettings[];
     hiddenStates: StateSettings[];
+    visibilitySurface: StateMenuSurface;
     onSetState: (stateSettings: StateSettings | null) => Promise<boolean>;
 }
 
 export const StateMenuShell = (props: StateMenuShellProps) => {
     const stateMenuSettings = useAtomValue(stateMenuAtom);
+    const stateMenuIsVisible = getStateMenuSurfaceVisibility(stateMenuSettings, props.visibilitySurface);
     const [menuIsActive, setMenuIsActive] = React.useState(false);
     const showHighlightRef = React.useRef<boolean>(false);
     const stateMenuRef = React.useRef<HTMLDivElement>(null);
     const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
     const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
 
-    const stateMenuSettingsRef = React.useRef(stateMenuSettings);
+    const stateMenuIsVisibleRef = React.useRef(stateMenuIsVisible);
     React.useEffect(() => {
-        stateMenuSettingsRef.current = stateMenuSettings;
-    }, [stateMenuSettings]);
+        stateMenuIsVisibleRef.current = stateMenuIsVisible;
+    }, [stateMenuIsVisible]);
 
     const displayState = props.currentStateSettings?.name || 'Set State';
 
@@ -45,7 +47,7 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
 
     React.useEffect(() => {
         setHeight();
-    }, [stateMenuSettings, menuIsActive]);
+    }, [stateMenuIsVisible, menuIsActive]);
 
     React.useEffect(() => {
         showHighlightRef.current = false;
@@ -124,7 +126,7 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
     }
 
     function setHeight() {
-        if (stateMenuSettingsRef.current.visible) {
+        if (stateMenuIsVisibleRef.current) {
             setVisibleHeight();
         } else {
             setHiddenHeight();

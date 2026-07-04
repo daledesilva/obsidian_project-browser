@@ -42,6 +42,7 @@ export const ProjectPageStateMenu = (props: ProjectPageStateMenuProps) => {
             currentStateSettings={stateSettings}
             visibleStates={plugin.settings.projectPageStates.visible}
             hiddenStates={plugin.settings.projectPageStates.hidden}
+            visibilitySurface="page"
             onSetState={setStateAndUpdateMenu}
         />
     );

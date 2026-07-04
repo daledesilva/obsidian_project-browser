@@ -6,7 +6,12 @@ import { PluginSettingTab, Setting } from "obsidian";
 import MyPlugin from "src/main";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
 import { folderPathSanitize } from "src/utils/string-processes";
-import { getGlobals } from "src/logic/stores";
+import {
+	getGlobals,
+	getStateMenuSettings,
+	setStateMenuSettings,
+	setStateMenuSurfaceVisibility,
+} from "src/logic/stores";
 import { StateSettings } from "src/types/types-map";
 import { showWelcomeTips } from "src/notices/onboarding-notices";
 import { showRecentChanges } from "src/notices/version-notices";
@@ -266,12 +271,31 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(sectionEl)
 		.setClass("ddc_pb_controls-header")
-		.setName("File & project states")
+		.setName("Note & project states")
 		.setDesc(
-			"This is the list of categories that Project Browser will help assign projects and group by in the Browser view. Add new project states and drag them to reorder or delete.",
+			"This is the list of categories that Project Browser will help assign notes and projects, and group by in the Browser view. Add new states and drag them to reorder or delete.",
 		);
 
 	const contentEl = sectionEl.createDiv("ddc_pb_controls-content");
+
+	new Setting(contentEl)
+		.setClass("ddc_pb_setting")
+		.setName("Show note and project states")
+		.setDesc(
+			"Show the state menu for regular notes and project root views. This can also be toggled from the view menu.",
+		)
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.showNoteAndProjectStateMenu);
+			toggle.onChange(async (value) => {
+				plugin.settings.showNoteAndProjectStateMenu = value;
+				plugin.settings.showStateMenu = value;
+				const stateMenuSettings = { ...getStateMenuSettings() };
+				setStateMenuSurfaceVisibility(stateMenuSettings, 'noteAndProject', value);
+				setStateMenuSettings(stateMenuSettings);
+				await plugin.saveSettings();
+				refresh();
+			});
+		});
 
 	new Setting(contentEl)
 		.setClass("ddc_pb_setting")
@@ -341,6 +365,24 @@ function insertProjectPageStateSettings(
 		);
 
 	const contentEl = sectionEl.createDiv("ddc_pb_controls-content");
+
+	new Setting(contentEl)
+		.setClass("ddc_pb_setting")
+		.setName("Show page states")
+		.setDesc(
+			"Show the page state menu for markdown pages inside project folders. This can also be toggled from the view menu.",
+		)
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.showPageStateMenu);
+			toggle.onChange(async (value) => {
+				plugin.settings.showPageStateMenu = value;
+				const stateMenuSettings = { ...getStateMenuSettings() };
+				setStateMenuSurfaceVisibility(stateMenuSettings, 'page', value);
+				setStateMenuSettings(stateMenuSettings);
+				await plugin.saveSettings();
+				refresh();
+			});
+		});
 
 	new Setting(contentEl)
 		.setClass("ddc_pb_setting")
@@ -490,21 +532,6 @@ function insertNoteSettings(containerEl: HTMLElement, refresh: () => void) {
 		);
 
 	const contentEl = sectionEl.createDiv("ddc_pb_controls-content");
-
-	new Setting(contentEl)
-		.setClass("ddc_pb_setting")
-		.setName("Show state menu in notes")
-		.setDesc(
-			"This can be toggled any time through a command (Default shortcut: Cmd+Shift+S).",
-		)
-		.addToggle((toggle) => {
-			toggle.setValue(plugin.settings.showStateMenu);
-			toggle.onChange(async (value) => {
-				plugin.settings.showStateMenu = value;
-				await plugin.saveSettings();
-				refresh();
-			});
-		});
 
 	new Setting(contentEl)
 		.setClass("ddc_pb_setting")
