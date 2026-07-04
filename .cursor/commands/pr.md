@@ -54,13 +54,13 @@ EOF
 )"
 ```
 
-9. After the PR is created, move each linked ClickUp task to the list's **Ready...** status/column:
-   - Resolve the exact Ready status when needed (for example, `Ready for Review` or the list's equivalent Ready-prefixed status).
+9. After the PR is created, move each linked ClickUp task to the list's **Review** status/column:
+   - Resolve the exact Review status when needed.
    - Prefer **ClickUp MCP** `clickup_update_task` with `status`.
-   - Leave tasks unchanged if they are already in Ready or a later review status.
-   - If MCP is unavailable or the Ready status cannot be resolved, report that clearly and ask the user to move the task manually.
+   - Leave tasks unchanged if they are already in Review or a later review/done status.
+   - If MCP is unavailable or the Review status cannot be resolved, report that clearly and ask the user to move the task manually.
 
-10. Report the PR URL, title, base branch, commit count, ClickUp tasks linked, ClickUp tasks moved to Ready, and any warnings (no ClickUp tasks found, MCP unavailable, skipped push, status update failed, etc.).
+10. Report the PR URL, title, base branch, commit count, ClickUp tasks linked, ClickUp tasks moved to Review, and any warnings (no ClickUp tasks found, MCP unavailable, skipped push, status update failed, etc.).
 
 ## PR body format
 
@@ -104,5 +104,5 @@ When done, show:
 - Base ← head branches
 - Number of commits included
 - ClickUp tasks linked (IDs + URLs)
-- ClickUp tasks moved to Ready (IDs + status), or why they were not moved
+- ClickUp tasks moved to Review (IDs + status), or why they were not moved
 - Any warnings

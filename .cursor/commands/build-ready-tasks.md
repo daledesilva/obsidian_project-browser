@@ -115,9 +115,9 @@ For each group, complete the full loop before starting the next group:
    - Use the prerequisite group branch as the base for stacked groups.
 
 7. Move the group's tickets to review.
-   - Resolve a status beginning with `Ready` such as `Ready for Review`.
-   - If a Ready status exists, use `clickup_update_task` to move each group task there after the PR exists.
-   - If no Ready status exists, leave the tasks unchanged and report that status movement was skipped.
+   - Resolve the `Review` status from the task's available statuses.
+   - If a Review status exists, use `clickup_update_task` to move each group task there after the PR exists.
+   - If no Review status exists, leave the tasks unchanged and report that status movement was skipped.
 
 8. Report progress for the group:
    - Branch

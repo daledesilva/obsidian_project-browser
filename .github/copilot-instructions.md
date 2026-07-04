@@ -134,6 +134,16 @@ Branch format: `<prefix>/<short-description>` in kebab-case.
 
 ---
 
+## ClickUp
+
+This project's tasks are tracked in ClickUp under workspace `Workspace`, space `Products`, folder `Ob: Project Browser`. Scope ClickUp queries and operations to that folder unless the user specifies otherwise.
+
+Use the `Backlog` list as reference only unless explicitly asked. Treat release lists such as `PB: 0.4`, `PB: 0.5`, `PB: 0.6`, and `PB: 0.7` as current or future Project Browser release work.
+
+When starting a ClickUp ticket, move it to `In Progress` before implementation when ClickUp MCP is available. When a PR is opened for linked ClickUp tickets, move each linked ticket to `Review` after the PR exists. If the status cannot be resolved or ClickUp MCP is unavailable, report that clearly and ask the user to move the task manually.
+
+---
+
 ## Committing Changes With Git
 
 Only create commits when requested by the user. Never update git config, skip hooks, force push to `main`/`master`, use interactive git commands, or amend unless the explicit safety conditions in `.cursor/rules/committing-changes-with-git.mdc` are met.
