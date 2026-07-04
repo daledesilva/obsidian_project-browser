@@ -8,6 +8,7 @@ import { StateMenuShell } from './state-menu-shell';
 
 interface ProjectPageStateMenuProps {
     file: TFile;
+    closedButtonPortalContainer?: HTMLElement | null;
 }
 
 export const ProjectPageStateMenu = (props: ProjectPageStateMenuProps) => {
@@ -43,6 +44,7 @@ export const ProjectPageStateMenu = (props: ProjectPageStateMenuProps) => {
             visibleStates={plugin.settings.projectPageStates.visible}
             hiddenStates={plugin.settings.projectPageStates.hidden}
             visibilitySurface="page"
+            closedButtonPortalContainer={props.closedButtonPortalContainer}
             onSetState={setStateAndUpdateMenu}
         />
     );

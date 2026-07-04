@@ -18,6 +18,7 @@ interface BackButtonAndPathProps {
     onBackClick: Function,
     onFolderClick: (folder: TFolder) => void,
     refreshKey?: string,
+    currentFolderTrailingRef?: (element: HTMLSpanElement | null) => void,
 }
 
 export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
@@ -68,6 +69,7 @@ export const BackButtonAndPath = (props: BackButtonAndPathProps) => {
                         isCurrentFolder = {index === folderTrail.length-1}
                         isProjectFolder = {projectFolderPaths.has(folder.path)}
                         isInsideProject = {firstProjectIndex >= 0 && index > firstProjectIndex && !projectFolderPaths.has(folder.path)}
+                        trailingRef = {index === folderTrail.length-1 ? props.currentFolderTrailingRef : undefined}
                     />
                     {index < folderTrail.length-1 && (
                         <ChevronRight
@@ -89,6 +91,7 @@ interface PathButtonProps {
     isCurrentFolder: boolean,
     isProjectFolder?: boolean,
     isInsideProject?: boolean,
+    trailingRef?: (element: HTMLSpanElement | null) => void,
 }
 function PathButton(props: PathButtonProps) {
     const v = props.folder.vault;
@@ -123,6 +126,12 @@ function PathButton(props: PathButtonProps) {
                 ])}
             >
                 {name}
+                {props.trailingRef && (
+                    <span
+                        className="ddc_pb_back-button-and-path__trailing"
+                        ref={props.trailingRef}
+                    />
+                )}
             </div>
         )}
     </>

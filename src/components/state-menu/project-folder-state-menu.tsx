@@ -10,6 +10,7 @@ import { StateMenuShell } from './state-menu-shell';
 interface ProjectFolderStateMenuProps {
     folder: TFolder;
     refreshKey?: string;
+    closedButtonPortalContainer?: HTMLElement | null;
 }
 
 export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
@@ -38,6 +39,7 @@ export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
             visibleStates={plugin.settings.states.visible}
             hiddenStates={plugin.settings.states.hidden}
             visibilitySurface="noteAndProject"
+            closedButtonPortalContainer={props.closedButtonPortalContainer}
             onSetState={setProjectFolderState}
         />
     );

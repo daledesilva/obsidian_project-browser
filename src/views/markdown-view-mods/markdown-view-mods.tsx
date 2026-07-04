@@ -20,6 +20,7 @@ import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser
 //////////
 
 const stateMenuContainerClassName = 'ddc_pb_state-menu-container';
+const stateMenuHeaderButtonContainerClassName = 'ddc_pb_state-menu-header-button-container';
 const projectPagesFabContainerClassName = 'ddc_pb_project-pages-fab-container';
 let keepProjectPagesFabMenuOpenUntilMs = 0;
 let projectPagesFabRenderRequestId = 0;
@@ -110,8 +111,15 @@ function addStateHeader() {
 
     const containerEl = leaf.view.containerEl;
     let stateMenuContainerEl = containerEl.find(`.${stateMenuContainerClassName}`)
+    const headerEl = containerEl.children[0] as HTMLElement | undefined;
+    if (!headerEl) return;
+    let stateMenuHeaderButtonContainerEl = containerEl.find(`.${stateMenuHeaderButtonContainerClassName}`);
+    if (headerEl && !stateMenuHeaderButtonContainerEl) {
+        const titleContainerEl =
+            headerEl.querySelector<HTMLElement>('.view-header-title-container') ?? headerEl;
+        stateMenuHeaderButtonContainerEl = titleContainerEl.createDiv(stateMenuHeaderButtonContainerClassName);
+    }
     if(!stateMenuContainerEl) {
-        const headerEl = containerEl.children[0];
         stateMenuContainerEl = headerEl.createDiv(stateMenuContainerClassName);
         headerEl.after(stateMenuContainerEl);
         const stateMenuRoot = createRoot(stateMenuContainerEl);
@@ -123,7 +131,10 @@ function addStateHeader() {
     if (stateMenuRoot) {
         stateMenuRoot.render(
             <JotaiProvider store={globalStore}>
-                <StateMenu file={activeFile}/>
+                <StateMenu
+                    file={activeFile}
+                    closedButtonPortalContainer={stateMenuHeaderButtonContainerEl as HTMLElement | null}
+                />
             </JotaiProvider>
         );
     }

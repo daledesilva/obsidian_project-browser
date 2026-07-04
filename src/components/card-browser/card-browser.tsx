@@ -60,6 +60,8 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [parentFolderIsProject, setParentFolderIsProject] = React.useState<boolean>(false);
     const [parentFolderIsInsideProject, setParentFolderIsInsideProject] = React.useState<boolean>(false);
     const [currentFolderIsProject, setCurrentFolderIsProject] = React.useState<boolean>(false);
+    const [projectStateMenuButtonContainer, setProjectStateMenuButtonContainer] =
+        React.useState<HTMLSpanElement | null>(null);
     const {state, eState} = props.getViewStates();
     const browserRef = React.useRef<HTMLDivElement>(null);
     const fabContainerRef = React.useRef<HTMLDivElement>(null);
@@ -185,12 +187,14 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         onBackClick = {openParentFolder}
                         onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                         refreshKey = {refreshId}
+                        currentFolderTrailingRef = {setProjectStateMenuButtonContainer}
                     />
                     {currentFolderIsProject && (
                         <div className="ddc_pb_card-browser-project-header">
                             <ProjectFolderStateMenu
                                 folder={initialFolder}
                                 refreshKey={refreshId}
+                                closedButtonPortalContainer={projectStateMenuButtonContainer}
                             />
                         </div>
                     )}

@@ -13,6 +13,7 @@ import { StateMenuShell } from './state-menu-shell';
 
 interface StateMenuProps {
     file: TFile,
+    closedButtonPortalContainer?: HTMLElement | null;
 }
 
 export const StateMenu = (props: StateMenuProps) => {
@@ -37,10 +38,20 @@ export const StateMenu = (props: StateMenuProps) => {
     }
 
     if (isProjectPage) {
-        return <ProjectPageStateMenu file={props.file} />;
+        return (
+            <ProjectPageStateMenu
+                file={props.file}
+                closedButtonPortalContainer={props.closedButtonPortalContainer}
+            />
+        );
     }
 
-    return <StandardStateMenu file={props.file} />;
+    return (
+        <StandardStateMenu
+            file={props.file}
+            closedButtonPortalContainer={props.closedButtonPortalContainer}
+        />
+    );
 }
 
 const StandardStateMenu = (props: StateMenuProps) => {
@@ -76,6 +87,7 @@ const StandardStateMenu = (props: StateMenuProps) => {
             visibleStates={plugin.settings.states.visible}
             hiddenStates={plugin.settings.states.hidden}
             visibilitySurface="noteAndProject"
+            closedButtonPortalContainer={props.closedButtonPortalContainer}
             onSetState={setStateAndUpdateMenu}
         />
     );

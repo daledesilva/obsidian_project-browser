@@ -1,9 +1,24 @@
-.project-browser_state-menu-container {
+.ddc_pb_state-menu-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
     z-index: 1000;  // So when it overflows during resize, it's on top of the note content
+}
+
+.ddc_pb_state-menu-header-button-container {
+    display: inline-flex;
+    align-items: center;
+    margin-inline-start: 0.5em;
+    vertical-align: middle;
+
+    &:empty {
+        display: none;
+    }
+
+    .ddc_pb_state-btn {
+        font-weight: var(--font-normal);
+    }
 }
 
 .ddc_pb_project-pages-fab-container {

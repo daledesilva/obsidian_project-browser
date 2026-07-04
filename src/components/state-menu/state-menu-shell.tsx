@@ -1,5 +1,6 @@
 import * as React from "react";
 import classnames from 'classnames';
+import { createPortal } from 'react-dom';
 import { useAtomValue } from 'jotai';
 import { getStateMenuSurfaceVisibility, stateMenuAtom, StateMenuSurface } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
@@ -10,6 +11,7 @@ interface StateMenuShellProps {
     visibleStates: StateSettings[];
     hiddenStates: StateSettings[];
     visibilitySurface: StateMenuSurface;
+    closedButtonPortalContainer?: HTMLElement | null;
     onSetState: (stateSettings: StateSettings | null) => Promise<boolean>;
 }
 
@@ -28,8 +30,10 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
     }, [stateMenuIsVisible]);
 
     const displayState = props.currentStateSettings?.name || 'Set State';
-    // Hide the compact closed button when this surface is toggled off; height collapse alone
-    // leaves the button visible in card-browser layouts that do not clip overflow.
+    // Only the compact state button moves to headers when a portal is provided; expanded
+    // state choices stay in the content area so height animation still applies. Hide the
+    // closed button when this surface is toggled off because height collapse alone leaves
+    // it visible in card-browser layouts that do not clip overflow.
     const closedMenuButton = stateMenuIsVisible && !menuIsActive && (
         <button
             className={classnames([
@@ -84,7 +88,7 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
                 className='ddc_pb_state-menu-content'
                 ref={stateMenuContentRef}
             >
-                {closedMenuButton}
+                {!props.closedButtonPortalContainer && closedMenuButton}
 
                 {menuIsActive && stateMenuIsVisible && (
                     <>
@@ -121,6 +125,7 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
                     </>
                 )}
             </div>
+            {props.closedButtonPortalContainer && createPortal(closedMenuButton, props.closedButtonPortalContainer)}
         </div>
     );
 
