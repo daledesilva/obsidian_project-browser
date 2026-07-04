@@ -10,6 +10,7 @@ import { getGlobals } from "src/logic/stores";
 import { StateSettings } from "src/types/types-map";
 import { showWelcomeTips } from "src/notices/onboarding-notices";
 import { showRecentChanges } from "src/notices/version-notices";
+import { RecommendedHotkeysModal } from "src/modals/recommended-hotkeys-modal/recommended-hotkeys-modal";
 
 /////////
 /////////
@@ -177,6 +178,12 @@ function insertSetupTroubleshootSection(containerEl: HTMLElement) {
 			btn.setButtonText("Rewatch welcome tips");
 			btn.setCta();
 			btn.onClick(() => showWelcomeTips());
+		})
+		.addButton((btn) => {
+			btn.setButtonText("Apply recommended hotkeys");
+			btn.onClick(() => {
+				new RecommendedHotkeysModal().open();
+			});
 		});
 }
 
