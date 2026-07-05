@@ -1,7 +1,5 @@
 ---
-description: Obsidian plugin UI and styling conventions
-globs: **/*.{tsx,jsx,ts,js,scss,css}
-alwaysApply: false
+applyTo: "**/*.{tsx,jsx,ts,js,scss,css}"
 ---
 
 # Obsidian Plugin UI and Styling

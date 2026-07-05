@@ -78,7 +78,17 @@ Every documentation page follows this order:
 
 Use Mermaid diagrams for flows and architecture. Prefer Mermaid over ASCII art or prose descriptions.
 
-After successful implementation, suggest that the user request relevant documentation be written or updated. Do **not** write or update documentation unless the user explicitly asks you to.
+After successful implementation, suggest `/document` when documenting the current thread's feature work would help future maintenance. Do **not** write or update documentation unless the user explicitly asks, invokes `/document`, or the current task is documentation-only.
+
+---
+
+## Documentation And Context Comments
+
+Do not write or update documentation during ordinary implementation unless the user explicitly asks, invokes `/document`, or the current task is documentation-only.
+
+When documenting feature work, document only the feature behavior implemented or materially changed in the current chat thread. Use the implementation, tests, commits, and current conversation as sources of truth; do not document unrelated branch history.
+
+Add brief context comments proactively when implementing or changing features. Comments should explain why a function, helper, branch, or code snippet exists and why it is built that way. Avoid comments that merely restate syntax or obvious assignments.
 
 ---
 
@@ -92,7 +102,7 @@ After successful implementation, suggest that the user request relevant document
 
 **Debug mode rule:** Never remove logging added for debugging until a final test has been run that shows through the logs that the problem has been fixed. Do not assume a fix has worked without this confirmation.
 
-**Keep documentation accurate.** If the user asks you to write/update documentation (or you are already editing docs for the task), keep documentation accurate and consistent with the implementation. After successful implementation, suggest that the user request documentation be written/updated, but do **not** write or update documentation unless the user explicitly asks you to.
+**Keep documentation accurate.** If the user asks you to write/update documentation, invokes `/document`, or you are already editing docs for the task, keep documentation accurate and consistent with the implementation. After successful implementation, suggest `/document` when documenting the current thread's feature work would help future maintenance. Do **not** write or update documentation unless the user explicitly asks, invokes `/document`, or the current task is documentation-only.
 
 ---
 
@@ -124,6 +134,32 @@ Branch format: `<prefix>/<short-description>` in kebab-case.
 
 ---
 
+## ClickUp
+
+This project's tasks are tracked in ClickUp under workspace `Workspace`, space `Products`, folder `Ob: Project Browser`. Scope ClickUp queries and operations to that folder unless the user specifies otherwise.
+
+Use the `Backlog` list as reference only unless explicitly asked. Treat release lists such as `PB: 0.4`, `PB: 0.5`, `PB: 0.6`, and `PB: 0.7` as current or future Project Browser release work.
+
+When starting a ClickUp ticket, move it to `In Progress` before implementation when ClickUp MCP is available. When a PR is opened for linked ClickUp tickets, move each linked ticket to `Review` after the PR exists. If the status cannot be resolved or ClickUp MCP is unavailable, report that clearly and ask the user to move the task manually.
+
+---
+
+## Committing Changes With Git
+
+Only create commits when requested by the user. Never update git config, skip hooks, force push to `main`/`master`, use interactive git commands, or amend unless the explicit safety conditions in `.cursor/rules/committing-changes-with-git.mdc` are met.
+
+When committing, inspect `git status`, unstaged/staged diffs, and recent commits first. Do not commit secrets or generated junk unless clearly intended. Use a HEREDOC commit message with the required format:
+
+```text
+fixed: Described the conceptual change in past tense and explained why it mattered. Kept every sentence in past tense.
+
+Clickup Task: <optional-id>
+```
+
+Do not push unless the user explicitly asks, or they invoke the `/commit` command, which is defined as commit-and-push workflow.
+
+---
+
 ## Naming Conventions
 
 Every name must be self-explanatory without needing to trace the surrounding context.
@@ -140,9 +176,9 @@ Loop indices (`i`, `j`) are acceptable only in trivially small, obvious loops.
 
 ## Planning Workflow
 
-- After successful implementation, suggest that the user request relevant documentation be written or updated (do **not** write/update docs unless explicitly asked)
+- After successful implementation, suggest `/document` when documenting the current thread's feature work would help future maintenance (do **not** write/update docs unless explicitly asked, `/document` is invoked, or the current task is documentation-only)
 - Use Mermaid format for all diagrams in plans and documentation
-- A well-formed plan states the goal, breaks work into discrete steps, calls out risks, and ends with suggesting the user request documentation
+- A well-formed plan states the goal, breaks work into discrete steps, calls out risks, and ends with suggesting `/document` when docs would help future maintenance
 
 ---
 
