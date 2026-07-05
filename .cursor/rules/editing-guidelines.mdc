@@ -24,6 +24,6 @@ Do not remove `console.log` statements while actively making a change.
 
 ## Keep Documentation Accurate
 
-If the user asks you to write/update documentation (or you are already editing docs for the task), keep documentation accurate and consistent with the implementation.
+If the user asks you to write/update documentation, invokes `/document`, or you are already editing docs for the task, keep documentation accurate and consistent with the implementation.
 
-After successful implementation, suggest that the user request documentation be written/updated, but do **not** write or update documentation unless the user explicitly asks you to.
+After successful implementation, suggest `/document` when documenting the current thread's feature work would help future maintenance. Do **not** write or update documentation unless the user explicitly asks, invokes `/document`, or the current task is documentation-only.

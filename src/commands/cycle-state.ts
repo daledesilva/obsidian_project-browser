@@ -14,7 +14,8 @@ export async function registerCycleStateCommands() {
 
     plugin.addCommand({
         id: 'cycle-state-forward',
-		name: `Step note's state forward`,
+		// Generic name: scope (note vs project page) is resolved from the active file at runtime.
+		name: 'Apply next state',
         icon: ICON_STEP_STATE_FORWARD,
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
@@ -25,7 +26,8 @@ export async function registerCycleStateCommands() {
 
     plugin.addCommand({
         id: 'cycle-state-backward',
-		name: `Step note's state backward`,
+		// Generic name: scope (note vs project page) is resolved from the active file at runtime.
+		name: 'Apply previous state',
         icon: ICON_STEP_STATE_BACKWARD,
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
