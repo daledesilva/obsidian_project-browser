@@ -1,4 +1,4 @@
-import { FileView, ItemView, MarkdownView, Notice, TFile, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { FileView, ItemView, MarkdownView, Menu, MenuItem, Notice, TFile, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser, { CardBrowserHandlers } from "src/components/card-browser/card-browser";
@@ -6,7 +6,8 @@ import { createContext } from 'react';
 import { isEmpty } from "src/utils/misc";
 import { ICON_PLUGIN } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';
-import { globalStore, getGlobals } from "src/logic/stores";
+import { globalStore, getGlobals, getStateMenuSettings, getStateMenuSurfaceVisibility } from "src/logic/stores";
+import { toggleStateMenuSurface } from "src/logic/toggle-state-menu";
 import { CARD_BROWSER_VIEW_TYPE } from './card-browser-view-constants';
 
 //////////
@@ -151,6 +152,19 @@ export class ProjectCardsView extends ItemView {
 
     getDisplayText() {
         return "Browse";
+    }
+
+    onPaneMenu(menu: Menu, source: string): void {
+        super.onPaneMenu(menu, source);
+        if (!this.cardBrowserHandlers?.getCurrentFolderIsProject()) return;
+
+        menu.addItem((item: MenuItem) => {
+            item.setTitle('Toggle state menu');
+            item.setChecked(getStateMenuSurfaceVisibility(getStateMenuSettings(), 'noteAndProject'));
+            item.onClick(() => toggleStateMenuSurface('noteAndProject'));
+            item.setSection('pane');
+            item.setIcon('file-check');
+        });
     }
 
     async onOpen() {

@@ -33,6 +33,12 @@ function isPathInFolder(filePath: string, parentPath: string): boolean {
     return fileParentPath === parentPath;
 }
 
+function stopPageListGesturePropagation(event: React.SyntheticEvent) {
+    // The page list floats over the editor; even transparent gaps must own gestures
+    // so attempted menu scrolls cannot drag or interact with the underlying note.
+    event.stopPropagation();
+}
+
 export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     const [menuIsOpen, setMenuIsOpen] = React.useState(!!props.initialMenuOpen);
     const [refreshTrigger, setRefreshTrigger] = React.useState(0);
@@ -186,6 +192,10 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                     className="ddc_pb_project-pages-fab__page-list-scroll"
                     ref={pageListScrollRef}
                     onScroll={handlePageListScroll}
+                    onPointerDown={stopPageListGesturePropagation}
+                    onPointerMove={stopPageListGesturePropagation}
+                    onPointerUp={stopPageListGesturePropagation}
+                    onWheel={stopPageListGesturePropagation}
                 >
                     <div
                         ref={pageListInnerRef}

@@ -75,6 +75,7 @@ const StandardStateMenu = (props: StateMenuProps) => {
             currentStateSettings={stateSettings}
             visibleStates={plugin.settings.states.visible}
             hiddenStates={plugin.settings.states.hidden}
+            visibilitySurface="noteAndProject"
             onSetState={setStateAndUpdateMenu}
         />
     );

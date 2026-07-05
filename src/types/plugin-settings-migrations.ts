@@ -201,6 +201,8 @@ export function migrate_0_3_0_to_0_4_0(oldSettings: PluginSettings_0_3_0): Plugi
         projectPageStateless: { ...DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS_0_4_0 },
         defaultProjectPageState: DEFAULT_PLUGIN_SETTINGS_0_4_0.defaultProjectPageState,
         loopProjectPageStatesWhenCycling: DEFAULT_PLUGIN_SETTINGS_0_4_0.loopProjectPageStatesWhenCycling,
+        showNoteAndProjectStateMenu: oldSettings.showStateMenu,
+        showPageStateMenu: oldSettings.showStateMenu,
         showRenamePopupOnNewPage: true,
     };
     return JSON.parse(JSON.stringify(newSettings));
@@ -227,6 +229,13 @@ function patch_0_4_0_settings(settings: PluginSettings_0_4_0): PluginSettings_0_
     }
     if (patched.loopProjectPageStatesWhenCycling === undefined) {
         patched.loopProjectPageStatesWhenCycling = DEFAULT_PLUGIN_SETTINGS_0_4_0.loopProjectPageStatesWhenCycling;
+    }
+    // Preserve shipped single-toggle behavior while letting new settings diverge after migration.
+    if (patched.showNoteAndProjectStateMenu === undefined) {
+        patched.showNoteAndProjectStateMenu = patched.showStateMenu;
+    }
+    if (patched.showPageStateMenu === undefined) {
+        patched.showPageStateMenu = patched.showStateMenu;
     }
 
     if (!patched.fileTypes) return patched;

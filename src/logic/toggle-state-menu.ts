@@ -1,42 +1,74 @@
-import { getGlobals, getStateMenuSettings, setStateMenuSettings } from "./stores";
+import { TFile } from "obsidian";
+import { getFileStateScope } from "src/logic/project-page-states";
+import {
+    getGlobals,
+    getStateMenuSettings,
+    getStateMenuSurfaceVisibility,
+    setStateMenuSettings,
+    setStateMenuSurfaceVisibility,
+    StateMenuSurface,
+} from "./stores";
 
 //////////////////
 //////////////////
 
-export function toggleStateMenu() {
+export async function toggleStateMenu() {
+    const {plugin} = getGlobals();
+    const activeFile = plugin.app.workspace.getActiveFile();
+    const surface = activeFile ? await getStateMenuSurfaceForFile(activeFile) : 'noteAndProject';
+    toggleStateMenuSurface(surface);
+}
+
+export async function toggleStateMenuForFile(file: TFile) {
+    const surface = await getStateMenuSurfaceForFile(file);
+    toggleStateMenuSurface(surface);
+}
+
+export function toggleStateMenuSurface(surface: StateMenuSurface) {
     const {plugin} = getGlobals();
     const stateMenuSettings = getStateMenuSettings();
-    const newStateMenuSettings = JSON.parse(JSON.stringify(stateMenuSettings));
-    newStateMenuSettings.visible = !newStateMenuSettings.visible;
+    const newStateMenuSettings = { ...stateMenuSettings };
+    const nextVisible = !getStateMenuSurfaceVisibility(stateMenuSettings, surface);
+    setStateMenuSurfaceVisibility(newStateMenuSettings, surface, nextVisible);
     setStateMenuSettings(newStateMenuSettings);
-    
-    plugin.settings.showStateMenu = newStateMenuSettings.visible;
+
+    if (surface === 'page') {
+        plugin.settings.showPageStateMenu = nextVisible;
+    } else {
+        plugin.settings.showNoteAndProjectStateMenu = nextVisible;
+        plugin.settings.showStateMenu = nextVisible;
+    }
     void plugin.saveSettings();
+}
+
+export async function getStateMenuSurfaceForFile(file: TFile): Promise<StateMenuSurface> {
+    const stateScope = await getFileStateScope(file);
+    return stateScope === 'projectPage' ? 'page' : 'noteAndProject';
 }
 
 //////////////////
 
 let cycleStateTimeout: NodeJS.Timeout | null = null;
-let openedByFunction = false;
+let openedSurfaceByFunction: StateMenuSurface | null = null;
 
-export function openStateMenuIfClosed(): boolean {
+export function openStateMenuIfClosed(surface: StateMenuSurface = 'noteAndProject'): boolean {
     const curStateMenuSettings = getStateMenuSettings();
-    if(curStateMenuSettings.visible) return true;
-    const newStateMenuSettings = JSON.parse(JSON.stringify(curStateMenuSettings));
-    newStateMenuSettings.visible = true;
+    if(getStateMenuSurfaceVisibility(curStateMenuSettings, surface)) return true;
+    const newStateMenuSettings = { ...curStateMenuSettings };
+    setStateMenuSurfaceVisibility(newStateMenuSettings, surface, true);
     setStateMenuSettings(newStateMenuSettings);
-    openedByFunction = true;
+    openedSurfaceByFunction = surface;
     return false;
 }
 
-export function returnStateMenuAfterDelay() {
+export function returnStateMenuAfterDelay(surface: StateMenuSurface = 'noteAndProject') {
     if(cycleStateTimeout) window.clearTimeout(cycleStateTimeout);
     cycleStateTimeout = window.setTimeout(() => {
-        if(!openedByFunction) return;
-        openedByFunction = false;
+        if(openedSurfaceByFunction !== surface) return;
+        openedSurfaceByFunction = null;
         const curStateMenuSettings = getStateMenuSettings();
-        const newStateMenuSettings = JSON.parse(JSON.stringify(curStateMenuSettings));
-        newStateMenuSettings.visible = false;
+        const newStateMenuSettings = { ...curStateMenuSettings };
+        setStateMenuSurfaceVisibility(newStateMenuSettings, surface, false);
         setStateMenuSettings(newStateMenuSettings);
     }, 1000);
 }

@@ -37,6 +37,7 @@ export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
             currentStateSettings={currentStateSettings}
             visibleStates={plugin.settings.states.visible}
             hiddenStates={plugin.settings.states.hidden}
+            visibilitySurface="noteAndProject"
             onSetState={setProjectFolderState}
         />
     );

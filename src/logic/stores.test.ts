@@ -12,7 +12,11 @@ import {
 
 describe('stores', () => {
   const mockPlugin = {
-    settings: { showStateMenu: true },
+    settings: {
+      showStateMenu: true,
+      showNoteAndProjectStateMenu: true,
+      showPageStateMenu: true,
+    },
     saveSettings: jest.fn(),
   };
 
@@ -31,20 +35,41 @@ describe('stores', () => {
 
   describe('stateMenuAtom', () => {
     test('setStateMenuSettings and getStateMenuSettings round-trip', () => {
-      setStateMenuSettings({ visible: true });
-      expect(getStateMenuSettings()).toEqual({ visible: true });
-      setStateMenuSettings({ visible: false });
-      expect(getStateMenuSettings()).toEqual({ visible: false });
+      setStateMenuSettings({ noteAndProjectVisible: true, pageVisible: false });
+      expect(getStateMenuSettings()).toEqual({ noteAndProjectVisible: true, pageVisible: false });
+      setStateMenuSettings({ noteAndProjectVisible: false, pageVisible: true });
+      expect(getStateMenuSettings()).toEqual({ noteAndProjectVisible: false, pageVisible: true });
     });
   });
 
   describe('initStateMenuSettings', () => {
-    test('sets state menu visible from plugin.settings.showStateMenu', () => {
-      setStateMenuSettings({ visible: true });
+    test('sets state menu visibility from split plugin settings', () => {
+      setStateMenuSettings({ noteAndProjectVisible: true, pageVisible: true });
+      const plugin = {
+        settings: {
+          showStateMenu: true,
+          showNoteAndProjectStateMenu: false,
+          showPageStateMenu: true,
+        },
+        saveSettings: jest.fn(),
+      };
+      setGlobals({ plugin: plugin as unknown as ReturnType<typeof getGlobals>['plugin'] });
+      initStateMenuSettings();
+      expect(getStateMenuSettings()).toEqual({
+        noteAndProjectVisible: false,
+        pageVisible: true,
+      });
+    });
+
+    test('falls back to legacy showStateMenu when split settings are absent', () => {
+      setStateMenuSettings({ noteAndProjectVisible: true, pageVisible: true });
       const plugin = { settings: { showStateMenu: false }, saveSettings: jest.fn() };
       setGlobals({ plugin: plugin as unknown as ReturnType<typeof getGlobals>['plugin'] });
       initStateMenuSettings();
-      expect(getStateMenuSettings().visible).toBe(false);
+      expect(getStateMenuSettings()).toEqual({
+        noteAndProjectVisible: false,
+        pageVisible: false,
+      });
     });
   });
 

@@ -149,6 +149,10 @@ export const DEFAULT_PROJECT_PAGE_STATELESS_SETTINGS_0_4_0: StateSettings_0_3_0 
 
 export interface PluginSettings_0_4_0 extends PluginSettings_0_3_0 {
     settingsVersion: '0.4.0';
+    /** Shows note and project-root state menus. Migrated from the legacy single `showStateMenu` setting. */
+    showNoteAndProjectStateMenu: boolean;
+    /** Shows page state menus for markdown files inside project folders. Migrated from the legacy single `showStateMenu` setting. */
+    showPageStateMenu: boolean;
     fileTypes: FileTypeSettings_0_4_0;
     projectPageStates: StateCollectionSettings_0_4_0;
     projectPageStateless: StateSettings_0_3_0;
@@ -163,6 +167,8 @@ export interface PluginSettings_0_4_0 extends PluginSettings_0_3_0 {
 export const DEFAULT_PLUGIN_SETTINGS_0_4_0: PluginSettings_0_4_0 = {
     ...DEFAULT_PLUGIN_SETTINGS_0_3_0,
     settingsVersion: '0.4.0',
+    showNoteAndProjectStateMenu: DEFAULT_PLUGIN_SETTINGS_0_3_0.showStateMenu,
+    showPageStateMenu: DEFAULT_PLUGIN_SETTINGS_0_3_0.showStateMenu,
     fileTypes: { ...DEFAULT_FILE_TYPE_SETTINGS_0_4_0 },
     projectPageStates: {
         visible: [...DEFAULT_PROJECT_PAGE_STATE_SETTINGS_0_4_0.visible],

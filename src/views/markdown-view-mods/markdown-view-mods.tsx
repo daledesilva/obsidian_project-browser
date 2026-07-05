@@ -4,9 +4,14 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { StateMenu } from 'src/components/state-menu/state-menu';
 import { ProjectPagesFAB } from 'src/components/project-pages-fab/project-pages-fab';
-import { getGlobals, getStateMenuSettings } from 'src/logic/stores';
-import { toggleStateMenu } from 'src/logic/toggle-state-menu';
-import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
+import { Provider as JotaiProvider } from 'jotai';
+import { getGlobals, globalStore, getStateMenuSettings, getStateMenuSurfaceVisibility } from 'src/logic/stores';
+import {
+    getStateMenuSurfaceForFile,
+    openStateMenuIfClosed,
+    toggleStateMenu,
+    toggleStateMenuForFile,
+} from 'src/logic/toggle-state-menu';
 import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { createProject, createProjectFromNote, getFolderSettings } from 'src/utils/file-manipulation';
 import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view-constants';
@@ -77,8 +82,11 @@ function addViewMenuOptions() {
         if(source !== 'more-options') return;
         menu.addItem((item: MenuItem) => {
             item.setTitle('Toggle state menu');
-            item.setChecked(getStateMenuSettings().visible);
-            item.onClick(toggleStateMenu);
+            item.setChecked(getStateMenuSurfaceVisibility(getStateMenuSettings(), 'noteAndProject'));
+            void getStateMenuSurfaceForFile(file).then((surface) => {
+                item.setChecked(getStateMenuSurfaceVisibility(getStateMenuSettings(), surface));
+            });
+            item.onClick(() => void toggleStateMenuForFile(file));
             item.setSection('pane');
             item.setIcon('file-check');
         });
@@ -88,7 +96,7 @@ function addViewMenuOptions() {
 function addActionButtons(view: View) {
     // TODO: Currently adding an extra button every time the view is clicked in.
     if (!(view instanceof MarkdownView)) return;
-    const element = view.addAction('file-stack', 'Toggle state menu', toggleStateMenu);
+    const element = view.addAction('file-stack', 'Toggle state menu', () => void toggleStateMenu());
 }
 
 function addStateHeader() {
@@ -114,7 +122,9 @@ function addStateHeader() {
     const stateMenuRoot = stateEl.__stateMenuRoot;
     if (stateMenuRoot) {
         stateMenuRoot.render(
-            <StateMenu file={activeFile}/>
+            <JotaiProvider store={globalStore}>
+                <StateMenu file={activeFile}/>
+            </JotaiProvider>
         );
     }
 }

@@ -4,7 +4,7 @@ import { setFileState } from "src/logic/frontmatter-processes";
 import { offsetState } from "src/logic/offset-state";
 import { getStateSettingsForFile } from "src/logic/project-page-states";
 import { getGlobals } from "src/logic/stores";
-import { openStateMenuIfClosed, returnStateMenuAfterDelay } from "src/logic/toggle-state-menu";
+import { getStateMenuSurfaceForFile, openStateMenuIfClosed, returnStateMenuAfterDelay } from "src/logic/toggle-state-menu";
 
 ////////
 ////////
@@ -19,12 +19,7 @@ export async function registerCycleStateCommands() {
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
-            const wasOpen = openStateMenuIfClosed();
-            const delayMs = wasOpen ? 0 : 300; // This timing should match the open time of the menu
-            window.setTimeout(() => {
-                void cycleFileState(file, 1);
-            }, delayMs);
-            returnStateMenuAfterDelay();
+            void cycleFileStateWithMenu(file, 1);
         }
 	});
 
@@ -35,14 +30,19 @@ export async function registerCycleStateCommands() {
         editorCallback: (editor: Editor) => {
             const file = plugin.app.workspace.getActiveFile();
             if(!file) return;
-            const wasOpen = openStateMenuIfClosed();
-            const delayMs = wasOpen ? 0 : 300; // This timing should match the open time of the menu
-            window.setTimeout(() => {
-                void cycleFileState(file, -1);
-            }, delayMs);
-            returnStateMenuAfterDelay();
+            void cycleFileStateWithMenu(file, -1);
         }
 	});
+
+    async function cycleFileStateWithMenu(file: import("obsidian").TFile, offset: number) {
+        const surface = await getStateMenuSurfaceForFile(file);
+        const wasOpen = openStateMenuIfClosed(surface);
+        const delayMs = wasOpen ? 0 : 300; // This timing should match the open time of the menu
+        window.setTimeout(() => {
+            void cycleFileState(file, offset);
+        }, delayMs);
+        returnStateMenuAfterDelay(surface);
+    }
 
     async function cycleFileState(file: import("obsidian").TFile, offset: number) {
         const scopedSettings = await getStateSettingsForFile(file);
