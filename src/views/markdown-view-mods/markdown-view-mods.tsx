@@ -4,7 +4,8 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 import { StateMenu } from 'src/components/state-menu/state-menu';
 import { ProjectPagesFAB } from 'src/components/project-pages-fab/project-pages-fab';
-import { getGlobals, getStateMenuSettings, getStateMenuSurfaceVisibility } from 'src/logic/stores';
+import { Provider as JotaiProvider } from 'jotai';
+import { getGlobals, globalStore, getStateMenuSettings, getStateMenuSurfaceVisibility } from 'src/logic/stores';
 import {
     getStateMenuSurfaceForFile,
     openStateMenuIfClosed,
@@ -121,7 +122,9 @@ function addStateHeader() {
     const stateMenuRoot = stateEl.__stateMenuRoot;
     if (stateMenuRoot) {
         stateMenuRoot.render(
-            <StateMenu file={activeFile}/>
+            <JotaiProvider store={globalStore}>
+                <StateMenu file={activeFile}/>
+            </JotaiProvider>
         );
     }
 }

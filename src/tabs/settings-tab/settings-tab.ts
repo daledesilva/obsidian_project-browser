@@ -280,7 +280,7 @@ function insertStateSettings(containerEl: HTMLElement, refresh: () => void) {
 
 	new Setting(contentEl)
 		.setClass("ddc_pb_setting")
-		.setName("Show note and project states")
+		.setName("Show note and project state menu")
 		.setDesc(
 			"Show the state menu for regular notes and project root views. This can also be toggled from the view menu.",
 		)
@@ -368,7 +368,7 @@ function insertProjectPageStateSettings(
 
 	new Setting(contentEl)
 		.setClass("ddc_pb_setting")
-		.setName("Show page states")
+		.setName("Show page state menu")
 		.setDesc(
 			"Show the page state menu for markdown pages inside project folders. This can also be toggled from the view menu.",
 		)

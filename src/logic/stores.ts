@@ -44,22 +44,20 @@ const defaultStateMenuSettings: StateMenuSettings = {
 	pageVisible: true,
 };
 export const stateMenuAtom = atom<StateMenuSettings>(defaultStateMenuSettings)
+// Card browser React trees use JotaiProvider with globalStore; keep state menu reads/writes on that store.
 export function initStateMenuSettings() {
 	const {plugin} = getGlobals();
-	const store = getDefaultStore();
-	const curStateMenuSettings = store.get(stateMenuAtom);
+	const curStateMenuSettings = globalStore.get(stateMenuAtom);
 	const newStateMenuSettings: StateMenuSettings = { ...curStateMenuSettings };
 	newStateMenuSettings.noteAndProjectVisible = plugin.settings.showNoteAndProjectStateMenu ?? plugin.settings.showStateMenu;
 	newStateMenuSettings.pageVisible = plugin.settings.showPageStateMenu ?? plugin.settings.showStateMenu;
-	store.set(stateMenuAtom, newStateMenuSettings);
+	globalStore.set(stateMenuAtom, newStateMenuSettings);
 }
 export function setStateMenuSettings(stateMenuSettings: StateMenuSettings): void {
-	const store = getDefaultStore();
-	store.set(stateMenuAtom, stateMenuSettings);
+	globalStore.set(stateMenuAtom, stateMenuSettings);
 }
 export function getStateMenuSettings(): StateMenuSettings {
-	const store = getDefaultStore();
-	return store.get(stateMenuAtom);
+	return globalStore.get(stateMenuAtom);
 }
 export function getStateMenuSurfaceVisibility(stateMenuSettings: StateMenuSettings, surface: StateMenuSurface): boolean {
 	return surface === 'page' ? stateMenuSettings.pageVisible : stateMenuSettings.noteAndProjectVisible;

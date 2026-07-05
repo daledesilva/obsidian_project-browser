@@ -28,6 +28,28 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
     }, [stateMenuIsVisible]);
 
     const displayState = props.currentStateSettings?.name || 'Set State';
+    // Hide the compact closed button when this surface is toggled off; height collapse alone
+    // leaves the button visible in card-browser layouts that do not clip overflow.
+    const closedMenuButton = stateMenuIsVisible && !menuIsActive && (
+        <button
+            className={classnames([
+                'ddc_pb_state-btn',
+                'ddc_pb_in-closed-menu',
+                showHighlightRef.current && 'ddc_pb_has-return-transition',
+            ])}
+            onClick={() => {
+                setMenuIsActive(true);
+            }}
+        >
+            {displayState}
+        </button>
+    );
+
+    React.useEffect(() => {
+        if (!stateMenuIsVisible) {
+            setMenuIsActive(false);
+        }
+    }, [stateMenuIsVisible]);
 
     React.useEffect(() => {
         function handleClickOutside(event: PointerEvent) {
@@ -62,22 +84,9 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
                 className='ddc_pb_state-menu-content'
                 ref={stateMenuContentRef}
             >
-                {!menuIsActive && (
-                    <button
-                        className={classnames([
-                            'ddc_pb_state-btn',
-                            'ddc_pb_in-closed-menu',
-                            showHighlightRef.current && 'ddc_pb_has-return-transition',
-                        ])}
-                        onClick={() => {
-                            setMenuIsActive(true);
-                        }}
-                    >
-                        {displayState}
-                    </button>
-                )}
+                {closedMenuButton}
 
-                {menuIsActive && (
+                {menuIsActive && stateMenuIsVisible && (
                     <>
                         <div className='ddc_pb_visible-state-btns'>
                             {props.visibleStates.map((visibleStateSettings) => (
