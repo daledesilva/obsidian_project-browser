@@ -180,7 +180,8 @@ function insertSetupTroubleshootSection(containerEl: HTMLElement) {
 			btn.onClick(() => showWelcomeTips());
 		})
 		.addButton((btn) => {
-			btn.setButtonText("Apply recommended hotkeys");
+			// Available on desktop and mobile (e.g. iPad with keyboard); opens RecommendedHotkeysModal.
+			btn.setButtonText("Recommended hotkeys");
 			btn.onClick(() => {
 				new RecommendedHotkeysModal().open();
 			});
