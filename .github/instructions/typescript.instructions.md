@@ -68,6 +68,19 @@ if (isProjectPage) chosenAtom = projectPageStatelessSettingsAtom;
 
 Use `React.useMemo` when it is needed to preserve identity for derived objects, derived atoms, or expensive computations.
 
+## JSX optional branches
+
+When the **false** branch is only **`null`**, prefer **`{condition && (…)}`** over **`{condition ? (…) : null}`**.
+
+## Imports section divider (`*.ts` / `*.tsx`)
+
+When the file contains any **`import`** or **`import type`** statements:
+
+1. Group **all** import lines at the **top** (after an optional shebang, **`/// <reference … />`**, or other required first-line tooling headers).
+2. Immediately after the last import, add **two identical** full lines of slash characters (same pattern as elsewhere in this repo, e.g. **`//////////`**), **then exactly one blank line**, then everything else (types, exports, implementation).
+
+**Omit** this divider if the file has **no** `import` statements.
+
 ## Branch Comments Go Inside the Branch
 
 Place comments that explain a branch at the **start of that branch**, not before the `if` statement.
@@ -90,48 +103,72 @@ if (isAdmin) {
 
 Projects may have two distinct UI layer types — be deliberate about which you use:
 
-- **Framework components** (React components, JSX) — use for all interactive UI and anything that needs state or reactivity
-- **Host/native elements** (platform-native APIs like `document.createElement` or Obsidian's `createEl`) — use only when the platform requires it
+- **Framework components** (e.g. React components, JSX) — use for all interactive UI and anything that needs state or reactivity
+- **Host/native elements** (e.g. `document.createElement`, platform-native APIs like Obsidian's `createEl`) — use only when the platform requires it (settings panels, modals driven by the host platform)
 
 Do not mix layers arbitrarily. Follow the established pattern in the project.
 
+## Single `props` parameter (no destructuring)
+
+When a function’s inputs are a **single object** (React function components, render props, and similar), define it with **exactly one parameter** named **`props`**, typed as that object.
+
+- **Do not** destructure in the parameter list (e.g. `({ title, onClose }) =>`).
+- **Do not** unpack `props` in the body (e.g. `const { title, onClose } = props`) only to use those fields.
+- **Always** read fields as **`props.fieldName`** so anything coming from the caller is visibly prefixed with `props.`.
+
+```tsx
+// ❌ BAD
+export const Example: React.FC<ExampleProps> = ({ title, onClose }) => (
+    <Box onClick={onClose}>{title}</Box>
+);
+
+// ❌ BAD
+export const Example: React.FC<ExampleProps> = (props) => {
+    const { title, onClose } = props;
+    return <Box onClick={onClose}>{title}</Box>;
+};
+
+// ✅ GOOD
+export const Example: React.FC<ExampleProps> = (props) => (
+    <Box onClick={props.onClose}>{props.title}</Box>
+);
+```
+
+**Out of scope:** zero-argument functions, multiple **positional** parameters, or a single **non-object** parameter (e.g. `id: string`) — use normal signatures there.
+
+## Props `interface` immediately before the function
+
+When a function takes a single **`props`** object, declare its shape as a **named `export interface`** placed **immediately above** that function (nothing else between the interface and the function).
+
+- Name the interface **`{ComponentOrFunctionName}Props`** (e.g. `SettingsRowProps` before `SettingsRow`).
+- Prefer **`interface`** for that object; do not replace it with only an inline anonymous type on the parameter when this component or function owns the shape.
+- If the **same** props shape is shared across modules, define or import a **named** props interface; avoid an unnamed object type on `props`.
+
+```tsx
+export interface ExamplePanelProps {
+    title: string;
+    onClose: () => void;
+}
+
+/** Renders a titled panel with a close control. */
+export const ExamplePanel: React.FC<ExamplePanelProps> = (props) => (
+    <Box onClick={props.onClose}>{props.title}</Box>
+);
+```
+
+## Minimal TSDoc on every named function
+
+Every **named** function (`function foo`, exported or file-local) and every **`const` binding** whose value is a function or React component must have a **TSDoc** block **`/** … */`** **directly above** that declaration.
+
+- Keep it **minimal**: usually **one short sentence** (what it does or what the component shows). Add `@param` / `@returns` only when a single sentence is not enough.
+- **Omit** TSDoc for **inline** function expressions passed as arguments (e.g. `.map((id) => id)`, short `onClick` lambdas) when a comment would only repeat the code.
+
 ## Colocate Styles
 
-Place style definitions in the same folder as the component they style. Do not keep styles in a global folder unless they are genuinely global design tokens.
+Place style definitions (CSS modules, SCSS files, `StyleSheet` objects) in the same folder as the component they style. Do not keep styles in a separate global styles folder unless they are genuinely global tokens.
 
 ## State Management
 
-- Use reactive state (Jotai, Zustand, React state) for UI and cross-component concerns
-- Use structured session state (Redux Toolkit) for app-level workflow state that needs defined actions
+- Use reactive state (e.g. Jotai, Zustand, React state) for UI and cross-component concerns
+- Use session/operational state (e.g. Redux Toolkit) for app-level workflow state that needs structured actions
 - Follow whichever pattern is already established in the project
-
----
-
-# UI and Styling
-
-## Use the Theme System
-
-Pull all visual tokens — colors, spacing, typography, border radii, animation timings — from the project's established theme system. Do not hardcode values.
-
-```ts
-// ❌ BAD
-const styles = { color: '#3a86ff', fontSize: 14, padding: 12 };
-
-// ✅ GOOD
-const { colors, spacing, typography } = useTheme();
-const styles = { color: colors.primary, fontSize: typography.body, padding: spacing.md };
-```
-
-## No Inline Styles Except Truly Dynamic Values
-
-Avoid inline styles. The only acceptable exception is a value computed at runtime that cannot be expressed statically (e.g. a width derived from a live measurement).
-
-## Follow the Project's Style API
-
-Use whichever style API the project has established:
-
-- React Native: `StyleSheet.create()` with `useTheme()`
-- Web: CSS modules, `styled-components`, or utility classes from the design system
-- Ignite: `useAppTheme()`, `themed()`, `ThemedStyle<T>` with bare JS objects
-
-Do not introduce a new styling approach without a clear reason.
