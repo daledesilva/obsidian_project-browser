@@ -1,6 +1,9 @@
+import './state-menu.scss';
 import * as React from "react";
 import classnames from 'classnames';
 import { createPortal } from 'react-dom';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 import { useAtomValue } from 'jotai';
 import { getStateMenuSurfaceVisibility, stateMenuAtom, StateMenuSurface } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
@@ -15,39 +18,21 @@ interface StateMenuShellProps {
     onSetState: (stateSettings: StateSettings | null) => Promise<boolean>;
 }
 
+const VIEWPORT_EDGE_GUTTER_PX = 12;
+
+/** Cap the picker at the visible viewport (minus gutter), not a fixed fraction of width. */
+function getViewportMaxWidthPx(): number {
+    const viewportWidth =
+        activeWindow.innerWidth || activeDocument.documentElement.clientWidth || 320;
+    return Math.max(160, viewportWidth - VIEWPORT_EDGE_GUTTER_PX * 2);
+}
+
 export const StateMenuShell = (props: StateMenuShellProps) => {
     const stateMenuSettings = useAtomValue(stateMenuAtom);
     const stateMenuIsVisible = getStateMenuSurfaceVisibility(stateMenuSettings, props.visibilitySurface);
     const [menuIsActive, setMenuIsActive] = React.useState(false);
+    const [tippyMaxWidthPx, setTippyMaxWidthPx] = React.useState(() => getViewportMaxWidthPx());
     const showHighlightRef = React.useRef<boolean>(false);
-    const stateMenuRef = React.useRef<HTMLDivElement>(null);
-    const stateMenuContentRef = React.useRef<HTMLDivElement>(null);
-    const resizeObserverRef = React.useRef<ResizeObserver | null>(null);
-
-    const stateMenuIsVisibleRef = React.useRef(stateMenuIsVisible);
-    React.useEffect(() => {
-        stateMenuIsVisibleRef.current = stateMenuIsVisible;
-    }, [stateMenuIsVisible]);
-
-    const displayState = props.currentStateSettings?.name || 'Set State';
-    // Only the compact state button moves to headers when a portal is provided; expanded
-    // state choices stay in the content area so height animation still applies. Hide the
-    // closed button when this surface is toggled off because height collapse alone leaves
-    // it visible in card-browser layouts that do not clip overflow.
-    const closedMenuButton = stateMenuIsVisible && !menuIsActive && (
-        <button
-            className={classnames([
-                'ddc_pb_state-btn',
-                'ddc_pb_in-closed-menu',
-                showHighlightRef.current && 'ddc_pb_has-return-transition',
-            ])}
-            onClick={() => {
-                setMenuIsActive(true);
-            }}
-        >
-            {displayState}
-        </button>
-    );
 
     React.useEffect(() => {
         if (!stateMenuIsVisible) {
@@ -56,76 +41,101 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
     }, [stateMenuIsVisible]);
 
     React.useEffect(() => {
-        function handleClickOutside(event: PointerEvent) {
-            if (stateMenuRef.current && !stateMenuRef.current.contains(event.target as Node)) {
-                setMenuIsActive(false);
-            }
-        }
-
-        activeDocument.addEventListener('pointerdown', handleClickOutside);
-        monitorWorkspaceResizes();
-
-        return () => {
-            unmonitorWorkspaceResizes();
-            activeDocument.removeEventListener('pointerdown', handleClickOutside);
-        };
-    }, []);
-
-    React.useEffect(() => {
-        setHeight();
-    }, [stateMenuIsVisible, menuIsActive]);
-
-    React.useEffect(() => {
         showHighlightRef.current = false;
     });
 
-    return (
-        <div
-            className='ddc_pb_state-menu'
-            ref={stateMenuRef}
-        >
-            <div
-                className='ddc_pb_state-menu-content'
-                ref={stateMenuContentRef}
-            >
-                {!props.closedButtonPortalContainer && closedMenuButton}
+    React.useEffect(() => {
+        if (!menuIsActive) return;
+        setTippyMaxWidthPx(getViewportMaxWidthPx());
+    }, [menuIsActive]);
 
-                {menuIsActive && stateMenuIsVisible && (
-                    <>
-                        <div className='ddc_pb_visible-state-btns'>
-                            {props.visibleStates.map((visibleStateSettings) => (
-                                <button
-                                    key={visibleStateSettings.name}
-                                    className={classnames([
-                                        'ddc_pb_state-btn',
-                                        'ddc_pb_visible-state',
-                                        visibleStateSettings.name === props.currentStateSettings?.name && 'is-set',
-                                    ])}
-                                    onClick={() => void setStateAndCloseMenu(visibleStateSettings)}
-                                >
-                                    {sanitizeInternalLinkName(visibleStateSettings.name)}
-                                </button>
-                            ))}
-                        </div>
-                        <div className='ddc_pb_hidden-state-btns'>
-                            {props.hiddenStates.map((hiddenStateSettings) => (
-                                <button
-                                    key={hiddenStateSettings.name}
-                                    className={classnames([
-                                        'ddc_pb_state-btn',
-                                        'ddc_pb_hidden-state',
-                                        hiddenStateSettings.name === props.currentStateSettings?.name && 'is-set',
-                                    ])}
-                                    onClick={() => void setStateAndCloseMenu(hiddenStateSettings)}
-                                >
-                                    {sanitizeInternalLinkName(hiddenStateSettings.name)}
-                                </button>
-                            ))}
-                        </div>
-                    </>
-                )}
+    const displayState = props.currentStateSettings?.name || 'Set State';
+
+    // Choices open as a Tippy under the closed control (header or inline) instead of an
+    // in-flow strip, so notes/pages/projects share the same click-anchored picker.
+    const tippyContent = (
+        <div
+            className="ddc_pb_state-menu-tippy-content"
+            style={{ maxWidth: tippyMaxWidthPx }}
+        >
+            <div className="ddc_pb_visible-state-btns">
+                {props.visibleStates.map((visibleStateSettings) => (
+                    <button
+                        key={visibleStateSettings.name}
+                        type="button"
+                        className={classnames([
+                            'ddc_pb_state-btn',
+                            'ddc_pb_visible-state',
+                            visibleStateSettings.name === props.currentStateSettings?.name && 'is-set',
+                        ])}
+                        onClick={() => void setStateAndCloseMenu(visibleStateSettings)}
+                    >
+                        {sanitizeInternalLinkName(visibleStateSettings.name)}
+                    </button>
+                ))}
             </div>
-            {props.closedButtonPortalContainer && createPortal(closedMenuButton, props.closedButtonPortalContainer)}
+            <div className="ddc_pb_hidden-state-btns">
+                {props.hiddenStates.map((hiddenStateSettings) => (
+                    <button
+                        key={hiddenStateSettings.name}
+                        type="button"
+                        className={classnames([
+                            'ddc_pb_state-btn',
+                            'ddc_pb_hidden-state',
+                            hiddenStateSettings.name === props.currentStateSettings?.name && 'is-set',
+                        ])}
+                        onClick={() => void setStateAndCloseMenu(hiddenStateSettings)}
+                    >
+                        {sanitizeInternalLinkName(hiddenStateSettings.name)}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+
+    const closedMenuButton = stateMenuIsVisible ? (
+        <Tippy
+            content={tippyContent}
+            visible={menuIsActive}
+            onClickOutside={() => setMenuIsActive(false)}
+            interactive={true}
+            placement="bottom"
+            maxWidth={tippyMaxWidthPx}
+            theme="ddc_pb_state-menu"
+            appendTo={() => activeDocument.body}
+            // Off-center header buttons: shift the panel to stay in the viewport rather than clipping.
+            popperOptions={{
+                modifiers: [
+                    {
+                        name: 'preventOverflow',
+                        options: {
+                            padding: VIEWPORT_EDGE_GUTTER_PX,
+                            boundary: 'viewport',
+                        },
+                    },
+                ],
+            }}
+        >
+            <button
+                type="button"
+                className={classnames([
+                    'ddc_pb_state-btn',
+                    'ddc_pb_in-closed-menu',
+                    showHighlightRef.current && 'ddc_pb_has-return-transition',
+                ])}
+                onClick={() => setMenuIsActive((isActive) => !isActive)}
+            >
+                {displayState}
+            </button>
+        </Tippy>
+    ) : null;
+
+    return (
+        <div className="ddc_pb_state-menu">
+            {!props.closedButtonPortalContainer && closedMenuButton}
+            {props.closedButtonPortalContainer &&
+                closedMenuButton &&
+                createPortal(closedMenuButton, props.closedButtonPortalContainer)}
         </div>
     );
 
@@ -137,47 +147,5 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
         showHighlightRef.current = true;
         await props.onSetState(nextStateSettings);
         setMenuIsActive(false);
-    }
-
-    function setHeight() {
-        if (stateMenuIsVisibleRef.current) {
-            setVisibleHeight();
-        } else {
-            setHiddenHeight();
-        }
-    }
-
-    function setVisibleHeight() {
-        if (!stateMenuContentRef.current || !stateMenuRef.current) return;
-        const contentHeight = stateMenuContentRef.current.getBoundingClientRect().height;
-        stateMenuRef.current.style.height = `${contentHeight}px`;
-    }
-
-    function setHiddenHeight() {
-        if (!stateMenuRef.current) return;
-        stateMenuRef.current.style.height = '0';
-    }
-
-    function monitorWorkspaceResizes() {
-        const surroundingWorkspaceSplit = stateMenuRef.current?.closest('.workspace-split');
-
-        let resizeTimeout: NodeJS.Timeout | null = null;
-        resizeObserverRef.current = new ResizeObserver(() => {
-            if (resizeTimeout) window.clearTimeout(resizeTimeout);
-            resizeTimeout = window.setTimeout(() => {
-                setHeight();
-            }, 50);
-        });
-        if (surroundingWorkspaceSplit) {
-            resizeObserverRef.current?.observe(surroundingWorkspaceSplit);
-        }
-    }
-
-    function unmonitorWorkspaceResizes() {
-        const surroundingWorkspaceSplit = stateMenuRef.current?.closest('.workspace-split');
-        if (surroundingWorkspaceSplit) {
-            resizeObserverRef.current?.unobserve(surroundingWorkspaceSplit);
-        }
-        resizeObserverRef.current?.disconnect();
     }
 };

@@ -17,7 +17,7 @@ Project Browser replaces the “blank new tab” experience with a **low-frictio
 Project Browser has three user-visible "surfaces" that work together, plus a context-menu action available throughout Obsidian.
 
 - **Card Browser**: A browsable view of a folder's contents. It can replace new tabs, or you can open it via command/ribbon. It shows folders plus cards for notes and projects grouped by state.
-- **State Menu (in-note)**: When you open a note, you can quickly assign it a state (or clear its state) without leaving the editor.
+- **State Menu (header)**: Notes, project pages, and project roots show an accent underlined state control beside the leaf title. Clicking it opens a Tippy picker under the control (see [State menu in the view header](state-menu-header.md)).
 - **Project Pages FAB**: When any file is open (note, canvas, pdf, etc.), a floating action button lets you jump to other pages in the same project, add pages, or jump back to the folder in the Card Browser.
 - **Reveal in Project Browser**: A context-menu action on native Obsidian menus (file explorer, tab header, editor, etc.) that opens the Card Browser to the selected file's or folder's location. It appears in the same menu section as "Reveal in Finder".
 
@@ -71,7 +71,7 @@ flowchart TD
 
 - You move to Obsidian’s normal editor/file view for that file.
 - Project Browser adds lightweight overlays:
-  - The **State Menu** (for notes)
+  - The **State Menu** in the view header (for notes and project pages)
   - The **Project Pages FAB** (for any open file type Obsidian can display)
 
 ## Technical details

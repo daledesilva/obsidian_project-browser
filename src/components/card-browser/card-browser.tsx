@@ -49,6 +49,9 @@ interface CardBrowserProps {
     passBackHandlers: (handlers: CardBrowserHandlers) => void;
     /** Persist scroll position; fired on the scrollable `.ddc_pb_browser` region. */
     onBrowserScroll?: () => void;
+    /** Lets the leaf title and header state portal track project vs Browse. */
+    onBrowseContextChange?: (context: { isProject: boolean; folder: TFolder }) => void;
+    closedButtonPortalContainer?: HTMLElement | null;
 }
 
 export const CardBrowser = (props: CardBrowserProps) => {
@@ -60,8 +63,6 @@ export const CardBrowser = (props: CardBrowserProps) => {
     const [parentFolderIsProject, setParentFolderIsProject] = React.useState<boolean>(false);
     const [parentFolderIsInsideProject, setParentFolderIsInsideProject] = React.useState<boolean>(false);
     const [currentFolderIsProject, setCurrentFolderIsProject] = React.useState<boolean>(false);
-    const [projectStateMenuButtonContainer, setProjectStateMenuButtonContainer] =
-        React.useState<HTMLSpanElement | null>(null);
     const {state, eState} = props.getViewStates();
     const browserRef = React.useRef<HTMLDivElement>(null);
     const fabContainerRef = React.useRef<HTMLDivElement>(null);
@@ -107,7 +108,11 @@ export const CardBrowser = (props: CardBrowserProps) => {
     React.useEffect(() => {
         let cancelled = false;
         void getFolderSettings(v, initialFolder).then((settings) => {
-            if (!cancelled) setCurrentFolderIsProject(settings.isProject === true);
+            if (cancelled) return;
+            const isProject = settings.isProject === true;
+            setCurrentFolderIsProject(isProject);
+            // Sync leaf title (Browse vs project name) and header state portal host.
+            props.onBrowseContextChange?.({ isProject, folder: initialFolder });
         });
         return () => { cancelled = true; };
     }, [initialFolder.path, refreshId, v]);
@@ -187,16 +192,13 @@ export const CardBrowser = (props: CardBrowserProps) => {
                         onBackClick = {openParentFolder}
                         onFolderClick = { (folder: TFolder) => openFolderInSameLeaf(folder)}
                         refreshKey = {refreshId}
-                        currentFolderTrailingRef = {setProjectStateMenuButtonContainer}
                     />
                     {currentFolderIsProject && (
-                        <div className="ddc_pb_card-browser-project-header">
-                            <ProjectFolderStateMenu
-                                folder={initialFolder}
-                                refreshKey={refreshId}
-                                closedButtonPortalContainer={projectStateMenuButtonContainer}
-                            />
-                        </div>
+                        <ProjectFolderStateMenu
+                            folder={initialFolder}
+                            refreshKey={refreshId}
+                            closedButtonPortalContainer={props.closedButtonPortalContainer}
+                        />
                     )}
                     <div
                         className = {classNames([

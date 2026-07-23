@@ -16,6 +16,7 @@ If you’re new to the codebase or the plugin’s mental model, start with **Ove
 ## Features
 
 - [Projects](projects.md): folders that behave like cards, and how project status works.
+- [State menu in the view header](state-menu-header.md): header state control and Tippy picker for notes, pages, and project roots.
 - [Project Pages FAB](project-pages-fab.md): the in-editor floating action button for jumping between project pages.
 - [File type visibility](file-type-visibility.md): control what file types appear in the Card Browser and in the pages menu.
 - [Settings](settings.md): access/behaviour and display settings that change how the plugin feels.

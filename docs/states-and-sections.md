@@ -70,6 +70,10 @@ State is stored in different places depending on what you’re assigning it to:
 
 The important part conceptually is that both notes and projects share the same **state names**, so they can be grouped together.
 
+### Setting state from the view header
+
+Notes, project pages, and project roots expose a closed **Set State** / state-name control in the Obsidian leaf title row. Clicking it opens a Tippy picker under the control (not an in-flow strip). On project roots, the Card Browser leaf title also changes from **Browse** to the project name. See [State menu in the view header](state-menu-header.md).
+
 ### How section ordering works
 
 The Card Browser follows the plugin’s configured ordering:
@@ -88,6 +92,7 @@ See also:
 
 - [Card Browser and navigation](card-browser-and-navigation.md)
 - [Projects](projects.md)
+- [State menu in the view header](state-menu-header.md)
 
 ## Technical gotchas
 

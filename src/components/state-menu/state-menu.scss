@@ -1,21 +1,38 @@
-
-
 .ddc_pb_state-menu {
+    // Mount host only; closed control portals to the view header and choices live in Tippy.
     height: 0;
     overflow: hidden;
-    transition: height 0.3s ease-in-out;
-}   
+    pointer-events: none;
+}
 
-.ddc_pb_state-menu-content {
+.ddc_pb_state-menu-tippy-content {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1em;
-    // So the outline on the buttons doesn't get clipped
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.55em 0.65em;
+    // Max width is set in JS from the viewport; no half-width / leaf fraction cap.
     box-sizing: border-box;
-    padding-top: 1px;
-    padding-bottom: 1em;
+}
+
+.tippy-box[data-theme~='ddc_pb_state-menu'] {
+    background-color: var(--background-primary);
+    color: var(--text-normal);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-l);
+}
+
+.tippy-box[data-theme~='ddc_pb_state-menu'] .tippy-content {
+    padding: 0;
+}
+
+.tippy-box[data-theme~='ddc_pb_state-menu'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: var(--background-primary);
+}
+
+.tippy-box[data-theme~='ddc_pb_state-menu'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: var(--background-primary);
 }
 
 .ddc_pb_visible-state-btns,
@@ -25,18 +42,16 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: 0.2em;
+    width: 100%;
 }
-
-
 
 @keyframes highlight-and-fade {
     from {
         color: var(--text-on-accent, rgba(255, 255, 255, 0.5));
-        outline: 1px solid var(--text-accent, rgba(255, 255, 255, 0)) !important;
         background-color: var(--interactive-accent, rgba(255, 255, 255, 0.5));
+        text-decoration-color: var(--text-on-accent, rgba(255, 255, 255, 0.5));
     }
 }
-
 
 .ddc_pb_state-btn {
     font-size: 0.8em;
@@ -46,40 +61,44 @@
     box-shadow: none !important;
 
     cursor: pointer;
-    
+
     &.ddc_pb_in-closed-menu {
         &.ddc_pb_has-return-transition {
             animation-duration: 1s;
             animation-name: highlight-and-fade;
         }
 
-        color: var(--text-faint, rgba(255, 255, 255, 0.5));
-        outline: 1px solid var(--color-base-30, rgba(255, 255, 255, 0.5));
-        background-color: rgba(0, 0, 0, 0);
-        
+        // Header/inline closed control: accent text + underline, not an outlined chip.
+        color: var(--text-accent, var(--interactive-accent));
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
+        outline: none;
+        border: none;
+        background-color: transparent;
+        padding-inline: 0.15em;
+
         @media (hover: hover) and (pointer: fine) {
             &:hover {
-                color: var(--text-accent, rgba(255, 255, 255, 0.5));
-                outline: 1px solid var(--text-accent, rgba(255, 255, 255, 0.5)) !important;
+                color: var(--text-accent-hover, var(--interactive-accent-hover));
+                outline: none !important;
+                background-color: transparent;
             }
         }
     }
-    
-    
 
     &.ddc_pb_visible-state {
-        color: var(--text-muted, rgba(255, 255, 255, 0.5));;
+        color: var(--text-muted, rgba(255, 255, 255, 0.5));
         outline: 1px solid var(--color-base-30, rgba(255, 255, 255, 0.5));
         background-color: rgba(0, 0, 0, 0);
-        
+
         @media (hover: hover) and (pointer: fine) {
             &:hover {
-                color: var(--text-on-accent, rgba(255, 255, 255, 0.5));;
+                color: var(--text-on-accent, rgba(255, 255, 255, 0.5));
                 background-color: var(--interactive-accent, rgba(255, 255, 255, 0.5)) !important;
                 outline: none;
             }
         }
-        
+
         &.is-set {
             color: var(--text-accent, rgba(255, 255, 255, 0.5));
             outline: 1px solid var(--text-accent, rgba(255, 255, 255, 0.5)) !important;
@@ -99,22 +118,21 @@
 
         @media (hover: hover) and (pointer: fine) {
             &:hover {
-                color: var(--text-normal, rgba(255, 255, 255, 0.5));;
+                color: var(--text-normal, rgba(255, 255, 255, 0.5));
                 background-color: var(--interactive-normal, rgba(255, 255, 255, 0.5)) !important;
             }
         }
-        
+
         &.is-set {
-            color: var(--text-on-accent-inverted, rgba(255, 255, 255, 0.5));;
+            color: var(--text-on-accent-inverted, rgba(255, 255, 255, 0.5));
             background-color: var(--interactive-accent-hover, rgba(255, 255, 255, 0.5)) !important;
             outline: none;
             @media (hover: hover) and (pointer: fine) {
                 &:hover {
-                    color: var(--text-faint, rgba(255, 255, 255, 0.5));;
+                    color: var(--text-faint, rgba(255, 255, 255, 0.5));
                     background-color: var(--interactive-normal, rgba(255, 255, 255, 0.5)) !important;
                 }
             }
         }
     }
-
 }
