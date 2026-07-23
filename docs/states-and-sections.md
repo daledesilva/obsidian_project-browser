@@ -70,6 +70,15 @@ State is stored in different places depending on what you’re assigning it to:
 
 The important part conceptually is that both notes and projects share the same **state names**, so they can be grouped together.
 
+### Cycling state with hotkeys
+
+**Apply previous state** / **Apply next state** (and the recommended chords for them) move one step through the relevant state list:
+
+- On a **note or project page**, they update that file’s state.
+- On a **project root** in the Card Browser, they update that project folder’s state (same note/project state list as notes).
+
+See [Recommended hotkeys](recommended-hotkeys.md) for how those commands are registered and how they choose a file vs folder target.
+
 ### How section ordering works
 
 The Card Browser follows the plugin’s configured ordering:
@@ -83,6 +92,7 @@ The Card Browser follows the plugin’s configured ordering:
 
 - Section ordering is implemented in `src/logic/section-processes.ts` (`orderSections` and `getStateSettings`).
 - The Card Browser builds sections from the current folder, then applies ordering and hidden-state filtering before rendering.
+- Hotkey cycling is implemented in `src/commands/cycle-state.ts`, with shared step logic in `offsetState` / `offsetFolderState` (`src/logic/offset-state.ts`).
 
 See also:
 

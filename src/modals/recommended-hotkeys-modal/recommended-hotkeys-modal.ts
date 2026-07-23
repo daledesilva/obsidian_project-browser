@@ -102,13 +102,16 @@ export class RecommendedHotkeysModal extends Modal {
             setting.nameEl.setText(recommendation.commandName);
 
             setting.descEl.empty();
-            // Line 2: accent chord, then faint bracketed status (applied / conflict / clear).
+            // Line 2: accent chord, then faint bracketed status for pending applies only.
+            // Once applied, the disabled "Applied" button carries that state — no duplicate grey text.
             const hotkeyLineEl = setting.descEl.createDiv({ cls: 'ddc_pb_recommended-hotkey-line' });
             this.renderHotkeyChord(hotkeyLineEl, recommendation.hotkey);
-            hotkeyLineEl.createSpan({
-                cls: 'ddc_pb_recommended-hotkey-status',
-                text: ` (${statusText})`,
-            });
+            if (!isApplied && statusText) {
+                hotkeyLineEl.createSpan({
+                    cls: 'ddc_pb_recommended-hotkey-status',
+                    text: ` (${statusText})`,
+                });
+            }
         }
     }
 
@@ -116,8 +119,8 @@ export class RecommendedHotkeysModal extends Modal {
         isApplied: boolean,
         conflict: string | null,
         commandNames: Record<string, string>,
-    ): string {
-        if (isApplied) return 'Already applied.';
+    ): string | null {
+        if (isApplied) return null;
         if (conflict) return `Conflicts with ${commandNames[conflict] ?? conflict}.`;
         return 'No conflict found.';
     }

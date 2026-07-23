@@ -98,7 +98,11 @@
         position: relative;
         cursor: pointer;
         --size: min(40px, 8vw);
+        // Obsidian button defaults use a fixed height (~two wrapped lines here);
+        // grow with the full page title instead of clipping.
+        height: auto;
         min-height: var(--size);
+        max-height: none;
         max-width: 200px;
         padding: 8px 12px;
         border-radius: 8px;
