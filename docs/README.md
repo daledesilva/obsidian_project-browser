@@ -20,6 +20,7 @@ If you’re new to the codebase or the plugin’s mental model, start with **Ove
 - [Project Pages FAB](project-pages-fab.md): the in-editor floating action button for jumping between project pages.
 - [File type visibility](file-type-visibility.md): control what file types appear in the Card Browser and in the pages menu.
 - [Settings](settings.md): access/behaviour and display settings that change how the plugin feels.
+- [Recommended hotkeys](recommended-hotkeys.md): reviewing and applying suggested shortcuts from plugin settings.
 
 ## Contributing / maintenance
 

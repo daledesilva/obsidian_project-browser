@@ -69,7 +69,8 @@ flowchart TD
 - **`getDisplayText()` alone is not enough** — After folder changes inside the Card Browser, sync the tab/header DOM or the title can stay stale as **Browse**.
 - **Tippy appends to `body`** — Click-outside and width constraints must treat the Tippy box as outside the leaf DOM. Use Tippy’s `onClickOutside` and viewport `preventOverflow`, not only leaf-local pointer handlers.
 - **Off-center header buttons** — Prefer shifting the panel inside the viewport over clipping or forcing a half-width leaf cap. The arrow stays aimed at the control while the box slides.
-- **Surface visibility vs menu open** — Toggle-state-menu / cycle flash still use surface visibility for the closed control; Tippy open state (`menuIsActive`) is separate and only changes on click (or after a choice).
+- **Surface visibility vs menu open** — Toggle-state-menu / cycle flash still use surface visibility for the closed control; Tippy open state (`menuIsActive`) is separate and only changes on click (or after a choice). The toggle command uses a normal `callback` (not `editorCallback`), so it works on phone and in the Card Browser as well as in markdown editors.
+- **Empty portal hosts must stay hidden** — Phone `--chrome` / `--sticky` hosts set their own `display`. Keep `&:empty { display: none }` after those modifiers so Toggle state menu can fully hide the control on mobile.
 - **Project title stacking uses an explicit class** — `ddc_pb_has-state-menu-header` on the title container (not `:has()` alone) so Card Browser can reliably stack project name above Set State.
 
 ## Related

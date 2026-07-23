@@ -26,6 +26,10 @@ You can enable a command palette entry and/or a ribbon icon to open the Card Bro
 
 Controls whether the header state control (and its Tippy picker) is shown by default for notes/projects and for pages. See [State menu in the view header](state-menu-header.md).
 
+### Recommended hotkeys
+
+Under **Setup & troubleshoot**, the **Recommended hotkeys** button opens a modal where users can review and apply suggested shortcuts for the state menu and state cycling commands. See [Recommended hotkeys](recommended-hotkeys.md) for the full flow, chord list, and implementation notes.
+
 ## Display settings
 
 ### Use Aliases

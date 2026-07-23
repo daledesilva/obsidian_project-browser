@@ -74,6 +74,15 @@ The important part conceptually is that both notes and projects share the same *
 
 Notes, project pages, and project roots expose a closed **Set State** / state-name control in the Obsidian leaf header (title row when visible; centered phone chrome or sticky strip otherwise). Clicking it opens a Tippy picker under the control (not an in-flow strip), with the file/project name at the top of the panel. On project roots, the Card Browser leaf title changes from **Browse** to the project name above the state control. See [State menu in the view header](state-menu-header.md).
 
+### Cycling state with hotkeys
+
+**Apply previous state** / **Apply next state** (and the recommended chords for them) move one step through the relevant state list:
+
+- On a **note or project page**, they update that file’s state.
+- On a **project root** in the Card Browser, they update that project folder’s state (same note/project state list as notes).
+
+See [Recommended hotkeys](recommended-hotkeys.md) for how those commands are registered and how they choose a file vs folder target.
+
 ### How section ordering works
 
 The Card Browser follows the plugin’s configured ordering:
@@ -87,6 +96,7 @@ The Card Browser follows the plugin’s configured ordering:
 
 - Section ordering is implemented in `src/logic/section-processes.ts` (`orderSections` and `getStateSettings`).
 - The Card Browser builds sections from the current folder, then applies ordering and hidden-state filtering before rendering.
+- Hotkey cycling is implemented in `src/commands/cycle-state.ts`, with shared step logic in `offsetState` / `offsetFolderState` (`src/logic/offset-state.ts`).
 
 See also:
 

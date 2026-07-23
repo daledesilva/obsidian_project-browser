@@ -91,6 +91,7 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Floating title** — A pill below the FAB with a back chevron and background. Always visible except when the file is at vault root. Displays the current folder name (project or non-project). Clicking it navigates to that folder in the card browser. When the folder is a project, a 2px accent-colour bottom border indicates it.
 - **Card Browser FAB** — The card browser has a matching FAB layout (Search, New project, floating parent-folder title with back chevron). The floating title shows the parent folder and navigates back when clicked. Accent border appears only when the current folder is a project.
 - **Project page list (open menu)** — The scrollable list uses vertical padding (not margin) for spacing from edges above the actions. The scrollbar is hidden; scrolling still works with wheel, trackpad, and touch. When the list overflows, a **CSS mask** (`mask-image`) fades opacity at the top and/or bottom **only when there is clipped content** at that edge (no fade at the scroll ends, and no fades when the full list fits).
+- **Long page titles** — Page buttons allow the title to wrap (`white-space: normal`) and grow vertically with the full name. Height is not capped at a fixed Obsidian button size.
 
 ## Technical implementation
 
@@ -98,6 +99,7 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Integration**: Rendered from `registerMarkdownViewMods` whenever the active leaf shows a file view (any type Obsidian can display). Parent folder is `activeFile.parent ?? vault.getRoot()`.
 - **Page list**: Derived from `getItemsInFolder(projectFolder)` — filtered to `TFile`, filtered by visible file types (`isExtensionVisible`), sorted by name.
 - **Page button labels**: Use `getFileDisplayNameParts()`, which respects the "Show extension for non-document files" setting. The extension portion is faded with `--text-faint`. Only canvas and base files show a type tag (CANVAS, BASE) at the top-right of each button; other file types do not.
+- **Page button height**: FAB page buttons (`.ddc_pb_project-page-menu__file-button--fab`) set `height: auto` and `max-height: none` so Obsidian’s default fixed button height does not clip wrapped titles after the second line.
 - **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) for details.
 - **Navigation**: Uses `openFileInSameLeaf` followed by `openStateMenuIfClosed`.
 - **Navigation menu state**: Page-to-page navigation keeps the menu open so users can continue navigating without reopening it.
@@ -117,3 +119,4 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Folder name conflict** — When creating a project from a note, if a sibling folder with the same name exists, `(2)`, `(3)`, etc. are appended.
 - **Embed content** — Clicks inside transcluded or embedded content close the menu, since those elements are part of the document and the `pointerdown` target is outside the FAB.
 - **Page list edge fades** — Fades use mask alpha (a true opacity falloff of the list), not a solid colour overlay. When the list does not overflow, both fades are off so short lists do not get softened edges.
+- **Wrapped titles vs Obsidian button height** — Enabling wrap alone is not enough: Obsidian buttons keep a fixed height that clips about two lines. Override with `height: auto` / `max-height: none` so the chip grows with the full page name.

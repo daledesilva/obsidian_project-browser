@@ -15,6 +15,7 @@ import {
 import { StateSettings } from "src/types/types-map";
 import { showWelcomeTips } from "src/notices/onboarding-notices";
 import { showRecentChanges } from "src/notices/version-notices";
+import { RecommendedHotkeysModal } from "src/modals/recommended-hotkeys-modal/recommended-hotkeys-modal";
 
 /////////
 /////////
@@ -182,6 +183,13 @@ function insertSetupTroubleshootSection(containerEl: HTMLElement) {
 			btn.setButtonText("Rewatch welcome tips");
 			btn.setCta();
 			btn.onClick(() => showWelcomeTips());
+		})
+		.addButton((btn) => {
+			// Available on desktop and mobile (e.g. iPad with keyboard); opens RecommendedHotkeysModal.
+			btn.setButtonText("Recommended hotkeys");
+			btn.onClick(() => {
+				new RecommendedHotkeysModal().open();
+			});
 		});
 }
 

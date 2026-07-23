@@ -12,10 +12,6 @@
     margin-inline-start: 0.5em;
     vertical-align: middle;
 
-    &:empty {
-        display: none;
-    }
-
     .ddc_pb_state-btn {
         font-weight: var(--font-normal);
     }
@@ -45,6 +41,11 @@
         box-sizing: border-box;
         background: var(--background-primary);
         border-bottom: 1px solid var(--background-modifier-border);
+    }
+
+    // After modifiers so toggle-hide (empty portal) still removes chrome/sticky chrome on phone.
+    &:empty {
+        display: none;
     }
 }
 
