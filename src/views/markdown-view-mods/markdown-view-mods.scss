@@ -19,6 +19,58 @@
     .ddc_pb_state-btn {
         font-weight: var(--font-normal);
     }
+
+    // Phone markdown hides `.view-header-title-container`; center state in the header bar.
+    &--chrome {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        z-index: 2;
+        flex-shrink: 0;
+        pointer-events: auto;
+    }
+
+    // When the whole view-header is unavailable, pin a slim centered state strip above content.
+    &--sticky {
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 0;
+        padding: 0.35em 0.75em;
+        box-sizing: border-box;
+        background: var(--background-primary);
+        border-bottom: 1px solid var(--background-modifier-border);
+    }
+}
+
+// Absolute chrome host is centered against the full view-header width.
+.view-header:has(> .ddc_pb_state-menu-header-button-container--chrome) {
+    position: relative;
+}
+
+// Project browse: stack leaf title above the state control (name on its own line).
+.workspace-leaf-content[data-type="card-browser-view"] .view-header-title-container.ddc_pb_has-state-menu-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.05em;
+    min-width: 0;
+
+    .ddc_pb_state-menu-header-button-container {
+        margin-inline-start: 0;
+    }
+}
+
+.is-phone .workspace-leaf-content[data-type="card-browser-view"] .view-header-title-container.ddc_pb_has-state-menu-header {
+    align-items: center;
+    text-align: center;
+    width: 100%;
 }
 
 .ddc_pb_project-pages-fab-container {

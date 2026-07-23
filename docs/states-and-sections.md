@@ -72,7 +72,7 @@ The important part conceptually is that both notes and projects share the same *
 
 ### Setting state from the view header
 
-Notes, project pages, and project roots expose a closed **Set State** / state-name control in the Obsidian leaf title row. Clicking it opens a Tippy picker under the control (not an in-flow strip). On project roots, the Card Browser leaf title also changes from **Browse** to the project name. See [State menu in the view header](state-menu-header.md).
+Notes, project pages, and project roots expose a closed **Set State** / state-name control in the Obsidian leaf header (title row when visible; centered phone chrome or sticky strip otherwise). Clicking it opens a Tippy picker under the control (not an in-flow strip), with the file/project name at the top of the panel. On project roots, the Card Browser leaf title changes from **Browse** to the project name above the state control. See [State menu in the view header](state-menu-header.md).
 
 ### How section ordering works
 

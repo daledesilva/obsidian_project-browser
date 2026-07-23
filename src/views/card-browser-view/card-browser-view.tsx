@@ -8,6 +8,10 @@ import { Provider as JotaiProvider } from 'jotai';
 import { globalStore, getGlobals, getStateMenuSettings, getStateMenuSurfaceVisibility } from "src/logic/stores";
 import { toggleStateMenuSurface } from "src/logic/toggle-state-menu";
 import { isRootPath } from "src/utils/string-processes";
+import {
+    clearStateMenuHeaderButtonContainer,
+    ensureStateMenuHeaderButtonContainer,
+} from "src/logic/state-menu-header-portal";
 import { CARD_BROWSER_VIEW_TYPE } from './card-browser-view-constants';
 
 //////////
@@ -16,8 +20,6 @@ import { CARD_BROWSER_VIEW_TYPE } from './card-browser-view-constants';
 /** Matches `.ddc_pb_card-browser-view-content` in `card-browser.scss` — flex column so only `.ddc_pb_browser` scrolls. */
 export const CARD_BROWSER_VIEW_CONTENT_CLASS = 'ddc_pb_card-browser-view-content';
 
-/** Same host class notes/pages use so project-root state sits beside the leaf title. */
-const STATE_MENU_HEADER_BUTTON_CONTAINER_CLASS = 'ddc_pb_state-menu-header-button-container';
 const DEFAULT_BROWSE_DISPLAY_TITLE = 'Browse';
 
 export interface CardBrowserViewState {
@@ -258,6 +260,10 @@ export class ProjectCardsView extends ItemView {
 
     handleBrowseContextChange = (context: { isProject: boolean; folder: TFolder }) => {
         this.syncBrowseDisplayTitle(context.isProject, context.folder);
+        // Non-projects keep "Browse" only — drop the header state host so title stacking CSS clears.
+        if (!context.isProject) {
+            clearStateMenuHeaderButtonContainer(this.containerEl);
+        }
         const nextHost = context.isProject ? this.ensureStateMenuHeaderButtonContainer() : null;
         if (nextHost === this.stateMenuHeaderButtonContainer) return;
         this.stateMenuHeaderButtonContainer = nextHost;
@@ -289,18 +295,8 @@ export class ProjectCardsView extends ItemView {
     }
 
     private ensureStateMenuHeaderButtonContainer(): HTMLElement | null {
-        const headerEl = this.containerEl.children[0] as HTMLElement | undefined;
-        if (!headerEl) return null;
-
-        let host = this.containerEl.querySelector(
-            `.${STATE_MENU_HEADER_BUTTON_CONTAINER_CLASS}`,
-        ) as HTMLElement | null;
-        if (!host) {
-            const titleContainerEl =
-                headerEl.querySelector<HTMLElement>('.view-header-title-container') ?? headerEl;
-            host = titleContainerEl.createDiv(STATE_MENU_HEADER_BUTTON_CONTAINER_CLASS);
-        }
-        return host;
+        // Shared helper also covers phone chrome / sticky fallbacks when header title is hidden.
+        return ensureStateMenuHeaderButtonContainer(this.containerEl);
     }
 
     handleBrowserScrollForPersist = () => {

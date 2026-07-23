@@ -15,12 +15,15 @@ import {
 import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { createProject, createProjectFromNote, getFolderSettings } from 'src/utils/file-manipulation';
 import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view-constants';
+import {
+    ensureStateMenuHeaderButtonContainer,
+    STATE_MENU_HEADER_BUTTON_CONTAINER_CLASS,
+} from 'src/logic/state-menu-header-portal';
 
 //////////
 //////////
 
 const stateMenuContainerClassName = 'ddc_pb_state-menu-container';
-const stateMenuHeaderButtonContainerClassName = 'ddc_pb_state-menu-header-button-container';
 const projectPagesFabContainerClassName = 'ddc_pb_project-pages-fab-container';
 let keepProjectPagesFabMenuOpenUntilMs = 0;
 let projectPagesFabRenderRequestId = 0;
@@ -75,6 +78,14 @@ export function registerMarkdownViewMods() {
             addStateHeader();
         }
     }));
+
+    // Relocate the header portal when phone/tablet chrome changes (title container hide/show).
+    plugin.registerEvent(plugin.app.workspace.on('layout-change', () => {
+        const activeLeaf = plugin.app.workspace.activeLeaf;
+        if (activeLeaf?.view instanceof MarkdownView) {
+            addStateHeader();
+        }
+    }));
 }
 
 function addViewMenuOptions() {
@@ -113,12 +124,8 @@ function addStateHeader() {
     let stateMenuContainerEl = containerEl.find(`.${stateMenuContainerClassName}`)
     const headerEl = containerEl.children[0] as HTMLElement | undefined;
     if (!headerEl) return;
-    let stateMenuHeaderButtonContainerEl = containerEl.find(`.${stateMenuHeaderButtonContainerClassName}`);
-    if (headerEl && !stateMenuHeaderButtonContainerEl) {
-        const titleContainerEl =
-            headerEl.querySelector<HTMLElement>('.view-header-title-container') ?? headerEl;
-        stateMenuHeaderButtonContainerEl = titleContainerEl.createDiv(stateMenuHeaderButtonContainerClassName);
-    }
+    // Prefer title row; on phone markdown Obsidian hides that, so fall back to header chrome / sticky.
+    const stateMenuHeaderButtonContainerEl = ensureStateMenuHeaderButtonContainer(containerEl);
     if(!stateMenuContainerEl) {
         stateMenuContainerEl = headerEl.createDiv(stateMenuContainerClassName);
         headerEl.after(stateMenuContainerEl);
@@ -133,11 +140,19 @@ function addStateHeader() {
             <JotaiProvider store={globalStore}>
                 <StateMenu
                     file={activeFile}
-                    closedButtonPortalContainer={stateMenuHeaderButtonContainerEl as HTMLElement | null}
+                    closedButtonPortalContainer={stateMenuHeaderButtonContainerEl}
                 />
             </JotaiProvider>
         );
     }
+
+    // Drop stale hosts if ensure relocated the portal (e.g. title-container <-> chrome).
+    const hosts = containerEl.querySelectorAll(`.${STATE_MENU_HEADER_BUTTON_CONTAINER_CLASS}`);
+    hosts.forEach((host) => {
+        if (host !== stateMenuHeaderButtonContainerEl && host.childElementCount === 0) {
+            host.remove();
+        }
+    });
 }
 
 interface AddOrRemoveProjectPagesFABOptions {

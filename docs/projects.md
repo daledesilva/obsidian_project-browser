@@ -58,7 +58,7 @@ flowchart TB
 3. The project moves to that state’s section.
 4. Choosing the same state again clears the status (returns to no-status section).
 
-On a project root, the Card Browser leaf title shows the project name (instead of **Browse**) next to that header control. Details: [State menu in the view header](state-menu-header.md).
+On a project root, the Card Browser leaf title shows the project name (instead of **Browse**) on the line above that header control. Details: [State menu in the view header](state-menu-header.md).
 
 ## Technical implementation
 

@@ -14,6 +14,8 @@ interface StateMenuShellProps {
     visibleStates: StateSettings[];
     hiddenStates: StateSettings[];
     visibilitySurface: StateMenuSurface;
+    /** File or project name shown at the top of the Tippy when the leaf title is hidden. */
+    subjectLabel?: string;
     closedButtonPortalContainer?: HTMLElement | null;
     onSetState: (stateSettings: StateSettings | null) => Promise<boolean>;
 }
@@ -50,6 +52,7 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
     }, [menuIsActive]);
 
     const displayState = props.currentStateSettings?.name || 'Set State';
+    const subjectLabel = props.subjectLabel?.trim() || '';
 
     // Choices open as a Tippy under the closed control (header or inline) instead of an
     // in-flow strip, so notes/pages/projects share the same click-anchored picker.
@@ -58,6 +61,11 @@ export const StateMenuShell = (props: StateMenuShellProps) => {
             className="ddc_pb_state-menu-tippy-content"
             style={{ maxWidth: tippyMaxWidthPx }}
         >
+            {subjectLabel && (
+                <div className="ddc_pb_state-menu-tippy-subject" title={subjectLabel}>
+                    {subjectLabel}
+                </div>
+            )}
             <div className="ddc_pb_visible-state-btns">
                 {props.visibleStates.map((visibleStateSettings) => (
                     <button
