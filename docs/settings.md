@@ -24,7 +24,7 @@ You can enable a command palette entry and/or a ribbon icon to open the Card Bro
 
 ### State Menu default visibility
 
-Controls whether the in-note State Menu is shown by default when you open a note.
+Controls whether the header state control (and its Tippy picker) is shown by default for notes/projects and for pages. See [State menu in the view header](state-menu-header.md).
 
 ### Recommended hotkeys
 

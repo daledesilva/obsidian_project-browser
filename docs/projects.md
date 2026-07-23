@@ -53,10 +53,12 @@ flowchart TB
 
 ### Assigning status to a project
 
-1. Right-click a project card.
+1. Right-click a project card, **or** open the project root in the Card Browser and use the header state control beside the project title.
 2. Choose a state from the menu (Visible states or Hidden states).
 3. The project moves to that state’s section.
 4. Choosing the same state again clears the status (returns to no-status section).
+
+On a project root, the Card Browser leaf title shows the project name (instead of **Browse**) on the line above that header control. Details: [State menu in the view header](state-menu-header.md).
 
 ## Technical implementation
 
@@ -75,4 +77,5 @@ flowchart TB
 ## Related
 
 - [States and sections](states-and-sections.md) — How visible/hidden states and the No status section work.
+- [State menu in the view header](state-menu-header.md) — Header control and Tippy picker for notes, pages, and project roots.
 - [Project Pages FAB](project-pages-fab.md) — Floating action button for quick navigation between pages when viewing a note inside a project.

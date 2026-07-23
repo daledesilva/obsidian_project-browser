@@ -5,11 +5,13 @@ import { getStateByName } from 'src/logic/get-state-by-name';
 import { getGlobals } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
 import { getFolderStateName, setFolderState } from 'src/utils/file-manipulation';
+import { isRootPath } from 'src/utils/string-processes';
 import { StateMenuShell } from './state-menu-shell';
 
 interface ProjectFolderStateMenuProps {
     folder: TFolder;
     refreshKey?: string;
+    closedButtonPortalContainer?: HTMLElement | null;
 }
 
 export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
@@ -32,12 +34,19 @@ export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
         }
     }, [props.folder.path, props.refreshKey]);
 
+    // Tippy subject when the leaf title is easy to miss (phone) or stacked away from the panel.
+    const subjectLabel = isRootPath(props.folder.path)
+        ? props.folder.vault.getName()
+        : props.folder.name;
+
     return (
         <StateMenuShell
             currentStateSettings={currentStateSettings}
             visibleStates={plugin.settings.states.visible}
             hiddenStates={plugin.settings.states.hidden}
             visibilitySurface="noteAndProject"
+            subjectLabel={subjectLabel}
+            closedButtonPortalContainer={props.closedButtonPortalContainer}
             onSetState={setProjectFolderState}
         />
     );

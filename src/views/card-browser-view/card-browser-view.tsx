@@ -1,13 +1,17 @@
-import { FileView, ItemView, MarkdownView, Menu, MenuItem, Notice, TFile, TFolder, View, ViewState, ViewStateResult, WorkspaceLeaf } from "obsidian";
+import { ItemView, Menu, MenuItem, Notice, TFolder, ViewStateResult, WorkspaceLeaf } from "obsidian";
 import * as React from "react";
 import { Root, createRoot } from "react-dom/client";
 import CardBrowser, { CardBrowserHandlers } from "src/components/card-browser/card-browser";
-import { createContext } from 'react';
 import { isEmpty } from "src/utils/misc";
 import { ICON_PLUGIN } from "src/constants";
 import { Provider as JotaiProvider } from 'jotai';
 import { globalStore, getGlobals, getStateMenuSettings, getStateMenuSurfaceVisibility } from "src/logic/stores";
 import { toggleStateMenuSurface } from "src/logic/toggle-state-menu";
+import { isRootPath } from "src/utils/string-processes";
+import {
+    clearStateMenuHeaderButtonContainer,
+    ensureStateMenuHeaderButtonContainer,
+} from "src/logic/state-menu-header-portal";
 import { CARD_BROWSER_VIEW_TYPE } from './card-browser-view-constants';
 
 //////////
@@ -15,6 +19,8 @@ import { CARD_BROWSER_VIEW_TYPE } from './card-browser-view-constants';
 
 /** Matches `.ddc_pb_card-browser-view-content` in `card-browser.scss` — flex column so only `.ddc_pb_browser` scrolls. */
 export const CARD_BROWSER_VIEW_CONTENT_CLASS = 'ddc_pb_card-browser-view-content';
+
+const DEFAULT_BROWSE_DISPLAY_TITLE = 'Browse';
 
 export interface CardBrowserViewState {
     id?: string, // to allow for forcing a refresh
@@ -137,6 +143,9 @@ export class ProjectCardsView extends ItemView {
     state: CardBrowserViewState;
     eState: CardBrowserViewEState;
     cardBrowserHandlers: CardBrowserHandlers;
+    // Project roots replace "Browse" with the project name; non-projects keep Browse.
+    private browseDisplayTitle = DEFAULT_BROWSE_DISPLAY_TITLE;
+    private stateMenuHeaderButtonContainer: HTMLElement | null = null;
     
     constructor(leaf: WorkspaceLeaf) {
         super(leaf);
@@ -151,7 +160,7 @@ export class ProjectCardsView extends ItemView {
     }
 
     getDisplayText() {
-        return "Browse";
+        return this.browseDisplayTitle;
     }
 
     onPaneMenu(menu: Menu, source: string): void {
@@ -237,6 +246,8 @@ export class ProjectCardsView extends ItemView {
                     }}
                     passBackHandlers = {this.setCardBrowserHandlers}
                     onBrowserScroll = {this.handleBrowserScrollForPersist}
+                    onBrowseContextChange = {this.handleBrowseContextChange}
+                    closedButtonPortalContainer = {this.stateMenuHeaderButtonContainer}
                 />
             </JotaiProvider>
         );
@@ -245,6 +256,47 @@ export class ProjectCardsView extends ItemView {
     setCardBrowserHandlers = (handlers: CardBrowserHandlers) => {
         this.cardBrowserHandlers = handlers;
         this.applyScrollOffset();
+    }
+
+    handleBrowseContextChange = (context: { isProject: boolean; folder: TFolder }) => {
+        this.syncBrowseDisplayTitle(context.isProject, context.folder);
+        // Non-projects keep "Browse" only — drop the header state host so title stacking CSS clears.
+        if (!context.isProject) {
+            clearStateMenuHeaderButtonContainer(this.containerEl);
+        }
+        const nextHost = context.isProject ? this.ensureStateMenuHeaderButtonContainer() : null;
+        if (nextHost === this.stateMenuHeaderButtonContainer) return;
+        this.stateMenuHeaderButtonContainer = nextHost;
+        this.renderView();
+    }
+
+    private syncBrowseDisplayTitle(isProject: boolean, folder: TFolder) {
+        const nextTitle = isProject
+            ? (isRootPath(folder.path) ? folder.vault.getName() : folder.name)
+            : DEFAULT_BROWSE_DISPLAY_TITLE;
+        if (nextTitle === this.browseDisplayTitle) {
+            this.applyDisplayTitleToDom(nextTitle);
+            return;
+        }
+        this.browseDisplayTitle = nextTitle;
+        this.applyDisplayTitleToDom(nextTitle);
+    }
+
+    private applyDisplayTitleToDom(title: string) {
+        // Obsidian does not always re-read getDisplayText() after in-view folder navigation.
+        const leafWithTabTitle = this.leaf as WorkspaceLeaf & {
+            tabHeaderInnerTitleEl?: HTMLElement;
+        };
+        leafWithTabTitle.tabHeaderInnerTitleEl?.setText(title);
+        const viewTitleEl = this.containerEl.querySelector('.view-header-title');
+        if (viewTitleEl instanceof HTMLElement) {
+            viewTitleEl.setText(title);
+        }
+    }
+
+    private ensureStateMenuHeaderButtonContainer(): HTMLElement | null {
+        // Shared helper also covers phone chrome / sticky fallbacks when header title is hidden.
+        return ensureStateMenuHeaderButtonContainer(this.containerEl);
     }
 
     handleBrowserScrollForPersist = () => {
