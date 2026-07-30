@@ -1,5 +1,6 @@
 import { TFile } from "obsidian";
 import { getFileAliases } from "./frontmatter-processes";
+import { stripSearchGraphFilenameSuffixes } from "./filename-suffixes";
 import { getGlobals } from "./stores";
 
 //////////////////
@@ -13,14 +14,15 @@ export const getFileDisplayName = (file: TFile): string => {
     if(plugin.settings.useAliases && aliases) {
         return aliases[0];
     }
+    const cleanedBasename = stripSearchGraphFilenameSuffixes(file.basename);
     const ext = (file.extension ?? 'md').toLowerCase();
     if(OBSIDIAN_DOCUMENT_EXTENSIONS.has(ext)) {
-        return file.basename;
+        return cleanedBasename;
     }
     if(plugin.settings.showFileExtForNonMdFiles) {
-        return file.name;
+        return file.extension ? `${cleanedBasename}.${file.extension}` : cleanedBasename;
     }
-    return file.basename;
+    return cleanedBasename;
 }
 
 export interface FileDisplayNameParts {
@@ -35,12 +37,13 @@ export function getFileDisplayNameParts(file: TFile): FileDisplayNameParts {
     if(plugin.settings.useAliases && aliases) {
         return { basename: aliases[0], extension: null };
     }
+    const cleanedBasename = stripSearchGraphFilenameSuffixes(file.basename);
     const ext = (file.extension ?? 'md').toLowerCase();
     if(OBSIDIAN_DOCUMENT_EXTENSIONS.has(ext)) {
-        return { basename: file.basename, extension: null };
+        return { basename: cleanedBasename, extension: null };
     }
     if(plugin.settings.showFileExtForNonMdFiles && file.extension) {
-        return { basename: file.basename, extension: '.' + file.extension };
+        return { basename: cleanedBasename, extension: '.' + file.extension };
     }
-    return { basename: file.basename, extension: null };
+    return { basename: cleanedBasename, extension: null };
 }

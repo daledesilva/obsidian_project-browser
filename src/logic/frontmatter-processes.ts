@@ -126,15 +126,19 @@ export const getFileStateNameAsync = async (file: TFile): Promise<null | string>
 export const setFileState = async (file: TFile, stateSettings: null | StateSettings): Promise<boolean> => {
     try {
         const {plugin} = getGlobals();
+        // Track the state that remains after toggle-off-same-state so filename [HIDDEN] sync matches frontmatter.
+        let appliedState: StateSettings | null = null;
         await processFrontMatterPreserveTimestamp(file, (frontmatter) => {
             
             if(stateSettings) {
                 if(frontmatter['state'] === stateSettings.name || frontmatter['state'] === `[[${stateSettings.name}]]`) {
                     // Clicked on same state, remove it
                     frontmatter['state'] = undefined;
+                    appliedState = null;
                     return;
                 } else {
                     // Clicked on different state, set it
+                    appliedState = stateSettings;
                     if(stateSettings.link) {
                         frontmatter['state'] = `[[${stateSettings.name}]]`;
                         return;
@@ -146,9 +150,12 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
 
             } else {
                 frontmatter['state'] = undefined;
+                appliedState = null;
                 // NOTE: delete frontmatter['state']; // This doesn't work
             }
         });
+        const { syncFileHiddenFilenameForState } = await import('./sync-hidden-filename');
+        await syncFileHiddenFilenameForState(file, appliedState);
         void plugin.refreshFileDependants();
         return true;
     } catch(e) {

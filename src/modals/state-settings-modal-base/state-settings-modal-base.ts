@@ -104,6 +104,17 @@ export class StateSettingsModalBase extends Modal {
 			});
 		})
 
+		new Setting(contentEl)
+		.setClass('ddc_pb_setting')
+		.setName('Hide from search/graph')
+		.setDesc(`When notes or pages are set to this state, append [HIDDEN] to the filename so Obsidian search and graph exclude them.`)
+		.addToggle((toggle) => {
+			toggle.setValue(this.stateSettings.hideFromSearchGraph ?? false);
+			toggle.onChange(async (value) => {
+				this.stateSettings.hideFromSearchGraph = value;
+			});
+		})
+
 		new Setting(contentEl).addButton(cancelBtn => {
 			cancelBtn.setClass('ddc_pb_button');
 			cancelBtn.setButtonText('Cancel');

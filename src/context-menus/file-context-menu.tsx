@@ -1,12 +1,14 @@
 import { Menu, TFile } from "obsidian";
 import { openFileInBackgroundTab } from "src/logic/file-access-processes";
 import { deleteFileWithConfirmation } from "src/logic/file-processes";
+import { basenameHasHiddenSuffix } from "src/logic/filename-suffixes";
 import { getFileStateSettingsAsync, getFilePrioritySettings, setFilePriority, setFileState } from "src/logic/frontmatter-processes";
 import { hasFrontmatterSupport } from "src/logic/get-file-type-label";
 import { isExtensionUnsupportedByObsidian } from "src/logic/is-extension-unsupported";
 import { getStateSettingsForFile } from "src/logic/project-page-states";
 import { revealInProjectBrowser } from "src/logic/reveal-in-project-browser";
 import { getGlobals } from "src/logic/stores";
+import { setFileHiddenFromSearchGraph } from "src/logic/sync-hidden-filename";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PrioritySettings, StateSettings } from "src/types/types-map";
 
@@ -40,6 +42,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         visibleStates.reverse();
         const hiddenStates = JSON.parse(JSON.stringify(scopedStateSettings.hidden));
         hiddenStates.reverse();
+        const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.file.basename);
         
         const menu = new Menu();
         if (!isUnsupported) {
@@ -101,6 +104,13 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             })
             menu.addSeparator();
         }
+        menu.addItem((item) => {
+            item.setTitle(isHiddenFromSearchGraph ? 'Show in search/graph' : 'Hide from search/graph');
+            item.onClick(async () => {
+                await setFileHiddenFromSearchGraph(props.file, !isHiddenFromSearchGraph);
+                props.onFileChange();
+            });
+        });
         menu.addItem((item) =>
             item.setTitle("Rename")
             .onClick(() => {
