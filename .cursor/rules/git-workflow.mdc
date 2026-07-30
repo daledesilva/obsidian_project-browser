@@ -33,4 +33,6 @@ Delete branches immediately after they are merged to `main`. Do not let stale br
 
 Never commit, push, amend, rebase, reset, or otherwise modify git history or branches unless the user explicitly asks for it in their message. Staging and local file edits are fine; any action that would create or change a git commit or branch requires explicit instruction.
 
+**Exception — ClickUp tickets in one request:** When the user assigns one or more ClickUp tickets in a single message, treat that as explicit instruction to branch (new from `main`, unless they say to use the current branch), commit the work, push, and open a PR into `main`. Follow `clickup.mdc` (ClickUp tickets in one request). Skip the automatic branch/commit/PR flow only when the user explicitly asks for separate branches.
+
 When committing, follow the message format and safety protocol in `committing-changes-with-git.mdc`. For commit-and-push in one step, the user may invoke the `/commit` slash command (see `docs/cursor-git-commit-setup.md`). For opening a PR, the user may invoke `/pr` (see `.cursor/commands/pr.md`).

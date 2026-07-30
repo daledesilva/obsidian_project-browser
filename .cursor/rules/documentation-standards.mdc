@@ -9,11 +9,15 @@ alwaysApply: true
 
 Store documentation in a `docs/` folder. Organise into separate pages per concept or feature — do not combine unrelated topics in one file.
 
-## Docs Are Not an Implementation Reference
+**Cross-repo integrations:** When this project integrates with a companion repository (e.g. a mobile app and a plugin), protocol and connection documentation for that integration should live in **one designated repo's `docs/`** — pick the repo that owns the protocol and document the split in each project's `project-overview.mdc`. Do not duplicate the same protocol doc in both repos.
 
-Documentation MUST not be used as a reference for how the project currently works or how specific code paths behave.
+## Docs Are Not a Source of Truth for Code Behavior
 
-When you need behavioral or implementation details, use the codebase and any relevant external/official service documentation instead—unless the task explicitly instructs you to use `docs/`.
+When asked about how code works, do **not** use project documentation as a source of truth (it may be out of date).
+
+Use:
+- The code itself, when the question is about implementation/behavior
+- External APIs/services the code relies on, when the question is about an integration or third-party behavior
 
 ## Structure
 

@@ -1,5 +1,5 @@
 ---
-description: Commit safety protocol and required commit message format
+description: Git commit workflow, safety protocol, and commit message format
 alwaysApply: true
 ---
 

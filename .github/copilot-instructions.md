@@ -131,6 +131,7 @@ Branch format: `<prefix>/<short-description>` in kebab-case.
 - Lowercase only
 - Hyphens separate words, underscores seperate categories where necessary. Higher level categories first (eg. feat/ui-revamp_colour-updates)
 - Delete branches immediately after merging to `main`
+- Never commit, push, or change branches unless the user explicitly asks, except when they assign one or more ClickUp tickets in a single message (then branch from `main`, commit, push, and open a PR per `clickup.mdc`)
 
 ---
 
@@ -140,7 +141,9 @@ This project's tasks are tracked in ClickUp under workspace `Workspace`, space `
 
 Use the `Backlog` list as reference only unless explicitly asked. Treat release lists such as `PB: 0.4`, `PB: 0.5`, `PB: 0.6`, and `PB: 0.7` as current or future Project Browser release work.
 
-When starting a ClickUp ticket, move it to `In Progress` before implementation when ClickUp MCP is available. When a PR is opened for linked ClickUp tickets, move each linked ticket to `Review` after the PR exists. If the status cannot be resolved or ClickUp MCP is unavailable, report that clearly and ask the user to move the task manually.
+When starting a ClickUp ticket, move it to `In Progress` before implementation when ClickUp MCP is available. When a PR is opened for linked ClickUp tickets, move each linked ticket to `Review` after the PR exists and save the PR URL in the custom `PR` field. If the status or `PR` field cannot be resolved or ClickUp MCP is unavailable, report that clearly and ask the user to finish those steps manually.
+
+`/build-ready-tasks` pulls Ready-column tickets with type Build, batches small/simple work into fewer PRs, and opens independent PRs into the list-aligned `release_<version>` branch (e.g. `PB: 0.5` → `release_0.5`), not `main`.
 
 ---
 
