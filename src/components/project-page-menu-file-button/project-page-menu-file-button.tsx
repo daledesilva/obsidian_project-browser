@@ -7,6 +7,7 @@ import { getFileDisplayNameParts } from 'src/logic/get-file-display-name';
 import { getFileTypeLabel } from 'src/logic/get-file-type-label';
 import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
 import { getGlobals } from 'src/logic/stores';
+import { parseDraftBasename } from 'src/logic/filename-suffixes';
 
 export interface ProjectPageMenuFileButtonProps {
     file: TFile;
@@ -14,6 +15,12 @@ export interface ProjectPageMenuFileButtonProps {
     context: 'fab' | 'sidebar';
     onPageClick: (file: TFile) => void;
     onFileChange: () => void;
+    /** When set, clicking the already-active page toggles draft expansion instead of being disabled. */
+    onActivePageClick?: () => void;
+    /** Optional label override (e.g. draft date stamp). */
+    displayLabel?: string;
+    isDraft?: boolean;
+    allowCreateVersion?: boolean;
 }
 
 export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps) => {
@@ -26,12 +33,25 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
             fileButtonEl: buttonRef.current,
             file: props.file,
             onFileChange: props.onFileChange,
+            allowCreateVersion: props.allowCreateVersion,
         });
-    }, [props.file.path]);
+    }, [props.file.path, props.allowCreateVersion]);
 
     const fileTypeLabel = getFileTypeLabel(props.file.extension ?? '');
     const isUnsupported = isExtensionUnsupportedByObsidian(props.file.extension ?? '');
     const { basename, extension } = getFileDisplayNameParts(props.file);
+    const draftMeta = props.isDraft ? parseDraftBasename(props.file.basename) : null;
+    const label = props.displayLabel ?? (draftMeta ? draftMeta.dateStamp : basename);
+
+    function handleClick() {
+        if (props.isCurrentPage && props.onActivePageClick) {
+            props.onActivePageClick();
+            return;
+        }
+        if (!props.isCurrentPage) {
+            props.onPageClick(props.file);
+        }
+    }
 
     return (
         <button
@@ -40,12 +60,14 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
             className={classNames(
                 'ddc_pb_project-page-menu__file-button',
                 `ddc_pb_project-page-menu__file-button--${props.context}`,
-                props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active'
+                props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active',
+                props.isDraft && 'ddc_pb_project-page-menu__file-button--draft',
             )}
-            onClick={props.isCurrentPage ? undefined : () => props.onPageClick(props.file)}
-            disabled={props.isCurrentPage}
+            onClick={handleClick}
+            // Keep active live pages clickable so a second click can fold drafts open/closed.
+            disabled={props.isCurrentPage && !props.onActivePageClick}
         >
-            {fileTypeLabel && (
+            {fileTypeLabel && !props.isDraft && (
                 <span className="ddc_pb_project-page-menu__file-button-tags">
                     <span className="ddc_pb_file-type-tag" aria-hidden>
                         {fileTypeLabel}
@@ -61,8 +83,8 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
                     />
                 </span>
             )}
-            {basename}
-            {extension && <span className="ddc_pb_file-ext-faint">{extension}</span>}
+            {label}
+            {extension && !props.isDraft && <span className="ddc_pb_file-ext-faint">{extension}</span>}
         </button>
     );
 };

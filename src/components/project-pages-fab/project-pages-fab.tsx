@@ -3,8 +3,8 @@ import { TAbstractFile, TFile, TFolder } from 'obsidian';
 import * as React from 'react';
 import { ChevronLeft, FileStack, Plus } from 'lucide-react';
 import classNames from 'classnames';
-import { ProjectPageMenuFileButton } from 'src/components/project-page-menu-file-button/project-page-menu-file-button';
-import { getSortedPageMenuFilesInProjectFolder } from 'src/logic/project-page-list';
+import { ProjectPageMenuGroupView } from 'src/components/project-page-menu-group/project-page-menu-group';
+import { getGroupedPageMenuFilesInProjectFolder } from 'src/logic/project-page-menu-groups';
 import { isRootPath } from 'src/utils/string-processes';
 import {
     FabMenuActionButton,
@@ -47,9 +47,9 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     const pageListScrollRef = React.useRef<HTMLDivElement>(null);
     const pageListInnerRef = React.useRef<HTMLDivElement>(null);
 
-    const pagesInProject = React.useMemo(() => {
+    const pageGroups = React.useMemo(() => {
         void refreshTrigger;
-        return getSortedPageMenuFilesInProjectFolder(props.projectFolder);
+        return getGroupedPageMenuFilesInProjectFolder(props.projectFolder);
     }, [props.projectFolder, refreshTrigger]);
 
     React.useEffect(() => {
@@ -122,7 +122,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
         syncPageListScrollPresentation();
         const frameId = window.requestAnimationFrame(syncPageListScrollPresentation);
         return () => cancelAnimationFrame(frameId);
-    }, [menuIsOpen, props.parentIsProject, pagesInProject, refreshTrigger, syncPageListScrollPresentation]);
+    }, [menuIsOpen, props.parentIsProject, pageGroups, refreshTrigger, syncPageListScrollPresentation]);
 
     React.useEffect(() => {
         if (typeof ResizeObserver === 'undefined') return;
@@ -205,11 +205,11 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                                 'ddc_pb_project-pages-fab__page-list-scroll-inner--bottom-aligned'
                         )}
                     >
-                        {pagesInProject.map((file) => (
-                            <ProjectPageMenuFileButton
-                                key={file.path}
-                                file={file}
-                                isCurrentPage={file.path === props.currentFile.path}
+                        {pageGroups.map((group) => (
+                            <ProjectPageMenuGroupView
+                                key={group.stem}
+                                group={group}
+                                currentFile={props.currentFile}
                                 context="fab"
                                 onPageClick={handlePageClick}
                                 onFileChange={() => setRefreshTrigger((t) => t + 1)}

@@ -162,6 +162,11 @@ export interface PluginSettings_0_4_0 extends PluginSettings_0_3_0 {
     showRenamePopupOnNewPage?: boolean;
     /** Tracks the expanded/collapsed state of the Setup & Troubleshoot section in settings. Default: true. */
     onboardingSectionExpanded?: boolean;
+    /**
+     * When true, inject `[DRAFT].md` into Obsidian's Excluded files list so page versions stay out of
+     * search/graph. Default: true.
+     */
+    hideDraftsFromSearchGraph?: boolean;
 }
 
 export const DEFAULT_PLUGIN_SETTINGS_0_4_0: PluginSettings_0_4_0 = {
@@ -178,4 +183,5 @@ export const DEFAULT_PLUGIN_SETTINGS_0_4_0: PluginSettings_0_4_0 = {
     defaultProjectPageState: undefined,
     loopProjectPageStatesWhenCycling: true,
     showRenamePopupOnNewPage: true,
+    hideDraftsFromSearchGraph: true,
 };

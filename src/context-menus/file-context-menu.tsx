@@ -1,7 +1,8 @@
 import { Menu, TFile } from "obsidian";
-import { openFileInBackgroundTab } from "src/logic/file-access-processes";
+import { openFileInBackgroundTab, openFileInSameLeaf } from "src/logic/file-access-processes";
+import { createPageVersion } from "src/logic/create-page-version";
 import { deleteFileWithConfirmation } from "src/logic/file-processes";
-import { basenameHasHiddenSuffix } from "src/logic/filename-suffixes";
+import { basenameHasDraftSuffix, basenameHasHiddenSuffix } from "src/logic/filename-suffixes";
 import { getFileStateSettingsAsync, getFilePrioritySettings, setFilePriority, setFileState } from "src/logic/frontmatter-processes";
 import { hasFrontmatterSupport } from "src/logic/get-file-type-label";
 import { isExtensionUnsupportedByObsidian } from "src/logic/is-extension-unsupported";
@@ -11,6 +12,7 @@ import { getGlobals } from "src/logic/stores";
 import { setFileHiddenFromSearchGraph } from "src/logic/sync-hidden-filename";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PrioritySettings, StateSettings } from "src/types/types-map";
+import { getFolderSettings } from "src/utils/file-manipulation";
 
 ////////
 ////////
@@ -19,6 +21,8 @@ interface registerFileContextMenuProps {
     fileButtonEl: HTMLElement,
     file: TFile,
     onFileChange: Function,
+    /** When true, offer Create new version without re-checking project folder settings. */
+    allowCreateVersion?: boolean,
 }
 
 export function registerFileContextMenu(props: registerFileContextMenuProps) {
@@ -43,6 +47,13 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         const hiddenStates = JSON.parse(JSON.stringify(scopedStateSettings.hidden));
         hiddenStates.reverse();
         const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.file.basename);
+        const isDraft = basenameHasDraftSuffix(props.file.basename);
+
+        let canCreateVersion = props.allowCreateVersion === true && !isDraft;
+        if (props.allowCreateVersion === undefined && !isDraft && props.file.parent) {
+            const folderSettings = await getFolderSettings(plugin.app.vault, props.file.parent);
+            canCreateVersion = !!folderSettings.isProject;
+        }
         
         const menu = new Menu();
         if (!isUnsupported) {
@@ -103,6 +114,18 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                 });
             })
             menu.addSeparator();
+        }
+        if (canCreateVersion) {
+            menu.addItem((item) => {
+                item.setTitle('Create new version');
+                item.onClick(async () => {
+                    const liveFile = await createPageVersion(props.file);
+                    if (liveFile) {
+                        openFileInSameLeaf(liveFile);
+                    }
+                    props.onFileChange();
+                });
+            });
         }
         menu.addItem((item) => {
             item.setTitle(isHiddenFromSearchGraph ? 'Show in search/graph' : 'Hide from search/graph');

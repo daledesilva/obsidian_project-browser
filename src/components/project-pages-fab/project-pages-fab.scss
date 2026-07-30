@@ -77,6 +77,31 @@
         }
     }
 
+    .ddc_pb_project-page-menu__group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+    }
+
+    .ddc_pb_project-page-menu__drafts {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+        padding-right: 4px;
+        border-right: 2px solid var(--background-modifier-border);
+    }
+
+    .ddc_pb_project-page-menu__file-button--draft.ddc_pb_project-page-menu__file-button--fab {
+        max-width: 160px;
+        min-height: calc(var(--size) - 8px);
+        padding: 6px 10px;
+        font-size: 0.8em;
+        opacity: 0.85;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+
     .ddc_pb_project-pages-fab__footer {
         flex-grow: 0;
         flex-shrink: 0;

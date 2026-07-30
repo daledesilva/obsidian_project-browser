@@ -407,6 +407,30 @@ function insertProjectPageStateSettings(
 			});
 		});
 
+	new Setting(contentEl)
+		.setClass("ddc_pb_setting")
+		.setName("Hide drafts from search/graph")
+		.setDesc(
+			"When enabled, page versions named with [DRAFT] are added to Obsidian's Excluded files list so they stay out of search and graph views.",
+		)
+		.addToggle((toggle) => {
+			toggle.setValue(plugin.settings.hideDraftsFromSearchGraph ?? true);
+			toggle.onChange(async (value) => {
+				plugin.settings.hideDraftsFromSearchGraph = value;
+				const { ensureUserIgnoreFilter, removeUserIgnoreFilter } = await import(
+					"src/logic/obsidian-user-ignore-filters"
+				);
+				const { DRAFT_USER_IGNORE_FILTER } = await import("src/logic/filename-suffixes");
+				if (value) {
+					ensureUserIgnoreFilter(plugin.app, DRAFT_USER_IGNORE_FILTER);
+				} else {
+					removeUserIgnoreFilter(plugin.app, DRAFT_USER_IGNORE_FILTER);
+				}
+				await plugin.saveSettings();
+				refresh();
+			});
+		});
+
 	insertProjectPageStateEditor(contentEl);
 
 	new Setting(contentEl)

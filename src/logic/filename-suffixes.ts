@@ -45,3 +45,27 @@ export function basenameWithDraftSuffix(basename: string, dateStamp: string): st
 	const cleaned = stripSearchGraphFilenameSuffixes(basename);
 	return `${cleaned} - ${dateStamp} ${DRAFT_FILENAME_SUFFIX}`;
 }
+
+const DRAFT_BASENAME_PATTERN = /^(.+) - (\d{4}-\d{2}-\d{2}(?:-\d{4})?) \[DRAFT\]$/i;
+
+/** Parses a versioned draft basename back into its live-page stem and date stamp. */
+export function parseDraftBasename(basename: string): { stem: string; dateStamp: string } | null {
+	const match = basename.match(DRAFT_BASENAME_PATTERN);
+	if (!match) return null;
+	return { stem: match[1], dateStamp: match[2] };
+}
+
+/** Today's date as `YYYY-MM-DD` for draft filenames. */
+export function formatDraftDateStamp(date: Date = new Date()): string {
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+}
+
+/** Date+time stamp used when a same-day draft name already exists. */
+export function formatDraftDateTimeStamp(date: Date = new Date()): string {
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	return `${formatDraftDateStamp(date)}-${hours}${minutes}`;
+}
