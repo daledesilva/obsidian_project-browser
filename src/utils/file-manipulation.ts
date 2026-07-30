@@ -444,6 +444,19 @@ export async function setFolderPriority(folder: TFolder, prioritySettings: Prior
     void plugin.refreshFileDependants();
 }
 
+/** Saves which project page supplies the card excerpt preview (stored as the file's name). */
+export async function setFolderExcerptSource(folder: TFolder, sourceFile: TFile | null): Promise<void> {
+    const {plugin} = getGlobals();
+    const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    if (sourceFile === null) {
+        delete folderSettings.excerptSource;
+    } else {
+        folderSettings.excerptSource = sourceFile.name;
+    }
+    await saveFolderSettings(plugin.app.vault, folder, folderSettings);
+    void plugin.refreshFileDependants();
+}
+
 export async function getFolderStateName(folder: TFolder): Promise<string | null> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);

@@ -9,6 +9,7 @@ import { revealInProjectBrowser } from "src/logic/reveal-in-project-browser";
 import { getGlobals } from "src/logic/stores";
 import { RenameFileModal } from "src/modals/rename-file-modal/rename-file-modal";
 import { PrioritySettings, StateSettings } from "src/types/types-map";
+import { getFolderSettings, setFolderExcerptSource } from "src/utils/file-manipulation";
 
 ////////
 ////////
@@ -40,6 +41,17 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         visibleStates.reverse();
         const hiddenStates = JSON.parse(JSON.stringify(scopedStateSettings.hidden));
         hiddenStates.reverse();
+
+        let projectFolder = props.file.parent;
+        let canSetExcerptSource = false;
+        let isCurrentExcerptSource = false;
+        if (projectFolder) {
+            const folderSettings = await getFolderSettings(plugin.app.vault, projectFolder);
+            canSetExcerptSource = !!folderSettings.isProject;
+            isCurrentExcerptSource =
+                folderSettings.excerptSource === props.file.name ||
+                folderSettings.excerptSource === props.file.basename;
+        }
         
         const menu = new Menu();
         if (!isUnsupported) {
@@ -100,6 +112,20 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                 });
             })
             menu.addSeparator();
+        }
+        if (canSetExcerptSource && projectFolder) {
+            menu.addItem((item) => {
+                item.setTitle('Set as excerpt source');
+                if (isCurrentExcerptSource) item.setChecked(true);
+                item.onClick(async () => {
+                    // Toggle off when re-selecting the current source so projects fall back to alphabetical default.
+                    await setFolderExcerptSource(
+                        projectFolder!,
+                        isCurrentExcerptSource ? null : props.file,
+                    );
+                    props.onFileChange();
+                });
+            });
         }
         menu.addItem((item) =>
             item.setTitle("Rename")

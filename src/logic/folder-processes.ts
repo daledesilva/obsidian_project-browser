@@ -6,6 +6,14 @@ import { getGlobals } from "./stores";
 import { getFolderSettings, getFolderStateName } from "src/utils/file-manipulation";
 import { isExtensionVisible } from "./file-type-filter";
 import { FileStateScope } from "./project-page-states";
+import { getSortedPageMenuFilesInProjectFolder } from "./project-page-list";
+import {
+    removeCodeBlocks,
+    removeFrontmatter,
+    removeMarkdownCharacters,
+    removeXmlTags,
+    simplifyWhiteSpace,
+} from "src/utils/string-processes";
 
 ///////////
 ///////////
@@ -70,20 +78,36 @@ function getProjectState(folder: TFolder): null | string {
 }
 
 export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> => {
-    const itemsInFolder = getItemsInFolder(folder);
-    if(!itemsInFolder)  return null;
-    
-    for(let i=0; i<itemsInFolder.length; i++) {
-        const item = itemsInFolder[i];
-        if(item instanceof TFile) {
-            const rawState = getFileStateSettings(item);
-            if(rawState) {
-                return await getFileExcerpt(item);
-            }
+    const { plugin } = getGlobals();
+    const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+
+    // PBS-stored markdown excerpt wins when present (synthesized / manual project summary).
+    if (folderSettings.excerpt && folderSettings.excerpt.trim()) {
+        let excerpt = folderSettings.excerpt;
+        excerpt = removeFrontmatter(excerpt);
+        excerpt = removeCodeBlocks(excerpt);
+        excerpt = removeXmlTags(excerpt);
+        excerpt = removeMarkdownCharacters(excerpt);
+        excerpt = simplifyWhiteSpace(excerpt);
+        return excerpt || null;
+    }
+
+    const pages = getSortedPageMenuFilesInProjectFolder(folder);
+    if (pages.length === 0) return null;
+
+    // Prefer an explicitly assigned excerpt source page when it still exists in the project.
+    if (folderSettings.excerptSource) {
+        const sourceName = folderSettings.excerptSource;
+        const sourceFile = pages.find(
+            (file) => file.name === sourceName || file.basename === sourceName,
+        );
+        if (sourceFile) {
+            return await getFileExcerpt(sourceFile);
         }
     }
 
-    return null;
+    // Default: first page alphabetically (same ordering as the project page menu).
+    return await getFileExcerpt(pages[0]);
 }
 
 export const getSortedSectionsInFolder = (folder: TFolder): Section[] => {
