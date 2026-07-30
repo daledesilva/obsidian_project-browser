@@ -1,0 +1,50 @@
+---
+description: Cursor Debug NDJSON ingest — use when debugging mobile/iPad, Wi-Fi logs, sync flakiness, live runtime evidence, or when the user asks to monitor/debug ingest /debug-ingest
+alwaysApply: false
+---
+
+# Cursor Debug structured ingest (Obsidian plugin)
+
+**This project already has a permanent Wi‑Fi → Cursor Debug ingest pipeline** with Connect / discovery. When the user asks to debug on iPad/mobile, watch live logs, or set up ingest, follow this rule and `/debug-ingest` — do not invent a parallel logging channel.
+
+Use this rule when **debugging an Obsidian plugin on mobile**, **desktop**, or any target where a **Cursor Debug** agent session is active and you need **runtime evidence**.
+
+## Preferred logging method
+
+**Use the permanent gated log path + structured NDJSON ingest** — not ad-hoc `fetch`, not `console.log` alone.
+
+| Do | Don't |
+|----|--------|
+| `main.log()` / `postCursorDebugIngest()` via Obsidian **`requestUrl`** | `fetch('http://127.0.0.1:7662/…')` inside the plugin |
+| **Write offer + start relay**, then Connect / auto-connect | Tell the user to paste four Advanced fields as the primary workflow |
+| Read `.cursor/debug-<sessionId>.log` on the host after reproduction | Guess fixes from code alone |
+| Gate on **Debug logging** — when off, `log()` no-ops and ingest cache clears | Leave ingest POSTs running when logging is disabled |
+
+**Mobile + Wi‑Fi:**  
+1. `bash scripts/write-debug-ingest-offer.sh --session <id> --path /ingest/<uuid> --port <port>`  
+2. `bash scripts/ingest-lan-relay.sh` (socat + offer sidecar on **:7663**)  
+3. Plugin: Debug logging on → **Connect** on mobile / auto on same Mac  
+
+**Android + USB:** use **`adb reverse tcp:<ingest-port> tcp:<ingest-port>`** when a project USB bootstrap script exists; iOS has no adb reverse — use LAN relay. Offer discovery still needs Wi‑Fi or localhost.
+
+**Agent command:** `/debug-ingest` (`.cursor/commands/debug-ingest.md`).
+
+## Deploy while debugging — agent must remind
+
+| Path | Includes uncommitted instrumentation? |
+|------|----------------------------------------|
+| Copy local **`dist/`** to device vault | **Yes** |
+| CI / tagged release build | **No** — builds **committed** code at the tag only |
+
+**Before asking the user to reproduce via a release build:** remind them to **commit + push** and wait for CI — **or** copy local **`dist/`** after **`bun run build`**.
+
+## Agent duties
+
+1. Write **debug-ingest-offer.json** then start the relay (sidecar + socat).
+2. Ensure **Debug logging** is on; same Mac should auto-connect; mobile taps **Connect**.
+3. **Remind deploy path** (local `dist/` copy vs release + commit).
+4. Clear **only** `.cursor/debug-<sessionId>.log` when **preparing a new reproduction you are about to ask for** — never when the user already synced and you need to analyze. Never delete vault `sync-debug-*.log` / `sync-logs/` mid-investigation (see `preserve-sync-debug-logs.mdc`).
+5. Prefer **Send test log** in settings to verify the pipeline before diagnosing the real bug.
+6. Read the log file after reproduction; cite line evidence before fixing.
+
+Remove temporary ad-hoc ingest call sites after verified fix. Keep `src/debug/cursor-debug-ingest.ts`, `src/debug/cursor-debug-discover.ts`, and the gated `main.log()` integration.
