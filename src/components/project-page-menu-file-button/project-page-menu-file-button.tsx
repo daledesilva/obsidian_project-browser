@@ -14,6 +14,8 @@ export interface ProjectPageMenuFileButtonProps {
     context: 'fab' | 'sidebar';
     onPageClick: (file: TFile) => void;
     onFileChange: () => void;
+    /** True when this markdown page is the project's active excerpt source. */
+    isExcerptSource?: boolean;
 }
 
 export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps) => {
@@ -40,7 +42,8 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
             className={classNames(
                 'ddc_pb_project-page-menu__file-button',
                 `ddc_pb_project-page-menu__file-button--${props.context}`,
-                props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active'
+                props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active',
+                props.isExcerptSource && 'ddc_pb_excerpt-source',
             )}
             onClick={props.isCurrentPage ? undefined : () => props.onPageClick(props.file)}
             disabled={props.isCurrentPage}

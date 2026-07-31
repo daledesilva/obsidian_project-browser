@@ -22,12 +22,18 @@ import { ProjectFolderStateMenu } from '../state-menu/project-folder-state-menu'
 export const CardBrowserContext = React.createContext<{
     folder: null | TFolder,
     lastTouchedFilePath: string,
+    /**
+     * Bumps when the browser reloads so cards can re-check excerpt-source indicators.
+     * Cards are keyed by file path, so PBS-only changes would otherwise leave stale outlines.
+     */
+    refreshId: string,
     rememberLastTouchedFile: (file: TFile) => void,
     openFolderInSameLeaf: (folder: TFolder) => void,
     rerender: () => void,
 }>({
     folder: null,
     lastTouchedFilePath: '',
+    refreshId: '',
     rememberLastTouchedFile: () => {},
     openFolderInSameLeaf: () => {},
     rerender: () => {},
@@ -178,6 +184,7 @@ export const CardBrowser = (props: CardBrowserProps) => {
         <CardBrowserContext.Provider value={{
             folder: initialFolder,
             lastTouchedFilePath,
+            refreshId,
             openFolderInSameLeaf,
             rememberLastTouchedFile,
             rerender,
