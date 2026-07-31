@@ -8,6 +8,7 @@ import { Provider as JotaiProvider } from 'jotai';
 import { globalStore, getGlobals, getStateMenuSettings, getStateMenuSurfaceVisibility } from "src/logic/stores";
 import { toggleStateMenuSurface } from "src/logic/toggle-state-menu";
 import { isRootPath } from "src/utils/string-processes";
+import { getFolderDisplayName } from "src/logic/get-folder-display-name";
 import {
     clearStateMenuHeaderButtonContainer,
     ensureStateMenuHeaderButtonContainer,
@@ -272,7 +273,7 @@ export class ProjectCardsView extends ItemView {
 
     private syncBrowseDisplayTitle(isProject: boolean, folder: TFolder) {
         const nextTitle = isProject
-            ? (isRootPath(folder.path) ? folder.vault.getName() : folder.name)
+            ? (isRootPath(folder.path) ? folder.vault.getName() : getFolderDisplayName(folder))
             : DEFAULT_BROWSE_DISPLAY_TITLE;
         if (nextTitle === this.browseDisplayTitle) {
             this.applyDisplayTitleToDom(nextTitle);

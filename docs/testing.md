@@ -104,7 +104,8 @@ E2E uses the generated vault at `qa-test-vault/`. The vault is created by `qa-te
 
 | Spec | Covers |
 |------|--------|
-| **commands.e2e.ts** | Plugin loaded; open-project-browser command; folder sections at root; navigate into folder and see state sections + note cards; cycle-state-forward / cycle-state-backward (active note state); toggle-state-menu (state menu visibility). Ribbon icon open is not asserted (manual QA). |
+| **commands.e2e.ts** | Plugin loaded; `project-browser:open` command; folder sections at root; navigate into folder and see state sections + note cards; cycle-state-forward / cycle-state-backward (active note state); toggle-state-menu (state menu visibility). Ribbon icon open is not asserted (manual QA). |
+| **hide-from-search-graph.e2e.ts** | `cycle-state-backward` appends `[STATE-HIDE]` when moving to Cancelled (Archived/Cancelled default `hideFromSearchGraph`); vault `userIgnoreFilters` contains both `/\[HIDDEN\]/` and `/\[STATE-HIDE\]/` after plugin load. |
 | **navigation.e2e.ts** | Back button returns to root; breadcrumb root click returns to root; opening a note card opens the note in the same leaf. |
 | **search.e2e.ts** | Search button shows search input; typing filters cards; clear button hides search and clears filter. |
 | **new-tab-replacement.e2e.ts** | Startup reliability coverage for all browser-entry paths: opening a new empty tab, clicking the ribbon button, closing all tabs including the final active tab, alternating entry methods, and recovering when the active leaf becomes empty without an active-leaf switch. Each scenario is repeated from multiple starting states. |
@@ -128,7 +129,7 @@ To run tests without coverage: `npx jest --coverage=false`.
 
 ## Tested modules
 
-**Logic (unit):** offset-state, get-file-type-label, get-file-display-name, get-state-and-priority-by-name, folder-processes, section-processes, frontmatter-processes, file-type-filter, file-processes, file-access-processes, is-extension-unsupported, toggle-state-menu, stores.
+**Logic (unit):** offset-state, get-file-type-label, get-file-display-name, get-folder-display-name, get-state-and-priority-by-name, folder-processes, section-processes, frontmatter-processes, file-type-filter, file-processes, file-access-processes, is-extension-unsupported, toggle-state-menu, stores, filename-suffixes, sync-hidden-filename, obsidian-user-ignore-filters.
 
 **Utils (unit):** string-processes, string-processes-extra, sorting, file-manipulation, misc, storage.
 
@@ -138,7 +139,7 @@ To run tests without coverage: `npx jest --coverage=false`.
 
 **Logic — reveal (unit):** reveal-in-project-browser (reveal location for files and folders, multi-select target resolution, empty selection, mixed-parent selection, file without parent folder, existing-leaf reuse, new-leaf creation, concurrent-reveal guard).
 
-**Context menus (unit):** project-context-menu (priority items, reveal action).
+**Context menus (unit):** project-context-menu (priority items, reveal action, hide from search/graph); folder-context-menu (hide/show toggle, manual suffix detection); file-context-menu (hide from search/graph alongside excerpt source).
 
 **Modals (unit):** ConfirmationModal (constructor options).
 

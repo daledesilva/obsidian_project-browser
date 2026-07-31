@@ -6,6 +6,7 @@ import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { getFileDisplayNameParts } from 'src/logic/get-file-display-name';
 import { getFileTypeLabel } from 'src/logic/get-file-type-label';
 import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
+import { basenameIsHiddenFromSearchGraph } from 'src/logic/filename-suffixes';
 import { getGlobals } from 'src/logic/stores';
 
 export interface ProjectPageMenuFileButtonProps {
@@ -34,6 +35,7 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
     const fileTypeLabel = getFileTypeLabel(props.file.extension ?? '');
     const isUnsupported = isExtensionUnsupportedByObsidian(props.file.extension ?? '');
     const { basename, extension } = getFileDisplayNameParts(props.file);
+    const isHiddenFromSearchGraph = basenameIsHiddenFromSearchGraph(props.file.basename);
 
     return (
         <button
@@ -44,6 +46,7 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
                 `ddc_pb_project-page-menu__file-button--${props.context}`,
                 props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active',
                 props.isExcerptSource && 'ddc_pb_excerpt-source',
+                isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
             )}
             onClick={props.isCurrentPage ? undefined : () => props.onPageClick(props.file)}
             disabled={props.isCurrentPage}

@@ -2,6 +2,7 @@ import './detailed-project-card.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
 import { getProjectExcerpt } from "src/logic/folder-processes";
+import { getFolderDisplayName } from "src/logic/get-folder-display-name";
 import { ProjectCardBase } from '../project-card-base/project-card-base';
 
 /////////
@@ -12,7 +13,7 @@ interface DetailedProjectCardProps {
 }
 
 export const DetailedProjectCard = (props: DetailedProjectCardProps) => {
-    const name = props.folder.name;
+    const name = getFolderDisplayName(props.folder);
     const [excerpt, setExcerpt] = React.useState('');
     const [articleRotation] = React.useState(Math.random() * 4 - 2);
     const [titleRotation] = React.useState(Math.random() * 2 - 1);

@@ -154,7 +154,18 @@ async function main() {
   await ensureDir(join(VAULT_ROOT, "Reference"));
   await ensureDir(join(VAULT_ROOT, "File Types Test"));
 
-  await write(".obsidian/app.json", JSON.stringify({ safeMode: false }));
+  // Seed extension-agnostic Excluded-files regexes for manual [HIDDEN] and state [STATE-HIDE].
+  await write(
+    ".obsidian/app.json",
+    JSON.stringify(
+      {
+        safeMode: false,
+        userIgnoreFilters: ["/\\[HIDDEN\\]/", "/\\[STATE-HIDE\\]/"],
+      },
+      null,
+      2,
+    ),
+  );
   await write(
     ".obsidian/community-plugins.json",
     JSON.stringify(["project-browser"])

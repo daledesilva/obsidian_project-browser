@@ -208,6 +208,20 @@ export function migrate_0_3_0_to_0_4_0(oldSettings: PluginSettings_0_3_0): Plugi
     return JSON.parse(JSON.stringify(newSettings));
 }
 
+/** Default Archived/Cancelled (and only those) to hide-from-search when the flag was never set. */
+function applyDefaultHideFromSearchGraphFlags(
+    states: { visible?: Array<{ name: string; hideFromSearchGraph?: boolean }>; hidden?: Array<{ name: string; hideFromSearchGraph?: boolean }> },
+): void {
+    const defaultHiddenNames = new Set(['Archived', 'Cancelled']);
+    for (const collection of [states.visible, states.hidden]) {
+        if (!collection) continue;
+        for (const state of collection) {
+            if (state.hideFromSearchGraph !== undefined) continue;
+            state.hideFromSearchGraph = defaultHiddenNames.has(state.name);
+        }
+    }
+}
+
 function patch_0_4_0_settings(settings: PluginSettings_0_4_0): PluginSettings_0_4_0 {
     const patched = JSON.parse(JSON.stringify(settings)) as PluginSettings_0_4_0 & {
         fileTypes: FileTypeSettings_0_4_0 | (
@@ -236,6 +250,20 @@ function patch_0_4_0_settings(settings: PluginSettings_0_4_0): PluginSettings_0_
     }
     if (patched.showPageStateMenu === undefined) {
         patched.showPageStateMenu = patched.showStateMenu;
+    }
+
+    // Additive flag: only fill defaults when missing so existing user choices are left alone once set.
+    if (patched.states) {
+        applyDefaultHideFromSearchGraphFlags(patched.states);
+    }
+    if (patched.projectPageStates) {
+        applyDefaultHideFromSearchGraphFlags(patched.projectPageStates);
+    }
+    if (patched.stateless && patched.stateless.hideFromSearchGraph === undefined) {
+        patched.stateless.hideFromSearchGraph = false;
+    }
+    if (patched.projectPageStateless && patched.projectPageStateless.hideFromSearchGraph === undefined) {
+        patched.projectPageStateless.hideFromSearchGraph = false;
     }
 
     if (!patched.fileTypes) return patched;

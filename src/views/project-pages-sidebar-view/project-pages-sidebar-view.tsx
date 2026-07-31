@@ -16,6 +16,7 @@ import { syncProjectPagesSidebarFromActiveWorkspaceContext } from 'src/logic/pro
 import { getGlobals } from 'src/logic/stores';
 import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
 import { isRootPath } from 'src/utils/string-processes';
+import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
 import { createProject } from 'src/utils/file-manipulation';
 import { CARD_BROWSER_VIEW_TYPE } from 'src/views/card-browser-view/card-browser-view-constants';
 
@@ -203,11 +204,11 @@ export const ProjectPagesSidebarContent = (props: SidebarContentProps) => {
                     title={
                         isRootPath(props.projectFolder.path)
                             ? 'Open vault root in project browser'
-                            : `Open ${props.projectFolder.name} in project browser`
+                            : `Open ${getFolderDisplayName(props.projectFolder)} in project browser`
                     }
                 >
                     <ChevronLeft size={16} className="ddc_pb_project-pages-sidebar__project-title-chevron" />
-                    {isRootPath(props.projectFolder.path) ? 'Home' : props.projectFolder.name}
+                    {isRootPath(props.projectFolder.path) ? 'Home' : getFolderDisplayName(props.projectFolder)}
                 </button>
             </footer>
         </div>

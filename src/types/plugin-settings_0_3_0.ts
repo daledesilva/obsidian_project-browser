@@ -18,6 +18,12 @@ export interface StateSettings_0_3_0 {
 	defaultViewOrder: StateViewOrder_0_3_0,
 	defaultViewPriorityVisibility: boolean,
 	defaultViewPriorityGrouping: boolean,
+	/**
+	 * When true, assigning this state appends `[STATE-HIDE]` to the note/page filename so Obsidian
+	 * search/graph exclude it. Manual hide uses `[HIDDEN]` separately. Independent of `states.hidden`
+	 * (Card Browser section visibility).
+	 */
+	hideFromSearchGraph?: boolean,
 }
 
 export const DEFAULT_STATE_SETTINGS_0_3_0: StateSettings_0_3_0 = {
@@ -27,6 +33,7 @@ export const DEFAULT_STATE_SETTINGS_0_3_0: StateSettings_0_3_0 = {
 	defaultViewOrder: 'AliasOrFilename',
 	defaultViewPriorityVisibility: true,
 	defaultViewPriorityGrouping: true,
+	hideFromSearchGraph: false,
 }
 
 export interface PrioritySettings_0_3_0 {
@@ -145,6 +152,7 @@ export const DEFAULT_PLUGIN_SETTINGS_0_3_0: PluginSettings_0_3_0 = {
 				defaultViewOrder: 'ModifiedDate',
 				defaultViewPriorityVisibility: false,
 				defaultViewPriorityGrouping: false,
+				hideFromSearchGraph: true,
 			},
 			{
 				name: 'Cancelled',
@@ -153,6 +161,7 @@ export const DEFAULT_PLUGIN_SETTINGS_0_3_0: PluginSettings_0_3_0 = {
 				defaultViewOrder: 'ModifiedDate',
 				defaultViewPriorityVisibility: false,
 				defaultViewPriorityGrouping: false,
+				hideFromSearchGraph: true,
 			},
 		],
 	},

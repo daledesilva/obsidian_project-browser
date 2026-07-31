@@ -13,6 +13,7 @@ import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
 import { registerCycleStateCommands } from './commands/cycle-state';
 import { registerFileOpenSelectTitleHandler } from './logic/file-access-processes';
 import { registerRevealInProjectBrowserMenus } from './commands/reveal-in-project-browser';
+import { ensureHiddenMarkdownIgnoreFilter } from './logic/obsidian-user-ignore-filters';
 
 /////////
 /////////
@@ -32,6 +33,9 @@ export default class ProjectBrowserPlugin extends Plugin {
 		setGlobals({
 			plugin: this,
 		})
+
+		// Keep Obsidian search/graph exclusions in sync for [HIDDEN] and [STATE-HIDE] filenames without overwriting user filters.
+		ensureHiddenMarkdownIgnoreFilter(this.app);
 
 		// Initialize settings atoms from current plugin settings
 		initializeSettingsAtoms();

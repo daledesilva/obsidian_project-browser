@@ -1,3 +1,5 @@
+@import '../../shared/search-graph-hidden.scss';
+
 .ddc_pb_folder-button {
     // width: 20em;
     min-width: 6em;
@@ -22,6 +24,7 @@
             background: var(--interactive-normal);
         }
     }
+
     
 }
 

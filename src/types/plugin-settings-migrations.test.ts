@@ -29,6 +29,31 @@ describe("plugin settings migrations (wrapper)", () => {
     expect(Array.isArray(res.projectPageStates.hidden)).toBe(true);
     expect(res.defaultProjectPageState).toBeUndefined();
   });
+
+  test("patch_0_4_0_settings defaults hideFromSearchGraph for Archived and Cancelled only", () => {
+    const old = {
+      ...DEFAULT_PLUGIN_SETTINGS_0_0_5,
+      settingsVersion: "0.4.0",
+      states: {
+        visible: [{ name: "Idea" }, { name: "Drafting" }],
+        hidden: [{ name: "Archived" }, { name: "Cancelled" }, { name: "Custom Hidden" }],
+      },
+      projectPageStates: {
+        visible: [{ name: "First Draft" }],
+        hidden: [{ name: "Abandoned" }],
+      },
+    } as unknown;
+    const res = migrateOutdatedSettings(old);
+    const archived = res.states.hidden.find((state: { name: string }) => state.name === "Archived");
+    const cancelled = res.states.hidden.find((state: { name: string }) => state.name === "Cancelled");
+    const customHidden = res.states.hidden.find((state: { name: string }) => state.name === "Custom Hidden");
+    const idea = res.states.visible.find((state: { name: string }) => state.name === "Idea");
+
+    expect(archived?.hideFromSearchGraph).toBe(true);
+    expect(cancelled?.hideFromSearchGraph).toBe(true);
+    expect(customHidden?.hideFromSearchGraph).toBe(false);
+    expect(idea?.hideFromSearchGraph).toBe(false);
+  });
 });
 
 

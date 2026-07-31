@@ -1,4 +1,6 @@
 
+@import '../../shared/search-graph-hidden.scss';
+
 .ddc_pb_back-button-and-path {
     display: flex;
     flex-direction: row;
@@ -76,6 +78,11 @@
         border-bottom: 1px solid var(--interactive-accent);
         margin-inline: 0.2em;
         padding-top: calc(0.7em - 1px);
+    }
+
+    a.ddc_pb_hidden-from-search-graph,
+    div.ddc_pb_hidden-from-search-graph {
+        border-radius: 4px;
     }
 
     a.ddc_pb_inside-project,

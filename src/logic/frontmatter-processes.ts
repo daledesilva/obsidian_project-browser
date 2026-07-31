@@ -33,27 +33,6 @@ export const getFileFrontmatter = (file: TFile): {} | FrontMatterCache => {
 }
 
 /**
- * Wrapper for processFrontMatter that preserves the file's modified timestamp
- */
-export const processFrontMatterPreserveTimestamp = async (file: TFile, processor: (frontmatter: unknown) => void): Promise<void> => {
-    const {plugin} = getGlobals();
-    
-    // Capture the current modified time
-    const origMtime = file.stat.mtime;
-    
-    // Process the frontmatter (this will update the modified time)
-    await plugin.app.fileManager.processFrontMatter(file, processor);
-    
-    // Restore the original modified time
-    // Get a new cache because the file's been modified recently and we have an old reference
-    const fileCache = plugin.app.vault.getAbstractFileByPath(file.path);
-    const content = await plugin.app.vault.read(fileCache);
-    await plugin.app.vault.modify(fileCache, content, {
-        mtime: origMtime,
-    });
-}
-
-/**
  * Wrapper for processFrontMatter that allows the modified timestamp to be updated
  */
 export const processFrontMatterUpdateTimestamp = async (file: TFile, processor: (frontmatter: unknown) => void): Promise<void> => {
@@ -126,15 +105,19 @@ export const getFileStateNameAsync = async (file: TFile): Promise<null | string>
 export const setFileState = async (file: TFile, stateSettings: null | StateSettings): Promise<boolean> => {
     try {
         const {plugin} = getGlobals();
-        await processFrontMatterPreserveTimestamp(file, (frontmatter) => {
+        // Track the state that remains after toggle-off-same-state so filename [STATE-HIDE] sync matches frontmatter.
+        let appliedState: StateSettings | null = null;
+        await processFrontMatterUpdateTimestamp(file, (frontmatter) => {
             
             if(stateSettings) {
                 if(frontmatter['state'] === stateSettings.name || frontmatter['state'] === `[[${stateSettings.name}]]`) {
                     // Clicked on same state, remove it
                     frontmatter['state'] = undefined;
+                    appliedState = null;
                     return;
                 } else {
                     // Clicked on different state, set it
+                    appliedState = stateSettings;
                     if(stateSettings.link) {
                         frontmatter['state'] = `[[${stateSettings.name}]]`;
                         return;
@@ -146,9 +129,12 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
 
             } else {
                 frontmatter['state'] = undefined;
+                appliedState = null;
                 // NOTE: delete frontmatter['state']; // This doesn't work
             }
         });
+        const { syncFileHiddenFilenameForState } = await import('./sync-hidden-filename');
+        await syncFileHiddenFilenameForState(file, appliedState);
         void plugin.refreshFileDependants();
         return true;
     } catch(e) {
@@ -160,7 +146,7 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
 export const setFilePriority = async (file: TFile, prioritySettings: null | PrioritySettings): Promise<boolean> => {
     try {
         const {plugin} = getGlobals();
-        await processFrontMatterPreserveTimestamp(file, (frontmatter) => {
+        await processFrontMatterUpdateTimestamp(file, (frontmatter) => {
             if(prioritySettings) {
                 if(frontmatter['priority'] === prioritySettings.name || frontmatter['priority'] === `[[${prioritySettings.name}]]`) {
                     // Clicked on same priority, remove it

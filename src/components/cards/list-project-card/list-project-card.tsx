@@ -2,6 +2,7 @@ import './list-project-card.scss';
 import { TFolder } from "obsidian";
 import * as React from "react";
 import { ProjectCardBase } from '../project-card-base/project-card-base';
+import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
 
 /////////
 /////////
@@ -11,7 +12,7 @@ interface ListProjectCardProps {
 }
 
 export const ListProjectCard = (props: ListProjectCardProps) => {
-    const name = props.folder.name;
+    const name = getFolderDisplayName(props.folder);
 
     return (
         <ProjectCardBase

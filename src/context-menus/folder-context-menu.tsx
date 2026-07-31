@@ -1,7 +1,9 @@
 import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
+import { basenameHasHiddenSuffix } from "src/logic/filename-suffixes";
 import { revealInProjectBrowser } from "src/logic/reveal-in-project-browser";
 import { getGlobals } from "src/logic/stores";
+import { setFolderHiddenFromSearchGraph } from "src/logic/sync-hidden-filename";
 import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
 import { getFolderSettings, hideFolder, unhideFolder, setFolderAsProject, setFolderAsFolder } from "src/utils/file-manipulation";
 
@@ -37,6 +39,8 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
 
         // Close other menus (Only works on iOS for some reason, but also only needed there)
         activeDocument.body.click();
+
+        const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.folder.name);
         
         const menu = new Menu();
         menu.addItem((item) =>
@@ -88,6 +92,13 @@ export function registerFolderContextMenu(props: registerFolderContextMenuProps)
             );
         }
         menu.addSeparator();
+        menu.addItem((item) => {
+            item.setTitle(isHiddenFromSearchGraph ? 'Show in search/graph' : 'Hide from search/graph');
+            item.onClick(async () => {
+                await setFolderHiddenFromSearchGraph(props.folder, !isHiddenFromSearchGraph);
+                props.onFolderChange();
+            });
+        });
         menu.addItem((item) =>
             item.setTitle("Rename folder")
                 .onClick(() => {

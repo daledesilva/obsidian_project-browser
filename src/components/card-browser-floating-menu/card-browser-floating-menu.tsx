@@ -7,6 +7,7 @@ import { openFileInSameLeaf, openNewPageAndSelectTitle } from 'src/logic/file-ac
 import { NewSubprojectModal } from 'src/modals/new-subproject-modal/new-subproject-modal';
 import { isRootPath } from 'src/utils/string-processes';
 import classNames from 'classnames';
+import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
 import {
     FabMenuActionButton,
     FabMenuActionButtonStack,
@@ -184,11 +185,11 @@ export const CardBrowserFloatingMenu = (props: CardBrowserFloatingMenuProps) => 
                             ? undefined
                             : isRootPath(props.parentFolder.path)
                               ? 'Open vault root in browser'
-                              : `Open ${props.parentFolder.name} in browser`
+                              : `Open ${getFolderDisplayName(props.parentFolder)} in browser`
                     }
                 >
                     <ChevronLeft size={16} className="ddc_pb_card-browser-floating-menu__folder-title-chevron" />
-                    {props.parentFolder === null ? '' : isRootPath(props.parentFolder.path) ? 'Home' : props.parentFolder.name}
+                    {props.parentFolder === null ? '' : isRootPath(props.parentFolder.path) ? 'Home' : getFolderDisplayName(props.parentFolder)}
                 </button>
             </div>
         </div>
