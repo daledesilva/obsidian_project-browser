@@ -1,0 +1,70 @@
+@import '../../shared/search-graph-hidden.scss';
+
+.ddc_pb_project-page-menu__group {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+
+	&--fab {
+		align-items: flex-end;
+	}
+
+	&--sidebar {
+		align-items: stretch;
+	}
+}
+
+.ddc_pb_project-page-menu__live-row {
+	position: relative;
+	overflow: visible;
+
+	// Back plate matches the live button width (inset horizontally) and sits lower so it peeks out behind.
+	&--stacked::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 5px;
+		right: 5px;
+		border-radius: 8px;
+		transform: translateY(4px);
+		pointer-events: none;
+		z-index: 0;
+		box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	&--stacked .ddc_pb_project-page-menu__file-button {
+		position: relative;
+		z-index: 1;
+	}
+}
+
+.theme-dark {
+	.ddc_pb_project-page-menu__live-row--stacked::before {
+		background-color: color-mix(in srgb, var(--interactive-accent) 62%, black);
+	}
+}
+
+.theme-light {
+	.ddc_pb_project-page-menu__live-row--stacked::before {
+		background-color: color-mix(in srgb, var(--interactive-accent) 62%, white);
+	}
+}
+
+.ddc_pb_project-page-menu__drafts {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.ddc_pb_project-page-menu__group--fab .ddc_pb_project-page-menu__drafts {
+	align-items: flex-end;
+	padding-right: 4px;
+	border-right: 2px solid var(--background-modifier-border);
+}
+
+.ddc_pb_project-page-menu__group--sidebar .ddc_pb_project-page-menu__drafts {
+	align-items: stretch;
+	padding-left: 12px;
+	border-left: 2px solid var(--background-modifier-border);
+}

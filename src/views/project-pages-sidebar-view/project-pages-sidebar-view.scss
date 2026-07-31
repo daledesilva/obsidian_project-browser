@@ -150,6 +150,13 @@
 	border-right-color: #fff;
 }
 
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--draft.ddc_pb_project-page-menu__file-button--sidebar {
+	font-size: 0.8em;
+	min-height: calc(min(40px, 8vw) - 8px);
+	padding: 6px 12px;
+	box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+}
+
 .ddc_pb_project-pages-sidebar__footer {
 	flex-shrink: 0;
 	width: 100%;

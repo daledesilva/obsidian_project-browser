@@ -2,8 +2,7 @@ import { TFile } from 'obsidian';
 import {
 	basenameHasDraftSuffix,
 	basenameWithDraftSuffix,
-	formatDraftDateStamp,
-	formatDraftDateTimeStamp,
+	formatDesignDebtDraftDateTimeStamp,
 	stripSearchGraphFilenameSuffixes,
 } from './filename-suffixes';
 import { renameTFile } from 'src/utils/file-manipulation';
@@ -27,14 +26,17 @@ export async function createPageVersion(file: TFile): Promise<TFile | null> {
 	const { folderpath } = parseFilepath(file.path);
 	const extension = file.extension || 'md';
 	const originalPath = file.path;
+	const versionedAt = new Date();
 
-	let dateStamp = formatDraftDateStamp();
+	let sequence = 1;
+	let dateStamp = formatDesignDebtDraftDateTimeStamp(versionedAt, sequence);
 	let draftBasename = basenameWithDraftSuffix(liveStem, dateStamp);
 	let draftPath = folderpath ? `${folderpath}/${draftBasename}.${extension}` : `${draftBasename}.${extension}`;
 
-	// Same-day re-version: bump to a time-stamped draft name instead of colliding.
-	if (vault.getAbstractFileByPath(draftPath)) {
-		dateStamp = formatDraftDateTimeStamp();
+	// Same-minute re-version: append (2), (3), … per designdebt.club instead of using seconds.
+	while (vault.getAbstractFileByPath(draftPath)) {
+		sequence += 1;
+		dateStamp = formatDesignDebtDraftDateTimeStamp(versionedAt, sequence);
 		draftBasename = basenameWithDraftSuffix(liveStem, dateStamp);
 		draftPath = folderpath ? `${folderpath}/${draftBasename}.${extension}` : `${draftBasename}.${extension}`;
 	}

@@ -14,7 +14,7 @@ export const STATE_HIDE_FILENAME_SUFFIX = '[STATE-HIDE]';
  * Slash-wrapped forms are unanchored JS regexes. Suffix markers are extension-agnostic so md,
  * canvas, base, and folders named with the suffix all match.
  */
-export const DRAFT_USER_IGNORE_FILTER = '/\\[DRAFT\\]\\.md/';
+export const DRAFT_USER_IGNORE_FILTER = '/\\[DRAFT\\]/';
 export const HIDDEN_USER_IGNORE_FILTER = '/\\[HIDDEN\\]/';
 export const STATE_HIDE_USER_IGNORE_FILTER = '/\\[STATE-HIDE\\]/';
 /** Older plugin-injected filters to strip on load so only the current pattern remains. */
@@ -133,26 +133,51 @@ export function basenameWithDraftSuffix(basename: string, dateStamp: string): st
 	return `${cleaned} - ${dateStamp} ${DRAFT_FILENAME_SUFFIX}`;
 }
 
-const DRAFT_BASENAME_PATTERN = /^(.+) - (\d{4}-\d{2}-\d{2}(?:-\d{4})?) \[DRAFT\]$/i;
+const DRAFT_BASENAME_PATTERN =
+	/^(.+) - (\d{4}\.\d{1,2}\.\d{1,2} - \d{1,2}\.\d{2}(?:am|pm)(?: \(\d+\))?) \[DRAFT\]$/i;
 
-/** Parses a versioned draft basename back into its live-page stem and date stamp. */
+/** Parses a versioned draft basename back into its live-page stem and date/time stamp. */
 export function parseDraftBasename(basename: string): { stem: string; dateStamp: string } | null {
 	const match = basename.match(DRAFT_BASENAME_PATTERN);
 	if (!match) return null;
 	return { stem: match[1], dateStamp: match[2] };
 }
 
-/** Today's date as `YYYY-MM-DD` for draft filenames. */
-export function formatDraftDateStamp(date: Date = new Date()): string {
+/**
+ * Formats a draft date/time stamp using the designdebt.club filename convention.
+ * @see https://designdebt.club/the-typography-of-dates-times-filenames/
+ */
+export function formatDesignDebtDraftDateTimeStamp(date: Date = new Date(), sequence = 1): string {
 	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
-	return `${year}-${month}-${day}`;
+	const month = date.getMonth() + 1;
+	const day = date.getDate();
+	const hours = date.getHours();
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+	const ampm = hours < 12 ? 'am' : 'pm';
+	const baseStamp = `${year}.${month}.${day} - ${hours}.${minutes}${ampm}`;
+	return sequence > 1 ? `${baseStamp} (${sequence})` : baseStamp;
 }
 
-/** Date+time stamp used when a same-day draft name already exists. */
-export function formatDraftDateTimeStamp(date: Date = new Date()): string {
-	const hours = String(date.getHours()).padStart(2, '0');
-	const minutes = String(date.getMinutes()).padStart(2, '0');
-	return `${formatDraftDateStamp(date)}-${hours}${minutes}`;
+/** Sort key for draft rows (newest first). */
+export function getDraftChronologicalSortKey(dateStamp: string): string {
+	const parsedDate = parseDraftDateStampToDate(dateStamp);
+	if (!parsedDate) return dateStamp;
+	const sequenceMatch = dateStamp.match(/ \((\d+)\)$/);
+	const sequence = sequenceMatch ? Number.parseInt(sequenceMatch[1], 10) : 1;
+	return `${String(parsedDate.getTime()).padStart(15, '0')}-${String(sequence).padStart(4, '0')}`;
+}
+
+function parseDraftDateStampToDate(dateStamp: string): Date | null {
+	const match = dateStamp.match(
+		/^(\d{4})\.(\d{1,2})\.(\d{1,2}) - (\d{1,2})\.(\d{2})(am|pm)(?: \((\d+)\))?$/i,
+	);
+	if (!match) return null;
+
+	const year = Number.parseInt(match[1], 10);
+	const month = Number.parseInt(match[2], 10) - 1;
+	const day = Number.parseInt(match[3], 10);
+	const hours = Number.parseInt(match[4], 10);
+	const minutes = Number.parseInt(match[5], 10);
+
+	return new Date(year, month, day, hours, minutes);
 }

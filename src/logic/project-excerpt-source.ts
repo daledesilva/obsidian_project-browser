@@ -1,6 +1,7 @@
 import { TFile, TFolder } from 'obsidian';
 import { getSortedPageMenuFilesInProjectFolder } from './project-page-list';
 import { getFolderSettings } from 'src/utils/file-manipulation';
+import { basenameHasDraftSuffix } from './filename-suffixes';
 import { getGlobals } from './stores';
 
 //////////////////
@@ -10,9 +11,11 @@ export function isMarkdownFile(file: TFile): boolean {
 	return (file.extension ?? '').toLowerCase() === 'md';
 }
 
-/** Markdown pages in a project, sorted the same way as the page menu. */
+/** Markdown pages in a project, sorted the same way as the page menu (live pages only). */
 export function getSortedMarkdownPagesInProjectFolder(folder: TFolder): TFile[] {
-	return getSortedPageMenuFilesInProjectFolder(folder).filter(isMarkdownFile);
+	return getSortedPageMenuFilesInProjectFolder(folder)
+		.filter(isMarkdownFile)
+		.filter((file) => !basenameHasDraftSuffix(file.basename));
 }
 
 /**

@@ -134,7 +134,9 @@ describe('registerFileContextMenu', () => {
     getGlobals.mockReturnValue({
       plugin: {
         app: {
-          vault: {},
+          vault: {
+            getAbstractFileByPath: jest.fn(),
+          },
         },
         settings: {
           priorities: [{ name: 'High' }],
@@ -147,6 +149,19 @@ describe('registerFileContextMenu', () => {
     const { registerFileContextMenu } = await import('./file-context-menu');
     const fileButtonEl = document.createElement('button');
     const file = new MockFile();
+
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: {
+          vault: {
+            getAbstractFileByPath: jest.fn((path: string) => (path === file.path ? file : null)),
+          },
+        },
+        settings: {
+          priorities: [{ name: 'High' }],
+        },
+      },
+    });
 
     registerFileContextMenu({
       fileButtonEl,

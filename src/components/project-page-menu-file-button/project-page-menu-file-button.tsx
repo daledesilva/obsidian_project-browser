@@ -29,15 +29,23 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
     const buttonRef = React.useRef<HTMLButtonElement>(null);
     const { plugin } = getGlobals();
 
+    // Context menu reads these attributes when opened so it always targets the live vault file
+    // at this path (avoids stale TFile refs after "Create new version" renames in place).
+    React.useLayoutEffect(() => {
+        const buttonEl = buttonRef.current;
+        if (!buttonEl) return;
+        buttonEl.dataset.pbFilePath = props.file.path;
+        buttonEl.dataset.pbAllowCreateVersion = props.allowCreateVersion ? 'true' : 'false';
+        buttonEl.dataset.pbIsCurrentPage = props.isCurrentPage ? 'true' : 'false';
+    });
+
     React.useEffect(() => {
         if (!plugin || !buttonRef.current) return;
-        registerFileContextMenu({
+        return registerFileContextMenu({
             fileButtonEl: buttonRef.current,
-            file: props.file,
             onFileChange: props.onFileChange,
-            allowCreateVersion: props.allowCreateVersion,
         });
-    }, [props.file.path, props.allowCreateVersion]);
+    }, [plugin, props.onFileChange]);
 
     const fileTypeLabel = getFileTypeLabel(props.file.extension ?? '');
     const isUnsupported = isExtensionUnsupportedByObsidian(props.file.extension ?? '');
@@ -65,8 +73,8 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
                 `ddc_pb_project-page-menu__file-button--${props.context}`,
                 props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active',
                 props.isDraft && 'ddc_pb_project-page-menu__file-button--draft',
+                (props.isDraft || isHiddenFromSearchGraph) && 'ddc_pb_hidden-from-search-graph',
                 props.isExcerptSource && 'ddc_pb_excerpt-source',
-                isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
             )}
             onClick={handleClick}
             // Keep active live pages clickable so a second click can fold drafts open/closed.

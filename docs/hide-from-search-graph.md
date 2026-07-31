@@ -23,7 +23,19 @@ A note can carry both suffixes, e.g. `Note [STATE-HIDE] [HIDDEN]`. Changing stat
 - **In Obsidian:** the vault’s Excluded files list includes **`/\[HIDDEN\]/`** and **`/\[STATE-HIDE\]/`** — unanchored regexes that match any path containing those markers (markdown, canvas, base, attachments, folders).
 - **In Project Browser:** the item remains visible and navigable; only search/graph exclusion changes.
 
-This is separate from **hidden states** (Card Browser section visibility) and **Hide folder** (Project Browser’s PBS hide flag).
+This is separate from **hidden states** (Card Browser section visibility), **Hide folder** (Project Browser’s PBS hide flag), and **`[DRAFT]` page versions** (hidden from Card Browser as well — see [Page versions](page-versions.md)).
+
+### Draft versions (`[DRAFT]`)
+
+Page versions append ` [DRAFT]` with an embedded date/time stamp (see [Page versions](page-versions.md)). When **Hide drafts from search/graph** is enabled (default):
+
+- **On disk:** draft basenames end with ` [DRAFT]`.
+- **In Obsidian:** the vault’s Excluded files list includes **`/\[DRAFT\]/`** (extension-agnostic, like `[HIDDEN]`).
+- **In Project Browser:** draft files are **filtered out of Card Browser sections** but remain visible in the nested page menu under their live page. Draft rows use the same `ddc_pb_hidden-from-search-graph` styling as manually hidden items.
+
+Plugin load calls `ensureUserIgnoreFilter` for `/\[DRAFT\]/`, then **`syncUserIgnoreFiltersToAppJson`** writes the in-memory list to `.obsidian/app.json`. `setConfig` alone does not always persist during `onload`, so without the disk sync the filter can work for search/graph while **Settings → Excluded files** still omits `/\[DRAFT\]/`. A layout-ready sync runs as a second pass.
+
+Toggle **Hide drafts from search/graph** in plugin settings to add or remove the filter; the toggle also syncs to `app.json`.
 
 ### Manual vs state hide
 
@@ -63,13 +75,17 @@ flowchart LR
     Load[Plugin_onload] --> Migrate[Remove_legacy_HIDDEN_filters]
     Migrate --> EnsureManual[Ensure_slash_HIDDEN_slash]
     EnsureManual --> EnsureState[Ensure_slash_STATE-HIDE_slash]
-    EnsureState --> Config[app.json_userIgnoreFilters]
+    EnsureState --> EnsureDraft[Ensure_slash_DRAFT_slash_when_enabled]
+    EnsureDraft --> SyncDisk[syncUserIgnoreFiltersToAppJson]
+    SyncDisk --> Config[app.json_userIgnoreFilters]
 ```
 
-On load, `ensureHiddenMarkdownIgnoreFilter()` in `src/main.ts`:
+On load, `main.ts`:
 
-1. Removes legacy `[HIDDEN]` entries (`[HIDDEN].md`, `/\[HIDDEN\]\.md/`).
-2. Adds **`/\[HIDDEN\]/`** and **`/\[STATE-HIDE\]/`** if missing (exact-match dedup per filter).
+1. `ensureHiddenMarkdownIgnoreFilter()` — removes legacy `[HIDDEN]` entries and ensures **`/\[HIDDEN\]/`** and **`/\[STATE-HIDE\]/`**.
+2. When `hideDraftsFromSearchGraph` is true (default), ensures **`/\[DRAFT\]/`** and removes legacy draft-only patterns.
+3. `syncUserIgnoreFiltersToAppJson()` — writes the in-memory list to `.obsidian/app.json` so Settings shows the same filters.
+4. `onLayoutReady` — runs sync again so late Obsidian init does not leave disk stale.
 
 ### Manual hide or show (context menu)
 
@@ -102,7 +118,7 @@ Any surface that shows a human label should use the display-name helpers, not ra
 |------|-----------|
 | Suffix constants, parse/rebuild/strip helpers | `src/logic/filename-suffixes.ts` |
 | Manual vs state rename sync | `src/logic/sync-hidden-filename.ts` |
-| Excluded files list read/write | `src/logic/obsidian-user-ignore-filters.ts` |
+| Excluded files list read/write + disk sync | `src/logic/obsidian-user-ignore-filters.ts` |
 | Folder display labels | `src/logic/get-folder-display-name.ts` |
 | File display labels | `src/logic/get-file-display-name.ts` |
 | Hidden surface styling | `src/shared/search-graph-hidden.scss` |
@@ -118,7 +134,7 @@ Any surface that shows a human label should use the display-name helpers, not ra
 - **Two suffixes, two filters** — both regexes must be present. State sync never strips `[HIDDEN]`; manual hide never strips `[STATE-HIDE]`.
 - **Context menu checked state** reflects manual `[HIDDEN]` only. A state-hidden file without manual hide still offers **Hide from search/graph**, not **Show**.
 - **State editor save** must merge the full edited state object (`Object.assign(stateInArray, modifiedState)`). Partial field copies dropped `hideFromSearchGraph` and broke state-driven renames.
-- **Excluded files settings UI** snapshots the filter list when opened. After the plugin adds filters programmatically, Settings → Excluded files may still show “No exclusions added” until Settings is fully closed and reopened.
+- **Excluded files settings UI** snapshots the filter list when opened. After the plugin adds filters programmatically, close and reopen Settings if the list looks stale. **`syncUserIgnoreFiltersToAppJson`** is required so `/\[DRAFT\]/` appears on disk — `setConfig` during `onload` alone is not enough.
 - **`config-changed` event:** notify with the key `'userIgnoreFilters'` (Obsidian 1.13+), not a bare event with no key.
 - **Folder rename** adds suffixes to the folder name; descendant paths inherit markers for Obsidian’s path-based exclude filters.
 - **Do not strip suffixes in rename modals** — users editing hide markers need the real basename.
@@ -129,4 +145,5 @@ Any surface that shows a human label should use the display-name helpers, not ra
 - [States and sections](states-and-sections.md) — visible vs hidden *states* (different concept)
 - [Settings](settings.md) — display name helpers and aliases
 - [Card Browser and navigation](card-browser-and-navigation.md) — breadcrumbs and FAB back labels
+- [Page versions](page-versions.md) — `[DRAFT]` snapshots, page menu groups, and Card Browser filtering
 - [Testing](testing.md) — unit and E2E coverage for this feature

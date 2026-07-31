@@ -2,6 +2,7 @@ import { TFile, TFolder } from 'obsidian';
 import { getSortedPageMenuFilesInProjectFolder } from './project-page-list';
 import {
 	basenameHasDraftSuffix,
+	getDraftChronologicalSortKey,
 	parseDraftBasename,
 	stripSearchGraphFilenameSuffixes,
 } from './filename-suffixes';
@@ -21,7 +22,7 @@ export interface ProjectPageMenuGroup {
 
 function draftSortKey(file: TFile): string {
 	const parsed = parseDraftBasename(file.basename);
-	return parsed?.dateStamp ?? file.basename;
+	return parsed ? getDraftChronologicalSortKey(parsed.dateStamp) : file.basename;
 }
 
 /**

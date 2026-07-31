@@ -417,7 +417,7 @@ function insertProjectPageStateSettings(
 			toggle.setValue(plugin.settings.hideDraftsFromSearchGraph ?? true);
 			toggle.onChange(async (value) => {
 				plugin.settings.hideDraftsFromSearchGraph = value;
-				const { ensureUserIgnoreFilter, removeUserIgnoreFilter } = await import(
+				const { ensureUserIgnoreFilter, removeUserIgnoreFilter, syncUserIgnoreFiltersToAppJson } = await import(
 					"src/logic/obsidian-user-ignore-filters"
 				);
 				const { DRAFT_USER_IGNORE_FILTER } = await import("src/logic/filename-suffixes");
@@ -426,6 +426,7 @@ function insertProjectPageStateSettings(
 				} else {
 					removeUserIgnoreFilter(plugin.app, DRAFT_USER_IGNORE_FILTER);
 				}
+				await syncUserIgnoreFiltersToAppJson(plugin.app);
 				await plugin.saveSettings();
 				refresh();
 			});

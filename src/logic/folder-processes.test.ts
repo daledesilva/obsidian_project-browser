@@ -70,6 +70,66 @@ describe("folder-processes", () => {
         expect(pbsFiles).toHaveLength(0);
       });
     });
+
+    test("excludes [DRAFT] page versions from browse sections", () => {
+      jest.isolateModules(() => {
+        const { TFile, TFolder } = require("obsidian");
+
+        const livePage = new TFile("Page 1.md");
+        livePage.basename = "Page 1";
+        const draftPage = new TFile("Page 1 - 2024.2.6 - 9.45am [DRAFT].md");
+        draftPage.basename = "Page 1 - 2024.2.6 - 9.45am [DRAFT]";
+
+        const folder = new TFolder("");
+        folder.path = "Project A";
+        folder.children = [livePage, draftPage];
+        folder.vault = { getAbstractFileByPath: () => null };
+
+        jest.doMock("./frontmatter-processes", () => ({
+          getFileStateName: jest.fn(() => "Idea"),
+        }));
+
+        jest.doMock("./stores", () => ({
+          getGlobals: () => ({
+            plugin: {
+              settings: {
+                states: {
+                  visible: [{ name: "Idea" }],
+                  hidden: [],
+                },
+                folders: { defaultView: "Small" as const },
+                stateless: { name: "", defaultView: "List" as const },
+                fileTypes: {
+                  projectBrowser: {
+                    visible: ["md"],
+                    hidden: ["pbs"],
+                  },
+                  pageMenu: {
+                    visible: ["md"],
+                    hidden: ["pbs"],
+                  },
+                },
+              },
+            },
+          }),
+        }));
+
+        jest.doMock("./section-processes", () => {
+          const actual = jest.requireActual("./section-processes");
+          return {
+            ...actual,
+            getStateSettings: () => ({ name: "", defaultView: "List" }),
+          };
+        });
+
+        const { getSortedSectionsInFolder } = require("./folder-processes");
+        const sections = getSortedSectionsInFolder(folder);
+        const allItems = sections.flatMap((s) => s.items);
+
+        expect(allItems).toHaveLength(1);
+        expect(allItems[0].name).toBe("Page 1.md");
+      });
+    });
   });
 
   describe("filterSectionByString", () => {

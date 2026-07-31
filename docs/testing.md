@@ -105,7 +105,7 @@ E2E uses the generated vault at `qa-test-vault/`. The vault is created by `qa-te
 | Spec | Covers |
 |------|--------|
 | **commands.e2e.ts** | Plugin loaded; `project-browser:open` command; folder sections at root; navigate into folder and see state sections + note cards; cycle-state-forward / cycle-state-backward (active note state); toggle-state-menu (state menu visibility). Ribbon icon open is not asserted (manual QA). |
-| **hide-from-search-graph.e2e.ts** | `cycle-state-backward` appends `[STATE-HIDE]` when moving to Cancelled (Archived/Cancelled default `hideFromSearchGraph`); vault `userIgnoreFilters` contains both `/\[HIDDEN\]/` and `/\[STATE-HIDE\]/` after plugin load. |
+| **hide-from-search-graph.e2e.ts** | `cycle-state-backward` appends `[STATE-HIDE]` when moving to Cancelled (Archived/Cancelled default `hideFromSearchGraph`); vault `userIgnoreFilters` contains `/\[HIDDEN\]/`, `/\[STATE-HIDE\]/`, and `/\[DRAFT\]/` after plugin load. |
 | **navigation.e2e.ts** | Back button returns to root; breadcrumb root click returns to root; opening a note card opens the note in the same leaf. |
 | **search.e2e.ts** | Search button shows search input; typing filters cards; clear button hides search and clears filter. |
 | **new-tab-replacement.e2e.ts** | Startup reliability coverage for all browser-entry paths: opening a new empty tab, clicking the ribbon button, closing all tabs including the final active tab, alternating entry methods, and recovering when the active leaf becomes empty without an active-leaf switch. Each scenario is repeated from multiple starting states. |

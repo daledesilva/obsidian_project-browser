@@ -1,3 +1,4 @@
+import './project-page-menu-group.scss';
 import { TFile } from 'obsidian';
 import * as React from 'react';
 import classNames from 'classnames';
@@ -18,51 +19,80 @@ export interface ProjectPageMenuGroupViewProps {
 }
 
 /**
- * Renders a live page row plus nested drafts. Clicking the selected live page folds drafts open/closed.
+ * Renders a live page row plus nested drafts. The live page stays collapsed when selected;
+ * click the active live page to fold drafts open/closed.
  */
 export const ProjectPageMenuGroupView = (props: ProjectPageMenuGroupViewProps) => {
     const { group, currentFile } = props;
     const liveFile = group.liveFile;
     const isLiveCurrent = !!liveFile && liveFile.path === currentFile.path;
     const isDraftCurrent = group.drafts.some((draft) => draft.path === currentFile.path);
-    const [isExpanded, setIsExpanded] = React.useState(isLiveCurrent || isDraftCurrent);
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    const prevDraftCountRef = React.useRef(group.drafts.length);
+    const prevCurrentPathRef = React.useRef(currentFile.path);
 
     React.useEffect(() => {
-        // Auto-expand when navigating into this group's live page or any of its drafts.
-        if (isLiveCurrent || isDraftCurrent) {
+        const previousPath = prevCurrentPathRef.current;
+        const pathChanged = previousPath !== currentFile.path;
+        const draftCountIncreased = group.drafts.length > prevDraftCountRef.current;
+        const navigatedWithinGroup =
+            group.drafts.some((draft) => draft.path === previousPath) ||
+            (!!liveFile && liveFile.path === previousPath);
+
+        if (isDraftCurrent) {
             setIsExpanded(true);
+        } else if (isLiveCurrent) {
+            if (draftCountIncreased) {
+                setIsExpanded(true);
+            } else if (pathChanged && !navigatedWithinGroup) {
+                // Collapse when arriving on this live page from elsewhere, but not when
+                // version creation briefly routes through the new draft before reopening live.
+                setIsExpanded(false);
+            }
         }
-    }, [isLiveCurrent, isDraftCurrent, currentFile.path]);
+
+        prevDraftCountRef.current = group.drafts.length;
+        prevCurrentPathRef.current = currentFile.path;
+    }, [isLiveCurrent, isDraftCurrent, currentFile.path, group.drafts.length, liveFile]);
 
     if (!liveFile && group.drafts.length === 0) {
         return null;
     }
 
     const showDrafts = isExpanded && group.drafts.length > 0;
+    const showStackedLiveHint = isLiveCurrent && group.drafts.length > 0 && !isExpanded;
     const primaryFile = liveFile ?? group.drafts[0];
 
     return (
         <div
             className={classNames(
                 'ddc_pb_project-page-menu__group',
+                `ddc_pb_project-page-menu__group--${props.context}`,
                 showDrafts && 'ddc_pb_project-page-menu__group--expanded',
             )}
         >
             {liveFile ? (
-                <ProjectPageMenuFileButton
-                    file={liveFile}
-                    isCurrentPage={isLiveCurrent}
-                    context={props.context}
-                    onPageClick={props.onPageClick}
-                    onFileChange={props.onFileChange}
-                    allowCreateVersion={true}
-                    isExcerptSource={liveFile.path === props.excerptSourcePath}
-                    onActivePageClick={
-                        group.drafts.length > 0
-                            ? () => setIsExpanded((prev) => !prev)
-                            : undefined
-                    }
-                />
+                <div
+                    className={classNames(
+                        'ddc_pb_project-page-menu__live-row',
+                        showStackedLiveHint && 'ddc_pb_project-page-menu__live-row--stacked',
+                    )}
+                >
+                    <ProjectPageMenuFileButton
+                        file={liveFile}
+                        isCurrentPage={isLiveCurrent}
+                        context={props.context}
+                        onPageClick={props.onPageClick}
+                        onFileChange={props.onFileChange}
+                        allowCreateVersion={isLiveCurrent}
+                        isExcerptSource={liveFile.path === props.excerptSourcePath}
+                        onActivePageClick={
+                            group.drafts.length > 0
+                                ? () => setIsExpanded((prev) => !prev)
+                                : undefined
+                        }
+                    />
+                </div>
             ) : (
                 <ProjectPageMenuFileButton
                     file={primaryFile}

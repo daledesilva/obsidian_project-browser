@@ -7,6 +7,14 @@ jest.mock('src/context-menus/file-context-menu', () => ({
   registerFileContextMenu: jest.fn(),
 }));
 
+jest.mock('src/logic/project-page-menu-groups', () => ({
+  getGroupedPageMenuFilesInProjectFolder: jest.fn(),
+}));
+
+jest.mock('src/logic/project-excerpt-source', () => ({
+  resolveProjectExcerptSourceFile: jest.fn(),
+}));
+
 jest.mock('src/logic/folder-processes', () => ({
   getItemsInFolder: jest.fn(),
 }));
@@ -30,6 +38,14 @@ jest.mock('src/logic/is-extension-unsupported', () => ({
 jest.mock('src/logic/stores', () => ({
   getGlobals: jest.fn(() => ({ plugin: {} })),
 }));
+
+const { getGroupedPageMenuFilesInProjectFolder } = jest.requireMock('src/logic/project-page-menu-groups') as {
+  getGroupedPageMenuFilesInProjectFolder: jest.Mock;
+};
+
+const { resolveProjectExcerptSourceFile } = jest.requireMock('src/logic/project-excerpt-source') as {
+  resolveProjectExcerptSourceFile: jest.Mock;
+};
 
 const { getItemsInFolder } = jest.requireMock('src/logic/folder-processes') as {
   getItemsInFolder: jest.Mock;
@@ -76,6 +92,11 @@ describe('ProjectPagesFAB', () => {
     onNavigateToPage.mockClear();
     onOpenProjectFolder.mockClear();
     getItemsInFolder.mockReturnValue([pageOne, pageTwo]);
+    getGroupedPageMenuFilesInProjectFolder.mockReturnValue([
+      { stem: 'Page 1', liveFile: pageOne, drafts: [] },
+      { stem: 'Page 2', liveFile: pageTwo, drafts: [] },
+    ]);
+    resolveProjectExcerptSourceFile.mockResolvedValue(null);
   });
 
   test('keeps menu open when navigating to another page', () => {
