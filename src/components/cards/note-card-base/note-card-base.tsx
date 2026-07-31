@@ -10,6 +10,7 @@ import { getFilePrioritySettings } from 'src/logic/frontmatter-processes';
 import { getFileTypeLabel } from 'src/logic/get-file-type-label';
 import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
 import { isFileProjectExcerptSource } from 'src/logic/project-excerpt-source';
+import { basenameHasHiddenSuffix } from 'src/logic/filename-suffixes';
 import { getFolderSettings } from 'src/utils/file-manipulation';
 import { ExternalLink } from 'lucide-react';
 
@@ -35,6 +36,7 @@ export const NoteCardBase = (props: NoteCardBaseProps) => {
     const showSettleTransition = props.file.path === cardBrowserContext.lastTouchedFilePath;
     const fileTypeLabel = getFileTypeLabel(props.file.extension ?? '');
     const isUnsupported = isExtensionUnsupportedByObsidian(props.file.extension ?? '');
+    const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.file.basename);
 
     React.useEffect( () => {
         if(!plugin) return;
@@ -82,6 +84,7 @@ export const NoteCardBase = (props: NoteCardBaseProps) => {
                 prioritySettings?.name.includes('Low') && 'ddc_pb_low-priority',
                 showSettleTransition && 'ddc_pb_closing',
                 isExcerptSource && 'ddc_pb_excerpt-source',
+                isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
             ])}
             onClick = { (event) => {
                 if (event.ctrlKey || event.metaKey) {

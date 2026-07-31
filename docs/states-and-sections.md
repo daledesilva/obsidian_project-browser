@@ -103,8 +103,10 @@ See also:
 - [Card Browser and navigation](card-browser-and-navigation.md)
 - [Projects](projects.md)
 - [State menu in the view header](state-menu-header.md)
+- [Hide from search and graph](hide-from-search-graph.md) — `[HIDDEN]` suffix when a state has **Hide from search/graph** enabled
 
 ## Technical gotchas
 
 - **Hidden states don’t show as sections**: items assigned a hidden state will not appear under a heading for that state.
 - **Stateless has a special representation**: internally, the ordering uses a placeholder title for the “No status” section, but the UI presents it with a human label.
+- **Hide from search/graph on a state** is separate from “hidden state” section visibility; see [Hide from search and graph](hide-from-search-graph.md).

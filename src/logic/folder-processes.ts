@@ -3,6 +3,7 @@ import { Section, getStateSettings, orderSections } from "./section-processes";
 import { getFileStateSettings, getFileStateName, getFileStateNameAsync } from "./frontmatter-processes";
 import { getFileExcerpt } from "./file-processes";
 import { getGlobals } from "./stores";
+import { getAbstractFileDisplayName } from "./get-file-display-name";
 import { getFolderSettings, getFolderStateName } from "src/utils/file-manipulation";
 import { isExtensionVisible } from "./file-type-filter";
 import { FileStateScope } from "./project-page-states";
@@ -280,7 +281,7 @@ export function filterSectionsByString(sections: Section[], searchStr: string) {
 
 export function filterSectionByString(section: Section, searchStr: string) {
     section.items = section.items.filter( (item) => {
-        return item.name.toLowerCase().contains(searchStr.toLowerCase())
+        return getAbstractFileDisplayName(item).toLowerCase().contains(searchStr.toLowerCase())
     })
 }
 

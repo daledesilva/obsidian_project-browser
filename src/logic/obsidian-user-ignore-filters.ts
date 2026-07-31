@@ -1,5 +1,8 @@
 import { App } from 'obsidian';
-import { HIDDEN_USER_IGNORE_FILTER } from './filename-suffixes';
+import {
+	HIDDEN_USER_IGNORE_FILTER,
+	LEGACY_HIDDEN_USER_IGNORE_FILTERS,
+} from './filename-suffixes';
 
 //////////////////
 //////////////////
@@ -7,6 +10,7 @@ import { HIDDEN_USER_IGNORE_FILTER } from './filename-suffixes';
 type VaultWithUserIgnoreConfig = {
 	getConfig?: (key: string) => unknown;
 	setConfig?: (key: string, value: unknown) => void;
+	trigger?: (name: string, ...data: unknown[]) => void;
 };
 
 /**
@@ -26,6 +30,17 @@ export function getUserIgnoreFilters(app: App): string[] {
 }
 
 /**
+ * Nudges settings UI and other config consumers after we mutate Excluded files.
+ * Obsidian 1.13+ listeners key off the changed config name (`userIgnoreFilters`).
+ * Only call when the list actually changed — re-firing on no-op would be pointless noise.
+ */
+function notifyUserIgnoreFiltersChanged(vault: VaultWithUserIgnoreConfig): void {
+	if (typeof vault.trigger === 'function') {
+		vault.trigger('config-changed', 'userIgnoreFilters');
+	}
+}
+
+/**
  * Adds a filter substring to Obsidian's Excluded files list without replacing existing
  * user entries, and without re-adding a filter that is already present.
  */
@@ -36,12 +51,15 @@ export function ensureUserIgnoreFilter(app: App, filterSubstring: string): boole
 	}
 
 	const existing = getUserIgnoreFilters(app);
-	const alreadyPresent = existing.some((entry) => entry.includes(filterSubstring) || filterSubstring.includes(entry));
+	// Exact match only — substring includes would treat `/\[HIDDEN\]/` as already present when
+	// the narrower legacy `/\[HIDDEN\]\.md/` remains, blocking migration to the broader filter.
+	const alreadyPresent = existing.some((entry) => entry === filterSubstring);
 	if (alreadyPresent) {
 		return false;
 	}
 
 	vault.setConfig('userIgnoreFilters', [...existing, filterSubstring]);
+	notifyUserIgnoreFiltersChanged(vault);
 	return true;
 }
 
@@ -62,10 +80,15 @@ export function removeUserIgnoreFilter(app: App, filterSubstring: string): boole
 	}
 
 	vault.setConfig('userIgnoreFilters', next);
+	notifyUserIgnoreFiltersChanged(vault);
 	return true;
 }
 
-/** Always ensure `[HIDDEN].md` is in Excluded files so manually/state-hidden notes stay out of search/graph. */
+/** Always ensure `[HIDDEN]` paths are excluded from search/graph via an unanchored path regex. */
 export function ensureHiddenMarkdownIgnoreFilter(app: App): void {
+	// Drop superseded filters (plain and md-only regex) before ensuring the current pattern.
+	for (const legacyFilter of LEGACY_HIDDEN_USER_IGNORE_FILTERS) {
+		removeUserIgnoreFilter(app, legacyFilter);
+	}
 	ensureUserIgnoreFilter(app, HIDDEN_USER_IGNORE_FILTER);
 }

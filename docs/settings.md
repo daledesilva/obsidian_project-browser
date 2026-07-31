@@ -47,6 +47,7 @@ Only canvas and base files show a small type tag (CANVAS, BASE) at the top-right
 ## Technical implementation
 
 - Card titles use `getFileDisplayNameParts()` for split basename/extension rendering; `getFileDisplayName()` returns the full string.
+- Folder and chrome titles use `getFolderDisplayName()`; both file and folder helpers strip `[HIDDEN]` / `[DRAFT]` suffixes from labels (not from on-disk rename fields). See [Hide from search and graph](hide-from-search-graph.md).
 - The function checks `useAliases` and `showFileExtForNonMdFiles` from `plugin.settings`.
 - Non-document detection uses `OBSIDIAN_DOCUMENT_EXTENSIONS` (`md`, `canvas`, `base`); files without extension are treated as markdown for backward compatibility.
 - Settings types: `PluginSettings_0_4_0` in `src/types/plugin-settings_0_4_0.ts`.

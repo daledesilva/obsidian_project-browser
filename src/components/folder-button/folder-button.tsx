@@ -8,6 +8,8 @@ import { getFolderSettings } from 'src/utils/file-manipulation';
 import classNames from 'classnames';
 import { useAtom, useAtomValue } from 'jotai';
 import { getGlobals, showHiddenFoldersAtom } from 'src/logic/stores';
+import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
+import { basenameHasHiddenSuffix } from 'src/logic/filename-suffixes';
 
 /////////
 /////////
@@ -27,7 +29,8 @@ export const FolderButton = (props: FolderButtonProps) => {
     const showHidden = useAtomValue(showHiddenFoldersAtom);
     const [excerpt, setExcerpt] = React.useState<null|string>('');
 
-    const name = props.folder.name;
+    const name = getFolderDisplayName(props.folder);
+    const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.folder.name);
 
     React.useEffect( () => {
         if(!plugin) return;
@@ -51,6 +54,7 @@ export const FolderButton = (props: FolderButtonProps) => {
             ref = {buttonRef}
             className = {classNames([
                 'ddc_pb_folder-button',
+                isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
                 isHidden && !showHidden && 'ddc_pb_hidden-hidden-folder',
                 isHidden && showHidden && 'ddc_pb_visible-hidden-folder',
             ])}

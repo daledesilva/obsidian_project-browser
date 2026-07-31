@@ -33,27 +33,6 @@ export const getFileFrontmatter = (file: TFile): {} | FrontMatterCache => {
 }
 
 /**
- * Wrapper for processFrontMatter that preserves the file's modified timestamp
- */
-export const processFrontMatterPreserveTimestamp = async (file: TFile, processor: (frontmatter: unknown) => void): Promise<void> => {
-    const {plugin} = getGlobals();
-    
-    // Capture the current modified time
-    const origMtime = file.stat.mtime;
-    
-    // Process the frontmatter (this will update the modified time)
-    await plugin.app.fileManager.processFrontMatter(file, processor);
-    
-    // Restore the original modified time
-    // Get a new cache because the file's been modified recently and we have an old reference
-    const fileCache = plugin.app.vault.getAbstractFileByPath(file.path);
-    const content = await plugin.app.vault.read(fileCache);
-    await plugin.app.vault.modify(fileCache, content, {
-        mtime: origMtime,
-    });
-}
-
-/**
  * Wrapper for processFrontMatter that allows the modified timestamp to be updated
  */
 export const processFrontMatterUpdateTimestamp = async (file: TFile, processor: (frontmatter: unknown) => void): Promise<void> => {
@@ -128,7 +107,7 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
         const {plugin} = getGlobals();
         // Track the state that remains after toggle-off-same-state so filename [HIDDEN] sync matches frontmatter.
         let appliedState: StateSettings | null = null;
-        await processFrontMatterPreserveTimestamp(file, (frontmatter) => {
+        await processFrontMatterUpdateTimestamp(file, (frontmatter) => {
             
             if(stateSettings) {
                 if(frontmatter['state'] === stateSettings.name || frontmatter['state'] === `[[${stateSettings.name}]]`) {
@@ -167,7 +146,7 @@ export const setFileState = async (file: TFile, stateSettings: null | StateSetti
 export const setFilePriority = async (file: TFile, prioritySettings: null | PrioritySettings): Promise<boolean> => {
     try {
         const {plugin} = getGlobals();
-        await processFrontMatterPreserveTimestamp(file, (frontmatter) => {
+        await processFrontMatterUpdateTimestamp(file, (frontmatter) => {
             if(prioritySettings) {
                 if(frontmatter['priority'] === prioritySettings.name || frontmatter['priority'] === `[[${prioritySettings.name}]]`) {
                     // Clicked on same priority, remove it

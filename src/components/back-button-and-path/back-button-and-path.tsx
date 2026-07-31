@@ -4,6 +4,8 @@ import { TFolder } from "obsidian";
 import * as React from "react";
 import classNames from 'classnames';
 import { getFolderSettings } from 'src/utils/file-manipulation';
+import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
+import { basenameHasHiddenSuffix } from 'src/logic/filename-suffixes';
 
 
 /////////
@@ -90,12 +92,13 @@ interface PathButtonProps {
 function PathButton(props: PathButtonProps) {
     const v = props.folder.vault;
     const rootName = v.getName();
+    const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.folder.name);
     
     let name: string;
     if(props.folder.path === '/') {
         name = rootName;
     } else {
-        name = props.folder.name;
+        name = getFolderDisplayName(props.folder);
     }
 
     return <>
@@ -105,6 +108,7 @@ function PathButton(props: PathButtonProps) {
                 className = {classNames([
                     props.isProjectFolder && 'ddc_pb_project-folder',
                     props.isInsideProject && 'ddc_pb_inside-project',
+                    isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
                 ])}
             >
                 {name}
@@ -117,6 +121,7 @@ function PathButton(props: PathButtonProps) {
                     props.isCurrentFolder && 'ddc_pb_current-folder',
                     props.isProjectFolder && 'ddc_pb_project-folder',
                     props.isInsideProject && 'ddc_pb_inside-project',
+                    isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
                 ])}
             >
                 {name}

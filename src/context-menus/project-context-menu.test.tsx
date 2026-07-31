@@ -74,6 +74,10 @@ jest.mock('src/logic/reveal-in-project-browser', () => ({
   revealInProjectBrowser: jest.fn(),
 }));
 
+jest.mock('src/logic/sync-hidden-filename', () => ({
+  setFolderHiddenFromSearchGraph: jest.fn(),
+}));
+
 jest.mock('src/modals/rename-folder-modal/rename-folder-modal', () => ({
   RenameFolderModal: jest.fn().mockImplementation(() => ({
     showModal: jest.fn(),

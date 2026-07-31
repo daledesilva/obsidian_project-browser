@@ -1,5 +1,7 @@
 import { Notice, TAbstractFile, TFile, TFolder, Vault } from "obsidian";
 import { getProjectExcerpt } from "./folder-processes";
+import { getFolderDisplayName } from "./get-folder-display-name";
+import { getFileDisplayName } from "./get-file-display-name";
 import { ProjectCardsView } from "src/views/card-browser-view/card-browser-view";
 import { CARD_BROWSER_VIEW_TYPE } from "src/views/card-browser-view/card-browser-view-constants";
 import { ConfirmationModal } from "src/modals/confirmation-modal/confirmation-modal";
@@ -63,25 +65,27 @@ export async function deleteFolderImmediately(folder: TFolder) {
 }
 
 export function deleteFileWithConfirmation(file: TFile) {
+    const displayName = getFileDisplayName(file);
     new ConfirmationModal({
         title: 'Delete note?',
-        message: `Are you sure you'd like to delete "${file.name}" ?`,
+        message: `Are you sure you'd like to delete "${displayName}" ?`,
         confirmLabel: 'Delete note',
         confirmAction: async () => {
             await deleteFileImmediately(file);
-            new Notice(`Deleted "${file.name}"`);
+            new Notice(`Deleted "${displayName}"`);
         }
     }).open();
 }
 
 export function deleteFolderWithConfirmation(folder: TFolder) {
+    const displayName = getFolderDisplayName(folder);
     new ConfirmationModal({
         title: 'Delete folder & contents?',
-        message: `Are you sure you'd like to delete "${folder.name}" and it's contents?`,
+        message: `Are you sure you'd like to delete "${displayName}" and it's contents?`,
         confirmLabel: 'Delete folder & contents',
         confirmAction: async () => {
             await deleteFolderImmediately(folder);
-            new Notice(`Deleted "${folder.name}"`);
+            new Notice(`Deleted "${displayName}"`);
         }
     }).open();
 }

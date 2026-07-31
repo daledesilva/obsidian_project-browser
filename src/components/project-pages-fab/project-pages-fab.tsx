@@ -7,6 +7,7 @@ import { ProjectPageMenuFileButton } from 'src/components/project-page-menu-file
 import { getSortedPageMenuFilesInProjectFolder } from 'src/logic/project-page-list';
 import { resolveProjectExcerptSourceFile } from 'src/logic/project-excerpt-source';
 import { isRootPath } from 'src/utils/string-processes';
+import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
 import {
     FabMenuActionButton,
     FabMenuActionButtonStack,
@@ -286,12 +287,12 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                             isRootPath(props.projectFolder.path)
                                 ? 'Open vault root in project browser'
                                 : props.parentIsProject
-                                  ? `Open ${props.projectFolder.name} in project browser`
+                                  ? `Open ${getFolderDisplayName(props.projectFolder)} in project browser`
                                   : 'Open folder in project browser'
                         }
                     >
                         <ChevronLeft size={16} className="ddc_pb_project-pages-fab__project-title-chevron" />
-                        {isRootPath(props.projectFolder.path) ? 'Home' : props.projectFolder.name}
+                        {isRootPath(props.projectFolder.path) ? 'Home' : getFolderDisplayName(props.projectFolder)}
                     </button>
                 </div>
             </div>

@@ -1,3 +1,5 @@
+@import '../../../shared/search-graph-hidden.scss';
+
 .ddc_pb_state-section .ddc_pb_note-card-base,
 .ddc_pb_state-section .ddc_pb_project-card-base {
     background: var(--color-base-00);
@@ -110,6 +112,11 @@
         opacity: 0.5;
         background: transparent;
         box-shadow: 0 0 30px rgba(0,0,0,0.6);
+
+        &.ddc_pb_hidden-from-search-graph {
+            opacity: 1;
+            box-shadow: none;
+        }
     }
 
 }

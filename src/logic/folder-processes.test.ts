@@ -101,6 +101,22 @@ describe("folder-processes", () => {
       filterSectionByString(section, "");
       expect(section.items).toHaveLength(2);
     });
+
+    test("matches display names without [HIDDEN] suffix", () => {
+      const { filterSectionByString } = require("./folder-processes");
+      const section = {
+        type: "state" as const,
+        title: "Idea",
+        items: [
+          { name: "Alpha Note [HIDDEN]" },
+          { name: "Beta Document" },
+        ] as { name: string }[],
+        settings: {} as unknown,
+      };
+      filterSectionByString(section, "alpha note");
+      expect(section.items).toHaveLength(1);
+      expect(section.items[0].name).toBe("Alpha Note [HIDDEN]");
+    });
   });
 
   describe("filterSectionsByString", () => {

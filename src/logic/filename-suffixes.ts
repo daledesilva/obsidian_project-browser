@@ -3,13 +3,23 @@
 
 /** Filename postfix that Obsidian exclude filters use to hide drafts from search/graph. */
 export const DRAFT_FILENAME_SUFFIX = '[DRAFT]';
-/** Filename postfix that Obsidian exclude filters use to hide arbitrary notes from search/graph. */
+/** Filename postfix that Obsidian exclude filters use to hide arbitrary notes/folders from search/graph. */
 export const HIDDEN_FILENAME_SUFFIX = '[HIDDEN]';
 
-/** Substring injected into Obsidian's Excluded files list for draft markdown. */
-export const DRAFT_USER_IGNORE_FILTER = '[DRAFT].md';
-/** Substring injected into Obsidian's Excluded files list for hidden markdown. Always applied on load. */
-export const HIDDEN_USER_IGNORE_FILTER = '[HIDDEN].md';
+/**
+ * Excluded-files entries for Obsidian.
+ * Plain strings are compiled as `^`-anchored regexes, so they only match vault-root paths.
+ * Slash-wrapped forms are unanchored JS regexes. `[HIDDEN]` is extension-agnostic so md,
+ * canvas, base, and folders named with the suffix all match.
+ */
+export const DRAFT_USER_IGNORE_FILTER = '/\\[DRAFT\\]\\.md/';
+export const HIDDEN_USER_IGNORE_FILTER = '/\\[HIDDEN\\]/';
+/** Older plugin-injected filters to strip on load so only the current pattern remains. */
+export const LEGACY_HIDDEN_USER_IGNORE_FILTERS = [
+	'[HIDDEN].md',
+	'/\\[HIDDEN\\]\\.md/',
+] as const;
+export const LEGACY_DRAFT_USER_IGNORE_FILTER = '[DRAFT].md';
 
 const SEARCH_GRAPH_SUFFIX_PATTERN = /\s*\[(?:HIDDEN|DRAFT)\]\s*$/i;
 

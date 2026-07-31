@@ -1,6 +1,7 @@
-import { TFile } from "obsidian";
+import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { getFileAliases } from "./frontmatter-processes";
 import { stripSearchGraphFilenameSuffixes } from "./filename-suffixes";
+import { getFolderDisplayName } from "./get-folder-display-name";
 import { getGlobals } from "./stores";
 
 //////////////////
@@ -46,4 +47,15 @@ export function getFileDisplayNameParts(file: TFile): FileDisplayNameParts {
         return { basename: cleanedBasename, extension: '.' + file.extension };
     }
     return { basename: cleanedBasename, extension: null };
+}
+
+/** Display label for any vault file or folder (cards, search, menus, confirmations). Strips `[HIDDEN]` / `[DRAFT]`; use raw `.name` / `.basename` only for rename paths and internal matching. */
+export function getAbstractFileDisplayName(item: TAbstractFile): string {
+    if (item instanceof TFile) {
+        return getFileDisplayName(item);
+    }
+    if (item instanceof TFolder) {
+        return getFolderDisplayName(item);
+    }
+    return stripSearchGraphFilenameSuffixes(item.name);
 }
