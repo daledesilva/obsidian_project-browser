@@ -3,10 +3,15 @@ import {
 	basenameHasHiddenSuffix,
 	basenameHasStateHideSuffix,
 	basenameIsHiddenFromSearchGraph,
+	basenameHasDraftSuffix,
+	basenameWithDraftSuffix,
 	basenameWithHiddenSuffix,
 	basenameWithStateHideSuffix,
 	basenameWithoutHiddenSuffix,
 	basenameWithoutStateHideSuffix,
+	formatDesignDebtDraftDateTimeStamp,
+	getDraftChronologicalSortKey,
+	parseDraftBasename,
 	parseSearchGraphHideSuffixes,
 	rebuildBasenameWithHideFlags,
 	stripSearchGraphFilenameSuffixes,
@@ -40,7 +45,9 @@ describe('filename-suffixes', () => {
 	describe('stripSearchGraphFilenameSuffixes', () => {
 		test('strips [HIDDEN], [STATE-HIDE], and [DRAFT]', () => {
 			expect(stripSearchGraphFilenameSuffixes('Note [STATE-HIDE] [HIDDEN]')).toBe('Note');
-			expect(stripSearchGraphFilenameSuffixes('Note - 2024-01-01 [DRAFT]')).toBe('Note - 2024-01-01');
+			expect(stripSearchGraphFilenameSuffixes('Note - 2024.2.6 - 9.45am [DRAFT]')).toBe(
+				'Note - 2024.2.6 - 9.45am',
+			);
 		});
 	});
 
@@ -78,6 +85,43 @@ describe('filename-suffixes', () => {
 
 		test('basenameWithoutStateHideSuffix keeps [HIDDEN]', () => {
 			expect(basenameWithoutStateHideSuffix('Note [STATE-HIDE] [HIDDEN]')).toBe('Note [HIDDEN]');
+		});
+	});
+
+	describe('draft date/time stamps', () => {
+		test('formatDesignDebtDraftDateTimeStamp uses designdebt.club typography', () => {
+			expect(formatDesignDebtDraftDateTimeStamp(new Date(2024, 1, 6, 9, 45))).toBe('2024.2.6 - 9.45am');
+			expect(formatDesignDebtDraftDateTimeStamp(new Date(2024, 1, 6, 13, 1))).toBe('2024.2.6 - 13.01pm');
+			expect(formatDesignDebtDraftDateTimeStamp(new Date(2023, 6, 13, 8, 30), 2)).toBe(
+				'2023.7.13 - 8.30am (2)',
+			);
+		});
+
+		test('basenameWithDraftSuffix embeds the stamp before [DRAFT]', () => {
+			expect(basenameWithDraftSuffix('My Page', '2024.2.6 - 9.45am')).toBe(
+				'My Page - 2024.2.6 - 9.45am [DRAFT]',
+			);
+		});
+
+		test('parseDraftBasename reads designdebt stamps', () => {
+			expect(parseDraftBasename('My Page - 2024.2.6 - 9.45am [DRAFT]')).toEqual({
+				stem: 'My Page',
+				dateStamp: '2024.2.6 - 9.45am',
+			});
+			expect(parseDraftBasename('My Page - 2024-01-01-1430 [DRAFT]')).toBeNull();
+		});
+
+		test('basenameHasDraftSuffix detects designdebt draft basenames', () => {
+			expect(basenameHasDraftSuffix('My Page - 2024.2.6 - 9.45am [DRAFT]')).toBe(true);
+			expect(basenameHasDraftSuffix('My Page')).toBe(false);
+		});
+
+		test('getDraftChronologicalSortKey orders newer designdebt stamps after older ones', () => {
+			const earlier = getDraftChronologicalSortKey('2024.2.6 - 9.45am');
+			const later = getDraftChronologicalSortKey('2024.2.6 - 11.55am');
+			const sameMinuteSecond = getDraftChronologicalSortKey('2024.2.6 - 9.45am (2)');
+			expect(later.localeCompare(earlier)).toBeGreaterThan(0);
+			expect(sameMinuteSecond.localeCompare(earlier)).toBeGreaterThan(0);
 		});
 	});
 });

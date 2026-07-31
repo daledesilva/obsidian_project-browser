@@ -9,6 +9,7 @@ import {
 	ensureUserIgnoreFilter,
 	getUserIgnoreFilters,
 	removeUserIgnoreFilter,
+	syncUserIgnoreFiltersToAppJson,
 } from './obsidian-user-ignore-filters';
 
 function createMockApp(initialFilters: string[] = []) {
@@ -65,5 +66,23 @@ describe('obsidian-user-ignore-filters', () => {
 			HIDDEN_USER_IGNORE_FILTER,
 			STATE_HIDE_USER_IGNORE_FILTER,
 		]);
+	});
+
+	test('syncUserIgnoreFiltersToAppJson writes in-memory filters to app.json', async () => {
+		const { app, getFilters } = createMockApp(['/\\[DRAFT\\]/']);
+		const adapter = {
+			exists: jest.fn(async () => true),
+			read: jest.fn(async () => JSON.stringify({ otherSetting: true })),
+			write: jest.fn(async () => undefined),
+		};
+		(app as { vault: { adapter: typeof adapter } }).vault.adapter = adapter;
+
+		const synced = await syncUserIgnoreFiltersToAppJson(app);
+
+		expect(synced).toBe(true);
+		expect(adapter.write).toHaveBeenCalledWith(
+			'.obsidian/app.json',
+			JSON.stringify({ otherSetting: true, userIgnoreFilters: getFilters() }, null, 2),
+		);
 	});
 });

@@ -1,7 +1,8 @@
-import { Menu, TFile } from "obsidian";
-import { openFileInBackgroundTab } from "src/logic/file-access-processes";
+import { Menu, TAbstractFile, TFile } from "obsidian";
+import { openFileInBackgroundTab, openFileInSameLeaf } from "src/logic/file-access-processes";
+import { createPageVersion } from "src/logic/create-page-version";
 import { deleteFileWithConfirmation } from "src/logic/file-processes";
-import { basenameHasHiddenSuffix } from "src/logic/filename-suffixes";
+import { basenameHasDraftSuffix, basenameHasHiddenSuffix } from "src/logic/filename-suffixes";
 import { getFileStateSettingsAsync, getFilePrioritySettings, setFilePriority, setFileState } from "src/logic/frontmatter-processes";
 import { hasFrontmatterSupport } from "src/logic/get-file-type-label";
 import { isExtensionUnsupportedByObsidian } from "src/logic/is-extension-unsupported";
@@ -19,43 +20,72 @@ import { isMarkdownFile } from "src/logic/project-excerpt-source";
 
 interface registerFileContextMenuProps {
     fileButtonEl: HTMLElement,
-    file: TFile,
     onFileChange: Function,
+    /** @deprecated Pass file via the button's `data-pb-file-path` attribute instead. */
+    file?: TFile,
 }
 
-export function registerFileContextMenu(props: registerFileContextMenuProps) {
+function resolveMenuTargetFile(
+    vault: { getAbstractFileByPath: (path: string) => TAbstractFile | null },
+    fileButtonEl: HTMLElement,
+    legacyFile?: TFile,
+): TFile | null {
+    const filePath = fileButtonEl.dataset.pbFilePath ?? legacyFile?.path;
+    if (!filePath) return null;
+    const abstractFile = vault.getAbstractFileByPath(filePath);
+    return abstractFile instanceof TFile ? abstractFile : null;
+}
+
+export function registerFileContextMenu(props: registerFileContextMenuProps): () => void {
     const {plugin} = getGlobals();
     const priorities = JSON.parse(JSON.stringify(plugin.settings.priorities));
 
-    props.fileButtonEl.addEventListener('contextmenu', async function(event) {
+    const handleContextMenu = async function(event: MouseEvent) {
         
         // Prevent container divs opening their context menus
         event.stopPropagation();
         
         // Close other menus (Only works on iOS for some reason, but also only needed there)
         activeDocument.body.click();
+
+        const file = resolveMenuTargetFile(plugin.app.vault, props.fileButtonEl, props.file);
+        if (!file) return;
         
-        const fileExtension = props.file.extension ?? '';
+        const fileExtension = file.extension ?? '';
         const isUnsupported = isExtensionUnsupportedByObsidian(fileExtension);
         const hasFrontmatter = hasFrontmatterSupport(fileExtension);
-        const currentFileState = await getFileStateSettingsAsync(props.file);
-        const scopedStateSettings = await getStateSettingsForFile(props.file);
+        const currentFileState = await getFileStateSettingsAsync(file);
+        const scopedStateSettings = await getStateSettingsForFile(file);
         const visibleStates = JSON.parse(JSON.stringify(scopedStateSettings.visible));
         visibleStates.reverse();
         const hiddenStates = JSON.parse(JSON.stringify(scopedStateSettings.hidden));
         hiddenStates.reverse();
-        const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.file.basename);
+        const isHiddenFromSearchGraph = basenameHasHiddenSuffix(file.basename);
+        const isDraft = basenameHasDraftSuffix(file.basename);
+        const menuAllowsCreateVersion = props.fileButtonEl.dataset.pbAllowCreateVersion === 'true';
+        const menuIsCurrentPage = props.fileButtonEl.dataset.pbIsCurrentPage === 'true';
+        const usesPageMenuVersionRules =
+            props.fileButtonEl.dataset.pbAllowCreateVersion !== undefined ||
+            props.fileButtonEl.dataset.pbIsCurrentPage !== undefined;
 
-        let projectFolder = props.file.parent;
+        const projectFolder = file.parent;
+        let canCreateVersion = false;
         let canSetExcerptSource = false;
         let isCurrentExcerptSource = false;
-        // Excerpt sources are markdown-only; canvas/base/etc. stay out of the menu.
-        if (projectFolder && isMarkdownFile(props.file)) {
+
+        if (projectFolder) {
             const folderSettings = await getFolderSettings(plugin.app.vault, projectFolder);
-            canSetExcerptSource = !!folderSettings.isProject;
-            isCurrentExcerptSource =
-                folderSettings.excerptSource === props.file.name ||
-                folderSettings.excerptSource === props.file.basename;
+            if (usesPageMenuVersionRules) {
+                // Page menu only: the active live row may spawn another version.
+                canCreateVersion = menuAllowsCreateVersion && menuIsCurrentPage && !isDraft;
+            }
+            // Excerpt sources are markdown-only; canvas/base/etc. stay out of the menu.
+            if (isMarkdownFile(file)) {
+                canSetExcerptSource = !!folderSettings.isProject;
+                isCurrentExcerptSource =
+                    folderSettings.excerptSource === file.name ||
+                    folderSettings.excerptSource === file.basename;
+            }
         }
         
         const menu = new Menu();
@@ -63,13 +93,13 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             menu.addItem((item) => {
                 item.setTitle('Open in new tab');
                 item.onClick(() => {
-                    void openFileInBackgroundTab(props.file);
+                    void openFileInBackgroundTab(file);
                 });
             });
             menu.addItem((item) => {
                 item.setTitle('Reveal in Project Browser');
                 item.onClick(() => {
-                    void revealInProjectBrowser(props.file);
+                    void revealInProjectBrowser(file);
                 });
             });
             menu.addSeparator();
@@ -77,7 +107,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             menu.addItem((item) => {
                 item.setTitle('Reveal in Project Browser');
                 item.onClick(() => {
-                    void revealInProjectBrowser(props.file);
+                    void revealInProjectBrowser(file);
                 });
             });
             menu.addSeparator();
@@ -85,11 +115,11 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         if (hasFrontmatter) {
             priorities.forEach( (prioritySettings: PrioritySettings) => {
                 menu.addItem((item) => {
-                    const fileRawPriority = getFilePrioritySettings(props.file);
+                    const fileRawPriority = getFilePrioritySettings(file);
                     item.setTitle(prioritySettings.name);
                     if(prioritySettings.name === fileRawPriority?.name) item.setChecked(true);
                     item.onClick(() => {
-                        void setFilePriority(props.file, prioritySettings);
+                        void setFilePriority(file, prioritySettings);
                         props.onFileChange();
                     });
                 });
@@ -100,7 +130,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                     item.setTitle(stateSettings.name);
                     if(stateSettings.name === currentFileState?.name) item.setChecked(true);
                     item.onClick(async () => {
-                        await setFileState(props.file, stateSettings);
+                        await setFileState(file, stateSettings);
                         props.onFileChange();
                     });
                 });
@@ -111,17 +141,30 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                     item.setTitle(stateSettings.name);
                     if(stateSettings.name === currentFileState?.name) item.setChecked(true);
                     item.onClick(async () => {
-                        await setFileState(props.file, stateSettings);
+                        await setFileState(file, stateSettings);
                         props.onFileChange();
                     })
                 });
             })
             menu.addSeparator();
         }
+        if (canCreateVersion) {
+            menu.addItem((item) => {
+                item.setTitle('Create new version');
+                item.onClick(async () => {
+                    const liveFile = await createPageVersion(file);
+                    if (liveFile) {
+                        openFileInSameLeaf(liveFile);
+                    }
+                    props.onFileChange();
+                });
+            });
+            menu.addSeparator();
+        }
         menu.addItem((item) => {
             item.setTitle(isHiddenFromSearchGraph ? 'Show in search/graph' : 'Hide from search/graph');
             item.onClick(async () => {
-                await setFileHiddenFromSearchGraph(props.file, !isHiddenFromSearchGraph);
+                await setFileHiddenFromSearchGraph(file, !isHiddenFromSearchGraph);
                 props.onFileChange();
             });
         });
@@ -133,7 +176,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
                     // Toggle off when re-selecting the current source so projects fall back to alphabetical default.
                     await setFolderExcerptSource(
                         projectFolder!,
-                        isCurrentExcerptSource ? null : props.file,
+                        isCurrentExcerptSource ? null : file,
                     );
                     props.onFileChange();
                 });
@@ -144,7 +187,7 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
             .onClick(() => {
                 // renameFileOrFolderInPlace(props.file, props.noteEl);
                 void new RenameFileModal({
-                    file: props.file,
+                    file: file,
                 }).showModal()
                 props.onFileChange();
             })
@@ -152,13 +195,14 @@ export function registerFileContextMenu(props: registerFileContextMenuProps) {
         menu.addItem((item) =>
             item.setTitle("Delete")
             .onClick(() => {
-                deleteFileWithConfirmation(props.file);
+                deleteFileWithConfirmation(file);
                 props.onFileChange();
             })
         );
         menu.showAtMouseEvent(event);
 
-    }, false);
+    };
 
-
+    props.fileButtonEl.addEventListener('contextmenu', handleContextMenu, false);
+    return () => props.fileButtonEl.removeEventListener('contextmenu', handleContextMenu, false);
 }

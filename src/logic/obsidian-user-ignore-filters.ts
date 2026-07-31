@@ -31,6 +31,27 @@ export function getUserIgnoreFilters(app: App): string[] {
 }
 
 /**
+ * Writes the current in-memory `userIgnoreFilters` to `.obsidian/app.json` so Obsidian Settings
+ * shows the same list as `getUserIgnoreFilters`. `setConfig` alone does not always flush to disk
+ * during plugin onload (see Obsidian forum: app.json writes during onLoad).
+ */
+export async function syncUserIgnoreFiltersToAppJson(app: App): Promise<boolean> {
+	const appJsonPath = '.obsidian/app.json';
+	try {
+		if (!(await app.vault.adapter.exists(appJsonPath))) {
+			return false;
+		}
+		const raw = await app.vault.adapter.read(appJsonPath);
+		const config = JSON.parse(raw) as Record<string, unknown>;
+		config.userIgnoreFilters = getUserIgnoreFilters(app);
+		await app.vault.adapter.write(appJsonPath, JSON.stringify(config, null, 2));
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
  * Nudges settings UI and other config consumers after we mutate Excluded files.
  * Obsidian 1.13+ listeners key off the changed config name (`userIgnoreFilters`).
  * Only call when the list actually changed — re-firing on no-op would be pointless noise.

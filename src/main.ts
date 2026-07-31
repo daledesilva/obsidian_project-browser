@@ -13,7 +13,8 @@ import { registerToggleStateMenuCommand } from './commands/toggle-state-menu';
 import { registerCycleStateCommands } from './commands/cycle-state';
 import { registerFileOpenSelectTitleHandler } from './logic/file-access-processes';
 import { registerRevealInProjectBrowserMenus } from './commands/reveal-in-project-browser';
-import { ensureHiddenMarkdownIgnoreFilter } from './logic/obsidian-user-ignore-filters';
+import { ensureHiddenMarkdownIgnoreFilter, ensureUserIgnoreFilter, removeUserIgnoreFilter, syncUserIgnoreFiltersToAppJson } from './logic/obsidian-user-ignore-filters';
+import { DRAFT_USER_IGNORE_FILTER, LEGACY_DRAFT_USER_IGNORE_FILTER } from './logic/filename-suffixes';
 
 /////////
 /////////
@@ -34,8 +35,21 @@ export default class ProjectBrowserPlugin extends Plugin {
 			plugin: this,
 		})
 
-		// Keep Obsidian search/graph exclusions in sync for [HIDDEN] and [STATE-HIDE] filenames without overwriting user filters.
+		// Keep Obsidian search/graph exclusions in sync for [HIDDEN], [STATE-HIDE], and [DRAFT].
+		// syncUserIgnoreFiltersToAppJson persists in-memory filters to app.json — setConfig during onload alone
+		// does not always show new entries in Settings → Excluded files.
 		ensureHiddenMarkdownIgnoreFilter(this.app);
+		if (this.settings.hideDraftsFromSearchGraph ?? true) {
+			removeUserIgnoreFilter(this.app, LEGACY_DRAFT_USER_IGNORE_FILTER);
+			removeUserIgnoreFilter(this.app, '/\\[DRAFT\\]\\.md/');
+			ensureUserIgnoreFilter(this.app, DRAFT_USER_IGNORE_FILTER);
+		}
+		await syncUserIgnoreFiltersToAppJson(this.app);
+		this.registerEvent(
+			this.app.workspace.onLayoutReady(() => {
+				void syncUserIgnoreFiltersToAppJson(this.app);
+			}),
+		);
 
 		// Initialize settings atoms from current plugin settings
 		initializeSettingsAtoms();

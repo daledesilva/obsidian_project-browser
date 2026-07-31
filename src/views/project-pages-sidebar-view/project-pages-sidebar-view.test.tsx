@@ -32,8 +32,12 @@ jest.mock('src/logic/file-access-processes', () => ({
   openNewPageAndSelectTitle: jest.fn(),
 }));
 
-jest.mock('src/logic/project-page-list', () => ({
-  getSortedPageMenuFilesInProjectFolder: jest.fn(),
+jest.mock('src/logic/project-page-menu-groups', () => ({
+  getGroupedPageMenuFilesInProjectFolder: jest.fn(),
+}));
+
+jest.mock('src/logic/project-excerpt-source', () => ({
+  resolveProjectExcerptSourceFile: jest.fn(),
 }));
 
 jest.mock('src/logic/project-pages-sidebar-controller', () => ({
@@ -52,8 +56,12 @@ jest.mock('src/logic/stores', () => ({
   getGlobals: jest.fn(),
 }));
 
-const { getSortedPageMenuFilesInProjectFolder } = jest.requireMock('src/logic/project-page-list') as {
-  getSortedPageMenuFilesInProjectFolder: jest.Mock;
+const { getGroupedPageMenuFilesInProjectFolder } = jest.requireMock('src/logic/project-page-menu-groups') as {
+  getGroupedPageMenuFilesInProjectFolder: jest.Mock;
+};
+
+const { resolveProjectExcerptSourceFile } = jest.requireMock('src/logic/project-excerpt-source') as {
+  resolveProjectExcerptSourceFile: jest.Mock;
 };
 
 const { getGlobals } = jest.requireMock('src/logic/stores') as {
@@ -124,12 +132,23 @@ describe('ProjectPagesSidebarContent', () => {
     projectFolder.vault.on.mockClear();
     projectFolder.vault.off.mockClear();
 
-    getSortedPageMenuFilesInProjectFolder.mockReturnValue([pageOne, pageTwo]);
+    getGroupedPageMenuFilesInProjectFolder.mockReturnValue([
+      { stem: 'Page 1', liveFile: pageOne, drafts: [] },
+      { stem: 'Page 2', liveFile: pageTwo, drafts: [] },
+    ]);
+    resolveProjectExcerptSourceFile.mockResolvedValue(null);
     getGlobals.mockReturnValue({
       plugin: {
         app: {
           workspace,
-          vault: projectFolder.vault,
+          vault: {
+            ...projectFolder.vault,
+            getAbstractFileByPath: jest.fn((path: string) => {
+              if (path === pageOne.path) return pageOne;
+              if (path === pageTwo.path) return pageTwo;
+              return null;
+            }),
+          },
         },
       },
     });

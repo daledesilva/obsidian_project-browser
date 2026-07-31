@@ -8,6 +8,7 @@ import { getFolderSettings, getFolderStateName } from "src/utils/file-manipulati
 import { isExtensionVisible } from "./file-type-filter";
 import { FileStateScope } from "./project-page-states";
 import { getSortedMarkdownPagesInProjectFolder } from "./project-excerpt-source";
+import { basenameHasDraftSuffix } from "./filename-suffixes";
 import {
     removeCodeBlocks,
     removeFrontmatter,
@@ -151,6 +152,8 @@ export const getSortedSectionsInFolder = (folder: TFolder): Section[] => {
 
         } else if(item instanceof TFile) {
             if (!isExtensionVisible(item.extension, 'projectBrowser')) return;
+            // Draft versions stay in the page menu but never appear as browse cards.
+            if (basenameHasDraftSuffix(item.basename)) return;
 
             const displayState = getFileStateName(item);
             if(displayState) {
@@ -230,6 +233,7 @@ export async function getSortedSectionsInFolderAsync(folder: TFolder): Promise<S
             }
         } else if (item instanceof TFile) {
             if (!isExtensionVisible(item.extension, 'projectBrowser')) continue;
+            if (basenameHasDraftSuffix(item.basename)) continue;
 
             const displayState = await getFileStateNameAsync(item);
             if (displayState) {

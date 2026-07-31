@@ -19,6 +19,7 @@ If you’re new to the codebase or the plugin’s mental model, start with **Ove
 - [Project excerpt source](project-excerpt-source.md): which markdown page feeds a project card preview, and the accent edge markers.
 - [State menu in the view header](state-menu-header.md): header state control and Tippy picker for notes, pages, and project roots.
 - [Project Pages FAB](project-pages-fab.md): the in-editor floating action button for jumping between project pages.
+- [Page versions](page-versions.md): draft snapshots, grouped page menus, and Card Browser filtering for `[DRAFT]` files.
 - [File type visibility](file-type-visibility.md): control what file types appear in the Card Browser and in the pages menu.
 - [Hide from search and graph](hide-from-search-graph.md): `[HIDDEN]` suffix, Obsidian Excluded files, UI labels, and styling.
 - [Settings](settings.md): access/behaviour and display settings that change how the plugin feels.
@@ -33,4 +34,4 @@ If you’re new to the codebase or the plugin’s mental model, start with **Ove
 
 - **Understand the product**: Overview → Card Browser and navigation → States and sections
 - **Configure what you see**: Settings → File type visibility
-- **Understand “projects”**: Projects → Project excerpt source → Project Pages FAB
+- **Understand “projects”**: Projects → Project excerpt source → Project Pages FAB → Page versions

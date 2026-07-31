@@ -7,10 +7,10 @@ import {
     FabMenuActionButton,
     FabMenuActionButtonStack,
 } from 'src/components/fab-menu-action-button/fab-menu-action-button';
-import { ProjectPageMenuFileButton } from 'src/components/project-page-menu-file-button/project-page-menu-file-button';
+import { ProjectPageMenuGroupView } from 'src/components/project-page-menu-group/project-page-menu-group';
 import { ICON_PLUGIN } from 'src/constants';
 import { openFileInMostRecentRootLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
-import { getSortedPageMenuFilesInProjectFolder } from 'src/logic/project-page-list';
+import { getGroupedPageMenuFilesInProjectFolder } from 'src/logic/project-page-menu-groups';
 import { resolveProjectExcerptSourceFile } from 'src/logic/project-excerpt-source';
 import { syncProjectPagesSidebarFromActiveWorkspaceContext } from 'src/logic/project-pages-sidebar-controller';
 import { getGlobals } from 'src/logic/stores';
@@ -103,11 +103,17 @@ export const ProjectPagesSidebarContent = (props: SidebarContentProps) => {
         };
     }, [plugin.app.vault, props.projectFolder?.path]);
 
-    const pages = React.useMemo(() => {
+    const pageGroups = React.useMemo(() => {
         if (!props.projectFolder) return [];
         void listRefreshToken;
-        return getSortedPageMenuFilesInProjectFolder(props.projectFolder);
+        return getGroupedPageMenuFilesInProjectFolder(props.projectFolder);
     }, [props.projectFolder, listRefreshToken]);
+
+    const currentFile = React.useMemo(() => {
+        if (!activePath) return null;
+        const abstract = plugin.app.vault.getAbstractFileByPath(activePath);
+        return abstract instanceof TFile ? abstract : null;
+    }, [activePath, plugin.app.vault]);
 
     const [excerptSourcePath, setExcerptSourcePath] = React.useState<string | null>(null);
 
@@ -165,23 +171,29 @@ export const ProjectPagesSidebarContent = (props: SidebarContentProps) => {
         await syncProjectPagesSidebarFromActiveWorkspaceContext();
     }
 
+    const highlightFile =
+        currentFile ??
+        pageGroups[0]?.liveFile ??
+        pageGroups[0]?.drafts[0] ??
+        null;
+
     return (
         <div className="ddc_pb_project-pages-sidebar">
             <h2 className="ddc_pb_project-pages-sidebar__title">Project pages</h2>
             <div className="ddc_pb_project-pages-sidebar__scroll">
-                {pages.length === 0 ? (
+                {pageGroups.length === 0 || !highlightFile ? (
                     <p className="ddc_pb_project-pages-sidebar__empty">No pages in this project yet.</p>
                 ) : (
                     <ul className="ddc_pb_project-pages-sidebar__list">
-                        {pages.map((file) => (
-                            <li key={file.path}>
-                                <ProjectPageMenuFileButton
-                                    file={file}
-                                    isCurrentPage={file.path === activePath}
+                        {pageGroups.map((group) => (
+                            <li key={group.stem}>
+                                <ProjectPageMenuGroupView
+                                    group={group}
+                                    currentFile={highlightFile}
                                     context="sidebar"
                                     onPageClick={handlePageClick}
                                     onFileChange={() => setListRefreshToken((v) => v + 1)}
-                                    isExcerptSource={file.path === excerptSourcePath}
+                                    excerptSourcePath={excerptSourcePath}
                                 />
                             </li>
                         ))}

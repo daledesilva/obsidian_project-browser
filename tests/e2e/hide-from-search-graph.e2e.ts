@@ -70,5 +70,6 @@ describe("Hide from search/graph", function () {
 
     expect(filters).toContain("/\\[HIDDEN\\]/");
     expect(filters).toContain("/\\[STATE-HIDE\\]/");
+    expect(filters).toContain("/\\[DRAFT\\]/");
   });
 });

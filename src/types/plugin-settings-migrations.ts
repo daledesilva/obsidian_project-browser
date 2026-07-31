@@ -265,6 +265,9 @@ function patch_0_4_0_settings(settings: PluginSettings_0_4_0): PluginSettings_0_
     if (patched.projectPageStateless && patched.projectPageStateless.hideFromSearchGraph === undefined) {
         patched.projectPageStateless.hideFromSearchGraph = false;
     }
+    if (patched.hideDraftsFromSearchGraph === undefined) {
+        patched.hideDraftsFromSearchGraph = true;
+    }
 
     if (!patched.fileTypes) return patched;
     const fileTypes = patched.fileTypes as Record<string, unknown>;

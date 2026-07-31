@@ -48,13 +48,14 @@ flowchart TB
 ### Using the FAB — note inside a project
 
 1. Click the FAB to open the pages menu.
-2. Other project pages appear as floating buttons above the FAB.
-3. **Add page** — creates a new file in the project and opens it. The filename is activated for renaming (via Obsidian's Edit file title or a rename modal) so you can immediately type to rename it if desired.
-4. **Folder** (labeled with the project folder name) — opens that folder in the project browser.
-5. Click a page to navigate to it. The state menu on that page opens by default.
-6. The pages menu stays open after page navigation, so you can quickly move through multiple pages without reopening it each time.
-7. The selected page button updates after each navigation, including markdown, canvas, and base transitions.
-8. Click the FAB again or click anywhere else to close the menu.
+2. Other project pages appear as floating buttons above the FAB. When a page has draft versions, its row is a **group**: the live page on top and dated `[DRAFT]` rows nested underneath when expanded.
+3. **Create new version** — right-click the **active live page** in this menu (not from the Card Browser). Snapshots the current content as a dated draft file and opens a fresh live page at the same name. See [Page versions](page-versions.md).
+4. **Add page** — creates a new file in the project and opens it. The filename is activated for renaming (via Obsidian's Edit file title or a rename modal) so you can immediately type to rename it if desired.
+5. **Folder** (labeled with the project folder name) — opens that folder in the project browser.
+6. Click a page to navigate to it. The state menu on that page opens by default.
+7. The pages menu stays open after page navigation, so you can quickly move through multiple pages without reopening it each time.
+8. The selected page button updates after each navigation, including markdown, canvas, and base transitions.
+9. Click the FAB again or click anywhere else to close the menu.
 
 ### Using the FAB — note outside a project
 
@@ -97,10 +98,10 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 
 - **Component**: `ProjectPagesFAB` in `src/components/project-pages-fab/`
 - **Integration**: Rendered from `registerMarkdownViewMods` whenever the active leaf shows a file view (any type Obsidian can display). Parent folder is `activeFile.parent ?? vault.getRoot()`.
-- **Page list**: Derived from `getItemsInFolder(projectFolder)` — filtered to `TFile`, filtered by visible file types (`isExtensionVisible`), sorted by name.
+- **Page list**: `getGroupedPageMenuFilesInProjectFolder` — live pages plus nested `[DRAFT]` versions per stem (see [Page versions](page-versions.md)). Draft rows are excluded from Card Browser sections but appear here with hidden-item styling.
 - **Page button labels**: Use `getFileDisplayNameParts()`, which respects the "Show extension for non-document files" setting. The extension portion is faded with `--text-faint`. Only canvas and base files show a type tag (CANVAS, BASE) at the top-right of each button; other file types do not.
 - **Page button height**: FAB page buttons (`.ddc_pb_project-page-menu__file-button--fab`) set `height: auto` and `max-height: none` so Obsidian’s default fixed button height does not clip wrapped titles after the second line.
-- **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), **Set as excerpt source** (markdown pages in a project), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) and [project-excerpt-source.md](project-excerpt-source.md).
+- **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), **Set as excerpt source** (markdown pages in a project), **Create new version** (active live page only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md), [project-excerpt-source.md](project-excerpt-source.md), and [page-versions.md](page-versions.md).
 - **Navigation**: Uses `openFileInSameLeaf` followed by `openStateMenuIfClosed`.
 - **Navigation menu state**: Page-to-page navigation keeps the menu open so users can continue navigating without reopening it.
 - **State sync on page switch**: FAB/state header refreshes on both active-leaf changes and file-open events for the active file view, so selected-page highlighting and related header state update correctly when switching files in the same leaf (including markdown, canvas, and base transitions).

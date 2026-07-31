@@ -78,6 +78,14 @@
         }
     }
 
+    .ddc_pb_project-page-menu__file-button--draft.ddc_pb_project-page-menu__file-button--fab {
+        max-width: 160px;
+        min-height: calc(var(--size) - 8px);
+        padding: 6px 10px;
+        font-size: 0.8em;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+
     .ddc_pb_project-pages-fab__footer {
         flex-grow: 0;
         flex-shrink: 0;

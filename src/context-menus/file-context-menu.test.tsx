@@ -59,6 +59,7 @@ jest.mock('obsidian', () => ({
 
 jest.mock('src/logic/file-access-processes', () => ({
   openFileInBackgroundTab: jest.fn(),
+  openFileInSameLeaf: jest.fn(),
 }));
 
 jest.mock('src/logic/file-processes', () => ({
@@ -108,7 +109,11 @@ jest.mock('src/utils/file-manipulation', () => ({
 }));
 
 jest.mock('src/logic/sync-hidden-filename', () => ({
-  setFileHiddenFromSearchGraph: jest.fn(),
+	setFileHiddenFromSearchGraph: jest.fn(),
+}));
+
+jest.mock('src/logic/create-page-version', () => ({
+	createPageVersion: jest.fn(),
 }));
 
 const { getGlobals } = jest.requireMock('src/logic/stores');
@@ -117,6 +122,8 @@ const { getStateSettingsForFile } = jest.requireMock('src/logic/project-page-sta
 const { isMarkdownFile } = jest.requireMock('src/logic/project-excerpt-source');
 const { getFolderSettings } = jest.requireMock('src/utils/file-manipulation');
 const { setFileHiddenFromSearchGraph } = jest.requireMock('src/logic/sync-hidden-filename');
+const { createPageVersion } = jest.requireMock('src/logic/create-page-version');
+const { openFileInSameLeaf } = jest.requireMock('src/logic/file-access-processes');
 
 describe('registerFileContextMenu', () => {
   beforeEach(() => {
@@ -134,7 +141,9 @@ describe('registerFileContextMenu', () => {
     getGlobals.mockReturnValue({
       plugin: {
         app: {
-          vault: {},
+          vault: {
+            getAbstractFileByPath: jest.fn(),
+          },
         },
         settings: {
           priorities: [{ name: 'High' }],
@@ -147,6 +156,19 @@ describe('registerFileContextMenu', () => {
     const { registerFileContextMenu } = await import('./file-context-menu');
     const fileButtonEl = document.createElement('button');
     const file = new MockFile();
+
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: {
+          vault: {
+            getAbstractFileByPath: jest.fn((path: string) => (path === file.path ? file : null)),
+          },
+        },
+        settings: {
+          priorities: [{ name: 'High' }],
+        },
+      },
+    });
 
     registerFileContextMenu({
       fileButtonEl,
@@ -174,5 +196,147 @@ describe('registerFileContextMenu', () => {
     ) as MockMenuItem;
     await hideItem.onClickHandler?.();
     expect(setFileHiddenFromSearchGraph).toHaveBeenCalledWith(file, true);
+  });
+
+  test('shows Create new version only for the active live page in the page menu', async () => {
+    // Page menu buttons expose data-pb-* attrs; card-browser targets omit them entirely.
+    const { registerFileContextMenu } = await import('./file-context-menu');
+    const fileButtonEl = document.createElement('button');
+    const file = new MockFile();
+    fileButtonEl.dataset.pbFilePath = file.path;
+    fileButtonEl.dataset.pbAllowCreateVersion = 'true';
+    fileButtonEl.dataset.pbIsCurrentPage = 'true';
+
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: {
+          vault: {
+            getAbstractFileByPath: jest.fn((path: string) => (path === file.path ? file : null)),
+          },
+        },
+        settings: {
+          priorities: [{ name: 'High' }],
+        },
+      },
+    });
+
+    registerFileContextMenu({ fileButtonEl, onFileChange: jest.fn() });
+    fileButtonEl.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const titles = mockCreatedMenus[0].items
+      .filter((item): item is MockMenuItem => 'title' in item)
+      .map((item) => item.title);
+    expect(titles).toContain('Create new version');
+  });
+
+  test('omits Create new version for draft rows in the page menu', async () => {
+    const { registerFileContextMenu } = await import('./file-context-menu');
+    const fileButtonEl = document.createElement('button');
+    const file = new MockFile();
+    file.basename = 'Page 1 - 2024.2.6 - 9.45am [DRAFT]';
+    file.name = 'Page 1 - 2024.2.6 - 9.45am [DRAFT].md';
+    file.path = 'Project A/Page 1 - 2024.2.6 - 9.45am [DRAFT].md';
+    fileButtonEl.dataset.pbFilePath = file.path;
+    fileButtonEl.dataset.pbAllowCreateVersion = 'true';
+    fileButtonEl.dataset.pbIsCurrentPage = 'true';
+
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: {
+          vault: {
+            getAbstractFileByPath: jest.fn((path: string) => (path === file.path ? file : null)),
+          },
+        },
+        settings: {
+          priorities: [{ name: 'High' }],
+        },
+      },
+    });
+
+    registerFileContextMenu({ fileButtonEl, onFileChange: jest.fn() });
+    fileButtonEl.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const titles = mockCreatedMenus[0].items
+      .filter((item): item is MockMenuItem => 'title' in item)
+      .map((item) => item.title);
+    expect(titles).not.toContain('Create new version');
+  });
+
+  test('omits Create new version outside the page menu', async () => {
+    const { registerFileContextMenu } = await import('./file-context-menu');
+    const fileButtonEl = document.createElement('button');
+    const file = new MockFile();
+
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: {
+          vault: {
+            getAbstractFileByPath: jest.fn((path: string) => (path === file.path ? file : null)),
+          },
+        },
+        settings: {
+          priorities: [{ name: 'High' }],
+        },
+      },
+    });
+
+    registerFileContextMenu({ fileButtonEl, file: file as never, onFileChange: jest.fn() });
+    fileButtonEl.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const titles = mockCreatedMenus[0].items
+      .filter((item): item is MockMenuItem => 'title' in item)
+      .map((item) => item.title);
+    expect(titles).not.toContain('Create new version');
+  });
+
+  test('Create new version opens the recreated live file', async () => {
+    const { registerFileContextMenu } = await import('./file-context-menu');
+    const fileButtonEl = document.createElement('button');
+    const file = new MockFile();
+    const recreatedLive = new MockFile();
+    fileButtonEl.dataset.pbFilePath = file.path;
+    fileButtonEl.dataset.pbAllowCreateVersion = 'true';
+    fileButtonEl.dataset.pbIsCurrentPage = 'true';
+    const onFileChange = jest.fn();
+
+    createPageVersion.mockResolvedValue(recreatedLive);
+    getGlobals.mockReturnValue({
+      plugin: {
+        app: {
+          vault: {
+            getAbstractFileByPath: jest.fn((path: string) => (path === file.path ? file : null)),
+          },
+        },
+        settings: {
+          priorities: [{ name: 'High' }],
+        },
+      },
+    });
+
+    registerFileContextMenu({ fileButtonEl, onFileChange });
+    fileButtonEl.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const createItem = mockCreatedMenus[0].items.find(
+      (item) => 'title' in item && item.title === 'Create new version',
+    ) as MockMenuItem;
+    await createItem.onClickHandler?.();
+
+    expect(createPageVersion).toHaveBeenCalledWith(file);
+    expect(openFileInSameLeaf).toHaveBeenCalledWith(recreatedLive);
+    expect(onFileChange).toHaveBeenCalled();
   });
 });

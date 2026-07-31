@@ -77,4 +77,20 @@ describe('project-page-list', () => {
     expect(isExtensionVisible).toHaveBeenCalledWith('canvas', 'pageMenu');
     expect(isExtensionVisible).toHaveBeenCalledWith('md', 'pageMenu');
   });
+
+  test('still lists draft versions for the page menu', () => {
+    const folder = createFolder('Project');
+    const livePage = createFile('Project/Page 1.md');
+    const draftPage = createFile('Project/Page 1 - 2024.2.6 - 9.45am [DRAFT].md');
+    draftPage.basename = 'Page 1 - 2024.2.6 - 9.45am [DRAFT]';
+
+    getItemsInFolder.mockReturnValue([draftPage, livePage]);
+
+    const sortedFiles = getSortedPageMenuFilesInProjectFolder(folder);
+
+    expect(sortedFiles.map((file) => file.name)).toEqual([
+      'Page 1 - 2024.2.6 - 9.45am [DRAFT].md',
+      'Page 1.md',
+    ]);
+  });
 });
