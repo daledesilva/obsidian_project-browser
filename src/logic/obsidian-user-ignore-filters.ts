@@ -2,6 +2,7 @@ import { App } from 'obsidian';
 import {
 	HIDDEN_USER_IGNORE_FILTER,
 	LEGACY_HIDDEN_USER_IGNORE_FILTERS,
+	STATE_HIDE_USER_IGNORE_FILTER,
 } from './filename-suffixes';
 
 //////////////////
@@ -84,11 +85,15 @@ export function removeUserIgnoreFilter(app: App, filterSubstring: string): boole
 	return true;
 }
 
-/** Always ensure `[HIDDEN]` paths are excluded from search/graph via an unanchored path regex. */
+/**
+ * Ensures manual `[HIDDEN]` and state `[STATE-HIDE]` paths are excluded from search/graph
+ * via unanchored path regexes, without overwriting unrelated user filters.
+ */
 export function ensureHiddenMarkdownIgnoreFilter(app: App): void {
 	// Drop superseded filters (plain and md-only regex) before ensuring the current pattern.
 	for (const legacyFilter of LEGACY_HIDDEN_USER_IGNORE_FILTERS) {
 		removeUserIgnoreFilter(app, legacyFilter);
 	}
 	ensureUserIgnoreFilter(app, HIDDEN_USER_IGNORE_FILTER);
+	ensureUserIgnoreFilter(app, STATE_HIDE_USER_IGNORE_FILTER);
 }

@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { useAtom, useAtomValue } from 'jotai';
 import { getGlobals, showHiddenFoldersAtom } from 'src/logic/stores';
 import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
-import { basenameHasHiddenSuffix } from 'src/logic/filename-suffixes';
+import { basenameIsHiddenFromSearchGraph } from 'src/logic/filename-suffixes';
 
 /////////
 /////////
@@ -30,7 +30,7 @@ export const FolderButton = (props: FolderButtonProps) => {
     const [excerpt, setExcerpt] = React.useState<null|string>('');
 
     const name = getFolderDisplayName(props.folder);
-    const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.folder.name);
+    const isHiddenFromSearchGraph = basenameIsHiddenFromSearchGraph(props.folder.name);
 
     React.useEffect( () => {
         if(!plugin) return;

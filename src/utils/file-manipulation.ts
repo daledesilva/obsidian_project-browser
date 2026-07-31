@@ -423,7 +423,7 @@ export async function setFolderState(folder: TFolder, stateSettings: StateSettin
     if (stateSettings === null) {
         delete folderSettings.state;
     } else if (folderSettings.state === stateSettings.name) {
-        // Toggle off the same state (mirrors file state behaviour) so [HIDDEN] sync clears too.
+        // Toggle off the same state (mirrors file state behaviour) so [STATE-HIDE] sync clears too.
         delete folderSettings.state;
         appliedState = null;
     } else {

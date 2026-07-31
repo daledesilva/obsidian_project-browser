@@ -68,9 +68,8 @@ export const ProjectPageStateEditor = () => {
                                         onSuccess: async (modifiedState) => {
                                             const newStates = plugin.settings.projectPageStates.visible.map((stateInArray) => {
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
-                                                    stateInArray.name = modifiedState.name;
-                                                    stateInArray.defaultViewMode = modifiedState.defaultViewMode;
-                                                    stateInArray.link = modifiedState.link;
+                                                    // Merge full modal output so flags like hideFromSearchGraph persist on save.
+                                                    Object.assign(stateInArray, modifiedState);
                                                 }
                                                 return stateInArray;
                                             });
@@ -138,9 +137,8 @@ export const ProjectPageStateEditor = () => {
                                         onSuccess: async (modifiedState) => {
                                             const newStates = plugin.settings.projectPageStates.hidden.map((stateInArray) => {
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
-                                                    stateInArray.name = modifiedState.name;
-                                                    stateInArray.defaultViewMode = modifiedState.defaultViewMode;
-                                                    stateInArray.link = modifiedState.link;
+                                                    // Merge full modal output so flags like hideFromSearchGraph persist on save.
+                                                    Object.assign(stateInArray, modifiedState);
                                                 }
                                                 return stateInArray;
                                             });

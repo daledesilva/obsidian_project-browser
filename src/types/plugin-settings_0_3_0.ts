@@ -19,8 +19,9 @@ export interface StateSettings_0_3_0 {
 	defaultViewPriorityVisibility: boolean,
 	defaultViewPriorityGrouping: boolean,
 	/**
-	 * When true, assigning this state appends `[HIDDEN]` to the note/page filename so Obsidian
-	 * search/graph exclude it. Independent of `states.hidden` (Card Browser section visibility).
+	 * When true, assigning this state appends `[STATE-HIDE]` to the note/page filename so Obsidian
+	 * search/graph exclude it. Manual hide uses `[HIDDEN]` separately. Independent of `states.hidden`
+	 * (Card Browser section visibility).
 	 */
 	hideFromSearchGraph?: boolean,
 }

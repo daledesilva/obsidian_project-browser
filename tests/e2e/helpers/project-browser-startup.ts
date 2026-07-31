@@ -222,7 +222,7 @@ export async function triggerProjectBrowserWhenActiveLeafBecomesEmpty(): Promise
 
 export async function openProjectBrowserFromCommand(): Promise<void> {
 	await browser.executeObsidianCommand(
-		"project-browser:open-project-browser",
+		"project-browser:open",
 	);
 	await waitForProjectBrowserVisible();
 }

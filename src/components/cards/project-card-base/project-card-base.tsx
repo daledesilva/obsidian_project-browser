@@ -6,7 +6,7 @@ import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
 import classNames from 'classnames';
 import { getFolderPriorityName } from 'src/utils/file-manipulation';
-import { basenameHasHiddenSuffix } from 'src/logic/filename-suffixes';
+import { basenameIsHiddenFromSearchGraph } from 'src/logic/filename-suffixes';
 
 /////////
 /////////
@@ -51,7 +51,7 @@ export const ProjectCardBase = (props: ProjectCardBaseProps) => {
         };
     }, [props.folder.path]);
 
-    const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.folder.name);
+    const isHiddenFromSearchGraph = basenameIsHiddenFromSearchGraph(props.folder.name);
 
     return (
         <article

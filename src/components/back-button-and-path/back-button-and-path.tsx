@@ -5,7 +5,7 @@ import * as React from "react";
 import classNames from 'classnames';
 import { getFolderSettings } from 'src/utils/file-manipulation';
 import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
-import { basenameHasHiddenSuffix } from 'src/logic/filename-suffixes';
+import { basenameIsHiddenFromSearchGraph } from 'src/logic/filename-suffixes';
 
 
 /////////
@@ -92,7 +92,7 @@ interface PathButtonProps {
 function PathButton(props: PathButtonProps) {
     const v = props.folder.vault;
     const rootName = v.getName();
-    const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.folder.name);
+    const isHiddenFromSearchGraph = basenameIsHiddenFromSearchGraph(props.folder.name);
     
     let name: string;
     if(props.folder.path === '/') {

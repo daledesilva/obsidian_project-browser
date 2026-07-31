@@ -6,7 +6,7 @@ import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { getFileDisplayNameParts } from 'src/logic/get-file-display-name';
 import { getFileTypeLabel } from 'src/logic/get-file-type-label';
 import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
-import { basenameHasHiddenSuffix } from 'src/logic/filename-suffixes';
+import { basenameIsHiddenFromSearchGraph } from 'src/logic/filename-suffixes';
 import { getGlobals } from 'src/logic/stores';
 
 export interface ProjectPageMenuFileButtonProps {
@@ -35,7 +35,7 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
     const fileTypeLabel = getFileTypeLabel(props.file.extension ?? '');
     const isUnsupported = isExtensionUnsupportedByObsidian(props.file.extension ?? '');
     const { basename, extension } = getFileDisplayNameParts(props.file);
-    const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.file.basename);
+    const isHiddenFromSearchGraph = basenameIsHiddenFromSearchGraph(props.file.basename);
 
     return (
         <button

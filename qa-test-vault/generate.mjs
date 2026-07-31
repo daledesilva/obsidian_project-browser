@@ -154,13 +154,13 @@ async function main() {
   await ensureDir(join(VAULT_ROOT, "Reference"));
   await ensureDir(join(VAULT_ROOT, "File Types Test"));
 
-  // Seed the extension-agnostic Excluded-files regex for [HIDDEN] notes/folders.
+  // Seed extension-agnostic Excluded-files regexes for manual [HIDDEN] and state [STATE-HIDE].
   await write(
     ".obsidian/app.json",
     JSON.stringify(
       {
         safeMode: false,
-        userIgnoreFilters: ["/\\[HIDDEN\\]/"],
+        userIgnoreFilters: ["/\\[HIDDEN\\]/", "/\\[STATE-HIDE\\]/"],
       },
       null,
       2,

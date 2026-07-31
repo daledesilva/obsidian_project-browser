@@ -105,7 +105,7 @@ export const getFileStateNameAsync = async (file: TFile): Promise<null | string>
 export const setFileState = async (file: TFile, stateSettings: null | StateSettings): Promise<boolean> => {
     try {
         const {plugin} = getGlobals();
-        // Track the state that remains after toggle-off-same-state so filename [HIDDEN] sync matches frontmatter.
+        // Track the state that remains after toggle-off-same-state so filename [STATE-HIDE] sync matches frontmatter.
         let appliedState: StateSettings | null = null;
         await processFrontMatterUpdateTimestamp(file, (frontmatter) => {
             
