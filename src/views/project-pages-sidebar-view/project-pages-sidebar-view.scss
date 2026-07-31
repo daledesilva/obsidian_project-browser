@@ -130,6 +130,24 @@
 	background-color: rgba(0, 0, 0, 0.28) !important;
 }
 
+/* Right-edge outline marks the markdown page that supplies the project card excerpt. */
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar.ddc_pb_excerpt-source::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 0;
+	border-right: 1px solid var(--interactive-accent);
+	border-radius: 0 8px 8px 0;
+	pointer-events: none;
+}
+
+/* Light edge so the excerpt marker stays visible on the filled accent background. */
+.ddc_pb_project-pages-sidebar__list .ddc_pb_project-page-menu__file-button--sidebar.ddc_pb_excerpt-source.ddc_pb_project-page-menu__file-button--active::after {
+	border-right-color: #fff;
+}
+
 .ddc_pb_project-pages-sidebar__footer {
 	flex-shrink: 0;
 	width: 100%;

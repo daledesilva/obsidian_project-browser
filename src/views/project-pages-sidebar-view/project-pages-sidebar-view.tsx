@@ -11,6 +11,7 @@ import { ProjectPageMenuFileButton } from 'src/components/project-page-menu-file
 import { ICON_PLUGIN } from 'src/constants';
 import { openFileInMostRecentRootLeaf, openNewPageAndSelectTitle } from 'src/logic/file-access-processes';
 import { getSortedPageMenuFilesInProjectFolder } from 'src/logic/project-page-list';
+import { resolveProjectExcerptSourceFile } from 'src/logic/project-excerpt-source';
 import { syncProjectPagesSidebarFromActiveWorkspaceContext } from 'src/logic/project-pages-sidebar-controller';
 import { getGlobals } from 'src/logic/stores';
 import { openStateMenuIfClosed } from 'src/logic/toggle-state-menu';
@@ -107,6 +108,22 @@ export const ProjectPagesSidebarContent = (props: SidebarContentProps) => {
         return getSortedPageMenuFilesInProjectFolder(props.projectFolder);
     }, [props.projectFolder, listRefreshToken]);
 
+    const [excerptSourcePath, setExcerptSourcePath] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        let cancelled = false;
+        if (!props.projectFolder) {
+            setExcerptSourcePath(null);
+            return;
+        }
+        void resolveProjectExcerptSourceFile(props.projectFolder).then((sourceFile) => {
+            if (!cancelled) setExcerptSourcePath(sourceFile?.path ?? null);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [props.projectFolder, listRefreshToken]);
+
     if (!props.projectFolder) {
         return (
             <div className="ddc_pb_project-pages-sidebar">
@@ -163,6 +180,7 @@ export const ProjectPagesSidebarContent = (props: SidebarContentProps) => {
                                     context="sidebar"
                                     onPageClick={handlePageClick}
                                     onFileChange={() => setListRefreshToken((v) => v + 1)}
+                                    isExcerptSource={file.path === excerptSourcePath}
                                 />
                             </li>
                         ))}

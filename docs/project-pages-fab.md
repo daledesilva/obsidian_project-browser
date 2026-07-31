@@ -100,7 +100,7 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Page list**: Derived from `getItemsInFolder(projectFolder)` — filtered to `TFile`, filtered by visible file types (`isExtensionVisible`), sorted by name.
 - **Page button labels**: Use `getFileDisplayNameParts()`, which respects the "Show extension for non-document files" setting. The extension portion is faded with `--text-faint`. Only canvas and base files show a type tag (CANVAS, BASE) at the top-right of each button; other file types do not.
 - **Page button height**: FAB page buttons (`.ddc_pb_project-page-menu__file-button--fab`) set `height: auto` and `max-height: none` so Obsidian’s default fixed button height does not clip wrapped titles after the second line.
-- **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) for details.
+- **Context menu**: Right-click a page button for the same file-type-specific options as the card browser: Open in new tab, Priorities/States (notes only), **Set as excerpt source** (markdown pages in a project), Rename, Delete. See [file-type-visibility.md](file-type-visibility.md) and [project-excerpt-source.md](project-excerpt-source.md).
 - **Navigation**: Uses `openFileInSameLeaf` followed by `openStateMenuIfClosed`.
 - **Navigation menu state**: Page-to-page navigation keeps the menu open so users can continue navigating without reopening it.
 - **State sync on page switch**: FAB/state header refreshes on both active-leaf changes and file-open events for the active file view, so selected-page highlighting and related header state update correctly when switching files in the same leaf (including markdown, canvas, and base transitions).
@@ -120,3 +120,8 @@ The FAB and floating title are grouped in the bottom-right corner of the window:
 - **Embed content** — Clicks inside transcluded or embedded content close the menu, since those elements are part of the document and the `pointerdown` target is outside the FAB.
 - **Page list edge fades** — Fades use mask alpha (a true opacity falloff of the list), not a solid colour overlay. When the list does not overflow, both fades are off so short lists do not get softened edges.
 - **Wrapped titles vs Obsidian button height** — Enabling wrap alone is not enough: Obsidian buttons keep a fixed height that clips about two lines. Override with `height: auto` / `max-height: none` so the chip grows with the full page name.
+
+## Related
+
+- [Projects](projects.md) — Converting folders to projects and PBS overview.
+- [Project excerpt source](project-excerpt-source.md) — Assigning which markdown page feeds the project card preview; right-edge accent on the source page in this menu.

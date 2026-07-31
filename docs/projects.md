@@ -60,11 +60,15 @@ flowchart TB
 
 On a project root, the Card Browser leaf title shows the project name (instead of **Browse**) on the line above that header control. Details: [State menu in the view header](state-menu-header.md).
 
+### Project card excerpt
+
+Project cards show a text preview drawn from a markdown page in the project (or from an optional PBS `excerpt` field). By default that is the first markdown page alphabetically; you can assign a different page with **Set as excerpt source**. Details: [Project excerpt source](project-excerpt-source.md).
+
 ## Technical implementation
 
 - Project status is stored in `folder-settings.pbs` inside each folder.
-- `FolderSettings_0_1_2` defines `isProject?: boolean` and `stateName?: string`.
-- `stateName` matches `StateSettings.name`; when absent, the project is stateless.
+- `FolderSettings_0_1_2` defines `isProject?: boolean`, `state?: string`, plus optional `excerptSource` / `excerpt` for card previews.
+- `state` matches `StateSettings.name`; when absent, the project is stateless.
 - Project cards match note card styling, with a thicker top border for visual distinction.
 - Section building is async (`getSortedSectionsInFolderAsync`) because it reads folder settings from disk.
 
@@ -78,4 +82,5 @@ On a project root, the Card Browser leaf title shows the project name (instead o
 
 - [States and sections](states-and-sections.md) — How visible/hidden states and the No status section work.
 - [State menu in the view header](state-menu-header.md) — Header control and Tippy picker for notes, pages, and project roots.
+- [Project excerpt source](project-excerpt-source.md) — Which page feeds the project card preview and how it is marked in the UI.
 - [Project Pages FAB](project-pages-fab.md) — Floating action button for quick navigation between pages when viewing a note inside a project.
