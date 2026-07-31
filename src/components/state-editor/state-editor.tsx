@@ -102,11 +102,9 @@ export const StateEditor = (props: StateEditorProps) => {
                                         stateSettings: stateItem.stateSettings,
                                         onSuccess: async (modifiedState) => {
                                             const newStates = plugin.settings.states.visible.map((stateInArray) => {
-                                                // Cycle through all states in the settings and update the one that matches this stateItem's name
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
-                                                    stateInArray.name = modifiedState.name;
-                                                    stateInArray.defaultViewMode = modifiedState.defaultViewMode;
-                                                    stateInArray.link = modifiedState.link;
+                                                    // Merge full modal output so flags like hideFromSearchGraph persist on save.
+                                                    Object.assign(stateInArray, modifiedState);
                                                 }
                                                 return stateInArray;
                                             })
@@ -176,11 +174,9 @@ export const StateEditor = (props: StateEditorProps) => {
                                         stateSettings: stateItem.stateSettings,
                                         onSuccess: async (modifiedState) => {
                                             const newStates = plugin.settings.states.hidden.map((stateInArray) => {
-                                                // Cycle through all states in the settings and update the one that matches this stateItem's name
                                                 if(stateInArray.name === stateItem.stateSettings.name) {
-                                                    stateInArray.name = modifiedState.name;
-                                                    stateInArray.defaultViewMode = modifiedState.defaultViewMode;
-                                                    stateInArray.link = modifiedState.link;
+                                                    // Merge full modal output so flags like hideFromSearchGraph persist on save.
+                                                    Object.assign(stateInArray, modifiedState);
                                                 }
                                                 return stateInArray;
                                             })

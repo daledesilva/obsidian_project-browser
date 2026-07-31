@@ -2,6 +2,7 @@ import './state-menu.scss';
 import { CachedMetadata, TFile } from 'obsidian';
 import * as React from "react";
 import { getFileStateSettings, setFileState } from 'src/logic/frontmatter-processes';
+import { getFileDisplayName } from 'src/logic/get-file-display-name';
 import { getGlobals } from 'src/logic/stores';
 import { isMarkdownFileInProject } from 'src/logic/project-page-states';
 import { StateSettings } from 'src/types/types-map';
@@ -43,7 +44,7 @@ export const StateMenu = (props: StateMenuProps) => {
             <ProjectPageStateMenu
                 file={props.file}
                 closedButtonPortalContainer={props.closedButtonPortalContainer}
-                subjectLabel={props.file.basename}
+                subjectLabel={getFileDisplayName(props.file)}
             />
         );
     }
@@ -52,7 +53,7 @@ export const StateMenu = (props: StateMenuProps) => {
         <StandardStateMenu
             file={props.file}
             closedButtonPortalContainer={props.closedButtonPortalContainer}
-            subjectLabel={props.file.basename}
+            subjectLabel={getFileDisplayName(props.file)}
         />
     );
 }
@@ -90,7 +91,7 @@ const StandardStateMenu = (props: StateMenuProps) => {
             visibleStates={plugin.settings.states.visible}
             hiddenStates={plugin.settings.states.hidden}
             visibilitySurface="noteAndProject"
-            subjectLabel={props.subjectLabel ?? props.file.basename}
+            subjectLabel={props.subjectLabel ?? getFileDisplayName(props.file)}
             closedButtonPortalContainer={props.closedButtonPortalContainer}
             onSetState={setStateAndUpdateMenu}
         />

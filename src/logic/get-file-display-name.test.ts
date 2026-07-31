@@ -176,4 +176,37 @@ describe("getFileDisplayNameParts", () => {
   });
 });
 
+describe("getAbstractFileDisplayName", () => {
+  test("strips search/graph suffixes from plain name fallback", () => {
+    jest.isolateModules(() => {
+      jest.doMock("./stores", () => ({
+        getGlobals: () => ({
+          plugin: { settings: { useAliases: false, showFileExtForNonMdFiles: false } },
+        }),
+      }));
+      jest.doMock("./frontmatter-processes", () => ({
+        getFileAliases: () => null,
+      }));
+      const { getAbstractFileDisplayName } = require("./get-file-display-name");
+      const item = { name: "Project Alpha [HIDDEN]" } as unknown;
+      expect(getAbstractFileDisplayName(item)).toBe("Project Alpha");
+    });
+  });
+
+  test("strips [STATE-HIDE] from plain name fallback", () => {
+    jest.isolateModules(() => {
+      jest.doMock("./stores", () => ({
+        getGlobals: () => ({
+          plugin: { settings: { useAliases: false, showFileExtForNonMdFiles: false } },
+        }),
+      }));
+      jest.doMock("./frontmatter-processes", () => ({
+        getFileAliases: () => null,
+      }));
+      const { getAbstractFileDisplayName } = require("./get-file-display-name");
+      const item = { name: "Project Alpha [STATE-HIDE] [HIDDEN]" } as unknown;
+      expect(getAbstractFileDisplayName(item)).toBe("Project Alpha");
+    });
+  });
+});
 

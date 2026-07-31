@@ -74,6 +74,12 @@ jest.mock('src/logic/reveal-in-project-browser', () => ({
   revealInProjectBrowser: jest.fn(),
 }));
 
+jest.mock('src/logic/sync-hidden-filename', () => ({
+  setFolderHiddenFromSearchGraph: jest.fn(),
+}));
+
+const { setFolderHiddenFromSearchGraph } = jest.requireMock('src/logic/sync-hidden-filename');
+
 jest.mock('src/modals/rename-folder-modal/rename-folder-modal', () => ({
   RenameFolderModal: jest.fn().mockImplementation(() => ({
     showModal: jest.fn(),
@@ -158,5 +164,30 @@ describe('registerProjectContextMenu', () => {
 
     revealItem.onClickHandler?.();
     expect(revealInProjectBrowser).toHaveBeenCalledWith(folder);
+  });
+
+  test('adds hide from search/graph action for projects', async () => {
+    const { registerProjectContextMenu } = await import('./project-context-menu');
+    const projectButtonEl = document.createElement('button');
+    const folder = new MockFolder();
+
+    registerProjectContextMenu({
+      projectButtonEl,
+      folder: folder as never,
+      onProjectChange: jest.fn(),
+    });
+
+    projectButtonEl.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true }));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const menu = mockCreatedMenus[0];
+    const hideItem = menu.items.find(
+      (item) => 'title' in item && item.title === 'Hide from search/graph',
+    ) as MockMenuItem;
+
+    expect(hideItem).toBeDefined();
+    await hideItem.onClickHandler?.();
+    expect(setFolderHiddenFromSearchGraph).toHaveBeenCalledWith(folder, true);
   });
 });

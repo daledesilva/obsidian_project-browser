@@ -35,7 +35,7 @@ export default class ProjectBrowserPlugin extends Plugin {
 			plugin: this,
 		})
 
-		// Keep Obsidian search/graph exclusions in sync for [HIDDEN] filenames without overwriting user filters.
+		// Keep Obsidian search/graph exclusions in sync for [HIDDEN] and [STATE-HIDE] filenames without overwriting user filters.
 		ensureHiddenMarkdownIgnoreFilter(this.app);
 		if (this.settings.hideDraftsFromSearchGraph ?? true) {
 			ensureUserIgnoreFilter(this.app, DRAFT_USER_IGNORE_FILTER);

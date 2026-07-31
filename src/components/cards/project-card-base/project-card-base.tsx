@@ -6,6 +6,7 @@ import { CardBrowserContext } from 'src/components/card-browser/card-browser';
 import { getGlobals } from 'src/logic/stores';
 import classNames from 'classnames';
 import { getFolderPriorityName } from 'src/utils/file-manipulation';
+import { basenameIsHiddenFromSearchGraph } from 'src/logic/filename-suffixes';
 
 /////////
 /////////
@@ -50,6 +51,8 @@ export const ProjectCardBase = (props: ProjectCardBaseProps) => {
         };
     }, [props.folder.path]);
 
+    const isHiddenFromSearchGraph = basenameIsHiddenFromSearchGraph(props.folder.name);
+
     return (
         <article
             ref={cardRef}
@@ -58,6 +61,7 @@ export const ProjectCardBase = (props: ProjectCardBaseProps) => {
                 'ddc_pb_project-card-base',
                 priorityName?.includes('High') && 'ddc_pb_high-priority',
                 priorityName?.includes('Low') && 'ddc_pb_low-priority',
+                isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
                 props.className,
             ])}
             onClick={(event) => {

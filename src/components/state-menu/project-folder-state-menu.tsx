@@ -6,6 +6,7 @@ import { getGlobals } from 'src/logic/stores';
 import { StateSettings } from 'src/types/types-map';
 import { getFolderStateName, setFolderState } from 'src/utils/file-manipulation';
 import { isRootPath } from 'src/utils/string-processes';
+import { getFolderDisplayName } from 'src/logic/get-folder-display-name';
 import { StateMenuShell } from './state-menu-shell';
 
 interface ProjectFolderStateMenuProps {
@@ -37,7 +38,7 @@ export const ProjectFolderStateMenu = (props: ProjectFolderStateMenuProps) => {
     // Tippy subject when the leaf title is easy to miss (phone) or stacked away from the panel.
     const subjectLabel = isRootPath(props.folder.path)
         ? props.folder.vault.getName()
-        : props.folder.name;
+        : getFolderDisplayName(props.folder);
 
     return (
         <StateMenuShell

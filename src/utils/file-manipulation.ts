@@ -419,12 +419,19 @@ export async function setFolderAsFolder(folder: TFolder): Promise<void> {
 export async function setFolderState(folder: TFolder, stateSettings: StateSettings | null): Promise<void> {
     const {plugin} = getGlobals();
     const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    let appliedState: StateSettings | null = stateSettings;
     if (stateSettings === null) {
         delete folderSettings.state;
+    } else if (folderSettings.state === stateSettings.name) {
+        // Toggle off the same state (mirrors file state behaviour) so [STATE-HIDE] sync clears too.
+        delete folderSettings.state;
+        appliedState = null;
     } else {
         folderSettings.state = stateSettings.name;
     }
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
+    const { syncFolderHiddenFilenameForState } = await import('src/logic/sync-hidden-filename');
+    await syncFolderHiddenFilenameForState(folder, appliedState);
     void plugin.refreshFileDependants();
 }
 
@@ -439,6 +446,21 @@ export async function setFolderPriority(folder: TFolder, prioritySettings: Prior
         delete folderSettings.priority;
     } else {
         folderSettings.priority = prioritySettings.name;
+    }
+    await saveFolderSettings(plugin.app.vault, folder, folderSettings);
+    void plugin.refreshFileDependants();
+}
+
+/** Saves which project page supplies the card excerpt preview (stored as the file's name). Markdown only. */
+export async function setFolderExcerptSource(folder: TFolder, sourceFile: TFile | null): Promise<void> {
+    const {plugin} = getGlobals();
+    const folderSettings = await getFolderSettings(plugin.app.vault, folder);
+    if (sourceFile === null) {
+        delete folderSettings.excerptSource;
+    } else if ((sourceFile.extension ?? '').toLowerCase() !== 'md') {
+        return;
+    } else {
+        folderSettings.excerptSource = sourceFile.name;
     }
     await saveFolderSettings(plugin.app.vault, folder, folderSettings);
     void plugin.refreshFileDependants();

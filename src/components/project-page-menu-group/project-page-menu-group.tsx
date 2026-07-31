@@ -13,6 +13,8 @@ export interface ProjectPageMenuGroupViewProps {
     context: 'fab' | 'sidebar';
     onPageClick: (file: TFile) => void;
     onFileChange: () => void;
+    /** Path of the project's active excerpt source page, when resolved. */
+    excerptSourcePath?: string | null;
 }
 
 /**
@@ -54,6 +56,7 @@ export const ProjectPageMenuGroupView = (props: ProjectPageMenuGroupViewProps) =
                     onPageClick={props.onPageClick}
                     onFileChange={props.onFileChange}
                     allowCreateVersion={true}
+                    isExcerptSource={liveFile.path === props.excerptSourcePath}
                     onActivePageClick={
                         group.drafts.length > 0
                             ? () => setIsExpanded((prev) => !prev)

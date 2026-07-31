@@ -1,9 +1,11 @@
 import { Menu, TFolder } from "obsidian";
 import { deleteFolderWithConfirmation } from "src/logic/file-processes";
+import { basenameHasHiddenSuffix } from "src/logic/filename-suffixes";
 import { revealInProjectBrowser } from "src/logic/reveal-in-project-browser";
 import { getGlobals } from "src/logic/stores";
+import { setFolderHiddenFromSearchGraph } from "src/logic/sync-hidden-filename";
 import { RenameFolderModal } from "src/modals/rename-folder-modal/rename-folder-modal";
-import { getFolderPriorityName, getFolderPrioritySettings, getFolderStateName, setFolderAsFolder, setFolderPriority, setFolderState } from "src/utils/file-manipulation";
+import { getFolderPrioritySettings, getFolderStateName, setFolderAsFolder, setFolderPriority, setFolderState } from "src/utils/file-manipulation";
 import { PrioritySettings, StateSettings } from "src/types/types-map";
 
 ////////
@@ -28,7 +30,8 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
         activeDocument.body.click();
 
         const currentStateName = await getFolderStateName(props.folder);
-    const currentPrioritySettings = await getFolderPrioritySettings(props.folder);
+        const currentPrioritySettings = await getFolderPrioritySettings(props.folder);
+        const isHiddenFromSearchGraph = basenameHasHiddenSuffix(props.folder.name);
 
         const menu = new Menu();
         menu.addItem((item) =>
@@ -85,6 +88,13 @@ export function registerProjectContextMenu(props: registerProjectContextMenuProp
             });
         });
         menu.addSeparator();
+        menu.addItem((item) => {
+            item.setTitle(isHiddenFromSearchGraph ? 'Show in search/graph' : 'Hide from search/graph');
+            item.onClick(async () => {
+                await setFolderHiddenFromSearchGraph(props.folder, !isHiddenFromSearchGraph);
+                props.onProjectChange();
+            });
+        });
         menu.addItem((item) =>
             item.setTitle("Rename")
                 .onClick(() => {

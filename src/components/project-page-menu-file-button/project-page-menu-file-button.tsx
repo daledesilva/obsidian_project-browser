@@ -6,8 +6,8 @@ import { registerFileContextMenu } from 'src/context-menus/file-context-menu';
 import { getFileDisplayNameParts } from 'src/logic/get-file-display-name';
 import { getFileTypeLabel } from 'src/logic/get-file-type-label';
 import { isExtensionUnsupportedByObsidian } from 'src/logic/is-extension-unsupported';
+import { basenameIsHiddenFromSearchGraph, parseDraftBasename } from 'src/logic/filename-suffixes';
 import { getGlobals } from 'src/logic/stores';
-import { parseDraftBasename } from 'src/logic/filename-suffixes';
 
 export interface ProjectPageMenuFileButtonProps {
     file: TFile;
@@ -21,6 +21,8 @@ export interface ProjectPageMenuFileButtonProps {
     displayLabel?: string;
     isDraft?: boolean;
     allowCreateVersion?: boolean;
+    /** True when this markdown page is the project's active excerpt source. */
+    isExcerptSource?: boolean;
 }
 
 export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps) => {
@@ -42,6 +44,7 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
     const { basename, extension } = getFileDisplayNameParts(props.file);
     const draftMeta = props.isDraft ? parseDraftBasename(props.file.basename) : null;
     const label = props.displayLabel ?? (draftMeta ? draftMeta.dateStamp : basename);
+    const isHiddenFromSearchGraph = basenameIsHiddenFromSearchGraph(props.file.basename);
 
     function handleClick() {
         if (props.isCurrentPage && props.onActivePageClick) {
@@ -62,6 +65,8 @@ export const ProjectPageMenuFileButton = (props: ProjectPageMenuFileButtonProps)
                 `ddc_pb_project-page-menu__file-button--${props.context}`,
                 props.isCurrentPage && 'ddc_pb_project-page-menu__file-button--active',
                 props.isDraft && 'ddc_pb_project-page-menu__file-button--draft',
+                props.isExcerptSource && 'ddc_pb_excerpt-source',
+                isHiddenFromSearchGraph && 'ddc_pb_hidden-from-search-graph',
             )}
             onClick={handleClick}
             // Keep active live pages clickable so a second click can fold drafts open/closed.

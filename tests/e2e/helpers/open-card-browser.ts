@@ -12,7 +12,7 @@ const DEFAULT_WAIT_MS = 10000;
  */
 export async function openCardBrowserFrom(filePath: string): Promise<void> {
   await obsidianPage.openFile(filePath);
-  await browser.executeObsidianCommand("project-browser:open-project-browser");
+  await browser.executeObsidianCommand("project-browser:open");
 
   const browserView = await $(BROWSER_SELECTOR);
   await browserView.waitForExist({ timeout: DEFAULT_WAIT_MS });
