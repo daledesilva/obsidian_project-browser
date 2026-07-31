@@ -3,6 +3,7 @@ import {
 	basenameHasHiddenSuffix,
 	basenameHasStateHideSuffix,
 	basenameIsHiddenFromSearchGraph,
+	basenameHasDraftSuffix,
 	basenameWithDraftSuffix,
 	basenameWithHiddenSuffix,
 	basenameWithStateHideSuffix,
@@ -108,6 +109,11 @@ describe('filename-suffixes', () => {
 				dateStamp: '2024.2.6 - 9.45am',
 			});
 			expect(parseDraftBasename('My Page - 2024-01-01-1430 [DRAFT]')).toBeNull();
+		});
+
+		test('basenameHasDraftSuffix detects designdebt draft basenames', () => {
+			expect(basenameHasDraftSuffix('My Page - 2024.2.6 - 9.45am [DRAFT]')).toBe(true);
+			expect(basenameHasDraftSuffix('My Page')).toBe(false);
 		});
 
 		test('getDraftChronologicalSortKey orders newer designdebt stamps after older ones', () => {

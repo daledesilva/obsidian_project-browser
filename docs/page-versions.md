@@ -103,9 +103,24 @@ Context menu handlers resolve the target file from `data-pb-file-path` on each o
 - **Excerpt source lists** use `getSortedMarkdownPagesInProjectFolder`, which excludes drafts so a version snapshot cannot become the project card excerpt.
 - **Orphan drafts** (live page deleted but drafts remain) still appear as a group keyed by stem, with the newest draft as the primary row when no live file exists.
 
+## Testing
+
+Automated coverage for page versions lives in unit/component specs and `page-versions.e2e.ts`. See [Testing](testing.md) for how to run them.
+
+| Layer | Key specs | What they verify |
+|-------|-----------|------------------|
+| Unit | `create-page-version.test.ts` | Rename-to-draft + recreate-live flow, same-minute `(2)` collision, guards on draft files |
+| Unit | `project-page-menu-groups.test.ts` | Draft nesting under live stems, orphan groups, newest-first ordering |
+| Unit | `project-excerpt-source.test.ts` | Draft rows excluded from excerpt-source candidate lists |
+| Unit | `file-context-menu.test.tsx` | **Create new version** only on the active live page in the page menu; opens the recreated live file |
+| Unit | `filename-suffixes.test.ts`, `obsidian-user-ignore-filters.test.ts` | `[DRAFT]` basename detection and `app.json` Excluded-files sync |
+| Component | `project-page-menu-group.test.tsx` | Collapsed-by-default groups and auto-expand when a new draft appears |
+| E2E | `page-versions.e2e.ts` | Vault snapshot shape, Card Browser exclusion, FAB draft row visibility after expand |
+
+**E2E note:** The spec seeds a draft via Obsidian vault APIs (rename + recreate) rather than clicking **Create new version** in the FAB. That menu path is covered by unit tests; WebdriverIO could not reliably open the context menu on the *active* FAB page row during automation.
+
 ## Related
 
 - [Project Pages FAB](project-pages-fab.md) — where grouped page menus appear in the editor
 - [Hide from search and graph](hide-from-search-graph.md) — `[DRAFT]` Excluded files integration
 - [Settings](settings.md) — **Hide drafts from search/graph** toggle
-- [Testing](testing.md) — unit and E2E coverage

@@ -106,6 +106,7 @@ E2E uses the generated vault at `qa-test-vault/`. The vault is created by `qa-te
 |------|--------|
 | **commands.e2e.ts** | Plugin loaded; `project-browser:open` command; folder sections at root; navigate into folder and see state sections + note cards; cycle-state-forward / cycle-state-backward (active note state); toggle-state-menu (state menu visibility). Ribbon icon open is not asserted (manual QA). |
 | **hide-from-search-graph.e2e.ts** | `cycle-state-backward` appends `[STATE-HIDE]` when moving to Cancelled (Archived/Cancelled default `hideFromSearchGraph`); vault `userIgnoreFilters` contains `/\[HIDDEN\]/`, `/\[STATE-HIDE\]/`, and `/\[DRAFT\]/` after plugin load. |
+| **page-versions.e2e.ts** | Version snapshots keep `[DRAFT]` basenames while the live page path remains; draft rows stay out of the Card Browser but appear in the FAB page menu after expanding the group. |
 | **navigation.e2e.ts** | Back button returns to root; breadcrumb root click returns to root; opening a note card opens the note in the same leaf. |
 | **search.e2e.ts** | Search button shows search input; typing filters cards; clear button hides search and clears filter. |
 | **new-tab-replacement.e2e.ts** | Startup reliability coverage for all browser-entry paths: opening a new empty tab, clicking the ribbon button, closing all tabs including the final active tab, alternating entry methods, and recovering when the active leaf becomes empty without an active-leaf switch. Each scenario is repeated from multiple starting states. |
@@ -129,7 +130,7 @@ To run tests without coverage: `npx jest --coverage=false`.
 
 ## Tested modules
 
-**Logic (unit):** offset-state, get-file-type-label, get-file-display-name, get-folder-display-name, get-state-and-priority-by-name, folder-processes, section-processes, frontmatter-processes, file-type-filter, file-processes, file-access-processes, is-extension-unsupported, toggle-state-menu, stores, filename-suffixes, sync-hidden-filename, obsidian-user-ignore-filters.
+**Logic (unit):** offset-state, get-file-type-label, get-file-display-name, get-folder-display-name, get-state-and-priority-by-name, folder-processes, section-processes, frontmatter-processes, file-type-filter, file-processes, file-access-processes, is-extension-unsupported, toggle-state-menu, stores, filename-suffixes, sync-hidden-filename, obsidian-user-ignore-filters, create-page-version, project-page-menu-groups, project-excerpt-source.
 
 **Utils (unit):** string-processes, string-processes-extra, sorting, file-manipulation, misc, storage.
 
@@ -139,11 +140,11 @@ To run tests without coverage: `npx jest --coverage=false`.
 
 **Logic — reveal (unit):** reveal-in-project-browser (reveal location for files and folders, multi-select target resolution, empty selection, mixed-parent selection, file without parent folder, existing-leaf reuse, new-leaf creation, concurrent-reveal guard).
 
-**Context menus (unit):** project-context-menu (priority items, reveal action, hide from search/graph); folder-context-menu (hide/show toggle, manual suffix detection); file-context-menu (hide from search/graph alongside excerpt source).
+**Context menus (unit):** project-context-menu (priority items, reveal action, hide from search/graph); folder-context-menu (hide/show toggle, manual suffix detection); file-context-menu (hide from search/graph alongside excerpt source, **Create new version** page-menu rules).
 
 **Modals (unit):** ConfirmationModal (constructor options).
 
-**Components (React):** Tooltip, SearchInput, BackButtonAndPath. Others (e.g. card-browser, state-section, modals with heavy Obsidian coupling) are deferred; E2E and manual QA cover integration.
+**Components (React):** Tooltip, SearchInput, BackButtonAndPath, ProjectPageMenuGroupView. Others (e.g. card-browser, state-section, modals with heavy Obsidian coupling) are deferred; E2E and manual QA cover integration.
 
 ## Technical details
 
@@ -162,3 +163,4 @@ To run tests without coverage: `npx jest --coverage=false`.
 - **Stores / Jotai** — Tests for `stores` or `toggle-state-menu` use the real Jotai default store; call `setGlobals()` in `beforeEach` so dependent code does not throw. Fake timers are used in toggle-state-menu tests for `returnStateMenuAfterDelay`.
 - **Obsidian Modal mock** — The global `obsidianMock.js` Modal returns a plain object, so subclasses like ConfirmationModal may not have their prototype methods (e.g. `onOpen`) on the returned instance. Prefer testing constructor-assigned options or mock Modal per test when needed.
 - **Closing all tabs is not the same as creating an empty leaf** — For startup reliability tests, make sure the final active tab is actually closed last. That produces a different workspace transition than simply calling `getLeaf(true)` and is the path that exercises “browser opens after all tabs are gone”.
+- **Page versions E2E** — `page-versions.e2e.ts` seeds drafts through `executeObsidian` (rename + recreate) because the active FAB page row does not reliably receive a context menu in WebdriverIO. **Create new version** menu rules are covered in `file-context-menu.test.tsx`. The FAB draft-row assertion uses `waitUntil` and may click the active live row to expand the group when drafts start collapsed.
