@@ -5,6 +5,7 @@ import { ChevronLeft, FileStack, Plus } from 'lucide-react';
 import classNames from 'classnames';
 import { ProjectPageMenuFileButton } from 'src/components/project-page-menu-file-button/project-page-menu-file-button';
 import { getSortedPageMenuFilesInProjectFolder } from 'src/logic/project-page-list';
+import { resolveProjectExcerptSourceFile } from 'src/logic/project-excerpt-source';
 import { isRootPath } from 'src/utils/string-processes';
 import {
     FabMenuActionButton,
@@ -50,6 +51,18 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
     const pagesInProject = React.useMemo(() => {
         void refreshTrigger;
         return getSortedPageMenuFilesInProjectFolder(props.projectFolder);
+    }, [props.projectFolder, refreshTrigger]);
+
+    const [excerptSourcePath, setExcerptSourcePath] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        let cancelled = false;
+        void resolveProjectExcerptSourceFile(props.projectFolder).then((sourceFile) => {
+            if (!cancelled) setExcerptSourcePath(sourceFile?.path ?? null);
+        });
+        return () => {
+            cancelled = true;
+        };
     }, [props.projectFolder, refreshTrigger]);
 
     React.useEffect(() => {
@@ -213,6 +226,7 @@ export const ProjectPagesFAB = (props: ProjectPagesFABProps) => {
                                 context="fab"
                                 onPageClick={handlePageClick}
                                 onFileChange={() => setRefreshTrigger((t) => t + 1)}
+                                isExcerptSource={file.path === excerptSourcePath}
                             />
                         ))}
                     </div>

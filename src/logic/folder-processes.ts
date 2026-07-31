@@ -6,7 +6,7 @@ import { getGlobals } from "./stores";
 import { getFolderSettings, getFolderStateName } from "src/utils/file-manipulation";
 import { isExtensionVisible } from "./file-type-filter";
 import { FileStateScope } from "./project-page-states";
-import { getSortedPageMenuFilesInProjectFolder } from "./project-page-list";
+import { getSortedMarkdownPagesInProjectFolder } from "./project-excerpt-source";
 import {
     removeCodeBlocks,
     removeFrontmatter,
@@ -92,7 +92,8 @@ export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> =
         return excerpt || null;
     }
 
-    const pages = getSortedPageMenuFilesInProjectFolder(folder);
+    // Only markdown pages can supply project card excerpts.
+    const pages = getSortedMarkdownPagesInProjectFolder(folder);
     if (pages.length === 0) return null;
 
     // Prefer an explicitly assigned excerpt source page when it still exists in the project.
@@ -106,7 +107,7 @@ export const getProjectExcerpt = async (folder: TFolder): Promise<null|string> =
         }
     }
 
-    // Default: first page alphabetically (same ordering as the project page menu).
+    // Default: first markdown page alphabetically (same ordering as the project page menu).
     return await getFileExcerpt(pages[0]);
 }
 

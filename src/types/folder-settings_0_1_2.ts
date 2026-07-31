@@ -7,8 +7,8 @@ export interface FolderSettings_0_1_2 {
     state?: string,
     priority?: string,
     /**
-     * Project-card excerpt source: basename of a page in this folder (e.g. `Page 1.md`).
-     * When unset, the first page alphabetically is used.
+     * Project-card excerpt source: basename of a markdown page in this folder (e.g. `Page 1.md`).
+     * When unset, the first markdown page alphabetically is used.
      */
     excerptSource?: string,
     /**
