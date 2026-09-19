@@ -31,6 +31,10 @@ I record regular development diaries. [Subscribe and follow along](https://www.y
   </a>
 </p>
 
+## 🔧 Development
+
+Product tasks and release planning: [Ob: Project Browser (ClickUp)](https://app.clickup.com/36639212/v/s/90167672005).
+
 ## 🗺️ Rough roadmap
 I've been building this plugin since March 2023 and I'm regulaly developing it further and using it daily myself.<br/>
 Below are the high level features in my current development plan along with when they'll likely get implemented.
